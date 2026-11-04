@@ -1,0 +1,104 @@
+// Вспомогательный локальный тест — пользователю запускать не нужно.
+// Требуется Node.js 22+, здесь тестируем D1 через встроенный sqlite.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {DatabaseSync} from 'node:sqlite';
+import bot from './01_ASTRA_V2.js';
+import preflight from './00_DIAGNOSTIC.js';
+const db=new DatabaseSync(':memory:');
+const ddl=fs.readFileSync(new URL('./02_SCHEMA.sql',import.meta.url),'utf8');
+db.exec(ddl);
+const DB={prepare(sql){
+  const stmt=db.prepare(sql);
+  let args=[];
+  const handle={
+    bind(...params){args=params;return handle;},
+    async first(){return stmt.get(...args)??null;},
+    async all(){return {results:stmt.all(...args)};},
+    async run(){const r=stmt.run(...args);return {meta:{changes:Number(r.changes)}};},
+  };
+  return handle;
+}};
+const env={
+  DB,ASTRA_BOT_TOKEN:'TEST_NON_SECRET_TOKEN',ASTRA_WEBHOOK_SECRET:'secure-test-header',
+  ASTRA_ADMIN_KEY:'secure-test-admin-key',CHANNEL_USERNAME:'@examplechannel',
+};
+let changes=0; const out=[]; let subscriptionStatus='member';
+const savedFetch=globalThis.fetch;
+globalThis.fetch=async (url,opts)=>{
+  const method=url.split('/').at(-1), body=JSON.parse(opts.body);
+  out.push({method,body});
+  if (method==='getMe') return new Response(JSON.stringify({ok:true,result:{username:'LaDa_Iskra_Opel_Astrabot'}}));
+  if (method==='getChatMember') return new Response(JSON.stringify({ok:true,result:{status:subscriptionStatus}}));
+  return new Response(JSON.stringify({ok:true,result:true}));
+};
+const host='https://opel-astra-bot.test';
+function msgs(user){return out.filter(x=>x.method==='sendMessage'&&x.body.chat_id===user).map(x=>x.body.text)}
+async function hook(update,secret=env.ASTRA_WEBHOOK_SECRET){const res=await bot.fetch(new Request(`${host}/telegram-webhook`,{
+  method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':secret},body:JSON.stringify(update),
+}),env);return res}
+let updateId=400;
+async function msg(id,text){return hook({update_id:++updateId,message:{from:{id},chat:{id,type:'private'},text}})}
+async function click(id,data){return hook({update_id:++updateId,callback_query:{id:`c${updateId}`,from:{id},message:{chat:{id,type:'private'}},data}})}
+async function assertCase(condition,desc){ assert.ok(condition,desc);changes++; }
+
+let r=await preflight.fetch(new Request(`${host}/health`),env);
+await assertCase((await r.json()).ready===true,'preflight healthy');
+r=await preflight.fetch(new Request(`${host}/health`),{...env,DB:null});
+await assertCase((await r.json()).db_binding==='MISSING','preflight missing D1');
+r=await bot.fetch(new Request(`${host}/health`),env);
+await assertCase((await r.json()).ready===true,'app health healthy');
+r=await bot.fetch(new Request(`${host}/health`),{...env,DB:null});
+await assertCase((await r.json()).db_binding==='MISSING','app health missing D1');
+r=await bot.fetch(new Request(`${host}/activate?key=bad`),env);
+await assertCase(r.status===403,'bad admin key rejected');
+r=await bot.fetch(new Request(`${host}/activate?key=${env.ASTRA_ADMIN_KEY}`),env);
+await assertCase((await r.text()).includes('WEBHOOK_OK'),'webhook activated');
+await assertCase(out.some(x=>x.method==='setWebhook'&&x.body.url===`${host}/telegram-webhook`),'correct webhook URL');
+r=await hook({update_id:333},'wrong-secret');
+await assertCase(r.status===403,'wrong Telegram webhook secret rejected');
+
+r=await msg(101,'/start');await assertCase(r.status===200,'/start works');
+await assertCase(msgs(101).at(-1).includes('Выбери знак'),'first greeting works');
+r=await click(101,'sign:aries');await assertCase(r.status===200,'sign selected');
+await assertCase(db.prepare('SELECT zodiac,balance FROM astra_users WHERE telegram_id=101').get().zodiac==='aries','zodiac saved');
+await assertCase(msgs(101).at(-1).includes('Гороскоп'.toUpperCase()),'forecast after sign');
+await msg(101,'🎁 Бонус дня');await msg(101,'🎁 Бонус дня');
+await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=101').get().balance===3,'daily bonus only once');
+await msg(101,'🃏 Таро');await click(101,'tarot:day'); const before=msgs(101).at(-1);
+await click(101,'tarot:day');await assertCase(msgs(101).at(-1)===before,'daily card stable');
+await click(101,'tarot:three');await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=101').get().balance===0,'3-card cost charged');
+await click(101,'tarot:three');await assertCase(msgs(101).at(-1).includes('Недостаточно'),'insufficient balance handled');
+await msg(101,'👥 Пригласить друга');await assertCase(msgs(101).at(-1).includes('?start=ref_101'),'referral link correct');
+await msg(102,'/start ref_101');await click(102,'sign:virgo');
+await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=101').get().balance===5,'referral paid exactly once');
+await click(102,'sign:libra');await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=101').get().balance===5,'repeat sign no bonus');
+await msg(102,'🌟 Канал');await click(102,'channel:check');
+await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=102').get().balance===7,'channel reward');
+await click(102,'channel:check');await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=102').get().balance===7,'channel reward once');
+subscriptionStatus='left';await msg(103,'/start');await click(103,'sign:scorpio');await click(103,'channel:check');
+await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=103').get().balance===2,'non-subscriber has no reward');
+
+// Telegram may retry duplicate update_id; verify no second send/charge.
+const u={update_id:91919,callback_query:{id:'new-1',from:{id:102},message:{chat:{id:102,type:'private'}},data:'tarot:three'}};
+await hook(u); const countBefore=out.length;await hook(u);
+await assertCase(out.length===countBefore,'duplicate callback not processed');
+await msg(103,'/stop');await assertCase(db.prepare('SELECT notifications_enabled FROM astra_users WHERE telegram_id=103').get().notifications_enabled===0,'notifications stop');
+await msg(103,'🔔 Рассылка');await assertCase(db.prepare('SELECT notifications_enabled FROM astra_users WHERE telegram_id=103').get().notifications_enabled===1,'notifications resume');
+
+// Temporarily freeze Date in the 09:00 Moscow window to test scheduled delivery.
+const OriginalDate=globalThis.Date;const fixed=OriginalDate.parse('2026-11-04T06:10:00.000Z');
+class FrozenDate extends OriginalDate {constructor(...args){super(...(args.length?args:[fixed]));}static now(){return fixed;}}
+globalThis.Date=FrozenDate;
+await bot.scheduled({},env);
+await assertCase(db.prepare('SELECT last_broadcast_day FROM astra_users WHERE telegram_id=101').get().last_broadcast_day==='2026-11-04','morning broadcast delivered');
+const sent=out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes('ГОРОСКОП НА')).length;
+await bot.scheduled({},env);
+await assertCase(out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes('ГОРОСКОП НА')).length===sent,'morning broadcast not duplicate');
+globalThis.Date=OriginalDate;
+
+await msg(103,'/delete');await assertCase(db.prepare('SELECT count(*) AS count FROM astra_users WHERE telegram_id=103').get().count===0,'delete account');
+r=await bot.fetch(new Request(`${host}/health`),{...env,ASTRA_BOT_TOKEN:undefined});
+await assertCase((await r.json()).secrets_ready===false,'missing secret diagnosed');
+globalThis.fetch=savedFetch;
+console.log(`OK: ${changes} assertions; fake Telegram API calls: ${out.length}.`);
