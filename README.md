@@ -28,3 +28,17 @@ node --experimental-sqlite src/03_LOCAL_TEST.mjs
 - Binding `DB` — привязка D1 в Cloudflare, а не переменная для Codex.
 - Не создавать здесь публичных `.env` с реальными значениями, даже если GitHub-репозиторий приватный.
 - Использовать ветку / pull request для правок Codex; проверять diff и тесты до объединения.
+
+## Кандидат Astra 2.1
+
+Локальная реализация: `release/ASTRA_2_1_WORKER.js`. Исходный `src/` сохранён как снимок 2.0. Полный запуск тестов: `sh scripts/test.sh` (Node.js 22+).
+
+Перед любым будущим внедрением прочитать:
+
+- [Аудит](docs/ASTRA_2_1_AUDIT.md)
+- [Миграция, staging и откат](docs/ASTRA_2_1_MIGRATION.md)
+- [Порядок ручного внедрения](docs/ASTRA_2_1_DEPLOY_FOR_BEGINNER.md)
+- [Release notes](docs/ASTRA_2_1_RELEASE_NOTES.md)
+- [Фактическое локальное состояние](docs/ASTRA_CURRENT_STATE.md)
+
+Это кандидат для ревью, не опубликованная версия. `/activate` в кандидате отключён; webhook сохраняется. Старый Worker 2.0 нельзя запускать поверх новых триггеров: безопасная пауза/откат — `release/ASTRA_2_1_MAINTENANCE.js`. Миграция только после backup и остановки writers.
