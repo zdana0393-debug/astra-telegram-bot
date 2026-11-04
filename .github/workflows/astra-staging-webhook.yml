@@ -1,0 +1,72 @@
+name: Astra Staging — connect Telegram webhook
+
+on:
+  workflow_dispatch:
+    inputs:
+      worker_url:
+        description: 'Staging Worker URL (https://astra-staging-21-worker.SUBDOMAIN.workers.dev)'
+        type: string
+        required: true
+      expected_bot_username:
+        description: 'Username of TEST bot from BotFather, without @'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  register-staging-webhook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Register and verify staging webhook (never production)
+        env:
+          WORKER_URL: ${{ inputs.worker_url }}
+          EXPECTED_BOT_USERNAME: ${{ inputs.expected_bot_username }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.ASTRA_STAGING_BOT_TOKEN }}
+          TELEGRAM_WEBHOOK_SECRET: ${{ secrets.ASTRA_STAGING_WEBHOOK_SECRET }}
+        run: |
+          node --input-type=module <<'NODE'
+          const token = process.env.TELEGRAM_BOT_TOKEN || '';
+          const secret = process.env.TELEGRAM_WEBHOOK_SECRET || '';
+          const expected = (process.env.EXPECTED_BOT_USERNAME || '').trim().replace(/^@/, '');
+          const userUrl = (process.env.WORKER_URL || '').trim();
+          if (!token || !secret) throw new Error('Missing staging secrets in GitHub Actions');
+          if (!/^[A-Za-z0-9_-]{1,256}$/.test(secret)) throw new Error('Webhook secret has unsupported characters');
+          if (!/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(expected) || !/bot$/i.test(expected))
+            throw new Error('Provide a valid test bot username without @');
+          if (/^LaDa_Iskra_Opel_Astrabot$/i.test(expected))
+            throw new Error('Production bot is forbidden in staging workflow');
+          let worker;
+          try { worker = new URL(userUrl); } catch { throw new Error('Invalid staging Worker URL'); }
+          if (worker.protocol !== 'https:' || !/^astra-staging-21-worker\.[a-z0-9-]+\.workers\.dev$/.test(worker.hostname)
+              || worker.pathname !== '/' || worker.search || worker.hash || worker.username || worker.password)
+            throw new Error('Worker URL must be the dedicated staging workers.dev origin, without a path or query');
+          const hook = worker.origin + '/telegram-webhook';
+          const api = (method) => 'https://api.telegram.org/bot' + token + '/' + method;
+          async function telegram(method, body) {
+            const response = await fetch(api(method), {
+              method: 'POST', headers: {'Content-Type':'application/json'},
+              body: JSON.stringify(body), signal: AbortSignal.timeout(15000)
+            });
+            const json = await response.json();
+            if (!response.ok || !json.ok) throw new Error('Telegram ' + method + ' failed: ' + (json.description || response.status));
+            return json.result;
+          }
+          const bot = await telegram('getMe', {});
+          if (bot.username?.toLowerCase() !== expected.toLowerCase())
+            throw new Error('Token belongs to a DIFFERENT bot; no webhook was changed. Check GitHub staging token and username');
+          if (/^LaDa_Iskra_Opel_Astrabot$/i.test(bot.username))
+            throw new Error('Production bot rejected');
+          const result = await telegram('setWebhook', {
+            url: hook, secret_token: secret, drop_pending_updates: false,
+            allowed_updates: ['message','callback_query'], max_connections: 2
+          });
+          if (result !== true) throw new Error('Telegram did not confirm webhook registration');
+          const info = await telegram('getWebhookInfo', {});
+          if (info.url !== hook) throw new Error('Webhook URL verification failed');
+          console.log('SUCCESS. Webhook set for TEST bot @' + bot.username + ': ' + hook);
+          console.log('Pending updates: ' + info.pending_update_count);
+          console.log('No production resources were changed.');
+          NODE
