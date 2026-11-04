@@ -42,3 +42,14 @@ node --experimental-sqlite src/03_LOCAL_TEST.mjs
 - [Фактическое локальное состояние](docs/ASTRA_CURRENT_STATE.md)
 
 Это кандидат для ревью, не опубликованная версия. `/activate` в кандидате отключён; webhook сохраняется. Старый Worker 2.0 нельзя запускать поверх новых триггеров: безопасная пауза/откат — `release/ASTRA_2_1_MAINTENANCE.js`. Миграция только после backup и остановки writers.
+
+## Astra 2.2 — оболочка только для staging
+
+Готовый single-file: `release/ASTRA_2_2_WORKER.js`, база — кандидат 2.1. Тестовая цель: **astra-staging-21-worker**, binding **DB → astra-staging-21**. Production Astra 2.0 не менять. Запуск всех прежних и новых тестов: `sh scripts/test-2.2.sh` (Node.js 22+; проверено на 24.22.1).
+
+- [Архитектура и инварианты](docs/ASTRA_2_2_ARCHITECTURE.md)
+- [Что изменилось](docs/ASTRA_2_2_CHANGELOG.md)
+- [Установка через Dashboard, SQL-шаги и откат на staging](docs/ASTRA_2_2_STAGING_GUIDE.md)
+- [Тестовый отчёт и ограничения](docs/ASTRA_2_2_TEST_REPORT.md)
+
+Миграция `migrations/0022_shell.sql` идёт только поверх полной 2.1. Для D1 Console подготовлены четыре небольших файла `migrations/0022_steps/`. Применение выполняет владелец после backup/ревью. Код не деплоился и не меняет webhook. На тестовом Worker задать **Text BOT_USERNAME** — фактический username тестового бота без @. Новая оболочка не меняет цены/бонусы и бесплатное число дня; будущие сервисы показаны как «в подготовке».
