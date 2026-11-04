@@ -3,12 +3,13 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-import bot from '../release/ASTRA_2_1_WORKER.js';
+const bot=(await import(process.env.ASTRA_TEST_RELEASE==='2.2'?'../release/ASTRA_2_2_WORKER.js':'../release/ASTRA_2_1_WORKER.js')).default;
 import preflight from '../src/00_DIAGNOSTIC.js';
 const db=new DatabaseSync(':memory:');
 const ddl=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8');
 db.exec(ddl);
 db.exec(fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8'));
+if(process.env.ASTRA_TEST_RELEASE==='2.2') db.exec(fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8'));
 const DB={prepare(sql){
   const stmt=db.prepare(sql);
   let args=[];
