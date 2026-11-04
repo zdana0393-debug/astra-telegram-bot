@@ -1,0 +1,3 @@
+# Codex project instructions: Astra 2.1
+
+This repo contains a working Astra 2.0 snapshot. Read `01_CODEX_ЗАДАНИЕ_ASTRA_2_1.md` before editing. Preserve behavior, public prices and the current interface. Run local tests. Never deploy to production, execute SQL against remote D1, call Telegram setWebhook, or request live secrets. No real credentials are required for the 2.1 task. Propose migration and deployment instructions for human review only. Cite limitations of local SQLite versus production D1. Maintain browser-friendly single-file release instructions. Create a reviewable pull request, not direct unreviewed changes to production.
