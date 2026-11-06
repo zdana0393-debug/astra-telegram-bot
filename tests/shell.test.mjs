@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {fixture,migration22} from './helpers.mjs';
 const check=(name,fn)=>test(name,async()=>{const f=fixture({shell:true});try{await fn(f);}finally{f.close();}});
 const call=async(f,data,mid=80)=>{const q=f.click(1,mid);q.callback_query.data=data;assert.equal((await f.hook(q)).status,200);return f.out.filter(x=>x.method==='sendMessage').at(-1).body;};
-const editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial';
+const editorial=['2.3-editorial','2.3b'].includes(process.env.ASTRA_TEST_RELEASE);
 const buttons=body=>body.reply_markup?.inline_keyboard?.flat()||[];
 check('six main buttons, two per row, stable returning profile',async f=>{
   f.user(1,8);await f.hook(f.message(1,'/start'));const body=f.out.at(-1).body;
@@ -21,7 +21,7 @@ check('all six reply labels open sections and every submenu has back/home',async
 check('all navigation branches and FAQ details are reachable, bounded and free',async f=>{
   f.user(1);const queue=['shell:about','shell:forecast','shell:self','shell:dossier','shell:dust','shell:tarot'];const visited=new Set();const depths=new Map(queue.map(d=>[d,1]));depths.set('shell:home',0);
   const effects=new Set(['shell:gift','shell:invite','shell:channel','shell:notifications:toggle','shell:buy','tarot:day']);
-  while(queue.length){const data=queue.shift();if(visited.has(data)||effects.has(data)||data.startsWith('shell:pay:'))continue;visited.add(data);assert.ok(depths.get(data)<=3,`Too many steps: ${data}`);
+  while(queue.length){const data=queue.shift();if(visited.has(data)||effects.has(data)||(data.startsWith('shell:pay:')||data.startsWith('shell:forecast:pay:')))continue;visited.add(data);assert.ok(depths.get(data)<=3,`Too many steps: ${data}`);
     const body=await call(f,data);assert.ok(body.text.length<=4096);for(const b of buttons(body)){
       assert.ok(Buffer.byteLength(b.callback_data||'')<=64);if(b.callback_data){if(!depths.has(b.callback_data))depths.set(b.callback_data,depths.get(data)+1);queue.push(b.callback_data);}
     }

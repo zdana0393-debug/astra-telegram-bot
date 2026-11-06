@@ -102,7 +102,7 @@ check('forecast and daily card content match v2, including free lucky number',as
   const u=f.message(1,'🔮 Гороскоп');await old.fetch(new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(u)}),f.env);
   const expected=f.out.at(-1).body.text;
   await f.hook(f.message(1,'🔮 Гороскоп'));
-  if(process.env.ASTRA_TEST_RELEASE==='2.3-editorial') {
+  if(['2.3-editorial','2.3b'].includes(process.env.ASTRA_TEST_RELEASE)) {
     assert.equal(f.out.at(-1).body.text.match(/🔢 Число дня: ([1-9])/)[1],expected.match(/🔢 Число дня: ([1-9])/)[1]);
   } else assert.equal(f.out.at(-1).body.text,expected);
   assert.match(expected,/🔢 Число дня: [1-9]/);

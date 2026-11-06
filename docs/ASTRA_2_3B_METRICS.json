@@ -1,0 +1,70 @@
+{
+  "engine_version": "forecast-1.0.0",
+  "content_version": "2026.11-v1",
+  "range": [
+    "2026-01-01",
+    "2030-12-31"
+  ],
+  "dates": 1826,
+  "signs": 12,
+  "cases": 21912,
+  "cases_by_year": {
+    "2026": 4380,
+    "2027": 4380,
+    "2028": 4392,
+    "2029": 4380,
+    "2030": 4380
+  },
+  "units_by_section": {
+    "theme": 24,
+    "relations": 24,
+    "work": 24,
+    "finance": 24,
+    "mood": 24,
+    "action": 24
+  },
+  "signs_by_element": {
+    "fire": 3,
+    "earth": 3,
+    "air": 3,
+    "water": 3
+  },
+  "corpus": {
+    "thematic_units": 144,
+    "signs": 12,
+    "sign_section_profiles": 48,
+    "modalities": 3,
+    "number_pairs": 9,
+    "runes": 24,
+    "symbols": 12,
+    "advice": 24
+  },
+  "min_russian_words": 185,
+  "max_russian_words": 236,
+  "max_free_utf16": 1949,
+  "max_extended_utf16": 1932,
+  "max_free_utf8_bytes": 3598,
+  "max_extended_utf8_bytes": 3570,
+  "average_paid_payload_bytes": 3771,
+  "adjacent_repeated_thematic_units": 0,
+  "average_cache_payload_bytes": 6895,
+  "whole_text_duplicates": 0,
+  "content_duplicates_ignoring_date": 369,
+  "max_identical_body_occurrences": 3,
+  "adjacent_body_duplicates": 0,
+  "cross_sign_body_failures": 0,
+  "forbidden_pattern_hits": 0,
+  "compatibility_failures": 0,
+  "selected_units_covered": 144,
+  "theme_counts": {
+    "steadiness": 2741,
+    "initiative": 2741,
+    "agreement": 2739,
+    "exchange": 2738,
+    "boundaries": 2740,
+    "review": 2739,
+    "completion": 2738,
+    "revision": 2736
+  },
+  "limits": "Automated checks find specified patterns/tag conflicts; they do not prove literary quality or D1/Telegram behavior."
+}

@@ -1,0 +1,5723 @@
+{
+  "content_version": "2026.11-v1",
+  "signs": [
+    {
+      "id": "sign:aries",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Овна кардинальный Огонь и Марс связаны с инициативой: существенна разница между самостоятельным шагом и требованием немедленного ответа.",
+      "sign_id": "aries",
+      "label": "♈ Овен",
+      "element_id": "fire",
+      "modality_id": "cardinal",
+      "ruler": "Марс",
+      "resource": "решимость",
+      "shadow": "спешка",
+      "profiles": {
+        "relations": "Прямоту полезно дополнить вопросом о готовности другого человека.",
+        "work": "Начальный импульс Овна обретает форму в конкретной задаче.",
+        "finance": "Расход на старт не должен поглощать весь запас.",
+        "mood": "Напор нуждается в паузе, не равной отказу от замысла."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:taurus",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Тельца фиксированная Земля и Венера соединяют устойчивость с ценностью: важно различать надёжную опору и простую привычку.",
+      "sign_id": "taurus",
+      "label": "♉ Телец",
+      "element_id": "earth",
+      "modality_id": "fixed",
+      "ruler": "Венера",
+      "resource": "последовательность",
+      "shadow": "инерция",
+      "profiles": {
+        "relations": "Постоянство проявляется через выполненную договорённость, а не её повторение.",
+        "work": "Практический результат Тельца требует понятного темпа и качества.",
+        "finance": "Оценивайте не только цену, но и срок использования.",
+        "mood": "Комфорт поддерживает внимание, пока не превращается в избегание перемен."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:gemini",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Близнецов мутабельный Воздух и Меркурий связаны с обменом информацией: широту наблюдения полезно отделить от постоянного переключения внимания.",
+      "sign_id": "gemini",
+      "label": "♊ Близнецы",
+      "element_id": "air",
+      "modality_id": "mutable",
+      "ruler": "Меркурий",
+      "resource": "любознательность",
+      "shadow": "рассеянность",
+      "profiles": {
+        "relations": "Уточняйте значение слов до того, как спорить с выводом.",
+        "work": "Меркурианская гибкость полезна при сравнении способов решения задачи.",
+        "finance": "Множество предложений ещё не означает выгодного выбора.",
+        "mood": "Информационную нагрузку можно уменьшить, сохранив действительно важный разговор."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:cancer",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Рака кардинальная Вода и Луна обозначают заботу и внутреннюю опору: внимание к близким не отменяет собственных границ.",
+      "sign_id": "cancer",
+      "label": "♋ Рак",
+      "element_id": "water",
+      "modality_id": "cardinal",
+      "ruler": "Луна",
+      "resource": "забота",
+      "shadow": "закрытость",
+      "profiles": {
+        "relations": "Потребность в поддержке стоит назвать, не превращая её в проверку.",
+        "work": "Забота о процессе включает ясное распределение ответственности.",
+        "finance": "Резерв нужен для устойчивости, а не для тревожного накопления.",
+        "mood": "Знакомый ритуал помогает собраться без обязательного ухода от общения."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:leo",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Льва фиксированный Огонь и Солнце связаны с выражением замысла: внутренний критерий помогает не подменять творчество ожиданием признания.",
+      "sign_id": "leo",
+      "label": "♌ Лев",
+      "element_id": "fire",
+      "modality_id": "fixed",
+      "ruler": "Солнце",
+      "resource": "творческая цельность",
+      "shadow": "зависимость от признания",
+      "profiles": {
+        "relations": "Внимание к собеседнику делает самовыражение взаимным, а не односторонним.",
+        "work": "Творческий вклад заметнее, когда задача доведена до результата.",
+        "finance": "Представительность покупки не заменяет её практической ценности.",
+        "mood": "Удовлетворение от сделанного стоит отделить от скорости внешнего отклика."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:virgo",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Девы мутабельная Земля и Меркурий соединяют анализ с практикой: точность полезна, когда помогает действию, а не откладывает его.",
+      "sign_id": "virgo",
+      "label": "♍ Дева",
+      "element_id": "earth",
+      "modality_id": "mutable",
+      "ruler": "Меркурий",
+      "resource": "различение деталей",
+      "shadow": "избыточная критика",
+      "profiles": {
+        "relations": "Конкретная просьба звучит яснее перечня недостатков другого человека.",
+        "work": "Отличайте необходимую проверку от бесконечной доводки уже работающего решения.",
+        "finance": "Сравнивайте условия целиком, включая небольшие регулярные расходы.",
+        "mood": "Порядок освобождает внимание, если допускает разумную степень несовершенства."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:libra",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Весов кардинальный Воздух и Венера обозначают соотнесение позиций: согласие устойчивее, когда различия признаны, а не сглажены заранее.",
+      "sign_id": "libra",
+      "label": "♎ Весы",
+      "element_id": "air",
+      "modality_id": "cardinal",
+      "ruler": "Венера",
+      "resource": "согласование",
+      "shadow": "затягивание выбора",
+      "profiles": {
+        "relations": "Равноправие требует услышать ответ, даже если он неудобен.",
+        "work": "Партнёрскую задачу полезно разделить на согласованные зоны решения.",
+        "finance": "Справедливое распределение расходов начинается с открытого обсуждения условий.",
+        "mood": "Внутреннее равновесие не требует согласия всех участников одновременно."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:scorpio",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Скорпиона фиксированная Вода и традиционный управитель Марс связаны с глубиной вовлечения: настойчивость полезно отделить от стремления всё контролировать.",
+      "sign_id": "scorpio",
+      "label": "♏ Скорпион",
+      "element_id": "water",
+      "modality_id": "fixed",
+      "ruler": "Марс",
+      "resource": "сосредоточенность",
+      "shadow": "чрезмерный контроль",
+      "profiles": {
+        "relations": "Доверие укрепляет точный вопрос, а не проверка скрытых намерений.",
+        "work": "Глубокое исследование нуждается в границе, где начинается практический вывод.",
+        "finance": "Общие ресурсы требуют ясных полномочий и подтверждённых условий.",
+        "mood": "Интенсивное переживание не обязывает к немедленному окончательному решению."
+      },
+      "modern_association": "Плутон — современная западная школа"
+    },
+    {
+      "id": "sign:sagittarius",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Стрельца мутабельный Огонь и Юпитер связаны с расширением горизонта: перспективу важно соотносить с опытом, который можно проверить.",
+      "sign_id": "sagittarius",
+      "label": "♐ Стрелец",
+      "element_id": "fire",
+      "modality_id": "mutable",
+      "ruler": "Юпитер",
+      "resource": "широта взгляда",
+      "shadow": "поспешное обобщение",
+      "profiles": {
+        "relations": "Различие убеждений допускает любопытство вместо немедленного переубеждения собеседника.",
+        "work": "Большую идею полезно перевести в доступный учебный или рабочий шаг.",
+        "finance": "Перспективность предложения не отменяет проверки его ограничений.",
+        "mood": "Новый ракурс поддерживает интерес, если не обесценивает текущую задачу."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:capricorn",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Козерога кардинальная Земля и Сатурн соединяют цель с обязательством: надёжность определяется выполнимой структурой, а не предельной нагрузкой.",
+      "sign_id": "capricorn",
+      "label": "♑ Козерог",
+      "element_id": "earth",
+      "modality_id": "cardinal",
+      "ruler": "Сатурн",
+      "resource": "ответственность",
+      "shadow": "жёсткость требований",
+      "profiles": {
+        "relations": "Сдержанность не мешает прямо обозначить участие и поддержку.",
+        "work": "Ответственность включает пересмотр срока, если исходные условия изменились.",
+        "finance": "Долгосрочный расчёт должен учитывать доступный резерв времени и средств.",
+        "mood": "Отдых не требует оправдания чрезмерной производительностью в остальные часы."
+      },
+      "modern_association": null
+    },
+    {
+      "id": "sign:aquarius",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Водолея фиксированный Воздух и традиционный управитель Сатурн связаны с устройством систем: независимость мысли полезна вместе с ответственностью за связи.",
+      "sign_id": "aquarius",
+      "label": "♒ Водолей",
+      "element_id": "air",
+      "modality_id": "fixed",
+      "ruler": "Сатурн",
+      "resource": "независимость мысли",
+      "shadow": "отстранённость",
+      "profiles": {
+        "relations": "Общий принцип стоит проверить на конкретной потребности собеседника.",
+        "work": "Системный взгляд помогает обнаружить лишнее правило или повторяемую ошибку.",
+        "finance": "Новизна инструмента не является доказательством его надёжности.",
+        "mood": "Дистанция полезна для обзора, но не заменяет личного участия."
+      },
+      "modern_association": "Уран — современная западная школа"
+    },
+    {
+      "id": "sign:pisces",
+      "section": "profile",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "В символике Рыб мутабельная Вода и традиционный управитель Юпитер соединяют воображение с поиском смысла: восприимчивость нуждается в различении впечатления и факта.",
+      "sign_id": "pisces",
+      "label": "♓ Рыбы",
+      "element_id": "water",
+      "modality_id": "mutable",
+      "ruler": "Юпитер",
+      "resource": "восприимчивость",
+      "shadow": "размывание границ",
+      "profiles": {
+        "relations": "Сочувствие не означает обязанности принимать на себя чужое решение.",
+        "work": "Образ замысла станет яснее через один конкретный пример.",
+        "finance": "Интуитивную симпатию к предложению стоит дополнить проверкой условий.",
+        "mood": "Впечатления легче упорядочить, если дать им название и время."
+      },
+      "modern_association": "Нептун — современная западная школа"
+    }
+  ],
+  "themes": [
+    {
+      "id": "initiative",
+      "label": "Инициатива с мерой",
+      "extended": "Ресурс — способность сделать первый проверяемый шаг. Зона внимания — стремление назначить скорость доказательством серьёзности намерения. Если ответ задерживается, можно либо увеличить давление, либо уточнить условие продолжения. Второй путь сохраняет инициативу, не превращая её в борьбу за немедленный отклик.",
+      "question": "Какой ответ вы готовы принять, прежде чем сделаете следующий шаг?",
+      "section": "extended_theme",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — способность сделать первый проверяемый шаг. Зона внимания — стремление назначить скорость доказательством серьёзности намерения. Если ответ задерживается, можно либо увеличить давление, либо уточнить условие продолжения. Второй путь сохраняет инициативу, не превращая её в борьбу за немедленный отклик."
+    },
+    {
+      "id": "agreement",
+      "label": "Согласование позиций",
+      "extended": "Ресурс — способность различить интересы и форму их выражения. Зона внимания — согласие, данное ради прекращения разговора. Если условия расходятся, можно искать одну общую опору, не требуя единства взглядов во всём. Проверьте, что уступка остаётся осознанным выбором, а не скрытым ожиданием будущей компенсации.",
+      "question": "Какое условие должно прозвучать прямо, чтобы согласие осталось действительным?",
+      "section": "extended_theme",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — способность различить интересы и форму их выражения. Зона внимания — согласие, данное ради прекращения разговора. Если условия расходятся, можно искать одну общую опору, не требуя единства взглядов во всём. Проверьте, что уступка остаётся осознанным выбором, а не скрытым ожиданием будущей компенсации."
+    },
+    {
+      "id": "review",
+      "label": "Проверка основания",
+      "extended": "Ресурс — внимательное различение сведений. Зона внимания — поиск только тех подтверждений, которые поддерживают исходный вывод. При неожиданном факте можно защищать прежнюю версию или уточнить её границы. Умение назвать неопределённость не делает решение слабее, если следующий способ проверки уже понятен.",
+      "question": "Какой факт заставил бы вас пересмотреть предпочитаемый вывод?",
+      "section": "extended_theme",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — внимательное различение сведений. Зона внимания — поиск только тех подтверждений, которые поддерживают исходный вывод. При неожиданном факте можно защищать прежнюю версию или уточнить её границы. Умение назвать неопределённость не делает решение слабее, если следующий способ проверки уже понятен."
+    },
+    {
+      "id": "boundaries",
+      "label": "Границы ответственности",
+      "extended": "Ресурс — ясное определение собственного участия. Зона внимания — необходимость заслуживать право на предел бесконечными объяснениями. Если запрос шире ваших возможностей, можно предложить ограниченный формат либо отказаться. Ни один вариант не требует оценивать достоинства просящего или доказывать отсутствие доброй воли.",
+      "question": "Где ваша помощь заканчивается и начинается самостоятельное решение другого?",
+      "section": "extended_theme",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — ясное определение собственного участия. Зона внимания — необходимость заслуживать право на предел бесконечными объяснениями. Если запрос шире ваших возможностей, можно предложить ограниченный формат либо отказаться. Ни один вариант не требует оценивать достоинства просящего или доказывать отсутствие доброй воли."
+    },
+    {
+      "id": "completion",
+      "label": "Завершение цикла",
+      "extended": "Ресурс — способность придать опыту завершённую форму. Зона внимания — новые улучшения, незаметно подменяющие окончание задачи. Если осталось необязательное действие, можно перенести его в отдельный будущий этап. Такой выбор сохраняет ценность сделанного и не вынуждает считать любой незавершённый замысел недостатком результата.",
+      "question": "Как вы поймёте, что достаточно, не дожидаясь полного исчезновения сомнений?",
+      "section": "extended_theme",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — способность придать опыту завершённую форму. Зона внимания — новые улучшения, незаметно подменяющие окончание задачи. Если осталось необязательное действие, можно перенести его в отдельный будущий этап. Такой выбор сохраняет ценность сделанного и не вынуждает считать любой незавершённый замысел недостатком результата."
+    },
+    {
+      "id": "revision",
+      "label": "Пересмотр способа",
+      "extended": "Ресурс — готовность менять способ, сохраняя смысл задачи. Зона внимания — полная перестройка после одного неудобного результата. Между инерцией и отказом есть ограниченный эксперимент. Определите, какое наблюдение позволит оставить поправку, а какое станет причиной вернуться к прежнему решению без самообвинения.",
+      "question": "Какое изменение можно проверить, не разрушая работавшую часть системы?",
+      "section": "extended_theme",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — готовность менять способ, сохраняя смысл задачи. Зона внимания — полная перестройка после одного неудобного результата. Между инерцией и отказом есть ограниченный эксперимент. Определите, какое наблюдение позволит оставить поправку, а какое станет причиной вернуться к прежнему решению без самообвинения."
+    },
+    {
+      "id": "exchange",
+      "label": "Обмен и обучение",
+      "extended": "Ресурс — восприимчивость к чужому опыту. Зона внимания — ощущение понимания, возникающее от знакомого термина. Если объяснение убедительно, попробуйте применить его к небольшому собственному примеру. Разница между знанием слов и знанием условий проявится без необходимости немедленно принимать или отвергать всю систему взглядов.",
+      "question": "Что вы сможете сделать после разговора иначе, чем до него?",
+      "section": "extended_theme",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — восприимчивость к чужому опыту. Зона внимания — ощущение понимания, возникающее от знакомого термина. Если объяснение убедительно, попробуйте применить его к небольшому собственному примеру. Разница между знанием слов и знанием условий проявится без необходимости немедленно принимать или отвергать всю систему взглядов."
+    },
+    {
+      "id": "steadiness",
+      "label": "Устойчивый ритм",
+      "extended": "Ресурс — способность поддерживать направление без постоянного усиления нагрузки. Зона внимания — порядок, ценность которого измеряется только его строгостью. Если ритм нарушился, можно восстановить минимальный шаг, не требуя наверстать всё сразу. Устойчивость допускает изменение формы, пока сохраняется доступный критерий продолжения.",
+      "question": "Какой объём можно сохранить в обычный день, не занимая ресурс следующего?",
+      "section": "extended_theme",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс — способность поддерживать направление без постоянного усиления нагрузки. Зона внимания — порядок, ценность которого измеряется только его строгостью. Если ритм нарушился, можно восстановить минимальный шаг, не требуя наверстать всё сразу. Устойчивость допускает изменение формы, пока сохраняется доступный критерий продолжения."
+    }
+  ],
+  "units": [
+    {
+      "id": "initiative.theme.1",
+      "section": "theme",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Вопрос дня — как начать действие, не назначая скорость главным критерием. Выберите небольшой шаг, последствия которого можно оценить и при необходимости изменить."
+    },
+    {
+      "id": "initiative.theme.2",
+      "section": "theme",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Новая задача требует различить собственное намерение и внешнее ожидание немедленного результата. Достаточно обозначить направление, не обещая заранее завершить весь путь."
+    },
+    {
+      "id": "initiative.theme.3",
+      "section": "theme",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Импульс полезен там, где есть ясный предмет приложения. Проверьте, что именно вы хотите сдвинуть, прежде чем собирать силы для большого рывка."
+    },
+    {
+      "id": "initiative.relations.1",
+      "section": "relations",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Предложите разговор с конкретной темой и оставьте собеседнику возможность выбрать время. Инициатива становится приглашением, когда ответ не предрешён за другого человека."
+    },
+    {
+      "id": "initiative.relations.2",
+      "section": "relations",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если связь прервалась, начните с короткого уточнения, а не с объяснения всех прежних разногласий. Первому сообщению достаточно восстановить возможность спокойного обмена."
+    },
+    {
+      "id": "initiative.relations.3",
+      "section": "relations",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Скажите о своём интересе прямо, не превращая его в требование взаимности. Содержание первого шага важнее впечатления, которое он должен произвести немедленно."
+    },
+    {
+      "id": "initiative.work.1",
+      "section": "work",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сформулируйте пробную версию результата и выполните один проверяемый этап. Такая последовательность позволит увидеть ограничения раньше, чем задача потребует значительных затрат внимания."
+    },
+    {
+      "id": "initiative.work.2",
+      "section": "work",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Для нового проекта определите ближайший срок обратной связи. Пока достаточно проверить исходное предположение, а не защищать подробный план, построенный без практического опыта."
+    },
+    {
+      "id": "initiative.work.3",
+      "section": "work",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если работа стоит на месте, выберите участок, зависящий от вас. Начальный результат должен прояснить задачу, а не доказать способность решить её целиком."
+    },
+    {
+      "id": "initiative.finance.1",
+      "section": "finance",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Перед первым расходом определите предел пробного бюджета. Небольшая проверка полезнее необратимого обязательства; обещание быстрого результата не заменяет понятных условий и доступного резерва."
+    },
+    {
+      "id": "initiative.finance.2",
+      "section": "finance",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Разделите стоимость начала и будущего обслуживания покупки. Решение о новом инструменте стоит принимать по всей сумме обязательств, а не только по привлекательной цене."
+    },
+    {
+      "id": "initiative.finance.3",
+      "section": "finance",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если предложение требует немедленного согласия, возьмите время на чтение условий. Инициатива не обязывает отдавать контроль над собственным темпом и доступными средствами."
+    },
+    {
+      "id": "initiative.mood.1",
+      "section": "mood",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Начальный подъём можно поддержать коротким рабочим отрезком и заранее назначенной паузой. Не обязательно сохранять одну интенсивность до вечера, чтобы считать движение состоявшимся."
+    },
+    {
+      "id": "initiative.mood.2",
+      "section": "mood",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Отделите интерес к новому от тревоги перед оценкой. После небольшого действия запишите наблюдение: что стало яснее, а что пока требует времени."
+    },
+    {
+      "id": "initiative.mood.3",
+      "section": "mood",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Разрешите первому результату быть предварительным. Избыточное требование уверенности часто делает начало тяжелее, хотя для пробного шага достаточно ясного вопроса и ограниченного усилия."
+    },
+    {
+      "id": "initiative.action.1",
+      "section": "action",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Запишите одно действие, которое можно завершить без чужого разрешения, и условие остановки. Это позволит отличить инициативу от бесконечного увеличения взятого обязательства."
+    },
+    {
+      "id": "initiative.action.2",
+      "section": "action",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите первый шаг на ближайшие полчаса и не добавляйте к нему новый список. После выполнения оцените результат, прежде чем увеличивать масштаб намерения."
+    },
+    {
+      "id": "initiative.action.3",
+      "section": "action",
+      "theme": "initiative",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:initiative"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Спросите себя, какой небольшой опыт подтвердит или опровергнет исходную идею. Начните с него, сохранив возможность спокойно пересмотреть способ действия после проверки."
+    },
+    {
+      "id": "agreement.theme.1",
+      "section": "theme",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Опорой дня становится согласование: различие интересов полезно назвать прежде, чем искать общий ответ. Совместное решение начинается не с уступки, а с прояснения условий."
+    },
+    {
+      "id": "agreement.theme.2",
+      "section": "theme",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Общая цель не отменяет разных представлений о пути. Рассмотрите, где требуется договорённость, а где участники могут действовать самостоятельно без постоянного взаимного согласования."
+    },
+    {
+      "id": "agreement.theme.3",
+      "section": "theme",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "В центре внимания — качество совместного решения. Сначала отделите то, что действительно должно быть общим, от привычки требовать одинакового отношения к каждому вопросу."
+    },
+    {
+      "id": "agreement.relations.1",
+      "section": "relations",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Перескажите позицию собеседника своими словами и предложите проверить точность. Такая пауза помогает услышать разницу между действительным разногласием и спором о неудачно выбранной формулировке."
+    },
+    {
+      "id": "agreement.relations.2",
+      "section": "relations",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Обсудите одно ожидание, которое раньше оставалось подразумеваемым. Взаимность не требует угадывания: возможность уточнить просьбу делает отношения устойчивее, чем молчаливая проверка внимательности другого."
+    },
+    {
+      "id": "agreement.relations.3",
+      "section": "relations",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если разговор зашёл в круг, вернитесь к конкретному предмету. Назовите приемлемый для вас вариант и оставьте место ответу, который может отличаться от ожидаемого."
+    },
+    {
+      "id": "agreement.work.1",
+      "section": "work",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Определите, кто принимает итоговое решение и какую информацию должен получить. Согласование полезно, когда завершает неопределённость, а не создаёт ещё один бессрочный круг обсуждений."
+    },
+    {
+      "id": "agreement.work.2",
+      "section": "work",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Перед общей задачей распределите участки ответственности и время обмена результатами. Это снижает необходимость постоянных уточнений и позволяет каждому сохранить собственный рабочий ритм."
+    },
+    {
+      "id": "agreement.work.3",
+      "section": "work",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте, одинаково ли участники понимают критерий готовности. Несколько ясных условий в начале работы могут предотвратить переделку уже завершённого, но по-разному оценённого результата."
+    },
+    {
+      "id": "agreement.finance.1",
+      "section": "finance",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "В совместных расходах заранее обсудите доли, срок и возможность отказаться. Понятное распределение обязательств важнее устного предположения, что остальные понимают условия таким же образом."
+    },
+    {
+      "id": "agreement.finance.2",
+      "section": "finance",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если бюджет зависит от другого человека, отделите подтверждённые суммы от ожидаемых. Договорённость должна опираться на доступные средства, а не на взаимную надежду о будущем поступлении."
+    },
+    {
+      "id": "agreement.finance.3",
+      "section": "finance",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сравните предложение с тем, какие обязанности оно создаёт для обеих сторон. Вопрос о полной стоимости уместен до согласия и не является проявлением недоверия."
+    },
+    {
+      "id": "agreement.mood.1",
+      "section": "mood",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "После обсуждения оставьте время побыть без чужих оценок. Совместное решение не требует постоянно сверять собственное состояние с настроением всех участников и искать немедленного одобрения."
+    },
+    {
+      "id": "agreement.mood.2",
+      "section": "mood",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Различие мнений может оставаться различием, не становясь разрывом отношений. Отметьте, что уже удалось согласовать, и не приписывайте нерешённому вопросу значение окончательного приговора."
+    },
+    {
+      "id": "agreement.mood.3",
+      "section": "mood",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если усталость усиливает раздражение, перенесите сложную часть разговора на определённое время. Пауза с понятным продолжением отличается от исчезновения и сохраняет пространство для согласования."
+    },
+    {
+      "id": "agreement.action.1",
+      "section": "action",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Составьте короткий перечень: что согласовано, что требует ответа и кто делает следующий шаг. Это превратит разговор в проверяемую договорённость без лишнего давления."
+    },
+    {
+      "id": "agreement.action.2",
+      "section": "action",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите один вопрос, по которому нужно уточнить взаимные ожидания. Завершите обсуждение понятным действием, не требуя полного согласия во всех остальных областях одновременно."
+    },
+    {
+      "id": "agreement.action.3",
+      "section": "action",
+      "theme": "agreement",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:agreement"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте одну действующую договорённость: устраивают ли вас сроки, нагрузка и право пересмотра. Изменение условия лучше назвать прямо, чем компенсировать его молчаливым раздражением."
+    },
+    {
+      "id": "review.theme.1",
+      "section": "theme",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Тема дня — проверка основания: прежде чем расширять вывод, стоит вернуться к исходным сведениям. Точность здесь важнее количества собранных подтверждений уже удобной версии."
+    },
+    {
+      "id": "review.theme.2",
+      "section": "theme",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Полезно различить наблюдение, чужое объяснение и собственное предположение. Когда эти слои разделены, решение требует меньше уверенного тона и получает более надёжную опору."
+    },
+    {
+      "id": "review.theme.3",
+      "section": "theme",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Задайте предел исследованию: какой информации действительно не хватает для следующего действия. Проверка становится продуктивной, если отвечает на вопрос, а не бесконечно откладывает выбор."
+    },
+    {
+      "id": "review.relations.1",
+      "section": "relations",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Уточните смысл сказанного прежде, чем отвечать на предполагаемый подтекст. Один проверочный вопрос позволяет не строить разговор вокруг намерения, которого собеседник мог не иметь."
+    },
+    {
+      "id": "review.relations.2",
+      "section": "relations",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если воспоминания о событии расходятся, обсудите конкретный эпизод без оценки характера. Различие восприятия заслуживает внимания, но само по себе не устанавливает виноватого."
+    },
+    {
+      "id": "review.relations.3",
+      "section": "relations",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Назовите, чего именно вы не поняли в просьбе. Внимательное уточнение может оказаться бережнее поспешного согласия, за которым последуют невысказанные ожидания и взаимное разочарование."
+    },
+    {
+      "id": "review.work.1",
+      "section": "work",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте исходные данные и способ оценки результата на одном примере. Локальная проверка позволит обнаружить системную неточность без необходимости заново пересматривать весь проект."
+    },
+    {
+      "id": "review.work.2",
+      "section": "work",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Перед отправкой документа сопоставьте вывод с теми сведениями, на которые он опирается. Особое внимание уделите словам, превращающим предположение в безусловное утверждение для читателя."
+    },
+    {
+      "id": "review.work.3",
+      "section": "work",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если вариантов слишком много, выберите критерий сравнения до просмотра деталей. Иначе новое обстоятельство будет каждый раз менять правило, по которому оценивается вся задача."
+    },
+    {
+      "id": "review.finance.1",
+      "section": "finance",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сверьте платёж, период и дополнительные условия, а не только указанную сумму. Регулярное небольшое обязательство может быть существеннее разовой покупки, заметной лишь в момент оплаты."
+    },
+    {
+      "id": "review.finance.2",
+      "section": "finance",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Разделите фактические расходы и предполагаемую экономию. Решение полезно проверить на обычном сценарии использования, а не только на самом благоприятном варианте, предложенном продавцом."
+    },
+    {
+      "id": "review.finance.3",
+      "section": "finance",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "При недостатке данных не делайте ставку на убедительность подачи. Уточните полную стоимость и условия отмены, сохранив возможность отказаться без ущерба для необходимого резерва."
+    },
+    {
+      "id": "review.mood.1",
+      "section": "mood",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Длительное сравнение вариантов утомляет даже при небольшой нагрузке. Ограничьте время поиска и дайте вниманию переключиться на простое действие с очевидным завершением и понятным результатом."
+    },
+    {
+      "id": "review.mood.2",
+      "section": "mood",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Запишите то, что известно, отдельно от того, что тревожит. Разделение не решает вопрос автоматически, но позволяет не требовать от предположения той точности, которой пока нет."
+    },
+    {
+      "id": "review.mood.3",
+      "section": "mood",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если внутренняя критика стала чрезмерной, вернитесь к критерию достаточности. Проверка должна улучшать решение, а не устанавливать недостижимое требование отсутствия любой возможной ошибки в будущем."
+    },
+    {
+      "id": "review.action.1",
+      "section": "action",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте один важный вывод: назовите его источник, ограничение и следующий доступный способ уточнения. Если эти пункты ясны, можно действовать без окончательного знания обо всём."
+    },
+    {
+      "id": "review.action.2",
+      "section": "action",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите предположение, которое сильнее всего влияет на решение, и найдите ему проверку. Остальные детали пока оставьте в перечне открытых вопросов, не подменяя ими основной."
+    },
+    {
+      "id": "review.action.3",
+      "section": "action",
+      "theme": "review",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:review"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Завершите исследование короткой записью о том, что изменилось после проверки. Если вывод прежний, укажите почему; если новый, обозначьте конкретное следующее действие, а не общее обещание."
+    },
+    {
+      "id": "boundaries.theme.1",
+      "section": "theme",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Дневной фокус — границы ответственности. Полезно определить не только собственную задачу, но и предел участия, после которого помощь превращается в принятие чужого обязательства без согласия."
+    },
+    {
+      "id": "boundaries.theme.2",
+      "section": "theme",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Устойчивость начинается с ясного объёма обещания. Рассмотрите, где требуется ваше решение, а где достаточно сообщить условия участия, не контролируя дальнейший выбор другого человека."
+    },
+    {
+      "id": "boundaries.theme.3",
+      "section": "theme",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Распределите внимание между действительно принятым обязательством и ожиданиями, которые вам приписали. Граница полезна не как запрет контакта, а как условие понятного и выполнимого сотрудничества."
+    },
+    {
+      "id": "boundaries.relations.1",
+      "section": "relations",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Откажите в конкретной просьбе без оценки человека и без обещания компенсировать отказ неопределённой будущей помощью. Ясность позволяет сохранить связь, не делая согласие обязательным доказательством участия."
+    },
+    {
+      "id": "boundaries.relations.2",
+      "section": "relations",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Скажите, какое участие вам доступно сейчас и на какой срок. Чужая потребность заслуживает уважения, но не отменяет права определить собственные возможности и пределы нагрузки."
+    },
+    {
+      "id": "boundaries.relations.3",
+      "section": "relations",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если забота стала управлением, верните собеседнику право решать. Поддержка может состоять в готовности выслушать и обсудить варианты, а не в выборе единственного правильного пути за другого."
+    },
+    {
+      "id": "boundaries.work.1",
+      "section": "work",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Уточните полномочия до принятия новой ответственности. Если решение зависит от другого участника, зафиксируйте необходимое согласование, чтобы обязанность не оказалась шире доступных средств и возможностей."
+    },
+    {
+      "id": "boundaries.work.2",
+      "section": "work",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Разделите срочную просьбу и постоянную функцию. Временная помощь не должна незаметно становиться новой обязанностью без обсуждения сроков, ресурсов и пересмотра остального объёма работы."
+    },
+    {
+      "id": "boundaries.work.3",
+      "section": "work",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Перед дополнительной задачей назовите, какое текущее обязательство потребуется перенести. Такой разговор помогает обсуждать реальные приоритеты, а не поддерживать видимость неограниченного запаса времени у исполнителя."
+    },
+    {
+      "id": "boundaries.finance.1",
+      "section": "finance",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не включайте чужие предполагаемые расходы в собственный обязательный бюджет без ясного согласия. Обсудите сумму и предел участия до того, как возникнет ожидание автоматической финансовой поддержки."
+    },
+    {
+      "id": "boundaries.finance.2",
+      "section": "finance",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте границы доступа к общим средствам и порядок согласования расходов. Прозрачное правило позволяет избежать необходимости выяснять отношения после уже совершённого платежа или принятого обязательства."
+    },
+    {
+      "id": "boundaries.finance.3",
+      "section": "finance",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если вас просят оплатить больше первоначальной договорённости, вернитесь к её условиям. Пауза для уточнения допустима и не требует обещать сумму, которую вы не планировали выделять."
+    },
+    {
+      "id": "boundaries.mood.1",
+      "section": "mood",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Свободное время не обязательно заполнять чужими задачами. Оставьте промежуток без обязательного результата, чтобы отличить восстановление внимания от очередной формы исполнения чьих-либо ожиданий и требований."
+    },
+    {
+      "id": "boundaries.mood.2",
+      "section": "mood",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Раздражение иногда указывает на неоговорённый предел, а не на саму просьбу. Назовите этот предел спокойно, прежде чем принимать решение о продолжении участия или полном отказе."
+    },
+    {
+      "id": "boundaries.mood.3",
+      "section": "mood",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "После отказа может сохраняться неловкость. Дайте ей время, не отменяя сразу обоснованное решение ради возвращения привычного внешнего одобрения и ощущения кратковременного спокойствия в отношениях."
+    },
+    {
+      "id": "boundaries.action.1",
+      "section": "action",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сформулируйте одно обещание через три условия: что именно, к какому сроку и в каком объёме. Всё остальное оставьте предметом отдельного согласования, а не молчаливой добавкой."
+    },
+    {
+      "id": "boundaries.action.2",
+      "section": "action",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите область, где ответственность стала расплывчатой. Уточните своё участие одной конкретной фразой и проверьте, требуется ли после этого пересмотреть уже составленный план ближайших действий."
+    },
+    {
+      "id": "boundaries.action.3",
+      "section": "action",
+      "theme": "boundaries",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:boundaries"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Запишите границу, которую хотите сохранить без разрыва отношений. Подготовьте вариант участия внутри неё, если он действительно доступен, не предлагая помощь лишь ради смягчения отказа."
+    },
+    {
+      "id": "completion.theme.1",
+      "section": "theme",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Доминанта дня — завершение: результату полезно придать форму, по которой видно, что этап действительно окончен. Закрытая задача освобождает ресурс лучше, чем ещё одно обещание вернуться."
+    },
+    {
+      "id": "completion.theme.2",
+      "section": "theme",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Посмотрите, какие процессы продолжаются только по инерции. Завершение не обесценивает вложенное усилие; оно позволяет определить, что следует сохранить, а что больше не требует вашего участия."
+    },
+    {
+      "id": "completion.theme.3",
+      "section": "theme",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Внимание обращено к итогам и незавершённым связям. Прежде чем добавлять новую цель, обозначьте границу прежнего этапа и критерий, по которому его можно считать закрытым."
+    },
+    {
+      "id": "completion.relations.1",
+      "section": "relations",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Вернитесь к разговору, которому не хватило ясного итога. Достаточно уточнить понимание и следующий шаг; необязательно заново обсуждать все причины, если решение уже было принято обеими сторонами."
+    },
+    {
+      "id": "completion.relations.2",
+      "section": "relations",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Поблагодарите за конкретное участие, не превращая благодарность в новое обязательство. Завершённая совместная задача может остаться хорошим опытом без немедленного обещания продолжать её в прежнем виде."
+    },
+    {
+      "id": "completion.relations.3",
+      "section": "relations",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если ожидание ответа затянулось, обозначьте разумный срок и своё дальнейшее действие. Это помогает завершить неопределённость, сохранив собеседнику право на самостоятельное решение и собственный темп."
+    },
+    {
+      "id": "completion.work.1",
+      "section": "work",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Доведите один результат до состояния, в котором им сможет воспользоваться другой человек. Передача инструкции или контекста часто важнее дополнительной доводки детали, уже отвечающей требованиям."
+    },
+    {
+      "id": "completion.work.2",
+      "section": "work",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте, что завершённая работа действительно передана и принята по согласованному критерию. Формальный конец этапа полезен, если после него не остаётся неясных обещаний и скрытой нагрузки."
+    },
+    {
+      "id": "completion.work.3",
+      "section": "work",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Соберите оставшиеся мелкие действия в короткий список и отделите необходимые от желательных. Завершение требует точности, но не бесконечного расширения первоначального объёма уже выполненной работы."
+    },
+    {
+      "id": "completion.finance.1",
+      "section": "finance",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сверьте завершённые платежи и оставшиеся обязательства по текущему делу. Не считайте свободными средства, которые уже предназначены для согласованного расхода, даже если перевод пока не выполнен."
+    },
+    {
+      "id": "completion.finance.2",
+      "section": "finance",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Перед новой покупкой оцените, используется ли уже приобретённое. Закрытие прежней потребности иногда требует освоить имеющийся инструмент, а не добавить к нему ещё один перспективный вариант."
+    },
+    {
+      "id": "completion.finance.3",
+      "section": "finance",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте окончание регулярной услуги и условия её продления. Отказ от ненужного обязательства лучше оформить явно, чем полагаться на забытое намерение прекратить оплату после завершения периода."
+    },
+    {
+      "id": "completion.mood.1",
+      "section": "mood",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Подведите итог без требования немедленно почувствовать удовлетворение. Вниманию требуется время, чтобы выйти из рабочего напряжения и заметить, что прежняя задача уже не требует постоянного контроля."
+    },
+    {
+      "id": "completion.mood.2",
+      "section": "mood",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не заполняйте освободившееся место новой срочностью сразу. Короткая пауза помогает понять, какой опыт стоит перенести дальше, а какой способ нагрузки больше не соответствует вашим возможностям."
+    },
+    {
+      "id": "completion.mood.3",
+      "section": "mood",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Отметьте завершённое действие в конкретных словах. Это позволяет отличить действительный объём сделанного от привычного ощущения, что незакрытых вопросов всегда больше, чем достигнутых результатов и ответов."
+    },
+    {
+      "id": "completion.action.1",
+      "section": "action",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите одну задачу и запишите её проверяемый критерий завершения. Выполните последний необходимый шаг, после чего отдельно решите, нужен ли ей новый этап или достаточно остановиться."
+    },
+    {
+      "id": "completion.action.2",
+      "section": "action",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Составьте короткую итоговую запись: результат, оставшееся ограничение и то, что можно использовать в будущем. Такой итог помогает завершить процесс без требования сделать его окончательно совершенным."
+    },
+    {
+      "id": "completion.action.3",
+      "section": "action",
+      "theme": "completion",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:completion"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Закройте одно небольшое обязательство, которое регулярно возвращается в мысли. Если выполнить его нельзя, назначьте конкретное следующее действие вместо неопределённого обещания разобраться при появлении времени."
+    },
+    {
+      "id": "revision.theme.1",
+      "section": "theme",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Тема дня — пересмотр способа, а не отказ от цели. Если прежний порядок перестал помогать, полезно изменить один элемент и проверить последствия до полной перестройки процесса."
+    },
+    {
+      "id": "revision.theme.2",
+      "section": "theme",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Изменившиеся условия требуют нового сопоставления средств и задачи. Сохраните то, что работает, а сомнительное решение рассматривайте как проверяемую гипотезу, а не как окончательный провал замысла."
+    },
+    {
+      "id": "revision.theme.3",
+      "section": "theme",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Обратите внимание на привычное действие, которое больше не даёт ожидаемой ясности. Пересмотр становится содержательным, когда касается конкретного механизма, а не общего недовольства всем существующим порядком."
+    },
+    {
+      "id": "revision.relations.1",
+      "section": "relations",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Предложите обсудить привычный порядок общения без оценки всей истории отношений. Небольшое изменение времени, формата или ожиданий может оказаться полезнее повторения давно знакомого спора о намерениях."
+    },
+    {
+      "id": "revision.relations.2",
+      "section": "relations",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если прежняя договорённость перестала подходить, назовите изменившееся условие. Это позволяет пересматривать решение открыто, не выдавая накопившееся раздражение за доказательство первоначальной недобросовестности другого человека."
+    },
+    {
+      "id": "revision.relations.3",
+      "section": "relations",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Попробуйте иной способ объяснить просьбу: через наблюдение и конкретный вариант действия. Смена формулировки не гарантирует согласия, но делает предмет обсуждения доступнее обеим сторонам разговора."
+    },
+    {
+      "id": "revision.work.1",
+      "section": "work",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите один рабочий приём для ограниченного эксперимента и сравните результат с прежним. Изменение полезно оценивать по понятному критерию, а не по первоначальному ощущению новизны."
+    },
+    {
+      "id": "revision.work.2",
+      "section": "work",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если процедура создаёт лишние повторения, уточните её назначение. Иногда достаточно убрать один промежуточный шаг, сохранив проверку качества и ответственность за итоговый результат всей последовательности действий."
+    },
+    {
+      "id": "revision.work.3",
+      "section": "work",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Пересмотрите срок или способ исполнения с учётом новых данных. Своевременное уточнение плана надёжнее, чем сохранение первоначального обещания ценой незаметного ухудшения качества и перегрузки участников работы."
+    },
+    {
+      "id": "revision.finance.1",
+      "section": "finance",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Посмотрите на привычный расход через его нынешнюю пользу. Решение, оправданное раньше, может требовать другого объёма или формата, но менять его стоит после проверки условий прекращения."
+    },
+    {
+      "id": "revision.finance.2",
+      "section": "finance",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сравните стоимость сохранения и изменения текущего решения. Учитывайте время освоения, сопутствующие расходы и доступный резерв, не превращая уже потраченное в единственный довод продолжать прежнее обязательство."
+    },
+    {
+      "id": "revision.finance.3",
+      "section": "finance",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если бюджет постоянно требует исправлений, проверьте одну исходную оценку. Корректировка конкретной статьи полезнее общего обещания тратить меньше без понимания причин регулярного расхождения ожиданий и фактов."
+    },
+    {
+      "id": "revision.mood.1",
+      "section": "mood",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Смена способа может временно уменьшить ощущение уверенности. Оставьте достаточно времени на освоение нового порядка, не требуя от первого опыта той лёгкости, которая возникает лишь после повторения."
+    },
+    {
+      "id": "revision.mood.2",
+      "section": "mood",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Отличайте усталость от метода и усталость от объёма нагрузки. В первом случае поможет эксперимент, во втором — уменьшение обязательств; эти решения не следует подменять друг другом."
+    },
+    {
+      "id": "revision.mood.3",
+      "section": "mood",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не оценивайте весь день по одной неудачной попытке. Запишите, какое условие оказалось существенным, и сохраните это наблюдение для следующего опыта вместо общего вывода о собственных возможностях."
+    },
+    {
+      "id": "revision.action.1",
+      "section": "action",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Измените один элемент привычной последовательности и заранее выберите способ оценки. Остальные условия по возможности сохраните, чтобы результат эксперимента позволял сделать конкретный, а не произвольный вывод."
+    },
+    {
+      "id": "revision.action.2",
+      "section": "action",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сформулируйте, что именно перестало работать и каким наблюдением это подтверждается. Затем выберите небольшую поправку, не обещая заменить весь порядок до проверки первой доступной гипотезы."
+    },
+    {
+      "id": "revision.action.3",
+      "section": "action",
+      "theme": "revision",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:revision"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте правило, которое продолжаете выполнять автоматически. Если его назначение изменилось, подготовьте новую формулировку и обсудите её с теми, чью работу затронет предполагаемая корректировка процесса."
+    },
+    {
+      "id": "exchange.theme.1",
+      "section": "theme",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Доминанта дня — содержательный обмен. Новая информация полезна не количеством, а способностью уточнить вопрос; разговор или чтение стоит завершать собственным проверяемым выводом, а не впечатлением осведомлённости."
+    },
+    {
+      "id": "exchange.theme.2",
+      "section": "theme",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите тему, в которой чужой опыт может дополнить ваш. Обмен становится плодотворным, когда участники различают наблюдение, объяснение и совет, не требуя заранее одинакового взгляда на результат."
+    },
+    {
+      "id": "exchange.theme.3",
+      "section": "theme",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "В центре внимания — перевод опыта в понятную форму. Попробуйте объяснить один сложный вопрос без лишних подробностей: пробел в объяснении нередко указывает на недостающее понимание самой задачи."
+    },
+    {
+      "id": "exchange.relations.1",
+      "section": "relations",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Спросите о конкретном опыте, не предлагая сразу собственное решение. В разговоре важно оставить место ответу, который меняет исходное представление, а не только подтверждает уже знакомую позицию."
+    },
+    {
+      "id": "exchange.relations.2",
+      "section": "relations",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Поделитесь наблюдением, которое можно обсудить без необходимости соглашаться со всем выводом. Такой формат помогает сохранять интерес и различать близость взглядов и готовность внимательно слушать другого человека."
+    },
+    {
+      "id": "exchange.relations.3",
+      "section": "relations",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если обсуждение стало потоком советов, вернитесь к вопросу о нужной поддержке. Возможность рассказать о ситуации иногда важнее получения подробной инструкции от внимательного, но не вовлечённого наблюдателя."
+    },
+    {
+      "id": "exchange.work.1",
+      "section": "work",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверьте новое знание на небольшой задаче и отметьте, где его применение ограничено. Практический пример поможет сохранить содержание лучше, чем ещё один перечень прочитанных рекомендаций и терминов."
+    },
+    {
+      "id": "exchange.work.2",
+      "section": "work",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Передайте коллегам один полезный вывод вместе с исходными условиями. Указанное ограничение не ослабляет знание, а помогает другому человеку применить его без лишних догадок и повторной проверки."
+    },
+    {
+      "id": "exchange.work.3",
+      "section": "work",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выделите вопрос, который можно решить короткой консультацией. Подготовьте контекст и собственную попытку ответа, чтобы разговор дополнял вашу работу, а не перекладывал её целиком на собеседника."
+    },
+    {
+      "id": "exchange.finance.1",
+      "section": "finance",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "При сравнении предложений проверьте источник сведений и интерес того, кто их сообщает. Полезный совет не освобождает от самостоятельной оценки условий, ограничений и допустимого размера возможного расхода."
+    },
+    {
+      "id": "exchange.finance.2",
+      "section": "finance",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Расход на обучение стоит соотнести с конкретной задачей и временем практики. Само приобретение доступа к материалам ещё не означает освоения навыка или изменения финансового положения в будущем."
+    },
+    {
+      "id": "exchange.finance.3",
+      "section": "finance",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не передавайте чувствительные сведения ради удобства обсуждения покупки. Для сравнения условий обычно достаточно ограниченного набора данных; уточните необходимость каждого дополнительного запроса до передачи личной информации другой стороне."
+    },
+    {
+      "id": "exchange.mood.1",
+      "section": "mood",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Чередуйте получение информации с её упорядочиванием. Короткая запись собственных выводов помогает заметить насыщение вниманием раньше, чем интерес превратится в утомительное стремление ничего не пропустить в течение дня."
+    },
+    {
+      "id": "exchange.mood.2",
+      "section": "mood",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "После содержательного разговора оставьте паузу для самостоятельной оценки. Чужая уверенность может быть заразительной, но решение полезно сопоставить с собственным опытом и действительно доступными средствами для его исполнения."
+    },
+    {
+      "id": "exchange.mood.3",
+      "section": "mood",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не требуйте от каждого впечатления немедленного практического применения. Достаточно выбрать одну мысль для дальнейшего исследования, сохранив остальные как возможные направления, а не новые обязательства перед собой."
+    },
+    {
+      "id": "exchange.action.1",
+      "section": "action",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сформулируйте один содержательный вопрос и адресуйте его подходящему источнику. После ответа запишите, что вы поняли иначе и какое конкретное действие теперь можете выполнить самостоятельно без дополнительного обсуждения."
+    },
+    {
+      "id": "exchange.action.2",
+      "section": "action",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите полезную идею и объясните её кратко своими словами. Если объяснение остаётся туманным, уточните один термин или условие вместо расширения всего списка прочитанной литературы и советов."
+    },
+    {
+      "id": "exchange.action.3",
+      "section": "action",
+      "theme": "exchange",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:exchange"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сопоставьте два мнения по одному критерию, который важен для вашей задачи. Отметьте различие исходных условий, прежде чем решать, какое объяснение следует принять в качестве рабочего основания."
+    },
+    {
+      "id": "steadiness.theme.1",
+      "section": "theme",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Опорная тема — устойчивый ритм. Повторяемое действие приносит пользу, когда соответствует реальному запасу сил и оставляет возможность корректировки, а не требует ежедневно подтверждать предельную собранность и производительность."
+    },
+    {
+      "id": "steadiness.theme.2",
+      "section": "theme",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Рассмотрите, что поддерживает выбранное направление в обычный день. Устойчивость строится не на исключительном усилии, а на порядке, который можно продолжать без постоянного отказа от остальных важных потребностей."
+    },
+    {
+      "id": "steadiness.theme.3",
+      "section": "theme",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Внимание обращено к надёжности текущей формы. Полезно определить минимальный достаточный объём действия, который сохраняет движение и не превращает каждый небольшой сбой в повод начинать всё заново с нуля."
+    },
+    {
+      "id": "steadiness.relations.1",
+      "section": "relations",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Договорённость о простом повторяемом действии может поддержать связь лучше, чем редкое большое обещание. Выбирайте формат участия, который действительно доступен обоим людям в их обычном жизненном ритме."
+    },
+    {
+      "id": "steadiness.relations.2",
+      "section": "relations",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не принимайте спокойствие разговора за отсутствие интереса. Устойчивое общение допускает паузы, если участникам понятны намерения и не приходится каждый раз заново доказывать значимость существующей связи друг с другом."
+    },
+    {
+      "id": "steadiness.relations.3",
+      "section": "relations",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Отметьте конкретную надёжность другого человека и проверьте собственный объём обещаний. Взаимная опора становится заметнее через последовательные действия, чем через сравнение яркости отдельных жестов и словесных заверений."
+    },
+    {
+      "id": "steadiness.work.1",
+      "section": "work",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сохраните удобную последовательность выполнения основной задачи и не перегружайте её дополнительными проверками без ясной причины. Надёжность процедуры оценивается по результату и возможности повторить его в обычных условиях."
+    },
+    {
+      "id": "steadiness.work.2",
+      "section": "work",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Определите минимальный рабочий шаг на день с ограниченным временем. Такой ориентир помогает продолжать дело без ложного выбора между полной отдачей и отказом от всякого участия в текущем процессе."
+    },
+    {
+      "id": "steadiness.work.3",
+      "section": "work",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если процесс зависит от регулярности, назначьте понятное время проверки, а не постоянного наблюдения. Освободившееся внимание можно направить на ту часть задачи, где действительно требуется самостоятельное решение исполнителя."
+    },
+    {
+      "id": "steadiness.finance.1",
+      "section": "finance",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сопоставьте регулярные обязательства с обычным, а не исключительным уровнем доступных средств. Запас устойчивости важнее расчёта, который работает только при непрерывном совпадении самых благоприятных условий и ожиданий."
+    },
+    {
+      "id": "steadiness.finance.2",
+      "section": "finance",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Небольшой повторяемый расход полезно оценить за весь период использования. Это позволяет отличить действительно удобный сервис от обязательства, которое незаметно занимает существенную долю привычного бюджета без соразмерной пользы."
+    },
+    {
+      "id": "steadiness.finance.3",
+      "section": "finance",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сохраняйте отдельный резерв для необходимых расходов, не включая его в свободную сумму для новых решений. Устойчивый порядок не требует угадывать будущее, но позволяет не зависеть от одного предполагаемого поступления."
+    },
+    {
+      "id": "steadiness.mood.1",
+      "section": "mood",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ровный темп допускает изменение нагрузки в течение дня. Сопоставьте запланированное с текущим вниманием и оставьте паузу до того, как необходимость остановиться начнёт восприниматься как личная неудача или слабость."
+    },
+    {
+      "id": "steadiness.mood.2",
+      "section": "mood",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Обычные действия возвращают чувство опоры, если не становятся жёстким требованием. Выберите знакомый способ собраться и разрешите ему быть достаточно простым, без необходимости каждый раз достигать особого состояния и настроения."
+    },
+    {
+      "id": "steadiness.mood.3",
+      "section": "mood",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не сравнивайте спокойный день с самым ярким недавним опытом. Отметьте то, что удалось сохранить без чрезмерного напряжения: именно такие условия часто оказываются пригодными для продолжительной работы и устойчивого общения."
+    },
+    {
+      "id": "steadiness.action.1",
+      "section": "action",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выберите одно действие, которое сможете повторить в обычных условиях, и назначьте ему реалистичный объём. Проверьте через несколько дней, поддерживает ли этот порядок цель, а не только привычку оставаться занятым."
+    },
+    {
+      "id": "steadiness.action.2",
+      "section": "action",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Запишите минимальный достаточный результат и условие, при котором нагрузку нужно уменьшить. Такая граница позволяет сохранять последовательность без требования каждый день действовать так, будто доступный ресурс не имеет предела и ограничений."
+    },
+    {
+      "id": "steadiness.action.3",
+      "section": "action",
+      "theme": "steadiness",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only",
+        "theme:steadiness"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Найдите в своём распорядке небольшую устойчивую опору и защитите её от лишних добавлений. Если порядок работает, не обязательно немедленно расширять его ради более впечатляющего, но менее выполнимого плана на будущее."
+    }
+  ],
+  "numbers": [
+    {
+      "id": "number:1",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Обозначьте собственное решение, оставив другим право выбрать иначе.",
+      "label": "Самостоятельность",
+      "extended": "Единица связывается с началом и самостоятельностью. Дополнительный вопрос — где личная инициатива требует ответственности за последствия, а где лишь желания первым назвать направление.",
+      "value": 1
+    },
+    {
+      "id": "number:2",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Уточните ожидание обеих сторон, не подменяя согласование поиском одобрения.",
+      "label": "Взаимность",
+      "extended": "Двойка обозначает сотрудничество и чувствительность к различиям. Её тень — отказ от собственного критерия ради согласия; полезно различить слышать собеседника и автоматически уступать ему.",
+      "value": 2
+    },
+    {
+      "id": "number:3",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Придайте замыслу ясную форму, прежде чем расширять круг слушателей.",
+      "label": "Выражение",
+      "extended": "Тройка связана с творчеством и общением. Содержание становится убедительнее через точный пример; рассеянность начинается там, где число откликов заменяет завершённость высказанной мысли.",
+      "value": 3
+    },
+    {
+      "id": "number:4",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Выберите выполнимое правило и оставьте возможность уточнить его назначение.",
+      "label": "Порядок",
+      "extended": "Четвёрка соотносится с трудом и устойчивостью. Дополнительный ракурс — отличие опоры от жёсткости: хорошее правило делает действие понятнее, но не требует сохранять устаревшие условия.",
+      "value": 4
+    },
+    {
+      "id": "number:5",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Проверьте новую возможность в ограниченном опыте, не отменяя все прежние опоры.",
+      "label": "Исследование",
+      "extended": "Пятёрка связана со свободой и переменой. Её полезный вопрос — какую неизвестность вы готовы исследовать; непостоянство возникает, если смена впечатлений заменяет наблюдение за последствиями.",
+      "value": 5
+    },
+    {
+      "id": "number:6",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Согласуйте помощь с собственными силами, не принимая чужое решение на себя.",
+      "label": "Соразмерная забота",
+      "extended": "Шестёрка обозначает заботу и ответственность. Гармония здесь не требует отсутствия разногласий; её граница проходит между поддержкой другого и лишением его возможности самостоятельно выбирать.",
+      "value": 6
+    },
+    {
+      "id": "number:7",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Отделите наблюдение от объяснения и выберите один вопрос для внимательного исследования.",
+      "label": "Различение",
+      "extended": "Семёрка соотносится с анализом и поиском смысла. Уединение полезно, когда возвращает ясность; оно теряет назначение, если исключает проверку мысли в общении и опыте.",
+      "value": 7
+    },
+    {
+      "id": "number:8",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Соотнесите объём контроля с реальной ответственностью за время, средства и решения.",
+      "label": "Распоряжение ресурсом",
+      "extended": "Восьмёрка связана с управлением и достижением. Дополнительный слой — цена организованности: распоряжение ресурсом не означает необходимости подчинить единому порядку все стороны собственной жизни.",
+      "value": 8
+    },
+    {
+      "id": "number:9",
+      "section": "number",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Подведите итог, сохранив ценное и не продолжая обязательство только по привычке.",
+      "label": "Завершение и перспектива",
+      "extended": "Девятка соотносится с завершением и широким взглядом. Сочувствие может сопровождать окончание этапа, но не требует сохранять исчерпанное участие ради образа безусловной самоотдачи.",
+      "value": 9
+    }
+  ],
+  "runes": [
+    {
+      "id": "rune:1",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс имеет значение в обращении, а не только в накоплении.",
+      "glyph": "ᚠ",
+      "name": "Феху",
+      "historical": "скот, имущество",
+      "question": "Какой запас поддерживает дело, а какой удерживается без назначения?",
+      "allowed_themes": [
+        "initiative"
+      ]
+    },
+    {
+      "id": "rune:2",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Силу полезно соотносить с задачей и возможностью восстановления.",
+      "glyph": "ᚢ",
+      "name": "Уруз",
+      "historical": "первобытный бык",
+      "question": "Какой объём усилия действительно необходим сейчас?",
+      "allowed_themes": [
+        "initiative",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "rune:3",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Граница позволяет встретить затруднение без автоматического усиления давления.",
+      "glyph": "ᚦ",
+      "name": "Турисаз",
+      "historical": "великан, опасная сила",
+      "question": "Где пауза перед ответом изменит способ действия?",
+      "allowed_themes": [
+        "boundaries"
+      ]
+    },
+    {
+      "id": "rune:4",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Слово становится знанием, когда понятны источник и условия его применения.",
+      "glyph": "ᚨ",
+      "name": "Ансуз",
+      "historical": "божество",
+      "question": "Что стоит уточнить прежде, чем передать совет дальше?",
+      "allowed_themes": [
+        "review",
+        "exchange"
+      ]
+    },
+    {
+      "id": "rune:5",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Направление нуждается в согласовании шага с реальной дорогой.",
+      "glyph": "ᚱ",
+      "name": "Райдо",
+      "historical": "верховая езда, путь",
+      "question": "Какая часть маршрута уже известна, а какая требует проверки?",
+      "allowed_themes": [
+        "initiative"
+      ]
+    },
+    {
+      "id": "rune:6",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Свет ремесленного понимания проявляется в точности небольшого действия.",
+      "glyph": "ᚲ",
+      "name": "Кеназ",
+      "historical": "этимологии имени различаются",
+      "question": "Какой навык поможет увидеть устройство задачи яснее?",
+      "allowed_themes": [
+        "initiative",
+        "review",
+        "exchange"
+      ]
+    },
+    {
+      "id": "rune:7",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Взаимность не сводится к немедленному равенству всех жестов.",
+      "glyph": "ᚷ",
+      "name": "Гебо",
+      "historical": "дар",
+      "question": "Как принять участие, не превращая его в скрытый долг?",
+      "allowed_themes": [
+        "agreement",
+        "exchange"
+      ]
+    },
+    {
+      "id": "rune:8",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Удовлетворение связано с соразмерностью участия, а не с отсутствием сложностей.",
+      "glyph": "ᚹ",
+      "name": "Вуньо",
+      "historical": "радость",
+      "question": "Что в текущем опыте заслуживает спокойного признания?",
+      "allowed_themes": [
+        "agreement"
+      ]
+    },
+    {
+      "id": "rune:9",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Непредвиденное ограничение можно рассмотреть без ожидания обязательной катастрофы.",
+      "glyph": "ᚺ",
+      "name": "Хагалаз",
+      "historical": "град",
+      "question": "Какую опору вы можете сохранить при изменении условий?",
+      "allowed_themes": [
+        "revision"
+      ]
+    },
+    {
+      "id": "rune:10",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Необходимость помогает отделить существенное от привычного расширения потребностей.",
+      "glyph": "ᚾ",
+      "name": "Наутиз",
+      "historical": "нужда",
+      "question": "Что действительно требуется, а что можно отложить без потери смысла?",
+      "allowed_themes": [
+        "boundaries",
+        "revision"
+      ]
+    },
+    {
+      "id": "rune:11",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Пауза сохраняет форму, пока появляется достаточная ясность для движения.",
+      "glyph": "ᛁ",
+      "name": "Иса",
+      "historical": "лёд",
+      "question": "Какое решение сейчас полезнее не ускорять?",
+      "allowed_themes": [
+        "boundaries",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "rune:12",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Завершение процесса требует своего срока и внимания к уже сделанному.",
+      "glyph": "ᛃ",
+      "name": "Йера",
+      "historical": "год, урожай",
+      "question": "Какой результат созревает без необходимости постоянно его подталкивать?",
+      "allowed_themes": [
+        "completion",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "rune:13",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Выдержка позволяет сохранять направление на переходе между прежней и новой формой.",
+      "glyph": "ᛇ",
+      "name": "Эйваз",
+      "historical": "тис",
+      "question": "Что остаётся опорой, когда способ действия меняется?",
+      "allowed_themes": [
+        "completion",
+        "revision"
+      ]
+    },
+    {
+      "id": "rune:14",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Неопределённость не обязывает подменять неизвестное удобным предсказанием.",
+      "glyph": "ᛈ",
+      "name": "Пертро",
+      "historical": "значение имени спорно",
+      "question": "Какой вопрос допустимо пока оставить открытым?",
+      "allowed_themes": [
+        "review",
+        "revision"
+      ]
+    },
+    {
+      "id": "rune:15",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Осторожность полезна как внимание к пределам, а не ожидание угрозы повсюду.",
+      "glyph": "ᛉ",
+      "name": "Альгиз",
+      "historical": "этимология обсуждается",
+      "question": "Какая простая проверка сделает ваше участие спокойнее?",
+      "allowed_themes": [
+        "boundaries"
+      ]
+    },
+    {
+      "id": "rune:16",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ясность помогает назвать цель без требования немедленно владеть всеми ответами.",
+      "glyph": "ᛊ",
+      "name": "Соулу",
+      "historical": "солнце",
+      "question": "Что вы уже понимаете достаточно хорошо для следующего шага?",
+      "allowed_themes": [
+        "initiative",
+        "review"
+      ]
+    },
+    {
+      "id": "rune:17",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Принцип требует соотнести решение с принятыми обязательствами, а не с желанием победить в споре.",
+      "glyph": "ᛏ",
+      "name": "Тейваз",
+      "historical": "имя божества Тюра",
+      "question": "Какое правило вы готовы соблюдать и при неудобном исходе?",
+      "allowed_themes": [
+        "boundaries"
+      ]
+    },
+    {
+      "id": "rune:18",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Рост нуждается в условиях, которые поддерживают новое без чрезмерной опеки.",
+      "glyph": "ᛒ",
+      "name": "Беркана",
+      "historical": "берёза",
+      "question": "Какое небольшое изменение получит от вас достаточно пространства?",
+      "allowed_themes": [
+        "initiative",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "rune:19",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Совместное движение зависит от понятного темпа и взаимного участия.",
+      "glyph": "ᛖ",
+      "name": "Эваз",
+      "historical": "лошадь",
+      "question": "Где следует согласовать шаг, а не усиливать собственный напор?",
+      "allowed_themes": [
+        "agreement",
+        "exchange"
+      ]
+    },
+    {
+      "id": "rune:20",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Самопонимание становится точнее рядом с опытом других людей.",
+      "glyph": "ᛗ",
+      "name": "Манназ",
+      "historical": "человек",
+      "question": "Какой взгляд со стороны поможет уточнить ваше представление о задаче?",
+      "allowed_themes": [
+        "agreement",
+        "review",
+        "exchange"
+      ]
+    },
+    {
+      "id": "rune:21",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Адаптация сохраняет направление, не требуя удерживать неизменной каждую деталь.",
+      "glyph": "ᛚ",
+      "name": "Лагуз",
+      "historical": "вода, жидкость в одной из реконструкций",
+      "question": "Где гибкость полезнее дополнительного контроля?",
+      "allowed_themes": [
+        "revision",
+        "exchange"
+      ]
+    },
+    {
+      "id": "rune:22",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Внутренняя подготовка имеет смысл, если связана с условием будущего проявления.",
+      "glyph": "ᛜ",
+      "name": "Ингуз",
+      "historical": "имя Инг",
+      "question": "Что нужно завершить прежде, чем предъявить замысел другим?",
+      "allowed_themes": [
+        "completion",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "rune:23",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Прояснение может менять ракурс, не отменяя накопленного опыта.",
+      "glyph": "ᛞ",
+      "name": "Дагаз",
+      "historical": "день",
+      "question": "Какое различие стало заметно после паузы?",
+      "allowed_themes": [
+        "initiative",
+        "review",
+        "completion",
+        "revision"
+      ]
+    },
+    {
+      "id": "rune:24",
+      "section": "rune",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Преемственность допускает пересмотр формы при сохранении значимого основания.",
+      "glyph": "ᛟ",
+      "name": "Отала",
+      "historical": "наследственное имущество",
+      "question": "Что из прежнего порядка стоит передать дальше осознанно?",
+      "allowed_themes": [
+        "boundaries",
+        "completion",
+        "steadiness"
+      ]
+    }
+  ],
+  "symbols": [
+    {
+      "id": "symbol:1",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ доступа к конкретному вопросу: не каждая закрытая дверь требует открытия.",
+      "name": "Ключ",
+      "color": "графитовый",
+      "question": "Какой вопрос действительно относится к вашему решению?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "initiative",
+        "review",
+        "revision"
+      ]
+    },
+    {
+      "id": "symbol:2",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ связи, сохраняющей различие двух сторон, а не стирающей его.",
+      "name": "Мост",
+      "color": "приглушённый синий",
+      "question": "Какое условие сделает обмен взаимным?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "agreement",
+        "exchange"
+      ]
+    },
+    {
+      "id": "symbol:3",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ сопоставления ценности и затрат без требования абсолютного равновесия.",
+      "name": "Весы",
+      "color": "серо-зелёный",
+      "question": "Какая цена решения остаётся неоговорённой?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "agreement",
+        "review",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "symbol:4",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ перспективы, которую можно видеть, ещё не располагая всем маршрутом.",
+      "name": "Линия горизонта",
+      "color": "охристый",
+      "question": "Какой ближайший ориентир достаточно ясен?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "initiative"
+      ]
+    },
+    {
+      "id": "symbol:5",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ вместимости: полезная форма имеет предел, а не только назначение.",
+      "name": "Сосуд",
+      "color": "терракотовый",
+      "question": "Какой объём участия вам доступен?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "agreement",
+        "boundaries",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "symbol:6",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ направления, которое не подменяет наблюдения за действительной дорогой.",
+      "name": "Компас",
+      "color": "тёмно-зелёный",
+      "question": "Как вы проверяете, что шаг соответствует цели?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "review",
+        "revision",
+        "exchange"
+      ]
+    },
+    {
+      "id": "symbol:7",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ последовательности, соединяющей отдельные действия в понятный процесс.",
+      "name": "Нить",
+      "color": "серебристо-серый",
+      "question": "Где связь этапов требует уточнения?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "completion",
+        "revision",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "symbol:8",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ выбранной точки обзора, а не полноты сведений о всём происходящем.",
+      "name": "Окно",
+      "color": "молочно-белый",
+      "question": "Какой другой ракурс стоит допустить?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "review",
+        "revision",
+        "exchange"
+      ]
+    },
+    {
+      "id": "symbol:9",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ перехода, на котором полезно назвать условия продолжения.",
+      "name": "Порог",
+      "color": "песочный",
+      "question": "Что должно измениться, прежде чем вы согласитесь идти дальше?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "initiative",
+        "boundaries",
+        "completion"
+      ]
+    },
+    {
+      "id": "symbol:10",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ завершения и возвращения к основанию без обязательного повторения прежнего.",
+      "name": "Круг",
+      "color": "медный",
+      "question": "Какой этап можно считать оконченным?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "completion",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "symbol:11",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ развивающейся формы, нуждающейся в соразмерной среде.",
+      "name": "Лист",
+      "color": "оливковый",
+      "question": "Что помогает росту, а что лишь ускоряет расход сил?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "initiative"
+      ]
+    },
+    {
+      "id": "symbol:12",
+      "section": "symbol",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Образ согласования без требования одинаково звучать во всех обстоятельствах.",
+      "name": "Камертон",
+      "color": "дымчато-фиолетовый",
+      "question": "Где нужно уточнить общий критерий?",
+      "tradition": "авторская редакционная палитра",
+      "allowed_themes": [
+        "agreement",
+        "exchange"
+      ]
+    }
+  ],
+  "advice": [
+    {
+      "id": "advice:1",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не назначайте уверенность ответственным за отсутствие исходных данных.",
+      "allowed_themes": [
+        "review"
+      ]
+    },
+    {
+      "id": "advice:2",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "План считается подробным не по длине, а по числу оставшихся вопросов.",
+      "allowed_themes": [
+        "agreement",
+        "review"
+      ]
+    },
+    {
+      "id": "advice:3",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Пауза не нуждается в оправдании ещё одним срочным поручением.",
+      "allowed_themes": [
+        "boundaries",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:4",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если решение требует постоянной защиты, сначала проверьте его условия.",
+      "allowed_themes": [
+        "review",
+        "revision"
+      ]
+    },
+    {
+      "id": "advice:5",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не увеличивайте масштаб обещания только ради убедительности первого ответа.",
+      "allowed_themes": [
+        "initiative",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "advice:6",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Ресурс, потраченный на видимость порядка, редко остаётся для самого дела.",
+      "allowed_themes": [
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:7",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Вежливый отказ иногда содержит больше ясности, чем торжественное согласие.",
+      "allowed_themes": [
+        "agreement",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "advice:8",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Прежде чем искать знак, прочитайте уже полученное сообщение до конца.",
+      "allowed_themes": [
+        "review",
+        "exchange"
+      ]
+    },
+    {
+      "id": "advice:9",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Чужая решительность не является приложением к вашим исходным данным.",
+      "allowed_themes": [
+        "agreement",
+        "review"
+      ]
+    },
+    {
+      "id": "advice:10",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если всё одинаково важно, список пока не прошёл редактуру.",
+      "allowed_themes": [
+        "review",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:11",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не требуйте от первой попытки биографии завершённого мастерства.",
+      "allowed_themes": [
+        "initiative",
+        "exchange"
+      ]
+    },
+    {
+      "id": "advice:12",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Проверка нужна выводу, даже когда он произнесён подходящим голосом.",
+      "allowed_themes": [
+        "review"
+      ]
+    },
+    {
+      "id": "advice:13",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Разрешение остановиться не обязательно запрашивать у собственного расписания.",
+      "allowed_themes": [
+        "boundaries",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:14",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Надёжная граница короче подробного объяснения, почему её не существует.",
+      "allowed_themes": [
+        "boundaries"
+      ]
+    },
+    {
+      "id": "advice:15",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не принимайте занятость за подтверждение направления движения.",
+      "allowed_themes": [
+        "revision",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:16",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Договорённость полезно записать до того, как у неё появятся разные воспоминания.",
+      "allowed_themes": [
+        "agreement",
+        "exchange"
+      ]
+    },
+    {
+      "id": "advice:17",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Сохраните право пересмотра раньше, чем оно понадобится для красивого отступления.",
+      "allowed_themes": [
+        "revision"
+      ]
+    },
+    {
+      "id": "advice:18",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Самый доступный резерв иногда находится в отменённом лишнем действии.",
+      "allowed_themes": [
+        "completion",
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:19",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Вопрос о цене не разрушает замысел; он уточняет его устройство.",
+      "allowed_themes": [
+        "review",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "advice:20",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не выдавайте количество открытых окон за широту обзора.",
+      "allowed_themes": [
+        "review",
+        "exchange"
+      ]
+    },
+    {
+      "id": "advice:21",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:review",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Уточнение срока не менее содержательно, чем обещание приложить все усилия.",
+      "allowed_themes": [
+        "agreement",
+        "boundaries"
+      ]
+    },
+    {
+      "id": "advice:22",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Если правило мешает своей цели, возможно, оно слишком буквально понято.",
+      "allowed_themes": [
+        "revision"
+      ]
+    },
+    {
+      "id": "advice:23",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:completion",
+        "theme:revision",
+        "theme:exchange"
+      ],
+      "version": "2026.11-v1",
+      "body": "Небольшой результат не обязан немедленно становиться новым стандартом нагрузки.",
+      "allowed_themes": [
+        "steadiness"
+      ]
+    },
+    {
+      "id": "advice:24",
+      "section": "advice",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [
+        "theme:initiative",
+        "theme:agreement",
+        "theme:review",
+        "theme:boundaries",
+        "theme:revision",
+        "theme:exchange",
+        "theme:steadiness"
+      ],
+      "version": "2026.11-v1",
+      "body": "Не все незавершённые мысли требуют назначения ответственного к вечеру.",
+      "allowed_themes": [
+        "completion"
+      ]
+    }
+  ],
+  "modalities": [
+    {
+      "id": "modality:cardinal",
+      "section": "modality",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Кардинальная модальность предлагает определить начало и предел участия.",
+      "modality_id": "cardinal"
+    },
+    {
+      "id": "modality:fixed",
+      "section": "modality",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Фиксированная модальность обращает внимание на последовательность без лишнего ужесточения.",
+      "modality_id": "fixed"
+    },
+    {
+      "id": "modality:mutable",
+      "section": "modality",
+      "theme": "universal",
+      "element": "*",
+      "modality": "*",
+      "tone": "measured",
+      "conditions": [
+        "symbolic-only"
+      ],
+      "incompatible_with": [],
+      "version": "2026.11-v1",
+      "body": "Мутабельная модальность допускает поправку способа при сохранении смысла задачи.",
+      "modality_id": "mutable"
+    }
+  ],
+  "element_labels": {
+    "fire": "Огонь",
+    "earth": "Земля",
+    "air": "Воздух",
+    "water": "Вода"
+  }
+}
