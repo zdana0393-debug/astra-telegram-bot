@@ -101,7 +101,11 @@ check('forecast and daily card content match v2, including free lucky number',as
   const old=(await import('../src/01_ASTRA_V2.js')).default;f.user(1);
   const u=f.message(1,'🔮 Гороскоп');await old.fetch(new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(u)}),f.env);
   const expected=f.out.at(-1).body.text;
-  await f.hook(f.message(1,'🔮 Гороскоп'));assert.equal(f.out.at(-1).body.text,expected);assert.match(expected,/🔢 Число дня: [1-9]/);
+  await f.hook(f.message(1,'🔮 Гороскоп'));
+  if(process.env.ASTRA_TEST_RELEASE==='2.3-editorial') {
+    assert.equal(f.out.at(-1).body.text.match(/🔢 Число дня: ([1-9])/)[1],expected.match(/🔢 Число дня: ([1-9])/)[1]);
+  } else assert.equal(f.out.at(-1).body.text,expected);
+  assert.match(expected,/🔢 Число дня: [1-9]/);
   const q=f.click(1);q.callback_query.data='tarot:day';await f.hook(q);const card=f.out.at(-1).body.text;
   const q2=f.click(1);q2.callback_query.data='tarot:day';await f.hook(q2);assert.equal(f.out.at(-1).body.text,card);assert.equal(f.balance(1),20);
 });

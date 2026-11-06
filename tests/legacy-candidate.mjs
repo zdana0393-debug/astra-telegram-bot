@@ -3,13 +3,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-const bot=(await import(process.env.ASTRA_TEST_RELEASE==='2.2'?'../release/ASTRA_2_2_WORKER.js':'../release/ASTRA_2_1_WORKER.js')).default;
+const editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial';
+const bot=(await import(editorial?'../release/ASTRA_2_3_EDITORIAL_WORKER.js':process.env.ASTRA_TEST_RELEASE==='2.2'?'../release/ASTRA_2_2_WORKER.js':'../release/ASTRA_2_1_WORKER.js')).default;
 import preflight from '../src/00_DIAGNOSTIC.js';
 const db=new DatabaseSync(':memory:');
 const ddl=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8');
 db.exec(ddl);
 db.exec(fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8'));
-if(process.env.ASTRA_TEST_RELEASE==='2.2') db.exec(fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8'));
+if(['2.2','2.3-editorial'].includes(process.env.ASTRA_TEST_RELEASE)) db.exec(fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8'));
 const DB={prepare(sql){
   const stmt=db.prepare(sql);
   let args=[];
@@ -61,10 +62,10 @@ r=await hook({update_id:333},'wrong-secret');
 await assertCase(r.status===403,'wrong Telegram webhook secret rejected');
 
 r=await msg(101,'/start');await assertCase(r.status===200,'/start works');
-await assertCase(msgs(101).at(-1).includes('Выбери знак'),'first greeting works');
+await assertCase(msgs(101).at(-1).includes(editorial?'Выберите солнечный знак':'Выбери знак'),'first greeting works');
 r=await click(101,'sign:aries');await assertCase(r.status===200,'sign selected');
 await assertCase(db.prepare('SELECT zodiac,balance FROM astra_users WHERE telegram_id=101').get().zodiac==='aries','zodiac saved');
-await assertCase(msgs(101).at(-1).includes('Гороскоп'.toUpperCase()),'forecast after sign');
+await assertCase(msgs(101).at(-1).includes(editorial?'Прогноз по солнечному знаку':'Гороскоп'.toUpperCase()),'forecast after sign');
 await msg(101,'🎁 Бонус дня');await msg(101,'🎁 Бонус дня');
 await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=101').get().balance===3,'daily bonus only once');
 await msg(101,'🃏 Таро');await click(101,'tarot:day'); const before=msgs(101).at(-1);
@@ -94,9 +95,10 @@ class FrozenDate extends OriginalDate {constructor(...args){super(...(args.lengt
 globalThis.Date=FrozenDate;
 await bot.scheduled({},env);
 await assertCase(db.prepare('SELECT last_broadcast_day FROM astra_users WHERE telegram_id=101').get().last_broadcast_day==='2026-11-04','morning broadcast delivered');
-const sent=out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes('ГОРОСКОП НА')).length;
+const forecastHeading=editorial?'Прогноз по солнечному знаку':'ГОРОСКОП НА';
+const sent=out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes(forecastHeading)).length;
 await bot.scheduled({},env);
-await assertCase(out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes('ГОРОСКОП НА')).length===sent,'morning broadcast not duplicate');
+await assertCase(sent>0 && out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes(forecastHeading)).length===sent,'morning broadcast not duplicate');
 globalThis.Date=OriginalDate;
 
 await msg(103,'/delete');await assertCase(db.prepare('SELECT count(*) AS count FROM astra_users WHERE telegram_id=103').get().count===0,'delete account');

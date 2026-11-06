@@ -4,12 +4,13 @@ import fs from 'node:fs';
 import {fixture,migration22} from './helpers.mjs';
 const check=(name,fn)=>test(name,async()=>{const f=fixture({shell:true});try{await fn(f);}finally{f.close();}});
 const call=async(f,data,mid=80)=>{const q=f.click(1,mid);q.callback_query.data=data;assert.equal((await f.hook(q)).status,200);return f.out.filter(x=>x.method==='sendMessage').at(-1).body;};
+const editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial';
 const buttons=body=>body.reply_markup?.inline_keyboard?.flat()||[];
 check('six main buttons, two per row, stable returning profile',async f=>{
   f.user(1,8);await f.hook(f.message(1,'/start'));const body=f.out.at(-1).body;
   assert.deepEqual(body.reply_markup.keyboard.map(r=>r.map(b=>b.text)),[
     ['🌙 Прогноз дня','🃏 Таро'],['🪞 Познай себя','🗂 Досье'],['✨ Звёздная пыль','🏛 Об Астре']]);
-  assert.equal(f.balance(1),8);assert.match(body.text,/Бюро символической навигации/);
+  assert.equal(f.balance(1),8);assert.match(body.text,editorial?/кабинет интерпретаций/:/Бюро символической навигации/);
 });
 check('all six reply labels open sections and every submenu has back/home',async f=>{
   f.user(1);for(const label of ['🌙 Прогноз дня','🃏 Таро','🪞 Познай себя','🗂 Досье','✨ Звёздная пыль','🏛 Об Астре']){
@@ -33,7 +34,7 @@ check('all navigation branches and FAQ details are reachable, bounded and free',
 check('team acrostic is natural, fictional roles do not reveal a command',async f=>{
   f.user(1);const body=await call(f,'shell:team');
   const lines=body.text.split('\n').filter(l=>/^(Gideon|Percival|Thalia|6th)/.test(l));assert.equal(lines.map(l=>l[0]).join(''),'GPT6');
-  assert.match(body.text,/M\. Ejaculatum/);assert.match(body.text,/Персонажи легенды/);assert.doesNotMatch(body.text,/gpt6|введите|сертифицированный/iu);
+  assert.match(body.text,/M\. Ejaculatum/);if(editorial) assert.doesNotMatch(body.text,/Персонажи легенды|вымышленн/iu);else assert.match(body.text,/Персонажи легенды/);assert.doesNotMatch(body.text,/gpt6|введите|сертифицированный/iu);
 });
 check('GPT6 is case insensitive, trims whitespace and rewards once across update IDs',async f=>{
   f.user(1,2);for(const text of ['  GpT6  ','gpt6','GPT6','\tGpT6\n'])assert.equal((await f.hook(f.message(1,text))).status,200);
@@ -107,7 +108,7 @@ check('unknown and malformed callbacks, missing and expired callback answers are
     const q=f.click(1);q.callback_query.data=data;if(data==='shell:buy')delete q.callback_query.message.message_id;
     assert.equal((await f.hook(q)).status,200);assert.ok(buttons(f.out.at(-1).body).some(b=>b.callback_data==='shell:home'));
   }
-  f.expireCallbacks(true);const recovered=await call(f,'tarot:day');assert.match(recovered.text,/КАРТА ДНЯ/);
+  f.expireCallbacks(true);const recovered=await call(f,'tarot:day');assert.match(recovered.text,/карта дня/iu);
   assert.equal(f.balance(1),20);assert.equal(f.reconcile(),0);
 });
 check('free forecast exactly matches 2.1 through new navigation, number remains free',async f=>{

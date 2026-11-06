@@ -2,13 +2,14 @@ import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
 import bot21 from '../release/ASTRA_2_1_WORKER.js';
 import bot22 from '../release/ASTRA_2_2_WORKER.js';
+import botEditorial from '../release/ASTRA_2_3_EDITORIAL_WORKER.js';
 export const schema=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8');
 const migration21=fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8');
 export const migration22=fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8');
-export const migration=migration21+(process.env.ASTRA_TEST_RELEASE==='2.2'?migration22:'');
-export function fixture({shell=process.env.ASTRA_TEST_RELEASE==='2.2'}={}) {
-  const bot=shell?bot22:bot21;
-  const db=new DatabaseSync(':memory:'); db.exec(schema); db.exec(migration21); if(shell) db.exec(migration22);
+export const migration=migration21+(['2.2','2.3-editorial'].includes(process.env.ASTRA_TEST_RELEASE)?migration22:'');
+export function fixture({shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial'}={}) {
+  const bot=editorial?botEditorial:shell?bot22:bot21;
+  const db=new DatabaseSync(':memory:'); db.exec(schema); db.exec(migration21); if(shell||editorial) db.exec(migration22);
   const DB={prepare(sql) {
     const st=db.prepare(sql); let args=[];
     return {bind(...a){args=a;return this;},async first(){await Promise.resolve();return st.get(...args)??null;},
