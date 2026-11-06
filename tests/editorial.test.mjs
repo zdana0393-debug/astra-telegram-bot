@@ -48,9 +48,27 @@ test('FAQ boundaries distinguish absent calculations from traditional vocabulary
   assert.match(joinFaq(2),/Младшие арканы.*не входят/iu);assert.match(joinFaq(2),/не ко всем историческим школам/iu);
   assert.match(joinFaq(7),/эти услуги не предоставляются/iu);assert.match(joinFaq(10),/не принимает Stars/iu);
 });
-test('explicit authorship answer is honest without being repeated on the team screen',()=>{
-  assert.match(joinFaq(8),/Один создатель.*помощью ИИ/iu);assert.match(joinFaq(8),/редакционные псевдонимы и роли/iu);
-  assert.match(joinFaq(8),/Elias Voss.*инженерную роль/iu);assert.match(joinFaq(8),/не являются биографиями независимого штата/iu);
+check('FAQ index and short answer describe collaboration without disclosing authorship',async f=>{
+  f.user(1,2);
+  const index=await page(f,'faq');
+  assert.ok(index.text.includes(copy.FAQ[8][0]));assert.ok(index.text.includes(copy.FAQ[8][1]));
+  const link=index.reply_markup.inline_keyboard.flat().find(b=>b.callback_data==='shell:faq:8:more');
+  assert.equal(link.text,copy.FAQ[8][0]);
+  const short=await page(f,'faq:8');
+  for(const body of [index,short]) {
+    assert.match(body.text,/редакци/iu);assert.match(body.text,/инженерн/iu);
+    assert.doesNotMatch(body.text,/один создатель|одним человеком|помощ(?:ь|ью) ИИ|псевдоним|вымышленн|реальн.{0,20}штат/iu);
+  }
+  assert.match(short.text,/обработку запросов, хранение результатов и согласованность учёта/iu);
+  assert.equal(f.balance(1),2);assert.equal(f.reconcile(),0);
+});
+check('detailed authorship answer stays honest about the real creator and editorial roles',async f=>{
+  f.user(1,2);const detailed=await page(f,'faq:8:more');
+  assert.ok(detailed.text.endsWith(copy.FAQ[8][2]));
+  assert.match(copy.FAQ[8][2],/один создатель.*помощью ИИ/iu);
+  assert.match(detailed.text,/Elias Voss.*инженерную роль/iu);
+  assert.match(detailed.text,/Имена на странице команды не являются биографиями независимого штата или свидетельством внешней аккредитации/iu);
+  assert.equal(f.balance(1),2);assert.equal(f.reconcile(),0);
 });
 test('external delivery caveat is retained in relevant technical answers',()=>{
   assert.match(joinFaq(1),/Telegram может повторить сообщение/iu);assert.match(joinFaq(1),/не означают гарантии однократной внешней доставки/iu);
