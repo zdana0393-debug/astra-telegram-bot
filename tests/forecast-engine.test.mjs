@@ -11,17 +11,17 @@ async function click(f,data,id=1,mid=90){const q=f.click(id,mid);q.callback_quer
 const pay=(f,id=1,d=day())=>click(f,'forecast:pay:'+d,id);
 const count=(f,t)=>f.query(`SELECT count(*) n FROM ${t}`).n;
 test('reference corpus has correct traditional rulers, versions and 24 nonblank runes',()=>{
-  assert.equal(catalog.units.length,144);assert.equal(catalog.signs.length,12);assert.equal(catalog.numbers.length,9);assert.equal(catalog.runes.length,24);
+  assert.equal(catalog.units.length,192);assert.equal(catalog.signs.length,12);assert.equal(catalog.numbers.length,9);assert.equal(catalog.runes.length,24);
   for(const [id,ruler,modern] of [['scorpio','Марс','Плутон'],['aquarius','Сатурн','Уран'],['pisces','Юпитер','Нептун']]){
     const s=catalog.signs.find(s=>s.sign_id===id);assert.equal(s.ruler,ruler);assert.ok(s.modern_association.includes(modern));assert.match(s.modern_association,/современн/);
   }
   assert.ok(catalog.runes.every(r=>r.glyph&&r.historical&&r.question));assert.equal(new Set(catalog.runes.map(r=>r.name)).size,24);
 });
 test('missing catalog sections, empty paid content and conflicting tags fail instead of making a placeholder',()=>{
-  for(const change of [c=>c.units=[],c=>c.units[0].body='',c=>c.numbers.pop(),c=>c.themes[0].extended='',c=>c.runes[0].historical='',c=>c.symbols[0].color='',c=>c.signs[0].label='']){
+  for(const change of [c=>c.units=[],c=>c.units[0].body='',c=>c.numbers.pop(),c=>c.themes[0].extended='',c=>c.runes[0].historical='',c=>c.symbols[0].color='',c=>c.signs[0].label='',c=>c.sign_lenses.pop(),c=>c.modality_lenses.pop(),c=>c.sign_lenses[0].directives={timing:'fake'}]){
     const c=structuredClone(catalog);change(c);assert.throws(()=>createForecastGenerator(c));
   }
-  const sign=catalog.signs[0],theme=catalog.themes[0],rows=catalog.units.filter(u=>u.theme===theme.id&&u.id.endsWith('.1'));
+  const sign=catalog.signs[0],theme=catalog.themes[0],rows=catalog.units.filter(u=>u.theme===theme.id&&u.element===sign.element_id);
   assert.equal(rows.length,6);validateSelection(rows,sign,theme);
   const bad=structuredClone(rows);bad[0].incompatible_with.push(bad[1].id);assert.throws(()=>validateSelection(bad,sign,theme),/Conflicting/);
   const wrong=structuredClone(rows);wrong[0].conditions.push('exact-transit');assert.throws(()=>validateSelection(wrong,sign,theme),/Incompatible/);

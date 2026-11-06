@@ -67,7 +67,7 @@ r=await msg(101,'/start');await assertCase(r.status===200,'/start works');
 await assertCase(msgs(101).at(-1).includes(editorial?'Выберите солнечный знак':'Выбери знак'),'first greeting works');
 r=await click(101,'sign:aries');await assertCase(r.status===200,'sign selected');
 await assertCase(db.prepare('SELECT zodiac,balance FROM astra_users WHERE telegram_id=101').get().zodiac==='aries','zodiac saved');
-await assertCase(msgs(101).at(-1).includes(forecast?'Общий прогноз по выбранному знаку':editorial?'Прогноз по солнечному знаку':'Гороскоп'.toUpperCase()),'forecast after sign');
+await assertCase(msgs(101).at(-1).includes(forecast?'Общий солнечный прогноз':editorial?'Прогноз по солнечному знаку':'Гороскоп'.toUpperCase()),'forecast after sign');
 await msg(101,'🎁 Бонус дня');await msg(101,'🎁 Бонус дня');
 await assertCase(db.prepare('SELECT balance FROM astra_users WHERE telegram_id=101').get().balance===3,'daily bonus only once');
 await msg(101,'🃏 Таро');await click(101,'tarot:day'); const before=msgs(101).at(-1);
@@ -97,7 +97,7 @@ class FrozenDate extends OriginalDate {constructor(...args){super(...(args.lengt
 globalThis.Date=FrozenDate;
 await bot.scheduled({},env);
 await assertCase(db.prepare('SELECT last_broadcast_day FROM astra_users WHERE telegram_id=101').get().last_broadcast_day==='2026-11-04','morning broadcast delivered');
-const forecastHeading=forecast?'Общий прогноз по выбранному знаку':editorial?'Прогноз по солнечному знаку':'ГОРОСКОП НА';
+const forecastHeading=forecast?'Общий солнечный прогноз':editorial?'Прогноз по солнечному знаку':'ГОРОСКОП НА';
 const sent=out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes(forecastHeading)).length;
 await bot.scheduled({},env);
 await assertCase(sent>0 && out.filter(x=>x.method==='sendMessage'&&x.body.text?.includes(forecastHeading)).length===sent,'morning broadcast not duplicate');

@@ -5,66 +5,398 @@
     "2026-01-01",
     "2030-12-31"
   ],
-  "dates": 1826,
-  "signs": 12,
-  "cases": 21912,
-  "cases_by_year": {
-    "2026": 4380,
-    "2027": 4380,
-    "2028": 4392,
-    "2029": 4380,
-    "2030": 4380
-  },
-  "units_by_section": {
-    "theme": 24,
-    "relations": 24,
-    "work": 24,
-    "finance": 24,
-    "mood": 24,
-    "action": 24
-  },
-  "signs_by_element": {
-    "fire": 3,
-    "earth": 3,
-    "air": 3,
-    "water": 3
-  },
+  "baseline_commit": "e9cff2b6d8cf5bfee9c35375e392f04804eca18c",
   "corpus": {
-    "thematic_units": 144,
-    "signs": 12,
-    "sign_section_profiles": 48,
-    "modalities": 3,
+    "element_theme_units": 192,
+    "sign_readings": 216,
+    "modality_readings": 54,
+    "total_context_readings": 462,
+    "expanded_sign_profiles": 24,
     "number_pairs": 9,
     "runes": 24,
     "symbols": 12,
     "advice": 24
   },
-  "min_russian_words": 185,
-  "max_russian_words": 236,
-  "max_free_utf16": 1949,
-  "max_extended_utf16": 1932,
-  "max_free_utf8_bytes": 3598,
-  "max_extended_utf8_bytes": 3570,
-  "average_paid_payload_bytes": 3771,
-  "adjacent_repeated_thematic_units": 0,
-  "average_cache_payload_bytes": 6895,
-  "whole_text_duplicates": 0,
-  "content_duplicates_ignoring_date": 369,
-  "max_identical_body_occurrences": 3,
-  "adjacent_body_duplicates": 0,
-  "cross_sign_body_failures": 0,
-  "forbidden_pattern_hits": 0,
-  "compatibility_failures": 0,
-  "selected_units_covered": 144,
-  "theme_counts": {
-    "steadiness": 2741,
-    "initiative": 2741,
-    "agreement": 2739,
-    "exchange": 2738,
-    "boundaries": 2740,
-    "review": 2739,
-    "completion": 2738,
-    "revision": 2736
+  "baseline": {
+    "cases": 21912,
+    "dates": 1826,
+    "whole_text_duplicates": 0,
+    "content_duplicates_ignoring_date": 369,
+    "max_identical_body_occurrences": 3,
+    "min_russian_words": 185,
+    "max_russian_words": 236,
+    "max_free_utf16": 1949,
+    "max_extended_utf16": 1932,
+    "max_free_utf8_bytes": 3598,
+    "max_extended_utf8_bytes": 3570,
+    "average_cache_payload_bytes": 6895,
+    "average_paid_payload_bytes": 3771,
+    "paragraphs": {
+      "occurrences_per_section": 21912,
+      "unique_by_section": {
+        "theme": 24,
+        "relations": 288,
+        "work": 288,
+        "finance": 24,
+        "mood": 24,
+        "action": 24
+      },
+      "same_date_cross_sign_duplicate_occurrences": {
+        "theme": 4030,
+        "relations": 0,
+        "work": 0,
+        "finance": 4013,
+        "mood": 4030,
+        "action": 4110
+      },
+      "same_date_cross_sign_identical_pairs": {
+        "theme": 4241,
+        "relations": 0,
+        "work": 0,
+        "finance": 4212,
+        "mood": 4234,
+        "action": 4319
+      },
+      "adjacent_same_sign_identical_paragraphs": 0,
+      "adjacent_same_sign_identical_bodies": 0,
+      "adjacent_reused_sentences": 43800,
+      "adjacent_sentence_occurrences": 306600,
+      "windows": {
+        "30": {
+          "paragraphs_reused": {
+            "theme": 15149,
+            "relations": 15127,
+            "work": 15159,
+            "finance": 15188,
+            "mood": 15136,
+            "action": 15199
+          },
+          "core_fragments_reused": {
+            "theme": 15149,
+            "relations": 15127,
+            "work": 15159,
+            "finance": 15188,
+            "mood": 15136,
+            "action": 15199
+          },
+          "core_and_sign_facet_reused": {
+            "theme": 15149,
+            "relations": 15127,
+            "work": 15159,
+            "finance": 15188,
+            "mood": 15136,
+            "action": 15199
+          },
+          "forecasts_with_reused_paragraph": 21531,
+          "eligible_forecasts": 21552
+        },
+        "90": {
+          "paragraphs_reused": {
+            "theme": 20597,
+            "relations": 20596,
+            "work": 20587,
+            "finance": 20597,
+            "mood": 20602,
+            "action": 20599
+          },
+          "core_fragments_reused": {
+            "theme": 20597,
+            "relations": 20596,
+            "work": 20587,
+            "finance": 20597,
+            "mood": 20602,
+            "action": 20599
+          },
+          "core_and_sign_facet_reused": {
+            "theme": 20597,
+            "relations": 20596,
+            "work": 20587,
+            "finance": 20597,
+            "mood": 20602,
+            "action": 20599
+          },
+          "forecasts_with_reused_paragraph": 20832,
+          "eligible_forecasts": 20832
+        }
+      }
+    },
+    "lexical_similarity": {
+      "1": {
+        "paragraph_pair_comparisons": 6408,
+        "jaccard_at_least_045": 0,
+        "by_section": {
+          "theme": 0,
+          "relations": 0,
+          "work": 0,
+          "finance": 0,
+          "mood": 0,
+          "action": 0
+        },
+        "mean_jaccard": 0.0397,
+        "max_jaccard": 0.1818
+      },
+      "30": {
+        "paragraph_pair_comparisons": 160920,
+        "jaccard_at_least_045": 5358,
+        "by_section": {
+          "theme": 870,
+          "relations": 864,
+          "work": 894,
+          "finance": 919,
+          "mood": 884,
+          "action": 927
+        },
+        "mean_jaccard": 0.0717,
+        "max_jaccard": 1
+      },
+      "90": {
+        "paragraph_pair_comparisons": 288360,
+        "jaccard_at_least_045": 11206,
+        "by_section": {
+          "theme": 1826,
+          "relations": 1853,
+          "work": 1907,
+          "finance": 1868,
+          "mood": 1853,
+          "action": 1899
+        },
+        "mean_jaccard": 0.077,
+        "max_jaccard": 1
+      },
+      "range": [
+        "2026-11-01",
+        "2027-01-29"
+      ],
+      "days_per_sign": 90,
+      "signs": 12,
+      "method": "Normalized exact word trigrams; Jaccard >= 0.45. No stemming or semantic model.",
+      "cross_sign_same_date": {
+        "paragraph_pair_comparisons": 35640,
+        "jaccard_at_least_045": 1273,
+        "by_section": {
+          "theme": 228,
+          "relations": 211,
+          "work": 196,
+          "finance": 206,
+          "mood": 207,
+          "action": 225
+        },
+        "max_jaccard": 1
+      }
+    },
+    "catalog_rhetorical_constructions": {
+      "base_units": 144,
+      "counts": {
+        "contrast_or_distinction": 41,
+        "explicit_question": 0,
+        "resource_or_boundary": 16
+      },
+      "overlap_allowed": true
+    },
+    "selected_units_covered": 144,
+    "selected_sign_readings_covered": 0,
+    "selected_modality_readings_covered": 0,
+    "forbidden_pattern_hits": 0,
+    "cross_sign_body_failures": 0
   },
-  "limits": "Automated checks find specified patterns/tag conflicts; they do not prove literary quality or D1/Telegram behavior."
+  "current": {
+    "cases": 21912,
+    "dates": 1826,
+    "whole_text_duplicates": 0,
+    "content_duplicates_ignoring_date": 26,
+    "max_identical_body_occurrences": 2,
+    "min_russian_words": 198,
+    "max_russian_words": 245,
+    "max_free_utf16": 1974,
+    "max_extended_utf16": 2615,
+    "max_free_utf8_bytes": 3636,
+    "max_extended_utf8_bytes": 4820,
+    "average_cache_payload_bytes": 8533,
+    "average_paid_payload_bytes": 5284,
+    "paragraphs": {
+      "occurrences_per_section": 21912,
+      "unique_by_section": {
+        "theme": 1151,
+        "relations": 1054,
+        "work": 1147,
+        "finance": 1144,
+        "mood": 1146,
+        "action": 956
+      },
+      "same_date_cross_sign_duplicate_occurrences": {
+        "theme": 0,
+        "relations": 0,
+        "work": 0,
+        "finance": 0,
+        "mood": 0,
+        "action": 0
+      },
+      "same_date_cross_sign_identical_pairs": {
+        "theme": 0,
+        "relations": 0,
+        "work": 0,
+        "finance": 0,
+        "mood": 0,
+        "action": 0
+      },
+      "adjacent_same_sign_identical_paragraphs": 0,
+      "adjacent_same_sign_identical_bodies": 0,
+      "adjacent_reused_sentences": 45601,
+      "adjacent_sentence_occurrences": 309339,
+      "windows": {
+        "30": {
+          "paragraphs_reused": {
+            "theme": 8781,
+            "relations": 9451,
+            "work": 8848,
+            "finance": 8897,
+            "mood": 8768,
+            "action": 9872
+          },
+          "core_fragments_reused": {
+            "theme": 21552,
+            "relations": 21552,
+            "work": 21552,
+            "finance": 21552,
+            "mood": 21552,
+            "action": 21552
+          },
+          "core_and_sign_facet_reused": {
+            "theme": 15143,
+            "relations": 15677,
+            "work": 15154,
+            "finance": 15253,
+            "mood": 15106,
+            "action": 15862
+          },
+          "forecasts_with_reused_paragraph": 20957,
+          "eligible_forecasts": 21552
+        },
+        "90": {
+          "paragraphs_reused": {
+            "theme": 15166,
+            "relations": 15484,
+            "work": 15371,
+            "finance": 15344,
+            "mood": 15174,
+            "action": 15681
+          },
+          "core_fragments_reused": {
+            "theme": 20832,
+            "relations": 20832,
+            "work": 20832,
+            "finance": 20832,
+            "mood": 20832,
+            "action": 20832
+          },
+          "core_and_sign_facet_reused": {
+            "theme": 20581,
+            "relations": 20421,
+            "work": 20613,
+            "finance": 20595,
+            "mood": 20573,
+            "action": 20354
+          },
+          "forecasts_with_reused_paragraph": 20832,
+          "eligible_forecasts": 20832
+        }
+      }
+    },
+    "lexical_similarity": {
+      "1": {
+        "paragraph_pair_comparisons": 6408,
+        "jaccard_at_least_045": 0,
+        "by_section": {
+          "theme": 0,
+          "relations": 0,
+          "work": 0,
+          "finance": 0,
+          "mood": 0,
+          "action": 0
+        },
+        "mean_jaccard": 0.0547,
+        "max_jaccard": 0.2439
+      },
+      "30": {
+        "paragraph_pair_comparisons": 160920,
+        "jaccard_at_least_045": 8094,
+        "by_section": {
+          "theme": 1339,
+          "relations": 1429,
+          "work": 1255,
+          "finance": 1223,
+          "mood": 1345,
+          "action": 1503
+        },
+        "mean_jaccard": 0.111,
+        "max_jaccard": 1
+      },
+      "90": {
+        "paragraph_pair_comparisons": 288360,
+        "jaccard_at_least_045": 16650,
+        "by_section": {
+          "theme": 2798,
+          "relations": 2908,
+          "work": 2545,
+          "finance": 2486,
+          "mood": 2773,
+          "action": 3140
+        },
+        "mean_jaccard": 0.1189,
+        "max_jaccard": 1
+      },
+      "range": [
+        "2026-11-01",
+        "2027-01-29"
+      ],
+      "days_per_sign": 90,
+      "signs": 12,
+      "method": "Normalized exact word trigrams; Jaccard >= 0.45. No stemming or semantic model.",
+      "cross_sign_same_date": {
+        "paragraph_pair_comparisons": 35640,
+        "jaccard_at_least_045": 0,
+        "by_section": {
+          "theme": 0,
+          "relations": 0,
+          "work": 0,
+          "finance": 0,
+          "mood": 0,
+          "action": 0
+        },
+        "max_jaccard": 0.1607
+      }
+    },
+    "catalog_rhetorical_constructions": {
+      "base_units": 192,
+      "counts": {
+        "contrast_or_distinction": 79,
+        "explicit_question": 0,
+        "resource_or_boundary": 16
+      },
+      "overlap_allowed": true
+    },
+    "selected_units_covered": 192,
+    "selected_sign_readings_covered": 216,
+    "selected_modality_readings_covered": 54,
+    "forbidden_pattern_hits": 0,
+    "cross_sign_body_failures": 0
+  },
+  "local_node_diagnostic": {
+    "runtime": "v24.22.1",
+    "cold_generator_and_first_forecast": {
+      "samples": 30,
+      "median_ms": 2.028,
+      "p95_ms": 3.271,
+      "max_ms": 3.302
+    },
+    "warm_generation": {
+      "samples": 500,
+      "median_ms": 0.039,
+      "p95_ms": 0.101,
+      "max_ms": 0.247
+    },
+    "worker_utf8_bytes": 525271,
+    "warning": "Node wall-clock only; not Workers CPU, startup, Cron, D1 metadata or errors 1102."
+  },
+  "limits": "Exact paragraphs, lexical trigrams, source-fragment/facet recurrence and rhetorical pattern counts are proxies. They cannot prove absence of semantic repetition, literary quality or real D1/Telegram behavior. A finite symbolic library repeats motifs; no unique transit-based daily forecast is claimed."
 }
