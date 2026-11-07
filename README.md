@@ -89,3 +89,18 @@ node --experimental-sqlite src/03_LOCAL_TEST.mjs
 12 записей на страницу, безопасное листание собственного ledger и экономическое досье. Активные даты/серии/этапы 3/7/30 не дают новых наград. Текущие цены/бонусы и версии/снимки прогнозов сохранены. `migrations/0024_activity_history.sql`, четыре файла `migrations/0024_steps/` и `scripts/check_integrity_2_4a.sql` подготовлены локально, на D1 не выполнялись. Stars и новая экономика не включены.
 
 Владелец подтвердил работающую staging 2.3B, free/extended и ready=true. Перед 2.4A остаются review, backup/restore и ledger/реальные CPU/D1 измерения. Новых переменных/секретов не требуется, действующий ASTRA_FORECAST_START_DAY не менять. Codex не выполняет Deploy/remote SQL/webhook/Cron/production изменения; main автоматически не объединять.
+
+## Astra 2.4 — единый кандидат 2.4A + 2.4B
+
+**2.4A отдельно не устанавливается.** Рабочая ветка `astra-2.4b-rewards-stars`, база `astra-2.4-economy`. Общий [release/ASTRA_2_4_WORKER.js](release/ASTRA_2_4_WORKER.js) собирается `node scripts/build-2.4.mjs`, полная локальная регрессия — `sh scripts/test-2.4.sh` (Node22+, проверено24.22.1). Источники добавлений: `src/rewards/`, `src/payments/`; 2.4A/2.3B остаются базовыми слоями сборки.
+
+Подготовлены новая политика бонусов, договоры рефералов, магазин XTR, однократные receipts, возвраты/явный долг и сверка. **Новые бонусы и Stars OFF по умолчанию**; установка не пересчитывает старые балансы. Таро3/extended4/GPT6+5, бесплатный прогноз/число и сохранённые результаты остаются.
+
+- [Архитектура и инварианты](docs/ASTRA_2_4_ARCHITECTURE.md)
+- [Полный отчёт и оставшиеся ограничения](docs/ASTRA_2_4_TEST_REPORT.md)
+- [Единая пошаговая инструкция staging → production](docs/ASTRA_2_4_STAGING_GUIDE.md)
+- [Поддержка, возвраты и восстановление](docs/ASTRA_2_4_PAYMENT_RUNBOOK.md)
+- [Симуляция7/30/90 и риск повторной регистрации](docs/ASTRA_2_4_ECONOMY_SIMULATION.md)
+- [Прямые ответы Worker: экраны и чеки](docs/ASTRA_2_4_UI_EXAMPLES.md)
+
+Миграции: прежняя0024 (4 Console-файла), затем [0025](migrations/0025_rewards_stars.sql) (9 файлов `migrations/0025_steps/`). Контроль — [read-only integrity SQL](scripts/check_integrity_2_4.sql). После0025 старый JS намеренно не готов: откат только maintenance/совместимое исправление2.4, не установка2.4A. Обычный staging-бот не является dedicated Telegram test environment и способен выставить реальные счета; реальные commerce/CPU/D1 проверки, Terms/support/retention и принятие риска /delete — отдельные gates владельца. В этой разработке не выполнялись remote SQL, deploy, invoices, webhook/секреты или merge.

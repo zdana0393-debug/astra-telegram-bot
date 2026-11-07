@@ -158,9 +158,15 @@ test('20 independent SQLite connections purchase one daily result without a JS m
     assert.equal(db.prepare("SELECT count(*) n FROM astra_wallet_ledger WHERE reason='forecast:extended'").get().n,1);assert.equal(db.prepare('SELECT sum(delta) n FROM astra_wallet_ledger').get().n,16);
   }finally{db.close();rmSync(dir,{recursive:true,force:true});}
 });
-check('rollback Worker 2.3A can retain posted forecasts and delete its owner safely',async f=>{
+check('rollback Worker 2.3A keeps old-schema behavior; unified 2.4 fences it and retains paid content',async f=>{
   const old=(await import('../release/ASTRA_2_3_EDITORIAL_WORKER.js')).default;
-  f.user(1,10);await pay(f);assert.equal(f.balance(1),6);assert.equal((await old.fetch(new Request('https://astra.test/health'),f.env)).status,200);
+  f.user(1,10);await pay(f);assert.equal(f.balance(1),6);
+  if(process.env.ASTRA_TEST_RELEASE==='2.4'){
+    assert.equal((await old.fetch(new Request('https://astra.test/health'),f.env)).status,503);
+    const req=new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(f.message(1,'/delete'))});
+    assert.equal((await old.fetch(req,f.env)).status,503);assert.equal(f.balance(1),6);assert.equal(count(f,'astra_forecast_unlocks'),1);assert.equal(f.reconcile(),0);return;
+  }
+  assert.equal((await old.fetch(new Request('https://astra.test/health'),f.env)).status,200);
   const update=f.message(1,'/delete');const req=new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(update)});
   f.db.exec('PRAGMA foreign_keys=OFF');assert.equal((await old.fetch(req,f.env)).status,200);assert.equal(count(f,'astra_forecast_unlocks'),0);assert.equal(count(f,'astra_forecast_daily'),1);assert.equal(count(f,'astra_wallet_ledger'),0);
 });
