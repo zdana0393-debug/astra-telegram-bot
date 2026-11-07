@@ -1,0 +1,161 @@
+{
+  "runtime": "v24.22.1",
+  "bytes": {
+    "ASTRA_2_4A_WORKER.js": 539192,
+    "ASTRA_2_4_WORKER.js": 601162
+  },
+  "cold_local_vm": {
+    "ASTRA_2_4A_WORKER.js": {
+      "samples": 20,
+      "median_ms": 1.097,
+      "p95_ms": 5.999,
+      "max_ms": 5.999
+    },
+    "ASTRA_2_4_WORKER.js": {
+      "samples": 20,
+      "median_ms": 1.201,
+      "p95_ms": 5.982,
+      "max_ms": 5.982
+    }
+  },
+  "first_policy_visit": {
+    "local_wall_ms": 1.966,
+    "statements": 20,
+    "write_statements": 8
+  },
+  "repeat_visit": {
+    "local_wall_ms": 0.802,
+    "statements": 15,
+    "write_statements": 5
+  },
+  "precheckout": {
+    "local_wall_ms": 0.633,
+    "statements": 3,
+    "write_statements": 1
+  },
+  "paid_receipt": {
+    "local_wall_ms": 1.273,
+    "statements": 6,
+    "write_statements": 1
+  },
+  "refund": {
+    "local_wall_ms": 5.904,
+    "statements": 5,
+    "write_statements": 1
+  },
+  "synthetic_row_counts": [
+    {
+      "table": "astra_users",
+      "rows": 1
+    },
+    {
+      "table": "astra_processed_updates",
+      "rows": 2
+    },
+    {
+      "table": "astra_operations",
+      "rows": 0
+    },
+    {
+      "table": "astra_tarot_requests",
+      "rows": 0
+    },
+    {
+      "table": "astra_wallet_ledger",
+      "rows": 4
+    },
+    {
+      "table": "astra_update_jobs",
+      "rows": 2
+    },
+    {
+      "table": "astra_broadcast_jobs",
+      "rows": 0
+    },
+    {
+      "table": "astra_shell_rewards",
+      "rows": 0
+    },
+    {
+      "table": "astra_forecast_daily",
+      "rows": 0
+    },
+    {
+      "table": "astra_forecast_unlocks",
+      "rows": 0
+    },
+    {
+      "table": "astra_activity_days",
+      "rows": 1
+    },
+    {
+      "table": "astra_policy",
+      "rows": 1
+    },
+    {
+      "table": "astra_user_policy",
+      "rows": 1
+    },
+    {
+      "table": "astra_referral_contracts",
+      "rows": 0
+    },
+    {
+      "table": "astra_policy_events",
+      "rows": 1
+    },
+    {
+      "table": "astra_policy_days",
+      "rows": 1
+    },
+    {
+      "table": "astra_reward_claims",
+      "rows": 1
+    },
+    {
+      "table": "astra_referral_payouts",
+      "rows": 0
+    },
+    {
+      "table": "astra_payment_orders",
+      "rows": 1
+    },
+    {
+      "table": "astra_payment_tombstones",
+      "rows": 1
+    },
+    {
+      "table": "astra_payment_receipts",
+      "rows": 1
+    },
+    {
+      "table": "astra_payment_anomalies",
+      "rows": 0
+    },
+    {
+      "table": "astra_refund_requests",
+      "rows": 0
+    },
+    {
+      "table": "astra_external_refunds",
+      "rows": 1
+    },
+    {
+      "table": "astra_refund_accounts",
+      "rows": 1
+    },
+    {
+      "table": "astra_refund_settlements",
+      "rows": 1
+    },
+    {
+      "table": "astra_debt_repayments",
+      "rows": 0
+    },
+    {
+      "table": "astra_payment_audit",
+      "rows": 0
+    }
+  ],
+  "caveat": "Local Node wall-clock, SQLite statements and stored rows only. Not Cloudflare CPU, not D1 rows_read/rows_written, no 1102 measurement. Real platform limits and Bot API behavior remain staging acceptance gates."
+}

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {fixture,migration22} from './helpers.mjs';
 const check=(name,fn)=>test(name,async()=>{const f=fixture({shell:true});try{await fn(f);}finally{f.close();}});
 const call=async(f,data,mid=80)=>{const q=f.click(1,mid);q.callback_query.data=data;assert.equal((await f.hook(q)).status,200);return f.out.filter(x=>x.method==='sendMessage').at(-1).body;};
-const editorial=['2.3-editorial','2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE);
+const editorial=['2.3-editorial','2.3b','2.4a','2.4'].includes(process.env.ASTRA_TEST_RELEASE);
 const buttons=body=>body.reply_markup?.inline_keyboard?.flat()||[];
 check('six main buttons, two per row, stable returning profile',async f=>{
   f.user(1,8);await f.hook(f.message(1,'/start'));const body=f.out.at(-1).body;
@@ -120,9 +120,14 @@ check('user-facing shell pages disclose limitations and add no parse_mode or sec
     const body=await call(f,'shell:'+page);assert.equal(body.parse_mode,undefined);assert.doesNotMatch(body.text,/оккультный|введите gpt6|100% точност/iu);assert.ok(body.text.length<4096);
   }assert.equal(f.balance(1),20);
 });
-check('rollback to 2.1 with full 2.2 schema preserves balance and erases rewards with FK OFF',async f=>{
+check('rollback to 2.1 preserves old-schema behavior; unified 2.4 fences it without money changes',async f=>{
   const old=(await import('../release/ASTRA_2_1_WORKER.js')).default;
   f.user(1,2);await f.hook(f.message(1,'gpt6'));f.db.exec('PRAGMA foreign_keys=OFF');
+  if(process.env.ASTRA_TEST_RELEASE==='2.4'){
+    assert.equal((await old.fetch(new Request('https://astra.test/health'),f.env)).status,503);
+    const blocked=new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(f.message(1,'🎁 Бонус дня'))});
+    assert.equal((await old.fetch(blocked,f.env)).status,503);assert.equal(f.balance(1),7);assert.equal(f.reconcile(),0);return;
+  }
   assert.equal((await old.fetch(new Request('https://astra.test/health'),f.env)).status,200);
   const u=f.message(1,'🎁 Бонус дня');
   const request=u=>new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(u)});

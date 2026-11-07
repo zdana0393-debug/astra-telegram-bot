@@ -5,36 +5,44 @@ import bot22 from '../release/ASTRA_2_2_WORKER.js';
 import botEditorial from '../release/ASTRA_2_3_EDITORIAL_WORKER.js';
 import botForecast from '../release/ASTRA_2_3B_WORKER.js';
 import botEconomy from '../release/ASTRA_2_4A_WORKER.js';
+import botFull from '../release/ASTRA_2_4_WORKER.js';
 export const schema=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8');
 const migration21=fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8');
 export const migration22=fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8');
 export const migration23=fs.readFileSync(new URL('../migrations/0023_forecast.sql',import.meta.url),'utf8');
 export const migration24=fs.readFileSync(new URL('../migrations/0024_activity_history.sql',import.meta.url),'utf8');
-export const migration=migration21+(['2.2','2.3-editorial','2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE)?migration22:'')+(['2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE)?migration23:'')+(process.env.ASTRA_TEST_RELEASE==='2.4a'?migration24:'');
-export function fixture({legacyUsers=[],economy=process.env.ASTRA_TEST_RELEASE==='2.4a',shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial',forecast=process.env.ASTRA_TEST_RELEASE==='2.3b'||economy}={}) {
-  const bot=economy?botEconomy:forecast?botForecast:editorial?botEditorial:shell?bot22:bot21;
-  const db=new DatabaseSync(':memory:'); db.exec(schema); for(const u of legacyUsers)db.prepare('INSERT INTO astra_users(telegram_id,zodiac,balance) VALUES(?,?,?)').run(u.id,u.sign||'aries',u.balance); db.exec(migration21); if(shell||editorial||forecast||economy) db.exec(migration22); if(forecast||economy) db.exec(migration23); if(economy) db.exec(migration24);
-  const DB={prepare(sql) {
+export const migration25=fs.readFileSync(new URL('../migrations/0025_rewards_stars.sql',import.meta.url),'utf8');
+export const migration=migration21+(['2.2','2.3-editorial','2.3b','2.4a','2.4'].includes(process.env.ASTRA_TEST_RELEASE)?migration22:'')+(['2.3b','2.4a','2.4'].includes(process.env.ASTRA_TEST_RELEASE)?migration23:'')+(['2.4a','2.4'].includes(process.env.ASTRA_TEST_RELEASE)?migration24:'')+(process.env.ASTRA_TEST_RELEASE==='2.4'?migration25:'');
+export function fixture({full=process.env.ASTRA_TEST_RELEASE==='2.4',legacyUsers=[],economy=process.env.ASTRA_TEST_RELEASE==='2.4a'||full,shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial',forecast=process.env.ASTRA_TEST_RELEASE==='2.3b'||economy}={}) {
+  const bot=full?botFull:economy?botEconomy:forecast?botForecast:editorial?botEditorial:shell?bot22:bot21;
+  const db=new DatabaseSync(':memory:'); db.exec(schema); for(const u of legacyUsers)db.prepare('INSERT INTO astra_users(telegram_id,zodiac,balance) VALUES(?,?,?)').run(u.id,u.sign||'aries',u.balance); db.exec(migration21); if(shell||editorial||forecast||economy) db.exec(migration22); if(forecast||economy) db.exec(migration23); if(economy) db.exec(migration24); if(full) db.exec(migration25);
+  const DB={async batch(statements){db.exec('BEGIN');try{const r=statements.map(s=>s._runSync());db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}},prepare(sql) {
     const st=db.prepare(sql); let args=[];
     return {bind(...a){args=a;return this;},async first(){await Promise.resolve();return st.get(...args)??null;},
       async all(){await Promise.resolve();return {results:st.all(...args)};},
-      async run(){await Promise.resolve();return {meta:{changes:Number(st.run(...args).changes)}};}};
+      async run(){await Promise.resolve();return {meta:{changes:Number(st.run(...args).changes)}};},_runSync(){return {meta:{changes:Number(st.run(...args).changes)}};}};
   }};
   const env={DB,ASTRA_BOT_TOKEN:'FAKE',ASTRA_WEBHOOK_SECRET:'FAKE_HEADER',ASTRA_ADMIN_KEY:'FAKE_ADMIN',CHANNEL_USERNAME:'@examplechannel'};
   if(forecast||economy) env.ASTRA_FORECAST_START_DAY='2026-01-01';
-  let seq=1000; const out=[]; let fail=null; let expiredCallback=false;
+  let seq=1000; const out=[]; let fail=null; let expiredCallback=false;const apiFailures=new Map(),apiDelays=new Map(),apiResults=new Map();let starTransactions=[];
   const old=globalThis.fetch;
   globalThis.fetch=async (url,opts)=>{
     if (!String(url).startsWith('https://api.telegram.org/botFAKE/')) throw Error('Unexpected network destination');
     const method=String(url).split('/').at(-1),body=JSON.parse(opts.body); out.push({method,body});
     await Promise.resolve();
+    if(apiDelays.has(method))await new Promise(resolve=>setTimeout(resolve,apiDelays.get(method)));
+    const injected=apiFailures.get(method);
+    if(injected==='network')throw Error('Synthetic API network failure');
+    if(injected==='malformed')return new Response('malformed');
+    if(Number.isInteger(injected))return Response.json({ok:false,error_code:injected,parameters:{retry_after:1}},{status:injected});
+    if(apiResults.has(method))return Response.json({ok:true,result:apiResults.get(method)});
     if(method==='answerCallbackQuery' && expiredCallback) throw Error('Simulated expired callback');
     if (method==='sendMessage' && fail) {
       if (fail==='network') throw Error('Simulated network failure');
       if (fail==='malformed') return new Response('broken');
       return Response.json({ok:false,error_code:fail,description:'Fake rejection'},{status:fail});
     }
-    return Response.json({ok:true,result:method==='getChatMember'?{status:'member'}:true});
+    return Response.json({ok:true,result:method==='getChatMember'?{status:'member'}:method==='getMe'?{id:424242,username:'Astra_Fake_Test_Bot'}:method==='getStarTransactions'?{transactions:starTransactions}:true});
   };
   const user=(id,balance=20)=>db.prepare("INSERT INTO astra_users(telegram_id,zodiac,balance) VALUES(?,'aries',?)").run(id,balance);
   const hook=async update=>bot.fetch(new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(update)}),env);
@@ -43,5 +51,5 @@ export function fixture({legacyUsers=[],economy=process.env.ASTRA_TEST_RELEASE==
   const query=(sql,...args)=>db.prepare(sql).get(...args);
   const balance=id=>query('SELECT balance FROM astra_users WHERE telegram_id=?',id)?.balance;
   const reconcile=()=>query(`SELECT count(*) AS n FROM astra_users u WHERE balance<>(SELECT coalesce(sum(delta),0) FROM astra_wallet_ledger WHERE telegram_id=u.telegram_id)`).n;
-  return {db,env,bot,out,user,hook,message,click,query,balance,reconcile,fail(v){fail=v;},expireCallbacks(v){expiredCallback=v;},close(){globalThis.fetch=old;db.close();}};
+  return {db,env,bot,out,user,hook,message,click,query,balance,reconcile,apiResult(method,value){value==null?apiResults.delete(method):apiResults.set(method,value);},apiFailure(method,value){value==null?apiFailures.delete(method):apiFailures.set(method,value);},apiDelay(method,value){apiDelays.set(method,value);},setStarTransactions(rows){starTransactions=rows;},fail(v){fail=v;},expireCallbacks(v){expiredCallback=v;},close(){globalThis.fetch=old;db.close();}};
 }

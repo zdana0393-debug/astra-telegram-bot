@@ -1,0 +1,13 @@
+CREATE TRIGGER IF NOT EXISTS astra_payment_receipt_guard BEFORE INSERT ON astra_payment_receipts BEGIN
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM astra_payment_tombstones WHERE charge_hash=NEW.charge_hash) THEN RAISE(IGNORE) END;
+ SELECT CASE WHEN NEW.credited_dust<>CASE WHEN NEW.kind='paid' AND NOT EXISTS(SELECT 1 FROM astra_external_refunds WHERE charge_hash=NEW.charge_hash) AND EXISTS(SELECT 1 FROM astra_payment_orders o JOIN astra_users u ON u.telegram_id=o.owner_id WHERE o.order_id=NEW.order_id AND o.owner_id=NEW.payer_id) THEN NEW.dust ELSE 0 END OR NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.order_id=NEW.order_id AND o.payer_id=NEW.payer_id AND o.xtr=NEW.xtr AND o.dust=NEW.dust AND NEW.currency='XTR') THEN RAISE(ABORT,'Payment snapshot mismatch') END;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_payment_receipt_post AFTER INSERT ON astra_payment_receipts BEGIN
+ INSERT INTO astra_payment_tombstones(charge_hash,xtr,dust,credited_dust,scope,refunded) SELECT NEW.charge_hash,NEW.xtr,NEW.dust,NEW.credited_dust,scope,CASE WHEN NEW.kind='refunded' THEN 1 ELSE 0 END FROM astra_payment_orders WHERE order_id=NEW.order_id;
+ UPDATE astra_users SET balance=balance+(SELECT credited_dust FROM astra_payment_receipts WHERE charge_hash=NEW.charge_hash) WHERE telegram_id=NEW.payer_id AND EXISTS(SELECT 1 FROM astra_payment_orders WHERE order_id=NEW.order_id AND owner_id=NEW.payer_id);
+ INSERT INTO astra_wallet_ledger(idempotency_key,telegram_id,delta,reason)
+ SELECT 'stars:'||NEW.charge_hash,NEW.payer_id,credited_dust,'payment:stars' FROM astra_payment_receipts WHERE charge_hash=NEW.charge_hash AND credited_dust>0;
+ UPDATE astra_payment_orders SET status=CASE WHEN NEW.kind='refunded' OR EXISTS(SELECT 1 FROM astra_external_refunds WHERE charge_hash=NEW.charge_hash) THEN 'refunded' WHEN (SELECT credited_dust FROM astra_payment_receipts WHERE charge_hash=NEW.charge_hash)>0 THEN 'credited' ELSE 'needs_review' END,updated_at=CURRENT_TIMESTAMP WHERE order_id=NEW.order_id;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_payment_receipt_immutable BEFORE UPDATE ON astra_payment_receipts BEGIN SELECT RAISE(ABORT,'Payment proof immutable'); END;
+CREATE TRIGGER IF NOT EXISTS astra_payment_order_snapshot BEFORE UPDATE ON astra_payment_orders WHEN NEW.order_id<>OLD.order_id OR NEW.payload<>OLD.payload OR NEW.payer_id<>OLD.payer_id OR NEW.package<>OLD.package OR NEW.xtr<>OLD.xtr OR NEW.dust<>OLD.dust OR NEW.scope<>OLD.scope OR NEW.terms_version<>OLD.terms_version OR NEW.retention_days<>OLD.retention_days OR NEW.request_key<>OLD.request_key OR NEW.created_at<>OLD.created_at BEGIN SELECT RAISE(ABORT,'Order price snapshot immutable'); END;
