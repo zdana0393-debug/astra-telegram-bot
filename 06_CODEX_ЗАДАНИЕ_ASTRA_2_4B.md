@@ -1,0 +1,28 @@
+# CODEX — разработка полной Astra 2.4B поверх готовой 2.4A
+
+## Правильная ветка и задание
+Repository zdana0393-debug/astra-telegram-bot. Работай ТОЛЬКО в ветке **astra-2.4b-rewards-stars**, созданной поверх **astra-2.4-economy** (готовая 2.4A, Draft PR #5). Новая задача — сделать **полный совместный релиз Astra 2.4A+2.4B**, который владелец будет ставить и тестировать одной процедурой; 2.4A в Cloudflare отдельно НЕ устанавливать.
+
+**Прочитать полностью и соблюдать главный документ: docs/ASTRA_2_4B_REWARDS_STARS_SPEC.md.**
+Затем изучить: docs/ASTRA_2_4_ECONOMY_PLAN.md, docs/ASTRA_2_4A_ARCHITECTURE.md, docs/ASTRA_2_4A_TEST_REPORT.md, docs/ASTRA_3_0_SPEC_v0_2.md §§10–12,16–18, migrations/0021_wallet.sql, 0022_shell.sql, 0023_forecast.sql, 0024_activity_history.sql, release/ASTRA_2_4A_WORKER.js, src/economy/*, src/forecast/*, все tests/scripts/guide и редакционный регламент.
+
+Перед кодом сверить фактический SQL: старый astra_referral сразу платит +5; CHECK старой astra_operations допускает только daily+1, channel/referral+5, tarot-3. Не обходить их незаконными или ложными reason/SQL UPDATE.
+
+## Работа в одной задаче
+1. Технический аудит финансовой схемы и анализ cutover/referral/refund privacy. Сразу сохранить архитектуру в docs/ASTRA_2_4_ARCHITECTURE.md.
+2. Построить полную 2.4B: новую версионированную наградную систему со ставками из ТЗ (+12 новый профиль, +3/day, +3 за первые 3 последовательных, +5 каждый цикл 7, +12 за 30 различных дат, +14/+4 после двух дней реферала, +8 за новую подтверждённую подписку), при сохранении GPT6 +5, Tarot -3, extended forecast -4, старых балансов/снимков/истории и без ретронаград. Все новые значения — кандидаты для последующего решения владельца, НЕ вводить их на сервер сейчас. Дата policy cutover и feature flag, старые pending referrals и старые callbacks требуют отдельного алгоритма миграции и проверок.
+3. Реализовать новый Stars store: наборы 10 XTR=100 ✨, 25=270, 50=570, но пока с default OFF. Invoice/currency/amount/owner/charge validation, pre_checkout ≤10 sec, successful_payment only, atomic credit exactly once, invoice history, Terms, /paysupport, реально выполнимая процедура refundStarPayment с учётом уже потраченной пыли, идемпотентность и пути reconciliation Telegram↔D1. Отправлять реальные или тестовые инвойсы сейчас ЗАПРЕЩЕНО; только код и mock/tests. Для реального Stars нужно строго Telegram test environment — обычный staging bot может брать реальные Stars.
+4. Создать additive migration **0025** (Console-friendly steps) поверх полной 0024. Там, где требуется замена старых триггеров, документировать writer pause, переходную совместимость и опасность rollback к старому денежному JS. Нельзя вернуть старый 2.4A Worker после включения новой денежной политики просто нажатием Rollback без продуманного плана!
+5. Переработать UI «Звёздная пыль»: показать только фактические новые ставки после cutover, подробную историю/серии/канал/реферал/магазин, ясные условия платежей; /privacy и /delete — честно согласовать с минимально нужными для возвратов данными. Сохранить шесть главных разделов, стиль 2.3A, старые кнопки и прогнозы/Таро.
+6. Собрать один **release/ASTRA_2_4_WORKER.js** (один JS для ручной вставки в Cloudflare Dashboard) и исходники+сборщик, scripts/test-2.4.sh. Не ломать архитектуру 2.4A и 2.3B.
+7. Провести полную регрессию 2.0→2.4A и расширенные проверки 2.4B: 20+ concurrent clients, выплаты/charges/refunds/debts, двухдневные рефералы до/после policy switch, 3/7/30, +12 only new profiles, 7/30/90-day simulation, migration + rollback; partial schema 503; fake Telegram payments/errors; /delete FK ON/OFF; cron; 10ms CPU budget как открытый риск. Все фактические числа и ошибки честно привести в отчёте. Не считать Node-тест доказательством D1.
+8. Создать документы: docs/ASTRA_2_4_ECONOMY_SIMULATION.md, docs/ASTRA_2_4_PAYMENT_RUNBOOK.md, docs/ASTRA_2_4_TEST_REPORT.md, docs/ASTRA_2_4_STAGING_GUIDE.md, docs/ASTRA_2_4_PR.md, SQL read-only integrity scripts и шаги 0025. Staging guide — **одна установка миграций 0024+0025 и одного Worker**, никакого отдельного промежуточного Deploy 2.4A. Платежи Stars тестировать позже в Telegram dedicated test environment. Update README/docs CURRENT_STATE, чётко разделяя локально готово, Cloudflare испытано и production.
+9. Создать Draft PR base=astra-2.4-economy, head=astra-2.4b-rewards-stars; при GitHub Forbidden оставить compare URL, ChatGPT создаст PR.
+
+## Жёсткие запреты
+Ни production main, ни Astra 2.0, ни astra-live-v2, ни установленный test Worker/DB, ни webhook/secret/Cron, ни remote SQL/Telegram payments. Не отправлять owner ID, токены, реальные платежи в GitHub. Не заменять штатную денежную архитектуру без тестов, не фальсифицировать логику Stars, не оставлять скрытый callback для платежей в магазине при disabled.
+
+Не требовать платного LLM API, платного сервера или дополнительных подписок. Применять официальные Telegram Bot API docs по XTR и refund. Если обнаружен серьёзный незакрываемый блокер, детально зафиксировать его и оставить реальные деньги отключёнными, а не притворяться, что этап готов к публичной монетизации.
+
+## Итог для владельца — по-русски
+Список сделанного, точные бонусы/условия, таблицы 0025 и её SQL-шаги, тестовые результаты, ограничения, наброски экранов, риски именно Stars/refund и чёткий порядок будущего совместного staging 2.4 → production по отдельному подтверждению. Создать все файлы/коммиты в указанной ветке. Не останавливайся только на плане, реализуй весь реально выполнимый функционал.
