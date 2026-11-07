@@ -49,12 +49,12 @@ async function policyBefore(env,update){
   if(event&&p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED)){
     const existing=await env.DB.prepare('SELECT update_id FROM astra_policy_events WHERE update_id=?').bind(update.update_id).first();
     const oldJob=existing?null:await env.DB.prepare('SELECT update_id FROM astra_update_jobs WHERE update_id=?').bind(update.update_id).first();
-    if(!existing&&!oldJob)await capturePolicyEvent(env,event,update.update_id,activityDay(),p);
+    if(!existing&&!oldJob)await capturePolicyEvent(env,event,update.update_id,activityDay(),p,false);
   }
   if(event&&p.activated)await settlePolicyEvents(env,event.id);
   return event?{...event,policyActive:Boolean(p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))}:null;
 }
-async function policyAfter(env,event){if(event)await settlePolicyEvents(env,event.id);}
+async function policyAfter(env,event){if(event?.signSelection)await settlePolicyEvents(env,event.id);}
 
 async function policyFaq(env){
   const p=await readPolicy(env),items=FAQ.map(row=>[...row]);

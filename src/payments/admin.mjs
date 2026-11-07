@@ -18,8 +18,8 @@ export async function purgePaymentData(env,dryRun=true){
     sum(CASE WHEN o.status NOT IN ('credited','refunded') OR o.updated_at>=datetime('now','-'||o.retention_days||' days') THEN 1 ELSE 0 END)=0
     AND NOT EXISTS(SELECT 1 FROM astra_refund_accounts a WHERE a.payer_id=o.payer_id AND (a.debt>0 OR a.updated_at>=datetime('now','-'||o.retention_days||' days')))
     AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies a WHERE a.payer_id=o.payer_id AND a.status='needs_review')
-    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_payment_receipts r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 100`).all();
-  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 100`).bind(p.retention_days).all();
+    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_payment_receipts r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 10`).all();
+  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 10`).bind(p.retention_days).all();
   if(dryRun)return {dry_run:true,eligible:rows.results.length+closed.results.length};
   // Each deletion is a single statement with explicit FK-OFF cleanup trigger.
   for(const o of rows.results)await env.DB.prepare('DELETE FROM astra_payment_orders WHERE payer_id=?').bind(o.payer_id).run();
@@ -40,7 +40,7 @@ export async function paymentsAdmin(request,env){
   }
   if(url.pathname==='/internal/payments/status'){
     if(b.order_id){const row=await env.DB.prepare('SELECT o.order_id,o.payer_id,o.xtr,o.dust,o.status,r.charge_id,r.charge_hash,r.credited_dust FROM astra_payment_orders o LEFT JOIN astra_payment_receipts r ON r.order_id=o.order_id WHERE o.order_id=?').bind(b.order_id).first();return Response.json({order:row},{headers:{'Cache-Control':'no-store'}});}
-    if(typeof b.charge_prefix!=='string'||!/^[a-f0-9]{12,64}$/.test(b.charge_prefix))throw Error('Order or support reference required');const rows=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash LIKE ? LIMIT 5').bind(b.charge_prefix+'%').all();return Response.json({cases:rows.results},{headers:{'Cache-Control':'no-store'}});
+    if(typeof b.charge_prefix!=='string'||!/^[a-f0-9]{12,64}$/.test(b.charge_prefix))throw Error('Order or support reference required');const rows=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash>=? AND charge_hash<? LIMIT 5').bind(b.charge_prefix,b.charge_prefix+'g').all();return Response.json({cases:rows.results},{headers:{'Cache-Control':'no-store'}});
   }
   if(url.pathname==='/internal/payments/refund'){await paymentAudit(env,'operator_refund_requested');return Response.json(await requestStarRefund(env,b.charge_id));}
   if(url.pathname==='/internal/payments/reconcile'){const r=await reconcileStarPage(env,b.offset||0,b.recover_archived===true);await paymentAudit(env,'operator_reconciliation');return Response.json(r);}

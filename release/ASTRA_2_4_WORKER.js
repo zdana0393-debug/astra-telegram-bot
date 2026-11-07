@@ -607,7 +607,7 @@ async function dispatch(env, update) {
   const policyEvent=await policyBefore(env,update);
   const id=update.message?.from?.id ?? update.callback_query?.from?.id ?? null;
   const activityEvent=economyEvent(update);
-  const newActivityDelivery=activityEvent?await economyFirstDelivery(env,uid):false;
+  const newActivityDelivery=activityEvent&&!policyEvent?.policyActive?await economyFirstDelivery(env,uid):false;
   const now=Date.now(),lease=crypto.randomUUID();
   const claim=await env.DB.prepare(`INSERT INTO astra_update_jobs(update_id,telegram_id,lease,lease_until) VALUES(?,?,?,?)
     ON CONFLICT(update_id) DO UPDATE SET lease=excluded.lease,lease_until=excluded.lease_until
@@ -637,9 +637,8 @@ async function dispatch(env, update) {
 
 async function schemaReady(env){
   if(!env.DB||!activationReady(env))return false;
-  try{const r=await env.DB.prepare("SELECT count(*) AS n FROM sqlite_master WHERE name IN ('astra_users','astra_processed_updates','astra_operations','astra_wallet_ledger','astra_update_jobs','astra_broadcast_jobs','astra_tarot_requests','astra_shell_rewards','astra_forecast_daily','astra_forecast_unlocks','astra_activity_days','astra_register','astra_operation_guard','astra_operation_post','astra_referral_policy','astra_erase','astra_shell_reward_guard','astra_shell_reward_post','astra_shell_erase','astra_forecast_guard','astra_forecast_post','astra_forecast_erase','astra_forecast_daily_immutable','astra_forecast_unlock_immutable','astra_activity_guard','astra_activity_erase','idx_forecast_daily_day','idx_forecast_unlocks_day','idx_astra_ledger_history','astra_policy','astra_user_policy','astra_referral_contracts','astra_policy_events','idx_policy_events_owner','astra_policy_days','astra_reward_claims','idx_reward_claims_owner','astra_referral_payouts','astra_reward_guard','astra_reward_post','astra_policy_day_guard','astra_policy_day_post','astra_referral_payout_guard','astra_referral_payout_post','astra_reward_immutable','astra_policy_day_immutable','astra_payment_orders','idx_payment_orders_owner','astra_payment_tombstones','astra_payment_receipts','astra_payment_anomalies','astra_refund_requests','astra_external_refunds','astra_refund_accounts','astra_refund_settlements','astra_debt_repayments','astra_payment_receipt_guard','astra_payment_receipt_post','astra_payment_receipt_immutable','astra_payment_order_snapshot','astra_refund_notice_guard','astra_refund_notice_post','astra_refund_settlement_post','astra_positive_debt','astra_debt_repayment_guard','astra_debt_repayment_post','astra_refund_notice_immutable','astra_refund_settlement_immutable','astra_debt_repayment_immutable','astra_policy_date_guard','astra_policy_erase','astra_referrer_erasing','astra_payment_audit','astra_refund_request_audit','astra_payment_purge','astra_payment_purge_closed','astra_refund_account_erasing')").first();
-    const p=await readPolicy(env),old=await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='trigger' AND name='astra_referral'").first();
-    return r?.n===77&&p?.migration_done===1&&!old;
+  try{const r=await env.DB.prepare("SELECT count(*) AS n,(SELECT migration_done FROM astra_policy WHERE singleton=1) AS migration_done,(SELECT count(*) FROM sqlite_master WHERE type='trigger' AND name='astra_referral') AS old_referral FROM sqlite_master WHERE name IN ('astra_users','astra_processed_updates','astra_operations','astra_wallet_ledger','astra_update_jobs','astra_broadcast_jobs','astra_tarot_requests','astra_shell_rewards','astra_forecast_daily','astra_forecast_unlocks','astra_activity_days','astra_register','astra_operation_guard','astra_operation_post','astra_referral_policy','astra_erase','astra_shell_reward_guard','astra_shell_reward_post','astra_shell_erase','astra_forecast_guard','astra_forecast_post','astra_forecast_erase','astra_forecast_daily_immutable','astra_forecast_unlock_immutable','astra_activity_guard','astra_activity_erase','idx_forecast_daily_day','idx_forecast_unlocks_day','idx_astra_ledger_history','astra_policy','astra_user_policy','astra_referral_contracts','astra_policy_events','idx_policy_events_owner','astra_policy_days','astra_reward_claims','idx_reward_claims_owner','astra_referral_payouts','astra_reward_guard','astra_reward_post','astra_policy_day_guard','astra_policy_day_post','astra_referral_payout_guard','astra_referral_payout_post','astra_reward_immutable','astra_policy_day_immutable','astra_payment_orders','idx_payment_orders_owner','astra_payment_tombstones','astra_payment_receipts','astra_payment_anomalies','astra_refund_requests','astra_external_refunds','astra_refund_accounts','astra_refund_settlements','astra_debt_repayments','astra_payment_receipt_guard','astra_payment_receipt_post','astra_payment_receipt_immutable','astra_payment_order_snapshot','astra_refund_notice_guard','astra_refund_notice_post','astra_refund_settlement_post','astra_positive_debt','astra_debt_repayment_guard','astra_debt_repayment_post','astra_refund_notice_immutable','astra_refund_settlement_immutable','astra_debt_repayment_immutable','astra_policy_date_guard','astra_policy_erase','astra_referrer_erasing','astra_payment_audit','astra_refund_request_audit','astra_payment_purge','astra_payment_purge_closed','astra_refund_account_erasing')").first();
+    return r?.n===77&&r.migration_done===1&&r.old_referral===0;
   }catch{return false;}
 }
 
@@ -691,24 +690,24 @@ async function broadcast(env) {
     // A crash after this point is conservatively unknown: no automatic duplicate send.
     try {
       await sendFreeForecast(env,user.telegram_id,user.zodiac,day);
-      await env.DB.prepare("UPDATE astra_broadcast_jobs SET delivery='sent' WHERE telegram_id=? AND day=?")
-        .bind(user.telegram_id,day).run();
-      await env.DB.prepare('UPDATE astra_users SET last_broadcast_day=? WHERE telegram_id=?')
-        .bind(day,user.telegram_id).run();
+      await env.DB.batch([
+        env.DB.prepare("UPDATE astra_broadcast_jobs SET delivery='sent' WHERE telegram_id=? AND day=?").bind(user.telegram_id,day),
+        env.DB.prepare('UPDATE astra_users SET last_broadcast_day=? WHERE telegram_id=?').bind(day,user.telegram_id)
+      ]);
     } catch(e) {
       console.error('Broadcast delivery failed');
-      await env.DB.prepare("UPDATE astra_broadcast_jobs SET delivery=? WHERE telegram_id=? AND day=?")
-        .bind(e.telegramCode ? 'rejected' : 'unknown',user.telegram_id,day).run();
-      if (e.telegramCode===403) {
-        await env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?')
-          .bind(user.telegram_id).run();
-      }
+      const failed=[env.DB.prepare("UPDATE astra_broadcast_jobs SET delivery=? WHERE telegram_id=? AND day=?")
+        .bind(e.telegramCode ? 'rejected' : 'unknown',user.telegram_id,day)];
+      if(e.telegramCode===403)failed.push(env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(user.telegram_id));
+      await env.DB.batch(failed);
     }
   }
   if (now.getUTCHours()===6 && now.getUTCMinutes()===0) {
-    await env.DB.prepare("DELETE FROM astra_processed_updates WHERE received_at < datetime('now','-14 days')").run();
-    await env.DB.prepare("DELETE FROM astra_update_jobs WHERE received_at < datetime('now','-14 days') AND status='done'").run();
-    await env.DB.prepare("DELETE FROM astra_broadcast_jobs WHERE day < date('now','-14 days')").run();
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM astra_processed_updates WHERE received_at < datetime('now','-14 days')"),
+      env.DB.prepare("DELETE FROM astra_update_jobs WHERE received_at < datetime('now','-14 days') AND status='done'"),
+      env.DB.prepare("DELETE FROM astra_broadcast_jobs WHERE day < date('now','-14 days')")
+    ]);
   }
 }
 
@@ -13277,10 +13276,10 @@ async function getForecastDaily(env,sign,day,generate=generateForecast) {
   const old=await read();if(old)return old;
   const f=generate(sign,day,'ru');
   if(!f.free_text?.trim()||!f.extended_text?.trim()||f.sign!==sign||f.day!==day||f.locale!=='ru')throw Error('Incomplete forecast payload');
-  await env.DB.prepare(`INSERT INTO astra_forecast_daily(sign,day,locale,free_text,extended_text,number,engine_version,content_version,number_algorithm_version,source_tags)
-    VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(sign,day,locale) DO NOTHING`)
-    .bind(sign,day,'ru',f.free_text,f.extended_text,f.number,f.engine_version,f.content_version,f.number_algorithm_version,f.source_tags).run();
-  const saved=await read();if(!saved)throw Error('Forecast cache unavailable');return saved;
+  const inserted=await env.DB.prepare(`INSERT INTO astra_forecast_daily(sign,day,locale,free_text,extended_text,number,engine_version,content_version,number_algorithm_version,source_tags)
+    VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(sign,day,locale) DO NOTHING RETURNING *`)
+    .bind(sign,day,'ru',f.free_text,f.extended_text,f.number,f.engine_version,f.content_version,f.number_algorithm_version,f.source_tags).first();
+  const saved=inserted||await read();if(!saved)throw Error('Forecast cache unavailable');return saved;
 }
 const getForecastUnlock=(env,id,day)=>env.DB.prepare('SELECT * FROM astra_forecast_unlocks WHERE telegram_id=? AND day=?').bind(id,day).first();
 async function purchaseForecast(env,id,sign,day,generate=generateForecast) {
@@ -13489,6 +13488,16 @@ async function safeEconomyActivity(env,event,acceptedAt){
 }
 
 // Generated unified Astra 2.4. Rewards and Stars OFF until approved.
+// Opt-in, invocation-local counters. No IDs, SQL, arguments, tokens or response bodies.
+async function measureInvocation(env,kind,work){
+  if(env.ASTRA_D1_DIAGNOSTICS!==true&&env.ASTRA_D1_DIAGNOSTICS!=='true')return work(env);
+  const start=performance.now(),raw=new WeakMap(),stats={event:'astra_d1_invocation',kind,d1_calls:0,statements:0,batches:0,failed_calls:0,meta_results:0,results_without_meta:0,rows_read_observed:0,rows_written_observed:0,db_size_after_max:null};
+  const resultMeta=result=>{if(Number.isFinite(result?.meta?.size_after))stats.db_size_after_max=Math.max(stats.db_size_after_max||0,result.meta.size_after);if(result?.meta&&Number.isFinite(result.meta.rows_read)&&Number.isFinite(result.meta.rows_written)){stats.meta_results++;stats.rows_read_observed+=result.meta.rows_read;stats.rows_written_observed+=result.meta.rows_written;}else stats.results_without_meta++;};
+  const statement=s=>{const wrapped={bind(...args){return statement(s.bind(...args));}};raw.set(wrapped,s);for(const method of ['first','all','run','raw'])if(typeof s[method]==='function')wrapped[method]=async(...args)=>{stats.d1_calls++;stats.statements++;try{const r=await s[method](...args);resultMeta(r);return r;}catch(e){stats.failed_calls++;throw e;}};return wrapped;};
+  const db=env.DB?{prepare(sql){return statement(env.DB.prepare(sql));},async batch(statements){stats.d1_calls++;stats.batches++;stats.statements+=statements.length;try{const r=await env.DB.batch(statements.map(s=>raw.get(s)||s));for(const v of r)resultMeta(v);return r;}catch(e){stats.failed_calls++;throw e;}}}:env.DB;
+  try{return await work({...env,DB:db});}finally{console.log(JSON.stringify({...stats,wall_ms:+(performance.now()-start).toFixed(3),rows_complete:stats.results_without_meta===0}));}
+}
+
 const POLICY_VERSION='policy-v2';
 const POLICY_TRUE=value=>value===true||value==='true';
 async function readPolicy(env){return env.DB.prepare('SELECT * FROM astra_policy WHERE singleton=1').first();}
@@ -13506,7 +13515,7 @@ async function armPolicy(env,startDay,today=activityDay()){
   const p=await readPolicy(env);if(p.start_day&&p.start_day!==startDay)throw Error('Policy cutover already fixed');
   await env.DB.prepare('UPDATE astra_policy SET start_day=?,enabled=1 WHERE singleton=1 AND activated=0').bind(startDay).run();return readPolicy(env);
 }
-async function capturePolicyEvent(env,event,updateId,day,p){
+async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
   if(!event||!Number.isSafeInteger(updateId)||!validDay(day))return null;
   const enabled=p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED);
   const legacy=enabled?0:1;
@@ -13514,6 +13523,7 @@ async function capturePolicyEvent(env,event,updateId,day,p){
   await env.DB.prepare(`INSERT INTO astra_policy_events(update_id,telegram_id,day,source,legacy,processed)
     SELECT ?,u.telegram_id,?,?,?,? FROM astra_users u WHERE u.telegram_id=? AND (u.zodiac IS NOT NULL OR ?=1) AND NOT EXISTS(SELECT 1 FROM astra_policy_days d WHERE d.telegram_id=u.telegram_id AND d.day=?)
     ON CONFLICT(update_id) DO NOTHING`).bind(updateId,day,event.source,legacy,legacy,event.id,event.signSelection?1:0,day).run();
+  if(!returnRow)return;
   return env.DB.prepare('SELECT * FROM astra_policy_events WHERE update_id=? AND telegram_id=?').bind(updateId,event.id).first();
 }
 async function settlePolicyEvents(env,owner){
@@ -13592,22 +13602,24 @@ async function sendStarInvoice(env,order){
     WHERE order_id=? AND payer_id=? AND status='created' AND delivery='pending'`).bind(lease,order.order_id,order.payer_id).run();
   if(!r.meta.changes)return {sent:false,status:order.status};
   try{
-    await starsApi(env,'sendInvoice',{chat_id:order.payer_id,title:'Звёздная пыль Астры',description:`${order.dust} ✨. Условия: ${order.terms_version}.`,payload:order.payload,currency:'XTR',prices:[{label:`${order.dust} ✨`,amount:order.xtr}],provider_token:''});
+    await starsApi(env,'sendInvoice',{chat_id:order.payer_id,title:'Звёздная пыль Астры',description:`${order.dust} ✨. Условия: ${order.terms_version}.`,payload:order.payload,currency:'XTR',prices:[{label:`${order.dust} ✨`,amount:order.xtr}],provider_token:'',start_parameter:'stars'});
     await env.DB.prepare(`UPDATE astra_payment_orders SET status=CASE WHEN status='created' THEN 'invoiced' ELSE status END,delivery='sent',updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?`).bind(order.order_id,lease).run();
     return {sent:true};
   }catch(e){await env.DB.prepare("UPDATE astra_payment_orders SET delivery=?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?").bind(e.telegramCode?'failed':'unknown',order.order_id,lease).run();throw e;}
 }
-async function reservePrecheckout(env,q){
+async function reservePrecheckout(env,q,{deadline=Infinity}={}){
   await paymentEnvironment(env,{shop:true});
+  if(performance.now()>=deadline)return false;
   const o=await readPaymentOrder(env,q.invoice_payload);
-  if(!o||Date.now()-Date.parse(o.created_at.replace(' ','T')+'Z')>86400000||o.payer_id!==q.from?.id||o.owner_id!==q.from.id||o.scope!==paymentScope(env)||q.currency!=='XTR'||q.total_amount!==o.xtr||!['created','invoiced','confirmed'].includes(o.status))return false;
+  if(performance.now()>=deadline||!o||Date.now()-Date.parse(o.created_at.replace(' ','T')+'Z')>86400000||o.payer_id!==q.from?.id||o.owner_id!==q.from.id||o.scope!==paymentScope(env)||q.currency!=='XTR'||q.total_amount!==o.xtr||!['created','invoiced','confirmed'].includes(o.status))return false;
   const r=await env.DB.prepare(`UPDATE astra_payment_orders SET precheckout_id=?,status='confirmed',updated_at=CURRENT_TIMESTAMP
     WHERE order_id=? AND payer_id=? AND status IN ('created','invoiced','confirmed') AND (precheckout_id IS NULL OR precheckout_id=?)`).bind(q.id,o.order_id,q.from.id,q.id).run();
   return Boolean(r.meta.changes);
 }
-async function answerStarPrecheckout(env,q){
-  let timer,ok=false;
-  try{ok=await Promise.race([reservePrecheckout(env,q),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),6000);})]);}catch{ok=false;}finally{clearTimeout(timer);}
+async function answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
+  let timer,ok=false;const deadline=startedAt+6000;
+  const validate=async()=>await ready()&&performance.now()<deadline?reservePrecheckout(env,q,{deadline}):false;
+  try{ok=await Promise.race([validate(),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),Math.max(0,deadline-performance.now()));})]);}catch{ok=false;}finally{clearTimeout(timer);}
   await starsApi(env,'answerPreCheckoutQuery',{pre_checkout_query_id:q.id,ok,...(ok?{}:{error_message:'Предложение недоступно. Откройте магазин заново или обратитесь в /paysupport.'})},2500);
   return ok;
 }
@@ -13683,11 +13695,11 @@ async function reconcileStarPage(env,offset=0,recoverArchived=false){
   const transactions=page.transactions.slice(0,5);
   const result={scanned:transactions.length,credited_or_recorded:0,refunds:0,needs_review:0,next_offset:offset+transactions.length};
   for(const t of transactions){
-    if(typeof t.id!=='string'||!Number.isSafeInteger(t.amount)||!t.amount)continue;
+    if(typeof t.id!=='string'||!Number.isSafeInteger(t.amount))continue;
     const incoming=t.source?.type==='user'&&t.source.transaction_type==='invoice_payment';
     const outgoing=t.receiver?.type==='user'&&t.receiver.transaction_type==='invoice_payment';
     const partner=incoming?t.source:outgoing?t.receiver:null;if(!partner||!Number.isSafeInteger(partner.user?.id))continue;
-    if((incoming&&t.amount<0)||(t.nanostar_amount&&t.nanostar_amount!==0)){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:0,invoice_payload:partner.invoice_payload||''},await chargeHash(t.id),'unsupported_transaction_amount');result.needs_review++;continue;}
+    if(t.amount<=0||(t.nanostar_amount!=null&&t.nanostar_amount!==0)){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:0,invoice_payload:partner.invoice_payload||''},await chargeHash(t.id),'unsupported_transaction_amount');result.needs_review++;continue;}
     let payload=partner.invoice_payload;
     if(!payload){const r=await env.DB.prepare('SELECT o.payload FROM astra_payment_receipts r JOIN astra_payment_orders o ON o.order_id=r.order_id WHERE r.charge_id=? AND r.payer_id=?').bind(t.id,partner.user.id).first();payload=r?.payload;}
     if(!payload&&outgoing&&await env.DB.prepare('SELECT charge_hash FROM astra_payment_tombstones WHERE charge_hash=?').bind(await chargeHash(t.id)).first())payload='';
@@ -13727,8 +13739,8 @@ async function purgePaymentData(env,dryRun=true){
     sum(CASE WHEN o.status NOT IN ('credited','refunded') OR o.updated_at>=datetime('now','-'||o.retention_days||' days') THEN 1 ELSE 0 END)=0
     AND NOT EXISTS(SELECT 1 FROM astra_refund_accounts a WHERE a.payer_id=o.payer_id AND (a.debt>0 OR a.updated_at>=datetime('now','-'||o.retention_days||' days')))
     AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies a WHERE a.payer_id=o.payer_id AND a.status='needs_review')
-    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_payment_receipts r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 100`).all();
-  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 100`).bind(p.retention_days).all();
+    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_payment_receipts r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 10`).all();
+  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 10`).bind(p.retention_days).all();
   if(dryRun)return {dry_run:true,eligible:rows.results.length+closed.results.length};
   // Each deletion is a single statement with explicit FK-OFF cleanup trigger.
   for(const o of rows.results)await env.DB.prepare('DELETE FROM astra_payment_orders WHERE payer_id=?').bind(o.payer_id).run();
@@ -13749,7 +13761,7 @@ async function paymentsAdmin(request,env){
   }
   if(url.pathname==='/internal/payments/status'){
     if(b.order_id){const row=await env.DB.prepare('SELECT o.order_id,o.payer_id,o.xtr,o.dust,o.status,r.charge_id,r.charge_hash,r.credited_dust FROM astra_payment_orders o LEFT JOIN astra_payment_receipts r ON r.order_id=o.order_id WHERE o.order_id=?').bind(b.order_id).first();return Response.json({order:row},{headers:{'Cache-Control':'no-store'}});}
-    if(typeof b.charge_prefix!=='string'||!/^[a-f0-9]{12,64}$/.test(b.charge_prefix))throw Error('Order or support reference required');const rows=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash LIKE ? LIMIT 5').bind(b.charge_prefix+'%').all();return Response.json({cases:rows.results},{headers:{'Cache-Control':'no-store'}});
+    if(typeof b.charge_prefix!=='string'||!/^[a-f0-9]{12,64}$/.test(b.charge_prefix))throw Error('Order or support reference required');const rows=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash>=? AND charge_hash<? LIMIT 5').bind(b.charge_prefix,b.charge_prefix+'g').all();return Response.json({cases:rows.results},{headers:{'Cache-Control':'no-store'}});
   }
   if(url.pathname==='/internal/payments/refund'){await paymentAudit(env,'operator_refund_requested');return Response.json(await requestStarRefund(env,b.charge_id));}
   if(url.pathname==='/internal/payments/reconcile'){const r=await reconcileStarPage(env,b.offset||0,b.recover_archived===true);await paymentAudit(env,'operator_reconciliation');return Response.json(r);}
@@ -13812,12 +13824,12 @@ async function policyBefore(env,update){
   if(event&&p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED)){
     const existing=await env.DB.prepare('SELECT update_id FROM astra_policy_events WHERE update_id=?').bind(update.update_id).first();
     const oldJob=existing?null:await env.DB.prepare('SELECT update_id FROM astra_update_jobs WHERE update_id=?').bind(update.update_id).first();
-    if(!existing&&!oldJob)await capturePolicyEvent(env,event,update.update_id,activityDay(),p);
+    if(!existing&&!oldJob)await capturePolicyEvent(env,event,update.update_id,activityDay(),p,false);
   }
   if(event&&p.activated)await settlePolicyEvents(env,event.id);
   return event?{...event,policyActive:Boolean(p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))}:null;
 }
-async function policyAfter(env,event){if(event)await settlePolicyEvents(env,event.id);}
+async function policyAfter(env,event){if(event?.signSelection)await settlePolicyEvents(env,event.id);}
 
 async function policyFaq(env){
   const p=await readPolicy(env),items=FAQ.map(row=>[...row]);
@@ -13889,8 +13901,9 @@ async function paymentUpdate(env,update){
 
 Object.assign(HISTORY_LABELS,{"reward:v2:initial":"Новый профиль policy-v2","reward:v2:daily":"Активный день","reward:v2:first3":"Первые три дня подряд","reward:v2:weekly":"Семидневный цикл","reward:v2:thirty":"Тридцать разных дат","reward:v2:channel":"Новая подтверждённая подписка","reward:v2:referrer":"Реферальная награда за две даты","reward:v2:invitee":"Награда приглашённому за две даты","payment:stars":"Пакет пыли за Stars","refund:cash":"Возврат пакета: уменьшение пыли","refund:repayment":"Погашение долга по возврату"});
 
-export default {
+const astraWorker = {
   async fetch(request,env) {
+    const receivedAt=performance.now();
     const u=new URL(request.url);
     if(u.pathname.startsWith('/internal/payments/')||u.pathname==='/internal/economy/policy'){
       try{if(!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!=='Bearer '+env.ASTRA_ADMIN_KEY)return new Response('Forbidden',{status:403});if(!await schemaReady(env))return new Response('D1 schema unavailable',{status:503});return await paymentsAdmin(request,env);}catch{return new Response('Administrative operation unavailable; reconcile before retry',{status:503});}
@@ -13912,9 +13925,16 @@ export default {
     if (request.method==='POST' && u.pathname==='/telegram-webhook') {
       if (!env.ASTRA_WEBHOOK_SECRET || request.headers.get('X-Telegram-Bot-Api-Secret-Token')!==env.ASTRA_WEBHOOK_SECRET)
         return new Response('Forbidden',{status:403});
-      if (!await schemaReady(env)) return new Response('D1 schema unavailable',{status:503});
-      try { await dispatch(env,await request.json()); return new Response('OK'); }
-      catch(e){console.error('Webhook processing failed');return new Response('Temporary failure',{status:500});}
+      try {
+        const update=await request.json();
+        if(update?.pre_checkout_query){
+          if(!Number.isSafeInteger(update.update_id))throw Error('Invalid update');
+          await answerStarPrecheckout(env,update.pre_checkout_query,{ready:()=>schemaReady(env),startedAt:receivedAt});
+          return new Response('OK');
+        }
+        if(!await schemaReady(env))return new Response('D1 schema unavailable',{status:503});
+        await dispatch(env,update);return new Response('OK');
+      }catch(e){console.error('Webhook processing failed');return new Response('Temporary failure',{status:500});}
     }
     return new Response('Not found',{status:404});
   },
@@ -13922,4 +13942,9 @@ export default {
     if (!env.ASTRA_BOT_TOKEN || !await schemaReady(env)) { console.error('Cron: DB or token missing'); return; }
     await broadcast(env);
   },
+};
+
+export default {
+  fetch(request,env){return measureInvocation(env,'http',scoped=>astraWorker.fetch(request,scoped));},
+  scheduled(event,env){return measureInvocation(env,'cron',scoped=>astraWorker.scheduled(event,scoped));}
 };

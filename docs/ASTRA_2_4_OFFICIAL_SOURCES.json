@@ -1,0 +1,48 @@
+{
+  "checked_on": "2026-11-07 Europe/Moscow",
+  "method": "Public official GitHub source at pinned commits; no Bot API or Cloudflare account calls",
+  "direct_website_access": "core.telegram.org and developers.cloudflare.com CONNECT denied 403",
+  "sources": [
+    {
+      "url": "https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp",
+      "sha256": "67e75ff0ec6e150b3dc2679ba5c900872d96a771fad33321251a3e8bb9d033c9",
+      "bytes": 873086,
+      "sections_checked": [
+        "JsonPreCheckoutQuery",
+        "JsonSuccessfulPaymentBot",
+        "JsonRefundedPayment",
+        "JsonStarTransaction",
+        "process_get_star_transactions_query",
+        "process_refund_star_payment_query",
+        "get_allowed_update_types"
+      ]
+    },
+    {
+      "url": "https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/HttpConnection.cpp",
+      "sha256": "59735f8fceefca9007b3ec6dc608116da3d7d454f6104956fb0b5bab77369933",
+      "bytes": 3656,
+      "sections_checked": [
+        "HttpConnection::handle"
+      ]
+    },
+    {
+      "url": "https://github.com/cloudflare/cloudflare-docs/blob/53ce9b502646fdc019b8184b29b9f1054939e1b6/src/content/docs/d1/platform/limits.mdx",
+      "sha256": "5ede988a7821c2b44da32856430e1137a56502c80d11f7cf15e33559fed05dca",
+      "bytes": 7774,
+      "sections_checked": [
+        "Maximum database size",
+        "Queries per Worker invocation",
+        "Batch limits"
+      ]
+    },
+    {
+      "url": "https://github.com/cloudflare/cloudflare-docs/blob/53ce9b502646fdc019b8184b29b9f1054939e1b6/src/content/docs/workers/platform/limits.mdx",
+      "sha256": "db1e59ef967a5933c770b4dd0b17e16d547b854ecd1484ae9322f18855d74b9a",
+      "bytes": 23381,
+      "sections_checked": [
+        "CPU time",
+        "Subrequests"
+      ]
+    }
+  ]
+}

@@ -19,7 +19,7 @@
 
 `created → invoiced → confirmed → credited`: заказ, отправка счёта, pre_checkout, сохранённая оплата. Пыль появляется только при authenticated `successful_payment` или восстановленном эквивалентном доказательстве `getStarTransactions`, никогда по кнопке/pre_checkout. Snapshot заказа содержит пакет, XTR, пыль, scope, версию цены/Terms. Payload — UUID, не идентификатор пользователя. Счёт имеет одну XTR-цену и пустой provider_token.
 
-Отправка счёта защищена SQL lease. `delivery=unknown/sending` не повторяется автоматически: сначала проверить Telegram. Заказ технически истекает для нового pre_checkout спустя 24 часа, это не маркетинговая срочность; подтверждённая поздняя оплата всё равно учитывается. Бюджет проверки pre_checkout 6 секунд + 2,5 секунды API; реальную задержку необходимо измерить.
+Отправка счёта защищена SQL lease. `delivery=unknown/sending` не повторяется автоматически: сначала проверить Telegram. Заказ технически истекает для нового pre_checkout спустя 24 часа, это не маркетинговая срочность; подтверждённая поздняя оплата всё равно учитывается. Бюджет pre_checkout от входа HTTP: 6 секунд на schemaReady и проверку заказа + 2,5 секунды API; реальную задержку необходимо измерить.
 
 Receipt, уникальный charge ID/hash, баланс, ledger и погашение долга фиксируются одним SQL statement с триггерами. Сбой квитанции не повторяет кредит. Другая реальная charge для одного заказа, чужой плательщик, неизвестный payload или несовпадающая сумма сохраняются `needs_review`, без автоматического кредита. При удалённом профиле он не создаётся оплатой автоматически.
 
@@ -78,4 +78,13 @@ Receipt, уникальный charge ID/hash, баланс, ledger и погаш
 
 ## Обязательная внешняя приёмка до торговли
 
-Доступ к официальным Telegram pages из этой среды вернул HTTP 403. Контракт реализован по предоставленному ТЗ; это **не независимое подтверждение актуального Bot API**. Владелец должен сверить https://core.telegram.org/bots/payments-stars, https://core.telegram.org/bots/api и https://core.telegram.org/bots/features; затем в dedicated test environment подтвердить endpoint, суммы/поля successful/refunded_payment и getStarTransactions, API true/ошибки/таймауты, доставку pre_checkout и service updates с текущими allowed_updates, 10-секундный срок, возврат после расходования и восстановление после сбоя. Проверить реальную D1 с триггерами/лимитами и CPU/1102. До этого Stars остаётся OFF; локальные тесты не дают разрешения принимать реальные деньги.
+Прямой доступ к официальным Telegram pages вернул HTTP 403. При release-hardening независимо проверены публичные официальные исходники Telegram Bot API на закреплённом коммите; матрица полей/методов и границы проверки — ASTRA_2_4_OFFICIAL_CONTRACT_AUDIT.md. Это не проверка работающего endpoint. Владелец должен сверить https://core.telegram.org/bots/payments-stars, https://core.telegram.org/bots/api и https://core.telegram.org/bots/features; затем в dedicated test environment подтвердить endpoint, суммы/поля successful/refunded_payment и getStarTransactions, API true/ошибки/таймауты, доставку pre_checkout и service updates с текущими allowed_updates, 10-секундный срок, возврат после расходования и восстановление после сбоя. Проверить реальную D1 с триггерами/лимитами и CPU/1102. До этого Stars остаётся OFF; локальные тесты не дают разрешения принимать реальные деньги.
+
+
+## Уточнения release-hardening
+
+Непустой invoice start_parameter=stars ограничивает повторную оплату новых пересланных сообщений; ранее пересланные счета всё равно отклоняются по owner при pre_checkout. Несколько фактических charges чужого invoice остаются разными needs_review,каждый возвращается проверенному плательщику без дебета настоящего владельца заказа. amount у outgoing invoice transaction — положительная величина с receiver по официальному сериализатору; отрицательная или дробная сумма не округляется и сохраняется для разбора,включая amount0 с nanostar_amount.
+
+Полный 64-символьный hash lookup использует индексируемый диапазон,поскольку Free D1 ограничивает LIKE/GLOB pattern50bytes. Purge сохраняет условия хранения,но ограничен 10 группами плательщиков и 10 закрытыми accounts за HTTP. Повторять dry-run/вызов до завершения; не считать одну страницу всей базой.
+
+Оба сценария полной D1 outage проверены локально: success до SQL→503 и повтор даёт одинcredit; refundAPItrue→отказ всех SQL сохраняет in_progress lease,повторAPIне выполняется,а verified transaction page проводит компенсацию. Поздний webhook после cleanupjobs и удаления/регистрации не кредитует пакет заново. Локальный backup/restore сохранил proofs,ledger и owned texts; настоящий D1 rehearsal по RELEASE_CHECKLIST по-прежнему не выполнен.

@@ -18,22 +18,24 @@ export async function sendStarInvoice(env,order){
     WHERE order_id=? AND payer_id=? AND status='created' AND delivery='pending'`).bind(lease,order.order_id,order.payer_id).run();
   if(!r.meta.changes)return {sent:false,status:order.status};
   try{
-    await starsApi(env,'sendInvoice',{chat_id:order.payer_id,title:'Звёздная пыль Астры',description:`${order.dust} ✨. Условия: ${order.terms_version}.`,payload:order.payload,currency:'XTR',prices:[{label:`${order.dust} ✨`,amount:order.xtr}],provider_token:''});
+    await starsApi(env,'sendInvoice',{chat_id:order.payer_id,title:'Звёздная пыль Астры',description:`${order.dust} ✨. Условия: ${order.terms_version}.`,payload:order.payload,currency:'XTR',prices:[{label:`${order.dust} ✨`,amount:order.xtr}],provider_token:'',start_parameter:'stars'});
     await env.DB.prepare(`UPDATE astra_payment_orders SET status=CASE WHEN status='created' THEN 'invoiced' ELSE status END,delivery='sent',updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?`).bind(order.order_id,lease).run();
     return {sent:true};
   }catch(e){await env.DB.prepare("UPDATE astra_payment_orders SET delivery=?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?").bind(e.telegramCode?'failed':'unknown',order.order_id,lease).run();throw e;}
 }
-export async function reservePrecheckout(env,q){
+export async function reservePrecheckout(env,q,{deadline=Infinity}={}){
   await paymentEnvironment(env,{shop:true});
+  if(performance.now()>=deadline)return false;
   const o=await readPaymentOrder(env,q.invoice_payload);
-  if(!o||Date.now()-Date.parse(o.created_at.replace(' ','T')+'Z')>86400000||o.payer_id!==q.from?.id||o.owner_id!==q.from.id||o.scope!==paymentScope(env)||q.currency!=='XTR'||q.total_amount!==o.xtr||!['created','invoiced','confirmed'].includes(o.status))return false;
+  if(performance.now()>=deadline||!o||Date.now()-Date.parse(o.created_at.replace(' ','T')+'Z')>86400000||o.payer_id!==q.from?.id||o.owner_id!==q.from.id||o.scope!==paymentScope(env)||q.currency!=='XTR'||q.total_amount!==o.xtr||!['created','invoiced','confirmed'].includes(o.status))return false;
   const r=await env.DB.prepare(`UPDATE astra_payment_orders SET precheckout_id=?,status='confirmed',updated_at=CURRENT_TIMESTAMP
     WHERE order_id=? AND payer_id=? AND status IN ('created','invoiced','confirmed') AND (precheckout_id IS NULL OR precheckout_id=?)`).bind(q.id,o.order_id,q.from.id,q.id).run();
   return Boolean(r.meta.changes);
 }
-export async function answerStarPrecheckout(env,q){
-  let timer,ok=false;
-  try{ok=await Promise.race([reservePrecheckout(env,q),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),6000);})]);}catch{ok=false;}finally{clearTimeout(timer);}
+export async function answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
+  let timer,ok=false;const deadline=startedAt+6000;
+  const validate=async()=>await ready()&&performance.now()<deadline?reservePrecheckout(env,q,{deadline}):false;
+  try{ok=await Promise.race([validate(),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),Math.max(0,deadline-performance.now()));})]);}catch{ok=false;}finally{clearTimeout(timer);}
   await starsApi(env,'answerPreCheckoutQuery',{pre_checkout_query_id:q.id,ok,...(ok?{}:{error_message:'Предложение недоступно. Откройте магазин заново или обратитесь в /paysupport.'})},2500);
   return ok;
 }
@@ -109,11 +111,11 @@ export async function reconcileStarPage(env,offset=0,recoverArchived=false){
   const transactions=page.transactions.slice(0,5);
   const result={scanned:transactions.length,credited_or_recorded:0,refunds:0,needs_review:0,next_offset:offset+transactions.length};
   for(const t of transactions){
-    if(typeof t.id!=='string'||!Number.isSafeInteger(t.amount)||!t.amount)continue;
+    if(typeof t.id!=='string'||!Number.isSafeInteger(t.amount))continue;
     const incoming=t.source?.type==='user'&&t.source.transaction_type==='invoice_payment';
     const outgoing=t.receiver?.type==='user'&&t.receiver.transaction_type==='invoice_payment';
     const partner=incoming?t.source:outgoing?t.receiver:null;if(!partner||!Number.isSafeInteger(partner.user?.id))continue;
-    if((incoming&&t.amount<0)||(t.nanostar_amount&&t.nanostar_amount!==0)){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:0,invoice_payload:partner.invoice_payload||''},await chargeHash(t.id),'unsupported_transaction_amount');result.needs_review++;continue;}
+    if(t.amount<=0||(t.nanostar_amount!=null&&t.nanostar_amount!==0)){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:0,invoice_payload:partner.invoice_payload||''},await chargeHash(t.id),'unsupported_transaction_amount');result.needs_review++;continue;}
     let payload=partner.invoice_payload;
     if(!payload){const r=await env.DB.prepare('SELECT o.payload FROM astra_payment_receipts r JOIN astra_payment_orders o ON o.order_id=r.order_id WHERE r.charge_id=? AND r.payer_id=?').bind(t.id,partner.user.id).first();payload=r?.payload;}
     if(!payload&&outgoing&&await env.DB.prepare('SELECT charge_hash FROM astra_payment_tombstones WHERE charge_hash=?').bind(await chargeHash(t.id)).first())payload='';

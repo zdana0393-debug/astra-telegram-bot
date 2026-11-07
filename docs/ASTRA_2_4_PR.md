@@ -1,17 +1,21 @@
-# Astra 2.4: единый релиз, награды и контур Telegram Stars — всё OFF
+# Astra 2.4: единый кандидат и финальный release-hardening — flags OFF
 
-Base: `astra-2.4-economy` · Head: `astra-2.4b-rewards-stars`. Draft для ревью; отдельной установки 2.4A не будет. Никаких deploy/remote SQL/invoices/webhook/Cron/секретов/production изменений или merge.
+Draft PR #6 · base `astra-2.4-economy` · head `astra-2.4b-rewards-stars`. Никаких deploy, remote SQL, invoices, webhook/Cron/секретов, production изменений или merge. Новые награды и Stars выключены; ставки, /delete и миграции 0021–0025 в hardening не менялись.
 
-Подготовлены единый `release/ASTRA_2_4_WORKER.js`, 0025 поверх 0024 и девять Console-шагов. Новая политика с будущей московской датой и stop: initial12, день3, первая серия3/+3, каждые7/+5,30разных/+12, рефералы14/4 после двух дат, канал8. Прежние профили и суммы не пересчитываются; legacy-pending сохраняет5, settled не получает14. Старый реферальный триггер заменён; новые суммы идут через атомарные claims/ledger без изменения старого CHECK. Таро−3/extended−4/GPT6+5, бесплатный прогноз/число и snapshots сохранены.
+Исправлено превышение D1 Free в холодном Cron восьми знаков: 55→35 вызовов с сохранением восьми адресатов и delivery states. Объединён schemaReady, убрано лишнее чтение после INSERT cache через RETURNING с canonical read при конфликте; Cron-статусы/cleanup используют D1.batch. Убраны лишние наградные roundtrips. Бюджет pre_checkout теперь включает schemaReady от входа HTTP. Добавлены forwarding start_parameter, проверка fraction-only транзакций, hash range вместо LIKE, ограниченный purge и необязательные обезличенные counters. Подготовлен отдельный maintenance503 без DB/API.
 
-Stars: snapshot/согласие/однократная invoice lease, XTR 10/100,25/270,50/570, pre_checkout, уникальные charge receipts, atomic credit, support/Terms/privacy, refund и явный долг с погашением новыми начислениями, сверка/retention. Нет кредита по кнопке или pre_checkout. Возврат не отнимает материалы; D1 и внешний API не объявлены общей транзакцией. **Награды и магазин по умолчанию OFF**, требуется отдельное принятие владельцем.
+Восстановление усилено тестами полного отказа D1 до credit и после refund API true, поздних webhook, повторной регистрации, нескольких charges пересланного счёта и backup/restore. Сохранены Таро−3, extended−4, GPT6+5, бесплатный прогноз/число, cache/версии/оплаченные результаты и история 2.4A.
 
-Валидация: `sh scripts/test-2.4.sh`, Node24.22.1: **487 node:test +210 legacy assertions**, всё пройдено. Включены старые наборы и повтор hardening/shell/forecast на едином Worker,72новых проверки,8гонок/180независимых SQLite connections,ledger faults/API errors/FK/delete/purge/late refund. Сохранены старые релизы и миграции0021–0024. Прямые экраны/квитанции и симуляции7/30/90 воспроизводятся локально.
+`sh scripts/test-2.4.sh`, Node24.22.1: **511 node:test +210 legacy assertions**, без падений/пропусков. Включены весь прежний pipeline,24 новых hardening-проверки,180 независимых SQLite connections, кап 50D1calls, год actualWorker, SQL/API faults и local restore. Локальный SQLite/Node не являются реальными D1/CPU/Telegram испытаниями.
 
-Проверить до активации:
+Новые материалы для ревью:
 
-- `docs/ASTRA_2_4_TEST_REPORT.md`, `ARCHITECTURE`, `ECONOMY_SIMULATION`, `UI_EXAMPLES`, `PAYMENT_RUNBOOK`, `STAGING_GUIDE` с тем же префиксом.
-- Реальные D1/CPU/1102/rows_* не проверены. Официальные BotAPI pages вернули403: нужна внешняя сверка контракта и dedicated Telegram test environment для оплаты/возвратов/recovery; обычный staging способен выставить настоящий XTR-счёт.
-- Утвердить ставки, реальный support, Terms/retention и остаточный риск сброса бонусных прав после /delete. Скрытая постоянная база Telegram ID не добавлялась; долг и charge hashes сохраняются открыто.
-- После0025 старый JS намеренно получает503. Откат — maintenance/совместимое исправление2.4; не старый Worker/backup поверх новых оплат.
-- Будущая установка только вместе: backup/restore → writer pause →0024(если отсутствует)→0025→integrity→одинJS/OFF→smoke→отдельное решение о бонусах→dedicated test Stars→отдельное production решение. Автоматически не объединять.
+- [Отчёт и готовность OFF](docs/ASTRA_2_4_RELEASE_HARDENING_REPORT.md).
+- [Единый checklist, backup/restore и исправление после 0025](docs/ASTRA_2_4_RELEASE_CHECKLIST.md).
+- [Платформенный бюджет и реальные сценарии измерений](docs/ASTRA_2_4_PLATFORM_BUDGET.md).
+- [Проверка официальных контрактов на закреплённых исходниках](docs/ASTRA_2_4_OFFICIAL_CONTRACT_AUDIT.md).
+- [Три экономики 7/30/90/365](docs/ASTRA_2_4_ECONOMY_OPTIONS.md) и [регистрационный farming/прозрачные защиты](docs/ASTRA_2_4_REGISTRATION_ABUSE.md).
+
+500MB — лимит одной FreeD1,5GB — аккаунта. Реальные CPU10ms/1102/D1rows_* и dedicated test checkout/refund/recovery пока не проверены. Ставки 1382/536/423 в год — сравнение,не переключение. Farming сохраняется и требует решения владельца до публичных наград; новая скрытая база ID не добавлялась. Terms/support/retention и Stars принимаются отдельно. Для обычного OFF-staging обязательны backup/реальный restore rehearsal и preflight; после 0025 старые Workers запрещены для обычного rollback.
+
+Полный текст review PR#6 недоступен из среды (GitHubAPI Forbidden,web404); выполнены семь явных пунктов запроса владельца,недоступный review не объявляется прочитанным. Требуется сверить дополнительные замечания по копии владельца. PR остаётся Draft; технически подготовлен контролируемый OFF-staging,не production-ready.

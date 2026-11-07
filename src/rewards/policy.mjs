@@ -17,7 +17,7 @@ export async function armPolicy(env,startDay,today=activityDay()){
   const p=await readPolicy(env);if(p.start_day&&p.start_day!==startDay)throw Error('Policy cutover already fixed');
   await env.DB.prepare('UPDATE astra_policy SET start_day=?,enabled=1 WHERE singleton=1 AND activated=0').bind(startDay).run();return readPolicy(env);
 }
-export async function capturePolicyEvent(env,event,updateId,day,p){
+export async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
   if(!event||!Number.isSafeInteger(updateId)||!validDay(day))return null;
   const enabled=p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED);
   const legacy=enabled?0:1;
@@ -25,6 +25,7 @@ export async function capturePolicyEvent(env,event,updateId,day,p){
   await env.DB.prepare(`INSERT INTO astra_policy_events(update_id,telegram_id,day,source,legacy,processed)
     SELECT ?,u.telegram_id,?,?,?,? FROM astra_users u WHERE u.telegram_id=? AND (u.zodiac IS NOT NULL OR ?=1) AND NOT EXISTS(SELECT 1 FROM astra_policy_days d WHERE d.telegram_id=u.telegram_id AND d.day=?)
     ON CONFLICT(update_id) DO NOTHING`).bind(updateId,day,event.source,legacy,legacy,event.id,event.signSelection?1:0,day).run();
+  if(!returnRow)return;
   return env.DB.prepare('SELECT * FROM astra_policy_events WHERE update_id=? AND telegram_id=?').bind(updateId,event.id).first();
 }
 export async function settlePolicyEvents(env,owner){

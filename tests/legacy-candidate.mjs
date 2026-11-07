@@ -14,7 +14,7 @@ const ddl=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8'
 db.exec(ddl);
 db.exec(fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8'));
 if(['2.2','2.3-editorial','2.3b','2.4a','2.4'].includes(process.env.ASTRA_TEST_RELEASE)) db.exec(fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8'));
-const DB={prepare(sql){
+const DB={async batch(statements){db.exec('BEGIN');try{const result=statements.map(s=>s._runSync());db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}},prepare(sql){
   const stmt=db.prepare(sql);
   let args=[];
   const handle={
@@ -22,6 +22,7 @@ const DB={prepare(sql){
     async first(){return stmt.get(...args)??null;},
     async all(){return {results:stmt.all(...args)};},
     async run(){const r=stmt.run(...args);return {meta:{changes:Number(r.changes)}};},
+    _runSync(){const r=stmt.run(...args);return {meta:{changes:Number(r.changes)}};},
   };
   return handle;
 }};

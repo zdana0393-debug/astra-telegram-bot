@@ -2,44 +2,44 @@
   "runtime": "v24.22.1",
   "bytes": {
     "ASTRA_2_4A_WORKER.js": 539192,
-    "ASTRA_2_4_WORKER.js": 598260
+    "ASTRA_2_4_WORKER.js": 601162
   },
   "cold_local_vm": {
     "ASTRA_2_4A_WORKER.js": {
       "samples": 20,
-      "median_ms": 1.202,
-      "p95_ms": 5.564,
-      "max_ms": 5.564
+      "median_ms": 1.097,
+      "p95_ms": 5.999,
+      "max_ms": 5.999
     },
     "ASTRA_2_4_WORKER.js": {
       "samples": 20,
-      "median_ms": 1.215,
-      "p95_ms": 6.331,
-      "max_ms": 6.331
+      "median_ms": 1.201,
+      "p95_ms": 5.982,
+      "max_ms": 5.982
     }
   },
   "first_policy_visit": {
-    "local_wall_ms": 4.805,
-    "statements": 28,
-    "write_statements": 9
+    "local_wall_ms": 1.966,
+    "statements": 20,
+    "write_statements": 8
   },
   "repeat_visit": {
-    "local_wall_ms": 3.256,
-    "statements": 23,
-    "write_statements": 6
+    "local_wall_ms": 0.802,
+    "statements": 15,
+    "write_statements": 5
   },
   "precheckout": {
-    "local_wall_ms": 0.471,
+    "local_wall_ms": 0.633,
     "statements": 3,
     "write_statements": 1
   },
   "paid_receipt": {
-    "local_wall_ms": 2.859,
+    "local_wall_ms": 1.273,
     "statements": 6,
     "write_statements": 1
   },
   "refund": {
-    "local_wall_ms": 0.848,
+    "local_wall_ms": 5.904,
     "statements": 5,
     "write_statements": 1
   },

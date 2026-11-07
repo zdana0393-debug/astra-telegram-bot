@@ -16,11 +16,11 @@ export const migration=migration21+(['2.2','2.3-editorial','2.3b','2.4a','2.4'].
 export function fixture({full=process.env.ASTRA_TEST_RELEASE==='2.4',legacyUsers=[],economy=process.env.ASTRA_TEST_RELEASE==='2.4a'||full,shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial',forecast=process.env.ASTRA_TEST_RELEASE==='2.3b'||economy}={}) {
   const bot=full?botFull:economy?botEconomy:forecast?botForecast:editorial?botEditorial:shell?bot22:bot21;
   const db=new DatabaseSync(':memory:'); db.exec(schema); for(const u of legacyUsers)db.prepare('INSERT INTO astra_users(telegram_id,zodiac,balance) VALUES(?,?,?)').run(u.id,u.sign||'aries',u.balance); db.exec(migration21); if(shell||editorial||forecast||economy) db.exec(migration22); if(forecast||economy) db.exec(migration23); if(economy) db.exec(migration24); if(full) db.exec(migration25);
-  const DB={prepare(sql) {
+  const DB={async batch(statements){db.exec('BEGIN');try{const r=statements.map(s=>s._runSync());db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}},prepare(sql) {
     const st=db.prepare(sql); let args=[];
     return {bind(...a){args=a;return this;},async first(){await Promise.resolve();return st.get(...args)??null;},
       async all(){await Promise.resolve();return {results:st.all(...args)};},
-      async run(){await Promise.resolve();return {meta:{changes:Number(st.run(...args).changes)}};}};
+      async run(){await Promise.resolve();return {meta:{changes:Number(st.run(...args).changes)}};},_runSync(){return {meta:{changes:Number(st.run(...args).changes)}};}};
   }};
   const env={DB,ASTRA_BOT_TOKEN:'FAKE',ASTRA_WEBHOOK_SECRET:'FAKE_HEADER',ASTRA_ADMIN_KEY:'FAKE_ADMIN',CHANNEL_USERNAME:'@examplechannel'};
   if(forecast||economy) env.ASTRA_FORECAST_START_DAY='2026-01-01';

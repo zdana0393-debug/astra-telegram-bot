@@ -1,0 +1,101 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {fixture,migration25} from './helpers.mjs';
+import {capturePolicyEvent,readPolicy} from '../src/rewards/policy.mjs';
+import {measureInvocation} from '../src/runtime/diagnostics.mjs';
+import {createStarOrder,receiveStarPayment,requestStarRefund,reconcileStarPage,reservePrecheckout,sendStarInvoice} from '../src/payments/service.mjs';
+import {chargeHash} from '../src/payments/transport.mjs';
+const check=(name,fn)=>test(name,async()=>{const f=fixture({full:true});try{await fn(f);}finally{f.close();}});
+const activate=f=>{f.env.ASTRA_ECONOMY_V2_ENABLED='true';f.db.exec("UPDATE astra_policy SET enabled=1,activated=1,start_day='2026-01-01'");};
+const payments=f=>{Object.assign(f.env,{ASTRA_TELEGRAM_TEST_MODE:'true',ASTRA_PAYMENT_ENVIRONMENT_ACK:'DEDICATED_TELEGRAM_TEST_ENVIRONMENT_CONFIRMED',ASTRA_PAYMENT_POLICY_ACCEPTED:'APPROVED_SUPPORT_TERMS_RETENTION',STARS_SHOP_ENABLED:'true'});f.db.exec("UPDATE astra_policy SET stars_enabled=1,payment_scope='test',support='mailto:support@example.test',terms_version='test-v1',retention_days=365,verified_bot_id=424242");};
+const order=(f,id=1)=>createStarOrder(f.env,id,10,crypto.randomUUID(),'test-v1');
+const proof=(o,id=crypto.randomUUID())=>({currency:'XTR',total_amount:10,invoice_payload:o.payload,telegram_payment_charge_id:'FAKE_'+id});
+const click=(f,page,id=1)=>{const q=f.click(id);q.callback_query.data='shell:'+page;return f.hook(q);};
+const count=(f,t)=>f.query('SELECT count(*) n FROM '+t).n;
+const integrity=f=>{assert.equal(f.reconcile(),0);for(const r of f.db.prepare(fs.readFileSync(new URL('../scripts/check_integrity_2_4.sql',import.meta.url),'utf8').split('PRAGMA')[0]).all())assert.equal(r.violations,0,r.check_name);};
+const admin=(f,path,body)=>f.bot.fetch(new Request('https://astra.test/internal/payments/'+path,{method:'POST',headers:{Authorization:'Bearer FAKE_ADMIN','Content-Type':'application/json'},body:JSON.stringify(body)}),f.env);
+async function morning(fn){const Real=Date;class Fixed extends Real{constructor(...args){super(...(args.length?args:['2026-11-07T06:00:00Z']));}static now(){return new Real('2026-11-07T06:00:00Z').getTime();}}globalThis.Date=Fixed;try{return await fn();}finally{globalThis.Date=Real;}}
+async function metrics(f,fn){const logs=[],log=console.log,previous=f.env.ASTRA_D1_DIAGNOSTICS;f.env.ASTRA_D1_DIAGNOSTICS='true';console.log=value=>{if(typeof value==='string'&&value.startsWith('{'))logs.push(JSON.parse(value));};try{const result=await fn();return {result,rows:logs.filter(r=>r.event==='astra_d1_invocation')};}finally{console.log=log;f.env.ASTRA_D1_DIAGNOSTICS=previous;}}
+function freeCap(f){const original=f.env.DB;let calls=0;const take=()=>{if(++calls>50)throw Error('Synthetic D1 Free invocation cap exceeded');};f.env.DB={prepare(sql){const st=original.prepare(sql),p={...st,bind(...args){st.bind(...args);return p;}};for(const key of ['first','all','run'])p[key]=(...a)=>{take();return st[key](...a);};return p;},batch(statements){take();return original.batch(statements);}};return ()=>calls;}
+for(const failure of [null,403,'network','malformed'])check(`eight cold distinct-sign Cron recipients fit a hard 50-call D1 budget: ${failure??'success'}`,async f=>{
+ await morning(async()=>{for(let i=1;i<=8;i++){f.user(i,137);f.db.prepare('UPDATE astra_users SET zodiac=? WHERE telegram_id=?').run(['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio'][i-1],i);}if(failure)f.fail(failure);const calls=freeCap(f);const m=await metrics(f,()=>f.bot.scheduled({},f.env));assert.equal(calls(),35);assert.equal(m.rows[0].d1_calls,35);assert.equal(m.rows[0].batches,9);assert.equal(f.out.filter(r=>r.method==='sendMessage').length,8);assert.equal(count(f,'astra_broadcast_jobs'),8);assert.equal(count(f,'astra_activity_days'),0);if(failure===403)assert.equal(f.query('SELECT sum(notifications_enabled) n FROM astra_users').n,0);integrity(f);});
+});
+check('diagnostics counts metadata and batches without adding queries or exposing personal data',async f=>{
+ const log=console.log,logs=[];console.log=x=>logs.push(x);try{const DB={prepare(sql){return{bind(){return this;},async first(){return {private:123456};},async all(){return{results:[{private:123456}],meta:{rows_read:3,rows_written:0}};},async run(){return{meta:{rows_read:2,rows_written:4}};}};},async batch(s){return s.map(()=>({meta:{rows_read:1,rows_written:2}}));}};
+  await measureInvocation({DB,ASTRA_D1_DIAGNOSTICS:'true',ASTRA_ADMIN_KEY:'DO_NOT_LOG_SECRET'},'http',async e=>{await e.DB.prepare('PRIVATE_SQL').bind(123456).first();await e.DB.prepare('PRIVATE_SQL').all();await e.DB.batch([e.DB.prepare('PRIVATE_SQL'),e.DB.prepare('PRIVATE_SQL')]);});
+  const r=JSON.parse(logs.at(-1));assert.equal(r.d1_calls,3);assert.equal(r.statements,4);assert.equal(r.rows_read_observed,5);assert.equal(r.rows_written_observed,4);assert.equal(r.rows_complete,false);assert.equal(r.results_without_meta,1);assert.doesNotMatch(logs.join(''),/PRIVATE_SQL|123456|DO_NOT_LOG_SECRET/);
+  logs.length=0;await measureInvocation({DB},'http',async()=>{});assert.equal(logs.length,0);
+ }finally{console.log=log;}
+});
+check('diagnostic counters remain isolated across concurrent invocations',async f=>{
+ const m=await metrics(f,()=>Promise.all([f.bot.fetch(new Request('https://astra.test/health'),f.env),f.bot.fetch(new Request('https://astra.test/'),f.env)]));assert.equal(m.rows.length,2);assert.deepEqual(m.rows.map(r=>r.d1_calls).sort((a,b)=>a-b),[0,4]);
+});
+for(const active of [false,true])check(`ordinary history, free/paid forecast and retries fit D1 Free with policy ${active}`,async f=>{
+ f.user(1,137);if(active)activate(f);const results=[];for(const page of ['home','forecast:read','forecast:pay:2026-11-07','dust:history','dossier:economy','faq','stars:terms']){const m=await metrics(f,()=>click(f,page));assert.equal(m.result.status,200);assert.ok(m.rows[0].d1_calls<50,page);results.push(m.rows[0].d1_calls);}assert.equal(count(f,'astra_forecast_unlocks'),1);integrity(f);
+});
+check('retention purges at most ten payer groups per HTTP and repeated batches are complete',async f=>{
+ payments(f);for(let i=1;i<=25;i++){f.user(i,0);const o=await order(f,i);await receiveStarPayment(f.env,i,proof(o));}f.db.exec("UPDATE astra_payment_orders SET updated_at='2020-01-01 00:00:00'");
+ const m=await metrics(f,()=>admin(f,'purge',{dry_run:false}));assert.equal(m.result.status,200);assert.equal((await m.result.json()).deleted_payer_archives,10);assert.ok(m.rows[0].d1_calls<50);assert.equal(count(f,'astra_payment_orders'),15);await admin(f,'purge',{dry_run:false});await admin(f,'purge',{dry_run:false});assert.equal(count(f,'astra_payment_orders'),0);assert.equal(count(f,'astra_payment_tombstones'),25);integrity(f);
+});
+check('operator full hash lookup uses a bounded range, avoiding D1 50-byte LIKE patterns',async f=>{
+ f.user(1,0);f.user(2,0);payments(f);const o=await order(f),p=proof(o);await receiveStarPayment(f.env,2,p);const hash=await chargeHash(p.telegram_payment_charge_id),prepare=f.env.DB.prepare;f.env.DB.prepare=sql=>{assert.doesNotMatch(sql,/LIKE/);return prepare(sql);};const r=await admin(f,'status',{charge_prefix:hash});assert.equal(r.status,200);assert.equal((await r.json()).cases.length,1);integrity(f);
+});
+check('Stars invoices use a nonempty forwarding start parameter; stale forwarded payment is still rejected',async f=>{
+ f.user(1,0);f.user(2,0);payments(f);const o=await order(f);await sendStarInvoice(f.env,o);const invoice=f.out.find(r=>r.method==='sendInvoice').body;assert.equal(invoice.start_parameter,'stars');assert.equal(invoice.currency,'XTR');assert.deepEqual(invoice.prices,[{label:'100 ✨',amount:10}]);assert.equal(invoice.provider_token,'');assert.equal(await reservePrecheckout(f.env,{id:'FORWARDED',from:{id:2},currency:'XTR',total_amount:10,invoice_payload:o.payload}),false);assert.equal(f.balance(1),0);integrity(f);
+});
+check('confirmed Telegram payment survives complete D1 outage, late webhook and profile rejoin without a second credit',async f=>{
+ f.user(1,0);payments(f);const o=await order(f),p=proof(o),update=f.message(1,'');update.message.successful_payment=p;let unavailable=true;const prepare=f.env.DB.prepare;f.env.DB.prepare=sql=>{if(unavailable)throw Error('Synthetic complete D1 outage');return prepare(sql);};assert.equal((await f.hook(update)).status,503);unavailable=false;assert.equal(count(f,'astra_payment_receipts'),0);assert.equal((await f.hook(update)).status,200);assert.equal(f.balance(1),100);
+ f.db.exec('DELETE FROM astra_processed_updates;DELETE FROM astra_update_jobs');const late=f.message(1,'');late.message.successful_payment=p;await f.hook(late);assert.equal(f.balance(1),100);await f.hook(f.message(1,'/delete'));await f.hook(f.message(1,'/start'));assert.equal(f.balance(1),2);await f.hook(late);assert.equal(f.balance(1),2);assert.equal(count(f,'astra_payment_receipts'),1);integrity(f);
+});
+check('refund true followed by complete D1 outage preserves its lease and recovers by transaction proof',async f=>{
+ f.user(1,0);payments(f);const o=await order(f),p=proof(o);await receiveStarPayment(f.env,1,p);for(let i=0;i<25;i++)f.db.prepare("INSERT INTO astra_operations(operation_id,telegram_id,reason,delta,result) VALUES(?,1,'tarot',-3,'retained')").run('spent:'+i);
+ let unavailable=false;const prepare=f.env.DB.prepare;f.env.DB.prepare=sql=>{if(unavailable)throw Error('Synthetic D1 outage after API success');return prepare(sql);};const http=globalThis.fetch;globalThis.fetch=async(url,opts)=>{const r=await http(url,opts);if(String(url).endsWith('/refundStarPayment'))unavailable=true;return r;};await assert.rejects(requestStarRefund(f.env,p.telegram_payment_charge_id));unavailable=false;globalThis.fetch=http;
+ assert.equal(f.query('SELECT status FROM astra_refund_requests').status,'in_progress');assert.equal(f.balance(1),25);await requestStarRefund(f.env,p.telegram_payment_charge_id);assert.equal(f.out.filter(r=>r.method==='refundStarPayment').length,1);
+ f.setStarTransactions([{id:p.telegram_payment_charge_id,amount:10,date:1794031200,receiver:{type:'user',transaction_type:'invoice_payment',user:{id:1},invoice_payload:o.payload}}]);await reconcileStarPage(f.env);assert.equal(f.balance(1),0);assert.equal(f.query('SELECT debt FROM astra_refund_accounts').debt,75);assert.equal(count(f,'astra_refund_settlements'),1);assert.equal(count(f,'astra_operations'),25);integrity(f);
+});
+check('several forwarded charges remain distinct cases; refunds never debit the actual order owner',async f=>{
+ f.user(1,0);f.user(2,0);payments(f);const o=await order(f),paid=proof(o);await receiveStarPayment(f.env,1,paid);const forwarded=[proof(o),proof(o)];for(const p of forwarded){assert.equal((await receiveStarPayment(f.env,2,p)).status,'needs_review');await requestStarRefund(f.env,p.telegram_payment_charge_id);}
+ assert.equal(f.balance(1),100);assert.equal(f.balance(2),0);assert.equal(f.query('SELECT status FROM astra_payment_orders').status,'credited');assert.equal(count(f,'astra_refund_settlements'),2);assert.equal(f.query('SELECT sum(reversed_dust) n FROM astra_refund_settlements').n,0);integrity(f);
+});
+check('fraction-only and negative outgoing invoice transactions are review cases under official source/receiver semantics',async f=>{
+ f.user(1,0);payments(f);const o=await order(f);f.setStarTransactions([{id:'FAKE_FRACTION',amount:0,nanostar_amount:1,source:{type:'user',transaction_type:'invoice_payment',user:{id:1},invoice_payload:o.payload}},{id:'FAKE_NEGATIVE_REFUND',amount:-10,receiver:{type:'user',transaction_type:'invoice_payment',user:{id:1},invoice_payload:o.payload}}]);const r=await reconcileStarPage(f.env);assert.equal(r.needs_review,2);assert.equal(count(f,'astra_payment_anomalies'),2);assert.equal(f.balance(1),0);integrity(f);
+});
+test('actual old 2.4A Tarot and paid forecast survive local 0025 and unified OFF Worker unchanged',async()=>{
+ // Use the pre-0025 Worker/schema on a separate fixture, then migrate the same SQLite.
+ const a=fixture({economy:true,full:false});try{a.user(1,137);await a.hook(a.click(1));const q=a.click(1);q.callback_query.data='shell:forecast:pay:2026-11-07';await a.hook(q);const old=a.db.prepare('SELECT result_text FROM astra_forecast_unlocks').get().result_text,before=a.db.prepare('SELECT * FROM astra_wallet_ledger').all();a.db.exec(migration25);const worker=(await import('../release/ASTRA_2_4_WORKER.js')).default;
+  for(const page of ['forecast:repeat','tarot:last','dust:history']){const u=a.click(1);u.callback_query.data='shell:'+page;const r=await worker.fetch(new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(u)}),a.env);assert.equal(r.status,200);}
+  assert.equal(a.balance(1),130);assert.equal(a.query('SELECT result_text FROM astra_forecast_unlocks').result_text,old);assert.deepEqual(a.db.prepare('SELECT * FROM astra_wallet_ledger').all(),before);integrity(a);
+ }finally{a.close();}
+});
+
+check('four old pending policy dates plus a new invoice-consent callback stay within the hard D1 cap',async f=>{
+ await morning(async()=>{f.user(1,137);activate(f);payments(f);const p=await readPolicy(f.env);for(let i=0;i<4;i++)await capturePolicyEvent(f.env,{id:1,source:'message',signSelection:false},8000+i,'2026-11-0'+(i+1),p);
+ const token=(await chargeHash('test-v1')).slice(0,12),calls=freeCap(f);const m=await metrics(f,()=>click(f,'stars:accept:10:'+token));assert.equal(m.result.status,200);assert.ok(calls()<=50);assert.equal(count(f,'astra_policy_days'),5);assert.equal(f.out.filter(x=>x.method==='sendInvoice').length,1);integrity(f);
+ });
+});
+check('a cache INSERT RETURNING conflict path still re-reads the canonical immutable result',async f=>{
+ f.user(1,137);const prepare=f.env.DB.prepare;let inserted=0;f.env.DB.prepare=sql=>{const s=prepare(sql);if(sql.includes('INSERT INTO astra_forecast_daily')&&sql.includes('RETURNING')){const first=s.first;s.first=async()=>{await first.call(s);inserted++;return null;};}return s;};assert.equal((await click(f,'forecast:read')).status,200);assert.equal(inserted,1);assert.equal(count(f,'astra_forecast_daily'),1);const text=f.query('SELECT free_text FROM astra_forecast_daily').free_text;assert.ok(f.out.some(x=>x.method==='sendMessage'&&x.body.text===text));assert.equal(f.balance(1),137);integrity(f);
+});
+check('all proposed economy models conserve dust across competing spending strategies',async f=>{
+ const {ECONOMY_OPTIONS,modelEconomy}=await import('../scripts/lib/economy-model-2.4.mjs');for(const p of ECONOMY_OPTIONS)for(const n of [7,30,90,365]){const r=modelEconomy(p,n);assert.equal(r.tarotOnly*3+r.tarotRemainder,r.granted);assert.equal(r.extendedOnly*4+r.extendedRemainder,r.granted);assert.equal(r.mixedExtended*4+r.mixedTarot*3+r.mixedRemainder,r.granted);assert.ok(r.extendedOnly<=n);assert.ok(r.extendedRemainder>=0);assert.equal(modelEconomy(p,n,{existing:true}).granted,r.granted-p.initial);}
+ assert.deepEqual([7,30,90,365].map(n=>modelEconomy(ECONOMY_OPTIONS[0],n).granted),[41,137,357,1382]);
+});
+check('a full year of actual unified Worker visits matches the current planning model without changing rates',async f=>{
+ const {ECONOMY_OPTIONS,modelEconomy}=await import('../scripts/lib/economy-model-2.4.mjs');activate(f);const Real=Date;let now;class Fixed extends Real{constructor(...args){super(...(args.length?args:[now]));}static now(){return new Real(now).getTime();}}globalThis.Date=Fixed;try{for(let i=0;i<365;i++){now=new Real(Real.UTC(2026,10,7+i,9)).toISOString();if(i===0){await f.hook(f.message(1,'/start'));const q=f.click(1);q.callback_query.data='sign:aries';await f.hook(q);}else await f.hook(f.message(1,'/start'));if([7,30,90,365].includes(i+1))assert.equal(f.balance(1),modelEconomy(ECONOMY_OPTIONS[0],i+1).granted);}}finally{globalThis.Date=Real;}assert.equal(count(f,'astra_policy_days'),365);integrity(f);
+});
+check('two actual delete/rejoin referral cycles expose the unchanged channel/GPT6 farming risk transparently',async f=>{
+ f.user(1,137);activate(f);const Real=Date;let now;class Fixed extends Real{constructor(...args){super(...(args.length?args:[now]));}static now(){return new Real(now).getTime();}}globalThis.Date=Fixed;try{for(let i=0;i<2;i++){now=new Real(Real.UTC(2026,10,7+i*2,9)).toISOString();await f.hook(f.message(2,'/start ref_1'));const q=f.click(2);q.callback_query.data='sign:aries';await f.hook(q);await f.hook(f.message(2,'gpt6'));const channel=f.click(2);channel.callback_query.data='channel:check';await f.hook(channel);assert.equal(f.balance(2),28);
+ now=new Real(Real.UTC(2026,10,8+i*2,9)).toISOString();await f.hook(f.message(2,'/start'));assert.equal(f.balance(2),35);assert.equal(f.balance(1),137+14*(i+1));for(let j=0;j<11;j++)await f.hook(f.click(2,200+i*11+j));assert.equal(f.balance(2),2);await f.hook(f.message(2,'/delete'));assert.equal(f.balance(2),undefined);assert.equal(f.query('SELECT count(*) n FROM astra_user_policy WHERE telegram_id=2').n,0);assert.equal(f.query('SELECT count(*) n FROM astra_referral_contracts WHERE invitee=2').n,0);integrity(f);}}finally{globalThis.Date=Real;}
+});
+check('emergency maintenance never writes, calls Telegram or acknowledges webhook success',async f=>{
+ const maintenance=(await import('../release/ASTRA_2_4_MAINTENANCE.js')).default,trap=new Proxy({},{get(){throw Error('Maintenance must not access DB');}}),http=globalThis.fetch;globalThis.fetch=async()=>{throw Error('Maintenance must not call Telegram');};try{for(const path of ['/telegram-webhook','/internal/payments/refund','/health']){const r=await maintenance.fetch(new Request('https://astra.test'+path,{method:'POST'}),{DB:trap});assert.equal(r.status,503);assert.equal(r.headers.get('Retry-After'),'30');if(path==='/health')assert.equal((await r.json()).ready,false);}await maintenance.scheduled({}, {DB:trap});}finally{globalThis.fetch=http;}
+});
+check('a local backup/restore preserves paid proofs, balances and owned texts; real D1 rehearsal remains separate',async f=>{
+ const {DatabaseSync}=await import('node:sqlite'),{mkdtempSync,rmSync}=await import('node:fs'),{tmpdir}=await import('node:os'),{join}=await import('node:path');f.user(1,0);payments(f);const o=await order(f);await receiveStarPayment(f.env,1,proof(o));await f.hook(f.click(1));await click(f,'forecast:pay:2026-11-07');const ledger=f.db.prepare('SELECT * FROM astra_wallet_ledger ORDER BY idempotency_key').all(),owned=f.db.prepare('SELECT result_text FROM astra_forecast_unlocks').get();
+ const dir=mkdtempSync(join(tmpdir(),'astra-restore-')),file=join(dir,'copy.sqlite');let copy;try{f.db.prepare('VACUUM INTO ?').run(file);copy=new DatabaseSync(file,{readOnly:true});assert.deepEqual(copy.prepare('SELECT * FROM astra_wallet_ledger ORDER BY idempotency_key').all(),ledger);assert.deepEqual(copy.prepare('SELECT result_text FROM astra_forecast_unlocks').get(),owned);assert.equal(copy.prepare('SELECT count(*) n FROM astra_payment_receipts').get().n,1);for(const row of copy.prepare(fs.readFileSync(new URL('../scripts/check_integrity_2_4.sql',import.meta.url),'utf8').split('PRAGMA')[0]).all())assert.equal(row.violations,0,row.check_name);assert.deepEqual(copy.prepare('PRAGMA foreign_key_check').all(),[]);}finally{copy?.close();rmSync(dir,{recursive:true,force:true});}integrity(f);
+});
+check('pre-checkout deadline includes a slow schema check and never reserves after the refusal',async f=>{
+ f.user(1,0);payments(f);const o=await order(f),prepare=f.env.DB.prepare;f.env.DB.prepare=sql=>{const s=prepare(sql);if(sql.includes('FROM sqlite_master WHERE name IN')){const first=s.first;s.first=async()=>{const r=await first.call(s);await new Promise(resolve=>setTimeout(resolve,7000));return r;};}return s;};
+ const start=performance.now(),r=await f.hook({update_id:7000,pre_checkout_query:{id:'FAKE_SLOW_SCHEMA',from:{id:1},currency:'XTR',total_amount:10,invoice_payload:o.payload}});assert.equal(r.status,200);assert.ok(performance.now()-start<9500);assert.equal(f.out.find(x=>x.method==='answerPreCheckoutQuery').body.ok,false);assert.equal(f.query('SELECT precheckout_id FROM astra_payment_orders').precheckout_id,null);assert.equal(f.balance(1),0);
+});
