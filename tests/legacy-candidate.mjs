@@ -3,15 +3,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-const forecast=process.env.ASTRA_TEST_RELEASE==='2.3b';
+const economy=process.env.ASTRA_TEST_RELEASE==='2.4a';
+const forecast=process.env.ASTRA_TEST_RELEASE==='2.3b'||economy;
 const editorial=forecast||process.env.ASTRA_TEST_RELEASE==='2.3-editorial';
-const bot=(await import(forecast?'../release/ASTRA_2_3B_WORKER.js':editorial?'../release/ASTRA_2_3_EDITORIAL_WORKER.js':process.env.ASTRA_TEST_RELEASE==='2.2'?'../release/ASTRA_2_2_WORKER.js':'../release/ASTRA_2_1_WORKER.js')).default;
+const bot=(await import(economy?'../release/ASTRA_2_4A_WORKER.js':forecast?'../release/ASTRA_2_3B_WORKER.js':editorial?'../release/ASTRA_2_3_EDITORIAL_WORKER.js':process.env.ASTRA_TEST_RELEASE==='2.2'?'../release/ASTRA_2_2_WORKER.js':'../release/ASTRA_2_1_WORKER.js')).default;
 import preflight from '../src/00_DIAGNOSTIC.js';
 const db=new DatabaseSync(':memory:');
 const ddl=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8');
 db.exec(ddl);
 db.exec(fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8'));
-if(['2.2','2.3-editorial','2.3b'].includes(process.env.ASTRA_TEST_RELEASE)) db.exec(fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8'));
+if(['2.2','2.3-editorial','2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE)) db.exec(fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8'));
 const DB={prepare(sql){
   const stmt=db.prepare(sql);
   let args=[];
@@ -28,6 +29,7 @@ const env={
   ASTRA_ADMIN_KEY:'secure-test-admin-key',CHANNEL_USERNAME:'@examplechannel',
 };
 if(forecast){db.exec(fs.readFileSync(new URL('../migrations/0023_forecast.sql',import.meta.url),'utf8'));env.ASTRA_FORECAST_START_DAY='2026-01-01';}
+if(economy)db.exec(fs.readFileSync(new URL('../migrations/0024_activity_history.sql',import.meta.url),'utf8'));
 let changes=0; const out=[]; let subscriptionStatus='member';
 const savedFetch=globalThis.fetch;
 globalThis.fetch=async (url,opts)=>{

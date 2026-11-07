@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {fixture,migration22} from './helpers.mjs';
 const check=(name,fn)=>test(name,async()=>{const f=fixture({shell:true});try{await fn(f);}finally{f.close();}});
 const call=async(f,data,mid=80)=>{const q=f.click(1,mid);q.callback_query.data=data;assert.equal((await f.hook(q)).status,200);return f.out.filter(x=>x.method==='sendMessage').at(-1).body;};
-const editorial=['2.3-editorial','2.3b'].includes(process.env.ASTRA_TEST_RELEASE);
+const editorial=['2.3-editorial','2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE);
 const buttons=body=>body.reply_markup?.inline_keyboard?.flat()||[];
 check('six main buttons, two per row, stable returning profile',async f=>{
   f.user(1,8);await f.hook(f.message(1,'/start'));const body=f.out.at(-1).body;
