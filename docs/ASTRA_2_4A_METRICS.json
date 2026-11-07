@@ -1,0 +1,68 @@
+{
+  "runtime": "v24.22.1",
+  "single_file_bytes": {
+    "ASTRA_2_3B_WORKER.js": 525271,
+    "ASTRA_2_4A_WORKER.js": 539192
+  },
+  "local_cold_parse_and_context": {
+    "ASTRA_2_3B_WORKER.js": {
+      "samples": 20,
+      "median_ms": 1.258,
+      "p95_ms": 6.421,
+      "max_ms": 6.421
+    },
+    "ASTRA_2_4A_WORKER.js": {
+      "samples": 20,
+      "median_ms": 1.215,
+      "p95_ms": 5.934,
+      "max_ms": 5.934
+    }
+  },
+  "local_warm_history_query_and_render": {
+    "samples": 100,
+    "median_ms": 0.078,
+    "p95_ms": 0.169,
+    "max_ms": 0.46
+  },
+  "activity_first_day": {
+    "statements": 2,
+    "write_statements": 1,
+    "changed_table_rows": 1,
+    "local_ms": 13.025
+  },
+  "activity_repeat_day": {
+    "statements": 1,
+    "write_statements": 0,
+    "changed_table_rows": 0,
+    "local_ms": 0.111
+  },
+  "history_first_page": {
+    "statements": 2,
+    "write_statements": 0,
+    "changed_table_rows": 0,
+    "local_ms": 0.285
+  },
+  "history_older_page": {
+    "statements": 2,
+    "write_statements": 0,
+    "changed_table_rows": 0,
+    "local_ms": 0.209
+  },
+  "activity_summary": {
+    "statements": 1,
+    "write_statements": 0,
+    "changed_table_rows": 0,
+    "local_ms": 0.196
+  },
+  "history_query_plan": [
+    "SEARCH astra_wallet_ledger USING INDEX idx_astra_ledger_history (telegram_id=? AND (created_at,idempotency_key)<(?,?))"
+  ],
+  "examples": {
+    "owner_ledger_rows": 24,
+    "pages": 2,
+    "rows_rendered": 24,
+    "final_balance": 231,
+    "ledger_mismatches": 0
+  },
+  "caveat": "Node wall-clock and SQLite query plans only. Statement counts/changes are not D1 rows_read/rows_written. Cold VM parsing is not Cloudflare isolate CPU; no real D1/Telegram/1102 measurement."
+}

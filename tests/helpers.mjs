@@ -4,14 +4,16 @@ import bot21 from '../release/ASTRA_2_1_WORKER.js';
 import bot22 from '../release/ASTRA_2_2_WORKER.js';
 import botEditorial from '../release/ASTRA_2_3_EDITORIAL_WORKER.js';
 import botForecast from '../release/ASTRA_2_3B_WORKER.js';
+import botEconomy from '../release/ASTRA_2_4A_WORKER.js';
 export const schema=fs.readFileSync(new URL('../src/02_SCHEMA.sql',import.meta.url),'utf8');
 const migration21=fs.readFileSync(new URL('../migrations/0021_wallet.sql',import.meta.url),'utf8');
 export const migration22=fs.readFileSync(new URL('../migrations/0022_shell.sql',import.meta.url),'utf8');
 export const migration23=fs.readFileSync(new URL('../migrations/0023_forecast.sql',import.meta.url),'utf8');
-export const migration=migration21+(['2.2','2.3-editorial','2.3b'].includes(process.env.ASTRA_TEST_RELEASE)?migration22:'')+(process.env.ASTRA_TEST_RELEASE==='2.3b'?migration23:'');
-export function fixture({shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial',forecast=process.env.ASTRA_TEST_RELEASE==='2.3b'}={}) {
-  const bot=forecast?botForecast:editorial?botEditorial:shell?bot22:bot21;
-  const db=new DatabaseSync(':memory:'); db.exec(schema); db.exec(migration21); if(shell||editorial||forecast) db.exec(migration22); if(forecast) db.exec(migration23);
+export const migration24=fs.readFileSync(new URL('../migrations/0024_activity_history.sql',import.meta.url),'utf8');
+export const migration=migration21+(['2.2','2.3-editorial','2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE)?migration22:'')+(['2.3b','2.4a'].includes(process.env.ASTRA_TEST_RELEASE)?migration23:'')+(process.env.ASTRA_TEST_RELEASE==='2.4a'?migration24:'');
+export function fixture({legacyUsers=[],economy=process.env.ASTRA_TEST_RELEASE==='2.4a',shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=process.env.ASTRA_TEST_RELEASE==='2.3-editorial',forecast=process.env.ASTRA_TEST_RELEASE==='2.3b'||economy}={}) {
+  const bot=economy?botEconomy:forecast?botForecast:editorial?botEditorial:shell?bot22:bot21;
+  const db=new DatabaseSync(':memory:'); db.exec(schema); for(const u of legacyUsers)db.prepare('INSERT INTO astra_users(telegram_id,zodiac,balance) VALUES(?,?,?)').run(u.id,u.sign||'aries',u.balance); db.exec(migration21); if(shell||editorial||forecast||economy) db.exec(migration22); if(forecast||economy) db.exec(migration23); if(economy) db.exec(migration24);
   const DB={prepare(sql) {
     const st=db.prepare(sql); let args=[];
     return {bind(...a){args=a;return this;},async first(){await Promise.resolve();return st.get(...args)??null;},
@@ -19,7 +21,7 @@ export function fixture({shell=process.env.ASTRA_TEST_RELEASE==='2.2',editorial=
       async run(){await Promise.resolve();return {meta:{changes:Number(st.run(...args).changes)}};}};
   }};
   const env={DB,ASTRA_BOT_TOKEN:'FAKE',ASTRA_WEBHOOK_SECRET:'FAKE_HEADER',ASTRA_ADMIN_KEY:'FAKE_ADMIN',CHANNEL_USERNAME:'@examplechannel'};
-  if(forecast) env.ASTRA_FORECAST_START_DAY='2026-01-01';
+  if(forecast||economy) env.ASTRA_FORECAST_START_DAY='2026-01-01';
   let seq=1000; const out=[]; let fail=null; let expiredCallback=false;
   const old=globalThis.fetch;
   globalThis.fetch=async (url,opts)=>{
