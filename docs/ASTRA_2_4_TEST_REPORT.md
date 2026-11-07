@@ -85,3 +85,9 @@
 6. **Откат.** После 0025 старый JS даёт 503. Не восстанавливать старый backup поверх новых оплат. Использовать policy/shop stop, maintenance и совместимое исправление; не удалять доказательства ради исправления баланса.
 
 Единая инструкция описывает staging, отдельное принятие бонусов и dedicated test Stars, затем безопасный production-план с недостающими миграциями и отдельным решением об активации. **Не выполнялись deploy, remote SQL, реальные или тестовые invoices, изменения секретов/webhook/Cron, production/main или merge.** Все финансовые API-проверки использовали fake HTTP.
+
+## Сохранение и Pull Request
+
+Результат отправлен в `origin/astra-2.4b-rewards-stars`. Запрошенное создание Draft PR через `gh pr create --draft --base astra-2.4-economy --head astra-2.4b-rewards-stars` отклонено GitHub API: `Post "https://api.github.com/graphql": Forbidden`. PR не создан, merge не выполнялся.
+
+Ссылка для создания: https://github.com/zdana0393-debug/astra-telegram-bot/compare/astra-2.4-economy...astra-2.4b-rewards-stars?expand=1 . Проверить base/head, использовать текст `docs/ASTRA_2_4_PR.md`, выбрать **Create draft pull request**. Все артефакты уже в рабочей ветке.
