@@ -9,7 +9,7 @@
  *
  * ВАЖНО: читать docs/ASTRA_2_4_STAGING_GUIDE.md. /activate отключён; webhook не менять.
  */
-const VERSION = 'ASTRA-2.4-task03';
+const VERSION = 'ASTRA-2.4-task04';
 const BOT_USERNAME = 'LaDa_Iskra_Opel_Astrabot';
 const ZODIAC = [
   ['aries','♈ Овен'], ['taurus','♉ Телец'], ['gemini','♊ Близнецы'],
@@ -464,7 +464,7 @@ const FAQ = [
   ]
 ];
 
-async function home(env,id) {
+async function pre04_home(env,id) {
   const u=await getUser(env,id);
   if (!u?.zodiac) return welcome(env,id);
   return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)} · ${u.balance} ✨\nДневная дата определяется по Europe/Moscow.\n\nВыберите раздел.`,{reply_markup:keyboard});
@@ -543,7 +543,7 @@ async function pre26_secretArchive(env,id) {
     : "Отметка уже внесена. Повторный запрос не меняет баланс.",[]);
 }
 
-async function help(env,id) {
+async function pre04_help(env,id) {
   return screen(env,id,"Помощь","Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 5 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",[[button('FAQ','faq'),button('Об Астре','about')]]);
 }
 async function incoming(env,m,updateId) {
@@ -560,19 +560,19 @@ async function incoming(env,m,updateId) {
   if (text==='/delete') {
     await syncBonusOwner26(env,id);
     await env.DB.prepare('DELETE FROM astra_users WHERE telegram_id=?').bind(id).run();
-    return send(env,id,"Профиль, обычный журнал, активность и материалы удалены. Минимальные HMAC-права на бонусы сохраняются до 30 дней после начисления; это персональные псевдонимизированные данные. Платёжные доказательства и долг сохраняются отдельно по /privacy и /terms. Для новой регистрации используйте /start.",{reply_markup:{remove_keyboard:true}});
+    return send(env,id,DELETE_NOTICE04,{reply_markup:{remove_keyboard:true}});
   }
   if (text==='/help'||text==='⚙️ Помощь') return help(env,id);
   if (text==='/stop') {
     await env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(id).run();
-    return send(env,id,"Утренняя рассылка отключена. Включить её можно в «Досье» → «Рассылка». Прогноз остаётся доступен вручную.");
+    return send(env,id,"Утренние уведомления выключены. Включить их можно в «Досье» → «Уведомления». Полный прогноз остаётся доступен вручную.");
   }
   const u=await getUser(env,id);
   if (!u?.zodiac) return welcome(env,id);
   if (text==='🔮 Гороскоп') return sendFreeForecast(env,id,u.zodiac);
   if (text==='🃏 Таро') return send(env,id,"Выберите формат чтения:",{reply_markup:tarotKeyboard});
   if (text==='🎁 Бонус дня') return bonus(env,id);
-  if (text==='✨ Баланс') return send(env,id,`Баланс: ${u.balance} ✨.\n\nНовый расклад на три карты: 3 ✨. Повторное чтение сохранённого результата бесплатно.`);
+  if (text==='✨ Баланс') return economyDust(env,id,u);
   if (text==='👥 Пригласить друга') return invite(env,id);
   if (text==='🌟 Канал') return channelMenu(env,id);
   if (text==='🔔 Рассылка') {
@@ -582,7 +582,7 @@ async function incoming(env,m,updateId) {
     if (!job) throw new Error('Profile no longer exists');
     const next=job.notification_target;
     await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(next,id).run();
-    return send(env,id,next?"Рассылка включена. Прогноз отправляется в утреннее московское окно; результат также можно открыть вручную.":"Рассылка отключена. Прогноз можно открыть в разделе «Прогноз дня».");
+    return send(env,id,next?"Утренние уведомления включены по вашему запросу. Полный прогноз с числом дня приходит с 09:00 до 11:00 по Москве. Выключить — /stop.":"Рассылка отключена. Прогноз можно открыть в разделе «Прогноз дня».");
   }
   return send(env,id,"Выберите раздел главного меню.",{reply_markup:keyboard});
 }
@@ -13310,22 +13310,22 @@ async function pre03_sendFreeForecast(env,id,sign,day=dayMSK()) {
   const f=await getForecastDaily(env,sign,day);
   return sendForecastText(env,id,f.free_text,[[button('Расширенный — 4 ✨','forecast:extended')]]);
 }
-async function forecastMenu(env,id) {
+async function pre04_forecastMenu(env,id) {
   return screen(env,id,'🌙 Прогноз дня','Общий прогноз по выбранному знаку: тема, отношения, дела, ресурсы, эмоциональный ритм, число дня и практический итог. Дата определяется по Europe/Moscow.',[
     [button('Открыть бесплатно','forecast:read')],[button('Расширенный — 4 ✨','forecast:extended')],
     [button('Повторить расширенный','forecast:repeat')],[button('🃏 Таро','tarot')]]);
 }
 async function forecastExtended(env,id,user,mode,requestedDay=null) {
   const today=dayMSK(),day=requestedDay||today;
-  if(!validDay(day))return screen(env,id,'Предложение недоступно','Дата предложения некорректна. Откройте раздел заново.',[],'forecast');
+  if(!validDay(day))return screen(env,id,'Предложение недоступно','Откройте новое предложение из раздела «Прогноз дня».',[],'forecast');
   const saved=await getForecastUnlock(env,id,day);
   if(saved)return sendForecastText(env,id,saved.result_text);
-  if(mode==='repeat')return screen(env,id,'Сохранённый прогноз','На текущую дату расширенный прогноз не приобретён. Бесплатная часть доступна независимо от баланса.',[],'forecast');
-  if(day!==today)return screen(env,id,'Предложение завершено','Московская дата изменилась. Это подтверждение не создаёт покупки за прошлый или будущий день; откройте новое предложение.',[],'forecast');
-  if(!engineActive(env,day))return screen(env,id,'Переход на новый движок',`Новый прогноз включается с ${env.ASTRA_FORECAST_START_DAY} по Москве. До этой даты доступна прежняя бесплатная редакция; расширенный пока не продаётся.`,[],'forecast');
-  if(mode==='confirm')return screen(env,id,'Расширенный прогноз — 4 ✨','В пакет входят разбор доминанты и развилки выбора, символ и цвет, дополнение к бесплатному числу, руна Старшего футарка и Совет Жирного. Одна покупка на московскую дату; повторное чтение бесплатно. Отмена ничего не списывает.',[[button('Подтвердить — 4 ✨',`forecast:pay:${day}`)]],'forecast');
+  if(mode==='repeat')return screen(env,id,'Сохранённый прогноз','За эту дату расширенный прогноз пока не куплен. Полный бесплатный прогноз доступен при любом балансе.',[],'forecast');
+  if(day!==today)return screen(env,id,'Предложение завершено','Московская дата изменилась. Списания нет. Откройте сегодняшнее предложение заново.',[],'forecast');
+  if(!engineActive(env,day))return screen(env,id,'Расширенный прогноз пока недоступен','Полный бесплатный прогноз можно читать как обычно.',[],'forecast');
+  if(mode==='confirm')return screen(env,id,'Расширенный прогноз — 4 ✨','Развилка выбора, символ и цвет, руна, дополнительная трактовка числа и Совет Жирного.\n\nСтоимость — 4 ✨ за эту московскую дату. Повторное чтение бесплатно. До подтверждения пыль не списывается.',[[button('Подтвердить — 4 ✨',`forecast:pay:${day}`)]],'forecast');
   const row=await purchaseForecast(env,id,user.zodiac,day);
-  if(!row)return screen(env,id,'Недостаточно пыли','Для нового дневного пакета требуется 4 ✨. Бесплатный прогноз остаётся доступен; баланс не изменён.',[],'forecast');
+  if(!row)return insufficient04(env,id,4,'forecast');
   return sendForecastText(env,id,row.result_text);
 }
 
@@ -13440,7 +13440,7 @@ async function legacyActivityScreen(env,id,parent){
   const a=await readActivity(env,id,dayMSK());
   return screen(env,id,'Активные дни',activitySummaryText(a),[[button('История операций',`${parent}:history`)]],parent);
 }
-async function ledgerScreen(env,id,u,parent,cursor=null){
+async function pre04_ledgerScreen(env,id,u,parent,cursor=null){
   const page=await readHistoryPage(env,id,cursor);
   if(page.expired)return screen(env,id,'История операций','Курсор недоступен или устарел. Откройте историю заново.',[[button('Открыть историю',`${parent}:history`)]],parent);
   const short=parent==='dossier'?'p':'d',rows=[];
@@ -13471,7 +13471,7 @@ function economyEvent(update){
     const page=data.startsWith('shell:')?data.slice(6):null;
     const faq=/^faq:([0-9]{1,2})(?::more)?$/.exec(page||'');
     const validSign=data.startsWith('sign:')&&Boolean(zodiacName(data.slice(5)));
-    const recognized=/^forecast:(?:offer|owned):\d{4}-\d{2}-\d{2}$/.test(page||'')||/^tarot26:[a-f0-9]{32}$/.test(page||'')||/^stars:(?:buy26:(?:10|25|50)|accept26:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
+    const recognized=/^notifications:(?:confirm|enable|disable)$/.test(page||'')||/^forecast:(?:offer|owned):\d{4}-\d{2}-\d{2}$/.test(page||'')||/^tarot26:[a-f0-9]{32}$/.test(page||'')||/^stars:(?:buy26:(?:10|25|50)|accept26:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
     return recognized?{id:from.id,source:'callback',signSelection:validSign}:null;
   }
   const text=String(m.text||'').trim();
@@ -13803,7 +13803,7 @@ async function pre26_channelCheck(env,id){
   await policyClaim(env,id,'channel',dayMSK(),8);
   return send(shellEnv(env,'dust'),id,'Подписка проверена. Результат начисления +8 ✨ и возможное погашение долга отражены в истории.');
 }
-async function economyDust(env,id,u){
+async function pre04_economyDust(env,id,u){
   const p=await readPolicy(env),s=await policySummary(env,id);
   const rates=p.activated?'Новый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.\nНовые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.';
   return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\n\n${rates}\n${p.activated&&!p.enabled?'Начисления приостановлены.\n':''}Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.`,[
@@ -13811,11 +13811,11 @@ async function economyDust(env,id,u){
     [button('Бонус дня','gift'),button('Пригласить участника','invite')],[button('Подписка на канал','channel')],
     [button('Магазин Stars','dust:shop'),button('Мои платежи','stars:history')],[button('Условия','stars:terms'),button('Поддержка','stars:support')]]);
 }
-async function economyDossier(env,id,u){
+async function pre04_economyDossier(env,id,u){
   const p=await readPolicy(env);if(!p.activated)return legacyEconomyDossier(env,id,u);
   const s=await policySummary(env,id);return screen(env,id,'Экономическое досье',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\nДат policy-v2: ${s.total}\nТекущая серия policy-v2: ${s.streak} дн.\n\n+2 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +4; 30 разных дат +6 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.`,[[button('История операций','dossier:history'),button('Мои платежи','stars:history')]],'dossier');
 }
-async function activityScreen(env,id,parent){
+async function pre04_activityScreen(env,id,parent){
   const p=await readPolicy(env);if(!p.activated)return legacyActivityScreen(env,id,parent);
   const s=await policySummary(env,id);return screen(env,id,'Активные дни',`policy-v2: ${s.total} разных дат; текущая серия ${s.streak} дн.\nДаты отсчитываются с принятой политики, без восстановления прежних посещений. +2 за дату, +3 за первые 3 подряд, +4 за каждый 7-дневный цикл и +6 за 30 разных дат. Пропуск не уменьшает баланс.`,[[button('История операций',`${parent}:history`)]],parent);
 }
@@ -13845,21 +13845,21 @@ async function pre26_policyFaq(env){
   return items;
 }
 
-async function paymentTerms(env,id){
+async function pre04_paymentTerms(env,id){
   const p=await readPolicy(env);
   return screen(env,id,'Условия Stars',`Пыль — внутренний доступ к материалам, без вывода в деньги. Стоимость пакета фиксируется в заказе до счёта. Пыль начисляется только после подтверждённой оплаты Telegram.\n\nПри возврате уже выданные материалы не отзываются. Доступная пыль уменьшается на стоимость возвращённого пакета; недостаток становится явным долгом. Будущие начисления сначала погашают долг. Баланс не становится отрицательным.\n\nПоддержка: ${p.support||'владелец ещё не указал контакт; магазин недоступен'}.\nВерсия условий: ${p.terms_version||'не утверждена'}.\nОплаченные заказы, charge ID и ID плательщика нужны для возвратов/споров: ${p.retention_days||'не утверждено'} дней после закрытия всех платёжных дел и погашения долга. Неразрешённые случаи сохраняются до завершения. После удаления персональных доказательств остаётся необратимый hash charge ID с суммой пакета и признаком возврата, без ID плательщика без ограничения срока для запрета повторного начисления. /delete не стирает незавершённые платежи/долги.\n\nДо согласования условий, контакта, хранения и окружения магазин выключен.`,[[button('Поддержка','stars:support')]],'dust');
 }
-async function paymentSupport(env,id){
+async function pre04_paymentSupport(env,id){
   const p=await readPolicy(env);return screen(env,id,'Поддержка платежей',p.support?`Контакт владельца: ${p.support}\n\nУкажите номер заказа из «Мои платежи», сумму XTR и проблему. Не присылайте токен бота, webhook secret, данные других людей. Возврат рассматривается по /terms; долг не скрывается. При неопределённом исходе проводится сверка Telegram, а не повторное списание.`:'Контакт поддержки владельцем ещё не установлен. Магазин не может выставлять счета. Текущие материалы и история пыли остаются доступны.',[[button('Мои платежи','stars:history'),button('Условия','stars:terms')]],'dust');
 }
-async function paymentHistory(env,id,cursor=null){
+async function pre04_paymentHistory(env,id,cursor=null){
   const page=await readStarHistory(env,id,cursor);
   if(page.expired)return screen(env,id,'Мои платежи','Курсор устарел. Откройте историю заново.',[[button('Обновить','stars:history')]],'dust');
   const nav=[];if(page.newer)nav.push(button('‹ Новее','stars:history:'+page.newer));if(page.older)nav.push(button('Старее ›','stars:history:'+page.older));
   const rows=nav.length?[nav]:[];rows.push([button('Обновить','stars:history'),button('Поддержка','stars:support')]);
   return screen(env,id,'Мои платежи',page.rows.length?page.rows.map(o=>`${formatLedgerTime(o.created_at)}\nЗаказ ${o.order_id}\n${o.xtr} XTR → ${o.dust} ✨ · ${o.status}`).join('\n\n'):'Заказов пока нет.',rows,'dust');
 }
-async function starsShop(env,id){
+async function pre04_starsShop(env,id){
   try{await paymentEnvironment(env,{shop:true});}catch{return screen(env,id,'Магазин Stars','Магазин выключен или ещё не принят для этого окружения. Счета не выставляются. Доступные материалы и история работают независимо от магазина.',[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'dust');}
   return screen(env,id,'Магазин Stars','Пакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy26:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');
 }
@@ -13871,13 +13871,13 @@ async function starsRoute(env,id,page,q){
   if(page==='dust:shop')return starsShop(env,id);
   let p;try{p=await paymentEnvironment(env,{shop:true});}catch{return starsShop(env,id);}
   const buy=/^stars:buy26:(10|25|50)$/.exec(page);
-  if(buy){const token=(await chargeHash(p.terms_version)).slice(0,12),pack=STAR_PACKAGES[buy[1]];return screen(env,id,'Подтверждение покупки',`${pack.xtr} XTR за ${pack.dust} ✨.\nПрочитайте /terms версии ${p.terms_version}. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.`,[[button(`Принимаю условия · ${pack.xtr} XTR`,`stars:accept26:${buy[1]}:${token}`)],[button('Условия','stars:terms')]],'dust');}
+  if(buy){const token=(await chargeHash(p.terms_version)).slice(0,12),pack=STAR_PACKAGES[buy[1]];return screen(env,id,'Подтверждение покупки',`${pack.dust} ✨ за ${pack.xtr} XTR\n\nПыль нельзя обменять обратно на Stars или деньги. Обоснованные споры и обязательные возвраты рассматриваются по /terms.\n\nУсловия: ${p.terms_version}. Поддержка: ${supportText04(p)}\n\nНажимая «Принимаю условия», вы соглашаетесь с ними и переходите к счёту. Пыль появится после оплаты Telegram.`,[[button(`Принимаю условия · ${pack.xtr} XTR`,`stars:accept26:${buy[1]}:${token}`)],[button('Условия','stars:terms')]],'dust');}
   const consent=/^stars:accept26:(10|25|50):([a-f0-9]{12})$/.exec(page);
-  if(!consent||consent[2]!== (await chargeHash(p.terms_version)).slice(0,12)||(!Number.isSafeInteger(q?.message?.message_id)||q.message.message_id<1))return screen(env,id,'Предложение устарело','Откройте магазин заново и прочитайте действующие условия.',[],'dust');
+  if(!consent||consent[2]!== (await chargeHash(p.terms_version)).slice(0,12)||(!Number.isSafeInteger(q?.message?.message_id)||q.message.message_id<1))return screen(env,id,'Предложение обновилось','Откройте магазин заново, чтобы проверить пакет и условия до оплаты.',[],'dust');
   const key=`stars-pack-v2:${q.message.message_id}:${consent[1]}:${consent[2]}`;
   const order=await createStarOrder(env,id,consent[1],key,p.terms_version);
-  try{await sendStarInvoice(env,order);return screen(env,id,'Заказ сохранён',`Номер: ${order.order_id}.\nПыль появится только после подтверждённой оплаты. Состояние доступно в «Мои платежи».`,[[button('Мои платежи','stars:history')]],'dust');}
-  catch{return screen(env,id,'Отправка счёта не подтверждена',`Заказ ${order.order_id} сохранён. Повторная автоматическая отправка отключена; проверьте сообщения и обратитесь в поддержку. Пыль за отправку счёта не начисляется.`,[[button('Мои платежи','stars:history'),button('Поддержка','stars:support')]],'dust');}
+  try{await sendStarInvoice(env,order);return screen(env,id,'Заказ сохранён',`Заказ: ${order.order_id}.\n\nПыль появится после подтверждённой оплаты Telegram. Сам счёт не означает оплату. Проверить заказ — «Мои платежи».`,[[button('Мои платежи','stars:history')]],'dust');}
+  catch{return screen(env,id,'Отправка счёта не подтверждена',`Заказ: ${order.order_id}.\n\nНе удалось подтвердить отправку счёта. Проверьте сообщения Telegram и «Мои платежи». Если счёта нет, обратитесь в поддержку; повторно платить за тот же заказ не нужно.`,[[button('Мои платежи','stars:history'),button('Поддержка','stars:support')]],'dust');}
 }
 async function pre26_paymentCommand(env,m){
   const id=m.from.id,text=String(m.text||'').trim();
@@ -13894,8 +13894,8 @@ async function paymentUpdate(env,update){
   if(m.chat?.type!=='private'||!Number.isSafeInteger(m.chat.id)||m.chat.id<=0)throw Error('Private payment proof required');
   const owner=m.chat.id;
   if(m.successful_payment&&m.from?.id!==owner)throw Error('Payment sender mismatch');
-  if(m.refunded_payment){const r=await receiveStarRefund(env,owner,proof,'message');await send(shellEnv(env,'dust'),owner,`Возврат Telegram учтён. Списано доступной пыли: ${r.removed} ✨; добавлен долг: ${r.debt_added} ✨. Материалы не отозваны. Подробности: /paysupport.`);}
-  else{const r=await receiveStarPayment(env,owner,proof),rawOrder=await readPaymentOrder(env,proof.invoice_payload),o=rawOrder?.payer_id===owner?rawOrder:null,u=await getUser(env,owner);await send(shellEnv(env,'dust'),owner,`Платёж ${r.status==='needs_review'?'ожидает проверки поддержки':'сохранён'}${o?` · заказ ${o.order_id}`:''}.\nСостояние: ${o?.status||r.status}. Номер обращения: ${r.hash.slice(0,16)}.\n${u?`Доступный баланс: ${u.balance} ✨.`:'Профиль отсутствует; платёж не создаёт его автоматически.'}\nПовтор не начисляет пыль заново. /payments · /paysupport`);}
+  if(m.refunded_payment){const r=await receiveStarRefund(env,owner,proof,'message');await send(shellEnv(env,'dust'),owner,refundNotice04(r));}
+  else{const r=await receiveStarPayment(env,owner,proof),rawOrder=await readPaymentOrder(env,proof.invoice_payload),o=rawOrder?.payer_id===owner?rawOrder:null,u=await getUser(env,owner);await send(shellEnv(env,'dust'),owner,paymentNotice04(r,o,u));}
   return true;
 }
 
@@ -14162,52 +14162,52 @@ async function createUser(env,id,referral=''){
  await env.DB.prepare('INSERT OR IGNORE INTO astra_users(telegram_id,referrer_id,created_at,notifications_enabled) VALUES(?,?,?,0)').bind(id,friend,new Date().toISOString().slice(0,19).replace('T',' ')).run();}
  await syncBonusOwner26(env,id);await bonusCommand26(env,id,'initial');return getUser(env,id);
 }
-async function policyWelcome(env,id,ref=''){
+async function pre04_policyWelcome(env,id,ref=''){
  const u=await createUser(env,id,ref);if(u.zodiac)return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nВыберите раздел.`,{reply_markup:keyboard});
  return send(env,id,`Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак. Баланс: ${u.balance} ✨. Бесплатный прогноз и число дня доступны независимо от бонусов. Условия защиты наград и удаления — /privacy.`,{reply_markup:signKeyboard});
 }
 async function setZodiac(env,id,sign){
  if(!zodiacName(sign))return;const u=await getUser(env,id);if(!u)return welcome(env,id);await syncBonusOwner26(env,id);await env.DB.prepare('UPDATE astra_users SET zodiac=? WHERE telegram_id=? AND zodiac IS NULL').bind(sign,id).run();await settlePolicyEvents(env,id);if(env[TASK26_CONTEXT]){env[TASK26_CONTEXT].signSettled??=new Set();env[TASK26_CONTEXT].signSettled.add(id);}const current=await getUser(env,id);
- await send(env,id,`Солнечный знак: ${zodiacName(current.zodiac)}\nБаланс: ${current.balance} ✨\n\nНиже — дневной прогноз. Остальные разделы доступны в меню.`,{reply_markup:keyboard});await sendFreeForecast(env,id,current.zodiac);
+ await send(env,id,`Ваш знак: ${zodiacName(current.zodiac)}\nБаланс: ${current.balance} ✨\n\nНиже — полный бесплатный прогноз. Остальные разделы — в меню.`,{reply_markup:keyboard});await sendFreeForecast(env,id,current.zodiac);
 }
 async function secretArchive(env,id){
  await createUser(env,id);const before=await env.DB.prepare("SELECT award_id FROM astra_bonus_awards26 WHERE telegram_id=? AND kind='gpt6'").bind(id).first();await bonusCommand26(env,id,'gpt6');const paid=await env.DB.prepare("SELECT award_id FROM astra_bonus_awards26 WHERE telegram_id=? AND kind='gpt6'").bind(id).first();return screen(env,id,'Запись № 06',!before&&paid?'Последовательность распознана. Начислено: +5 ✨.':'Повторного начисления нет. Награда могла быть получена раньше либо начисления временно недоступны.',[]);
 }
-async function bonus(env,id){const p=await readPolicy(env);if(!p.activated)await bonusCommand26(env,id,'legacy_daily');const u=await getUser(env,id);return send(shellEnv(env,'dust'),id,`Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.\nБаланс: ${u.balance} ✨.`);}
-async function invite(env,id){return send(shellEnv(env,'dust'),id,`Приглашение\n\nПосле включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.\n\nhttps://t.me/${botUsername(env)}?start=ref_${id}`);}
-async function channelMenu(env,id){const c=channelName(env);if(!c)return send(shellEnv(env,'dust'),id,'Канал пока не подключён.');const p=await readPolicy(env);return send(shellEnv(env,'dust'),id,`Канал ${c}\n\nПодтверждённая подписка: ${p.activated?15:5} ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.`,{reply_markup:{inline_keyboard:[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]]}});}
+async function pre04_bonus(env,id){const p=await readPolicy(env);if(!p.activated)await bonusCommand26(env,id,'legacy_daily');const u=await getUser(env,id);return send(shellEnv(env,'dust'),id,`Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.\nБаланс: ${u.balance} ✨.`);}
+async function pre04_invite(env,id){return send(shellEnv(env,'dust'),id,`Приглашение\n\nПосле включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.\n\nhttps://t.me/${botUsername(env)}?start=ref_${id}`);}
+async function pre04_channelMenu(env,id){const c=channelName(env);if(!c)return send(shellEnv(env,'dust'),id,'Канал пока не подключён.');const p=await readPolicy(env);return send(shellEnv(env,'dust'),id,`Канал ${c}\n\nПодтверждённая подписка: ${p.activated?15:5} ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.`,{reply_markup:{inline_keyboard:[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]]}});}
 async function channelCheck(env,id){
- const ctx=await fenceContext26(env),p=await readPolicy(env),c=channelName(env);if(!ctx.ok||(p.activated&&(!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED))))return send(shellEnv(env,'dust'),id,'Начисления временно недоступны. Бесплатные функции доступны.');if(!c)return channelMenu(env,id);
- const u=await getUser(env,id);if(u.channel_rewarded)return send(shellEnv(env,'dust'),id,'Начисление за канал уже проведено. Доплаты нет.');
- let member;try{const me=await tg(env,'getMe',{});if(!Number.isSafeInteger(me?.id))throw Error('Bot identity unavailable');const admin=await tg(env,'getChatMember',{chat_id:c,user_id:me.id});if(!['administrator','creator'].includes(admin?.status))throw Error('Bot admin rights required');member=await tg(env,'getChatMember',{chat_id:c,user_id:id});}catch{return send(shellEnv(env,'dust'),id,'Проверка подписки недоступна. Начисление не выполнено.');}
- if(!['member','administrator','creator'].includes(member?.status)&&!(member?.status==='restricted'&&member.is_member===true))return send(shellEnv(env,'dust'),id,'Подписка не подтверждена.');
- await bonusCommand26(env,id,'channel',{channel:c});return send(shellEnv(env,'dust'),id,'Подписка подтверждена. Фактическое начисление или ограничение повторного права отражено в истории.');
+ const ctx=await fenceContext26(env),p=await readPolicy(env),c=channelName(env);if(!ctx.ok||(p.activated&&(!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED))))return send(shellEnv(env,'dust'),id,'Бонусные начисления сейчас недоступны. Бесплатные материалы можно читать как обычно.');if(!c)return channelMenu(env,id);
+ const u=await getUser(env,id);if(u.channel_rewarded)return send(shellEnv(env,'dust'),id,'Бонус за эту подписку уже получен. Повторного начисления нет.');
+ let member;try{const me=await tg(env,'getMe',{});if(!Number.isSafeInteger(me?.id))throw Error('Bot identity unavailable');const admin=await tg(env,'getChatMember',{chat_id:c,user_id:me.id});if(!['administrator','creator'].includes(admin?.status))throw Error('Bot admin rights required');member=await tg(env,'getChatMember',{chat_id:c,user_id:id});}catch{return send(shellEnv(env,'dust'),id,'Не удалось проверить подписку. Попробуйте позже — нового начисления нет.');}
+ if(!['member','administrator','creator'].includes(member?.status)&&!(member?.status==='restricted'&&member.is_member===true))return send(shellEnv(env,'dust'),id,'Подписка пока не подтверждена. Откройте канал, подпишитесь и попробуйте снова.');
+ await bonusCommand26(env,id,'channel',{channel:c});return send(shellEnv(env,'dust'),id,'Подписка подтверждена. Результат начисления можно посмотреть в истории пыли. Уже полученный бонус повторно не выдаётся.');
 }
 async function threeCards(env,id,key){
- const requestKey=`tarot:${id}:${key}`,old=await env.DB.prepare(`SELECT o.operation_id,o.result FROM astra_tarot_requests r JOIN astra_operations o ON o.operation_id=r.operation_id WHERE r.request_key=? AND r.telegram_id=? AND o.reason='tarot'`).bind(requestKey,id).first();if(old){await send(shellEnv(env,'tarot'),id,old.result);await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(old.operation_id,id).run();return;}
- const undelivered=await env.DB.prepare("SELECT operation_id,result FROM astra_operations WHERE telegram_id=? AND reason='tarot' AND delivery<>'sent' ORDER BY created_at,operation_id LIMIT 1").bind(id).first();if(undelivered){await send(shellEnv(env,'tarot'),id,undelivered.result);await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(undelivered.operation_id,id).run();return;}
+ const requestKey=`tarot:${id}:${key}`,old=await env.DB.prepare(`SELECT o.operation_id,o.result FROM astra_tarot_requests r JOIN astra_operations o ON o.operation_id=r.operation_id WHERE r.request_key=? AND r.telegram_id=? AND o.reason='tarot'`).bind(requestKey,id).first();if(old){await send(shellEnv(env,'tarot'),id,old.result,{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(old.operation_id,id).run();return;}
+ const undelivered=await env.DB.prepare("SELECT operation_id,result FROM astra_operations WHERE telegram_id=? AND reason='tarot' AND delivery<>'sent' ORDER BY created_at,operation_id LIMIT 1").bind(id).first();if(undelivered){await send(shellEnv(env,'tarot'),id,undelivered.result,{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(undelivered.operation_id,id).run();return;}
  const candidate=crypto.randomUUID().replaceAll('-','');await env.DB.prepare(`INSERT INTO astra_tarot_offers26(offer_id,telegram_id,generation,request_key) SELECT ?,telegram_id,generation,? FROM astra_user_policy WHERE telegram_id=? ON CONFLICT(telegram_id,generation,request_key) DO NOTHING`).bind(candidate,requestKey,id).run();
- const offer=await env.DB.prepare('SELECT offer_id FROM astra_tarot_offers26 WHERE telegram_id=? AND request_key=?').bind(id,requestKey).first();if(!offer)throw Error('Profile no longer exists');return screen(env,id,'Подтверждение расклада','Новый расклад на три карты стоит 5 ✨. Старое неоплаченное предложение за 3 ✨ не списывает новую цену. Уже купленный результат открывается бесплатно.',[[button('Подтвердить — 5 ✨','tarot26:'+offer.offer_id)]],'tarot');
+ const offer=await env.DB.prepare('SELECT offer_id FROM astra_tarot_offers26 WHERE telegram_id=? AND request_key=?').bind(id,requestKey).first();if(!offer)throw Error('Profile no longer exists');return screen(env,id,'Подтверждение расклада','Три разных Старших аркана: ситуация, препятствие и рекомендация.\n\nНовый расклад — 5 ✨. Результат сохранится для бесплатного повторного чтения.',[[button('Подтвердить — 5 ✨','tarot26:'+offer.offer_id)]],'tarot');
 }
 async function payTarot26(env,id,offerId){
  await env.DB.prepare(`INSERT INTO astra_tarot_purchases26(offer_id,telegram_id,price,result) SELECT offer_id,telegram_id,5,? FROM astra_tarot_offers26 WHERE offer_id=? AND telegram_id=? ON CONFLICT(offer_id) DO NOTHING`).bind(threeCardSpread(),offerId,id).run();
- const op=await env.DB.prepare('SELECT * FROM astra_tarot_purchases26 WHERE offer_id=? AND telegram_id=?').bind(offerId,id).first();if(!op)return screen(env,id,'Расклад не оплачен','Для нового расклада требуется 5 ✨. Списания нет.',[],'tarot');
+ const op=await env.DB.prepare('SELECT * FROM astra_tarot_purchases26 WHERE offer_id=? AND telegram_id=?').bind(offerId,id).first();if(!op)return insufficient04(env,id,5,'tarot');
  const lease=crypto.randomUUID(),now=Date.now();const claimed=await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sending',lease=?,lease_until=? WHERE offer_id=? AND telegram_id=? AND (delivery<>'sending' OR lease_until<?)").bind(lease,now+30000,offerId,id,now).run();if(!claimed.meta.changes)throw Error('Saved reading delivery in progress');
- try{await send(shellEnv(env,'tarot'),id,op.result);await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sent' WHERE offer_id=? AND lease=?").bind(offerId,lease).run();}catch(e){await env.DB.prepare('UPDATE astra_tarot_purchases26 SET delivery=? WHERE offer_id=? AND lease=?').bind(e.telegramCode>=400&&e.telegramCode<500?'rejected':e.telegramCode>=500?'retry':'unknown',offerId,lease).run();throw Error('Saved reading delivery failed');}
+ try{await send(shellEnv(env,'tarot'),id,op.result,{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sent' WHERE offer_id=? AND lease=?").bind(offerId,lease).run();}catch(e){await env.DB.prepare('UPDATE astra_tarot_purchases26 SET delivery=? WHERE offer_id=? AND lease=?').bind(e.telegramCode>=400&&e.telegramCode<500?'rejected':e.telegramCode>=500?'retry':'unknown',offerId,lease).run();throw Error('Saved reading delivery failed');}
 }
-async function shellPage(env,id,page,q=null,updateId=null){
+async function pre04_shellPage(env,id,page,q=null,updateId=null){
  const buy=/^tarot26:([a-f0-9]{32})$/.exec(page);if(buy)return payTarot26(env,id,buy[1]);
  if(page==='buy')return threeCards(env,id,String(q?.message?.message_id||updateId||''));
  const oldPay=/^pay:([1-9][0-9]{0,15})$/.exec(page);if(oldPay)return threeCards(env,id,oldPay[1]);
- if(page==='tarot:last'){const row=await env.DB.prepare(`SELECT result FROM(SELECT result,created_at,rowid AS mark,1 AS version FROM astra_operations WHERE telegram_id=? AND reason='tarot' UNION ALL SELECT result,created_at,rowid,2 FROM astra_tarot_purchases26 WHERE telegram_id=?) ORDER BY created_at DESC,version DESC,mark DESC LIMIT 1`).bind(id,id).first();return send(shellEnv(env,'tarot'),id,row?.result||'Сохранённых раскладов пока нет. Новый расклад стоит 5 ✨.');}
+ if(page==='tarot:last'){const row=await env.DB.prepare(`SELECT result FROM(SELECT result,created_at,rowid AS mark,1 AS version FROM astra_operations WHERE telegram_id=? AND reason='tarot' UNION ALL SELECT result,created_at,rowid,2 FROM astra_tarot_purchases26 WHERE telegram_id=?) ORDER BY created_at DESC,version DESC,mark DESC LIMIT 1`).bind(id,id).first();return send(shellEnv(env,'tarot'),id,row?.result||'Сохранённых раскладов пока нет. Новый расклад — 5 ✨, после подтверждения.',{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});}
  return pre26_shellPage(env,id,page,q,updateId);
 }
 const FENCE_PRIVACY26='Для защиты от повторного получения бонусов мы отдельно сохраняем HMAC-псевдоним аккаунта и минимальные полученные права на 30 дней после фактического начисления. Это персональные псевдонимизированные данные, не анонимизация. Попытки регистрации не продлевают срок. /delete не стирает эти права до истечения срока; просроченные записи удаляются ограниченной фоновой очисткой. Права не содержат исходный Telegram ID, имя, вопросы или тексты и не восстанавливают удалённый профиль.';
-async function paymentCommand(env,m){
+async function pre04_paymentCommand(env,m){
  if(String(m.text||'').trim()==='/privacy'){const p=await readPolicy(env);await send(shellEnv(env,'rules'),m.from.id,`Данные профиля\n\nЗнак, баланс, Telegram ID, активные даты, журнал, результаты и реферальные связи хранятся для работы сервиса; /delete удаляет эти обычные данные.\n\n${FENCE_PRIVACY26}\n\nОплаченные доказательства, ID плательщика и долг сохраняются отдельно по /terms (${p.retention_days||'срок ещё не утверждён'} дней после закрытия дел и погашения долга). Поддержка: ${p.support||'не настроена'}. Сообщения Telegram и backup управляются отдельно. Публичная активация бонусов требует утверждённого уведомления и правового основания владельца.`);return true;}
  return pre26_paymentCommand(env,m);
 }
-async function policyFaq(env){const items=await pre26_policyFaq(env),p=await readPolicy(env);items[4][2]=`Баланс и история учитывают фактические начисления и списания. Новый расклад Таро — 5 ✨; ранее оплаченный результат за 3 ✨ сохраняется и читается бесплатно. Расширенный прогноз — 4 ✨.\n\n${p.activated?'Новый профиль +5; активная дата +2; первые3подряд +3; каждый7-й +4;30разных +6. Новый реферал +10/+3 после выбора знака; канал +15 самому и +5 исходному пригласившему при подтверждённой связи.':'До переключения сохраняются прежние номинальные бонусы; фактическая выплата зависит от права и настройки защиты.'}\n\n${FENCE_PRIVACY26}`;items[5][2]=items[5][2].replace('Новый расклад на три карты стоит 3 ✨','Новый расклад на три карты стоит 5 ✨');items[6][2]+='\n\n'+FENCE_PRIVACY26;items[10][1]='Магазин подготовлен: 10 XTR → 40 ✨; 25 → 110; 50 → 240. Включение требует отдельного решения.';items[10][2]=items[10][2].replace('10 XTR → 100 ✨; 25 → 270; 50 → 570.','10 XTR → 40 ✨; 25 → 110; 50 → 240.');return items;}
+async function pre04_policyFaq(env){const items=await pre26_policyFaq(env),p=await readPolicy(env);items[4][2]=`Баланс и история учитывают фактические начисления и списания. Новый расклад Таро — 5 ✨; ранее оплаченный результат за 3 ✨ сохраняется и читается бесплатно. Расширенный прогноз — 4 ✨.\n\n${p.activated?'Новый профиль +5; активная дата +2; первые3подряд +3; каждый7-й +4;30разных +6. Новый реферал +10/+3 после выбора знака; канал +15 самому и +5 исходному пригласившему при подтверждённой связи.':'До переключения сохраняются прежние номинальные бонусы; фактическая выплата зависит от права и настройки защиты.'}\n\n${FENCE_PRIVACY26}`;items[5][2]=items[5][2].replace('Новый расклад на три карты стоит 3 ✨','Новый расклад на три карты стоит 5 ✨');items[6][2]+='\n\n'+FENCE_PRIVACY26;items[10][1]='Магазин подготовлен: 10 XTR → 40 ✨; 25 → 110; 50 → 240. Включение требует отдельного решения.';items[10][2]=items[10][2].replace('10 XTR → 100 ✨; 25 → 270; 50 → 570.','10 XTR → 40 ✨; 25 → 110; 50 → 240.');return items;}
 
 async function paymentsAdmin(request,env){
  const url=new URL(request.url);if(url.pathname!=='/internal/economy/policy'&&url.pathname!=='/internal/economy/fence')return pre26_paymentsAdmin(request,env);
@@ -18582,6 +18582,93 @@ async function health(env){
  state.broadcast_window_utc='06:00–07:59';state.broadcast_window_open=morning03();state.broadcast_batch_limit=8;state.broadcast_cooldown_until=schema?.cooldown_until||0;
  state.ready=state.ready&&state.broadcast_ready;return Response.json(state,{status:state.ready?200:503,headers:{'Cache-Control':'no-store'}});
 }
+
+
+// TASK04 presentation adapters. Immutable texts and financial services are preserved.
+// Pure presentation. No balance, entitlement, delivery, selection or consent writes.
+const PRIVACY_BONUS04='После удаления профиля до 30 дней с момента получения бонуса сохраняется HMAC-псевдонимы аккаунта и связанных приглашений, а также отметки о полученных бонусах. Это персональные псевдонимизированные данные, не анонимизация. Они нужны, чтобы удаление и новая регистрация не давали тот же бонус снова. Имя, вопросы и тексты в этих отметках не хранятся. Повторная регистрация срок не продлевает; истёкшие отметки удаляются фоновой очисткой.';
+const DELETE_NOTICE04='Профиль, настройки, история пыли, активные дни и сохранённые расклады и прогнозы удалены.\n\nБонусные отметки HMAC остаются до 30 дней с момента получения бонуса; повторная регистрация срок не продлевает. Платёжные записи и непогашенные обязательства сохраняются отдельно для поддержки и разбора споров — /privacy и /terms.\n\nСообщения в Telegram и резервные копии эта команда не удаляет. Создать новый профиль: /start.';
+function rewardText04(active){return active?'Новый профиль: +5 ✨.\nПервый вход за день: +2 ✨ автоматически.\nПервые 3 дня подряд: +3 ✨ один раз.\nКаждый 7-й день серии: +4 ✨.\n30 разных дней: +6 ✨ один раз.':'Новый профиль: +2 ✨.\nБонус дня: +1 ✨ по кнопке.';}
+const debtText04=debt=>debt>0?`\n\nПосле возврата платежа осталось возместить ${debt} ✨. Новые начисления сначала уменьшают эту сумму. Подробнее — /terms; помощь — /paysupport.`:'';
+const PAYMENT_LABELS04=Object.freeze({created:'Счёт подготовлен',invoiced:'Ожидает оплаты',confirmed:'Оплата ещё не подтверждена',credited:'Оплачен · пыль начислена',refund_requested:'Обращение о возврате принято',refund_in_progress:'Возврат обрабатывается',refunded:'Возврат учтён',needs_review:'Требуется проверка поддержки'});
+const paymentLabel04=status=>PAYMENT_LABELS04[status]||'Уточните состояние в поддержке';
+function supportText04(p){return p.support&&supportValid(p.support)?p.support.replace(/^mailto:/,''):'Контакт поддержки ещё не указан. Покупки Stars пока недоступны.';}
+function retentionText04(p){return p.retention_days?`Для новых заказов: ${p.retention_days} дней после завершения платёжных вопросов и погашения задолженности. Прежние заказы сохраняют срок, принятый при покупке.`:'Срок хранения новых платёжных записей ещё не утверждён; магазин закрыт.';}
+function paymentNotice04(r,o,u){
+ const review=r.status==='needs_review'||o?.status==='needs_review',archived=r.status==='archived',refunded=o?.status==='refunded';
+ const title=review?'Платёж требует проверки':archived?'Платёж уже учтён':refunded?'Возврат уже учтён':'Оплата подтверждена';
+ const detail=review?'Пока не удалось подтвердить начисление. Обратитесь в /paysupport.':archived?'Подробности прежней операции уточнит поддержка.':refunded?'Повторное уведомление не меняет баланс.':`Пакет ${o?.dust??r.receipt?.dust??''} ✨ учтён. Повторно оплачивать его не нужно.`;
+ return `${title}\n\n${detail}${o?'\nЗаказ: '+o.order_id:''}\nНомер обращения: ${r.hash.slice(0,16)}.\n${u?'Баланс: '+u.balance+' ✨.':'Профиль удалён; платёж сам по себе его не восстанавливает.'}\n\n/payments — покупки · /paysupport — помощь`;
+}
+function refundNotice04(r){if(r.archived)return 'Сообщение Telegram о возврате сохранено. Подробности платежа можно уточнить в /paysupport. Сохранённые материалы не отозваны.';return 'Возврат Telegram учтён.'+(r.removed>0?`\nПо этому возврату списано ${r.removed} ✨.`:'')+(r.debt_added>0?`\nОсталось возместить ${r.debt_added} ✨ из будущих начислений.`:'')+'\nСохранённые материалы не отозваны.\nВопросы — /paysupport.';}
+
+const FAQ_LABELS04=['Прогноз по знаку','Перечитать купленное','Колода Таро','Границы трактовки','Пыль и бонусы','Что бесплатно','Данные и удаление','Будущие разделы','Редакция и авторство','Сведения о рождении','Покупки Stars'];
+
+const HISTORY_UI_LABELS04={opening:'Баланс на начало учёта','reward:v3:legacy_referrer':'Приглашение по прежним условиям','easter:gpt6':'Запись № 06','reward:v3:gpt6':'Запись № 06'};
+
+// Screen adapters only. All monetary commands and immutable content use existing services.
+async function rewardState04(env){const p=await readPolicy(env),ctx=await fenceContext26(env);return{p,active:Boolean(p.activated),available:Boolean(ctx.ok&&(!p.activated||(p.enabled&&true26(env.ASTRA_ECONOMY_V2_ENABLED))))};}
+const rewardPause04=s=>s.available?'':'Начисления за посещения, приглашения и канал сейчас недоступны. Бесплатные материалы можно читать как обычно.\n\n';
+async function shopAvailable04(env){try{await paymentEnvironment(env,{shop:true});return true;}catch{return false;}}
+const supportRows04=p=>supportValid(p.support)&&p.support.startsWith('https://t.me/')?[[{text:'Написать в поддержку',url:p.support}]]:[];
+async function home(env,id){const u=await getUser(env,id);if(!u?.zodiac)return welcome(env,id);return send(env,id,`Астра\n${zodiacName(u.zodiac)} · ${u.balance} ✨\n\nВыберите, к чему обратиться сегодня.`,{reply_markup:keyboard});}
+async function policyWelcome(env,id,ref=''){const u=await createUser(env,id,ref);if(u.zodiac)return send(env,id,`Астра\n${zodiacName(u.zodiac)} · ${u.balance} ✨\n\nВаши материалы и настройки — в меню.`,{reply_markup:keyboard});return send(env,id,`Добро пожаловать в Астру\n\nАстрология, Таро и язык чисел — для внимательного взгляда на себя.\n\nВыберите солнечный знак. Полный прогноз и число дня бесплатны.\nБаланс: ${u.balance} ✨.\n${u.notifications_enabled?'Утренние уведомления включены по прежней настройке профиля. После выбора знака проверьте подписку в «Досье».':'Утренние уведомления выключены; включить их можно позже в «Досье».'}\n\nО данных и бонусах после удаления профиля — /privacy.`,{reply_markup:signKeyboard});}
+async function help(env,id){return screen(env,id,'Помощь','Полный прогноз и число дня — бесплатно. Карта дня тоже бесплатна. Расклад на три карты — 5 ✨; расширенный прогноз — 4 ✨. Цена всегда видна до подтверждения, купленное можно перечитать бесплатно.\n\n/start — главное меню\n/stop — выключить утренние уведомления\n/privacy — данные и удаление\n/delete — удалить профиль и материалы\n/terms — условия покупок\n/payments — мои платежи\n/paysupport — помощь с оплатой\n\nПыль и бонусы — в «Звёздной пыли». О методах Астры — в справке.',[[button('Справка','faq'),button('Об Астре','about')]]);}
+async function forecastMenu(env,id){const day=dayMSK(),saved=await getForecastUnlock(env,id,day),available=engineActive(env,day);return screen(env,id,'🌙 Прогноз дня','Тема дня, отношения, дела, финансы, настроение и совет — в полном бесплатном прогнозе. Число дня тоже входит в него.'+(available||saved?'\n\nРасширенный материал добавляет развилку выбора, символ, цвет и руну. Купленное за эту дату можно перечитать бесплатно.':'\n\nРасширенный материал пока недоступен.'),[[button('Открыть бесплатно','forecast:read')],...(available||saved?[forecastCta03(day,Boolean(saved))[0]]:[]),[{text:'Карта дня — бесплатно',callback_data:'tarot:day'}]]);}
+async function bonus(env,id){const p=await readPolicy(env);if(!p.activated)await bonusCommand26(env,id,'legacy_daily');const u=await getUser(env,id),s=await rewardState04(env);return screen(env,id,'Бонус дня',rewardPause04(s)+(s.available?(s.active?'За первый вход сегодня начисляется +2 ✨ автоматически. Повторное открытие не даёт второй бонус.\nПервые 3 дня подряд: +3 ✨ один раз; каждый 7-й: +4 ✨; 30 разных дней: +6 ✨ один раз.':'Бонус дня — +1 ✨ по этой кнопке, один раз за московскую дату. Уже полученный бонус повторно не начисляется.'):`Фактические начисления можно проверить в истории.`)+`\n\nБаланс: ${u.balance} ✨. Пропуск дня не уменьшает накопленную пыль.`,[[button('История пыли','dust:history'),button('Активные дни','dust:activity')]],'dust');}
+async function invite(env,id){const s=await rewardState04(env);return screen(env,id,'Пригласить друга',rewardPause04(s)+(s.available?(s.active?'За нового друга после регистрации и выбора знака: вам +10 ✨, другу +3 ✨.'+(channelName(env)?' Если он впервые подтвердит подписку на канал, вам ещё +5 ✨.':''):'За нового друга после регистрации и выбора знака: вам +5 ✨.'):'Ссылкой можно поделиться; награды сейчас не обещаются.')+'\n\nПовторный вход существующего участника не считается новым приглашением. Ранее оформленные приглашения сохраняют свои условия.\n\nВаша ссылка:\nhttps://t.me/'+botUsername(env)+'?start=ref_'+id,[[button('История пыли','dust:history')]],'dust');}
+async function channelMenu(env,id){const c=channelName(env);if(!c)return screen(env,id,'Канал Астры','Канал пока не подключён. Прогноз и другие бесплатные материалы доступны без подписки.',[],'dust');const s=await rewardState04(env),u=await getUser(env,id);return screen(env,id,'Канал Астры',`${c}\n\n`+rewardPause04(s)+(u?.channel_rewarded?'Бонус за подписку уже получен. Повторного начисления нет.':s.available?`Первая подтверждённая подписка: +${s.active?15:5} ✨.`:'Проверка с начислением сейчас недоступна.')+(s.available&&s.active&&!u?.channel_rewarded?' Если вы пришли по приглашению, пригласивший получит ещё +5 ✨.':'')+'\n\nПодпишитесь, затем нажмите «Проверить подписку». Ранее полученный бонус не выдаётся повторно. Бесплатные материалы не требуют подписки.',[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]],'dust');}
+async function economyDust(env,id,u){const s=await rewardState04(env),summary=await policySummary(env,id),shop=await shopAvailable04(env);return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\n\nПыль открывает дополнительные материалы.\nТаро на три карты — 5 ✨. Расширенный прогноз — 4 ✨. Повторное чтение купленного бесплатно.\n\n`+rewardPause04(s)+(s.available?rewardText04(s.active):'Начисления и расходы видны в истории.')+'\n\nПолный прогноз, число дня и карта дня бесплатны.'+debtText04(summary.debt),[[button('История пыли','dust:history'),button('Активные дни','dust:activity')],[button(s.active?'Бонусы за посещения':'Бонус дня','gift'),button('Пригласить друга','invite')],[button('Канал Астры','channel')],...(shop?[[button('Магазин Stars','dust:shop')]]:[]),[button('Мои платежи','stars:history'),button('Помощь с оплатой','stars:support')],[button('Условия','stars:terms')]]);}
+async function economyDossier(env,id,u){const s=await rewardState04(env),summary=s.active?await policySummary(env,id):await readActivity(env,id,dayMSK());return screen(env,id,'Пыль и активность',`Баланс: ${u.balance} ✨\nАктивных дней: ${summary.total}\nТекущая серия: ${summary.streak} дн.\n\n`+rewardPause04(s)+(s.active&&s.available?'За первый вход в день: +2 ✨. Первая серия из 3 дней: +3 ✨; каждый 7-й день серии: +4 ✨; 30 разных дней: +6 ✨.':'Пропуск прерывает серию, но сохраняет накопленную пыль.')+'\n\nИстория показывает каждое начисление и списание.'+debtText04(summary.debt),[[button('История пыли','dossier:history'),button('Активные дни','dossier:activity')]],'dossier');}
+async function activityScreen(env,id,parent){const s=await rewardState04(env),a=s.active?await policySummary(env,id):await readActivity(env,id,dayMSK());return screen(env,id,'Активные дни',`Всего учтено: ${a.total}\nТекущая серия: ${a.streak} дн.\n\nДень считается по Москве. Пропуск прерывает серию, но не уменьшает пыль. Утренние сообщения Астры не считаются вашим посещением.\n\n`+(s.active?rewardPause04(s)+(s.available?'За день +2 ✨; первые 3 дня подряд +3 ✨ один раз; каждый 7-й +4 ✨; 30 разных дней +6 ✨ один раз.':'Начисления можно проверить в истории.'):(s.available?'Серии пока не приносят дополнительных бонусов. Бонус дня +1 ✨ открывается отдельно.':'Бонусные начисления сейчас недоступны.'))+' Дни до начала учёта не восстанавливаются.',[[button('История пыли',`${parent}:history`)]],parent);}
+async function insufficient04(env,id,price,parent){const u=await getUser(env,id);if(!u||u.balance>=price)return screen(env,id,'Предложение недоступно','Не удалось открыть это предложение. Нового списания нет. Откройте нужный раздел заново.',[],parent);const s=await rewardState04(env),shop=await shopAvailable04(env);let ways=s.available?(s.active?'За первый вход в день можно получить +2 ✨ и награды за серии. За нового друга — +10 ✨ после выбора им знака.':'Бонус дня: +1 ✨. За нового друга после выбора знака: +5 ✨.'):'Бонусные начисления сейчас недоступны.';if(s.available&&s.active&&channelName(env))ways+=' За подтверждённую подписку друга на канал — ещё +5 ✨.';if(s.available&&!u.channel_rewarded&&channelName(env))ways+=` Первая подтверждённая подписка на канал: +${s.active?15:5} ✨.`;return screen(env,id,'Немного не хватает',`Нужно: ${price} ✨. У вас: ${u.balance} ✨.\nНе хватает: ${price-u.balance} ✨. Списания нет.\n\n${ways}\n\nПолный прогноз и карта дня доступны бесплатно.`,[[button('Получить пыль','dust'),button('Прогноз — бесплатно','forecast:read')],...(shop?[[button('Магазин Stars','dust:shop')]]:[])],parent);}
+async function paymentTerms(env,id){const p=await readPolicy(env);return screen(env,id,'Условия покупок','Пакеты Stars: 10 XTR → 40 ✨; 25 XTR → 110 ✨; 50 XTR → 240 ✨. Доступность магазина показана в его разделе.\n\nЦена и количество пыли видны до счёта. Начисление происходит только после подтверждённой оплаты Telegram. Скрытых подписок нет.\n\nПыль нельзя обменять обратно на Stars или деньги. Ошибки оплаты и обоснованные споры рассматривает поддержка; обязательные и исключительные возвраты сохраняются. При возврате купленный пакет вычитается из пыли. Если его уже потратили, остаток возмещается будущими начислениями; открытые материалы не отзываются.\n\nПоддержка: '+supportText04(p)+'\nУсловия: '+(p.terms_version||'ещё не утверждены')+'.\n\nПлатёжные записи сохраняются для помощи и разбора споров. '+retentionText04(p)+' Незавершённые вопросы хранятся до решения. После удаления персональных платёжных данных остаётся контрольный отпечаток платежа с суммой и отметкой возврата без ID плательщика, бессрочно, чтобы не начислить тот же платёж повторно.\n\n/delete удаляет обычный профиль и материалы; условия бонусных отметок — /privacy.',[[button('Поддержка','stars:support')]],'dust');}
+async function paymentSupport(env,id){const p=await readPolicy(env);return screen(env,id,'Помощь с оплатой',supportText04(p)+(supportValid(p.support)?'\n\nУкажите номер заказа из «Мои платежи», сумму Stars и опишите, что произошло. Если номер не сохранился, сообщите дату оплаты. Пароли и секретные ключи не нужны.\n\nМы проверим оплату, начисление или возврат. Повторно платить за тот же заказ не нужно.':'\n\nСохранённые материалы и история пыли доступны. Контакт появится здесь после настройки владельцем.'),supportRows04(p).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');}
+async function paymentHistory(env,id,cursor=null){const page=await readStarHistory(env,id,cursor);if(page.expired)return screen(env,id,'Мои платежи','Не удалось открыть эту страницу. Обновите историю.',[[button('Обновить','stars:history')]],'dust');const nav=[];if(page.newer)nav.push(button('‹ Новее','stars:history:'+page.newer));if(page.older)nav.push(button('Старее ›','stars:history:'+page.older));return screen(env,id,'Мои платежи',page.rows.length?page.rows.map(o=>`${formatLedgerTime(o.created_at)}\nЗаказ ${o.order_id}\n${o.xtr} XTR → ${o.dust} ✨\n${paymentLabel04(o.status)}`).join('\n\n'):'Покупок пока нет. Счёт сам по себе не списывает Stars.',[...(nav.length?[nav]:[]),[button('Обновить','stars:history'),button('Поддержка','stars:support')]],'dust');}
+async function starsShop(env,id){if(!await shopAvailable04(env))return screen(env,id,'Магазин Stars','Магазин пока закрыт. Покупки недоступны; сохранённые материалы и история работают как обычно.',[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'dust');return screen(env,id,'Магазин Stars','Одноразовые пакеты звёздной пыли. Выберите пакет — затем увидите цену и условия до оплаты. Обратного обмена пыли на Stars или деньги нет.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy26:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');}
+async function privacy04(env,id){const p=await readPolicy(env);return screen(env,id,'Ваши данные','Астра хранит Telegram ID, знак, настройки, баланс, историю пыли, активные дни, приглашения и сохранённые материалы. Телефон, дату рождения и фотографии мы не запрашиваем.\n\n/delete удаляет обычный профиль, его историю и материалы.\n\n'+PRIVACY_BONUS04+'\n\nПлатёжные записи, включая ID плательщика, и непогашенные обязательства хранятся отдельно для поддержки и разбора споров. '+retentionText04(p)+' Подробнее об остаточном контрольном отпечатке платежа — /terms.\n\nСообщения Telegram и резервные копии управляются отдельно; уже начатую отправку нельзя отозвать.\nПоддержка: '+supportText04(p),[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'rules');}
+async function paymentCommand(env,m){if(String(m.text||'').trim()==='/privacy'){await privacy04(env,m.from.id);return true;}return pre04_paymentCommand(env,m);}
+async function ledgerScreen(env,id,u,parent,cursor=null){const page=await readHistoryPage(env,id,cursor);if(page.expired)return screen(env,id,'История пыли','Эта страница больше недоступна. Откройте историю заново.',[[button('Обновить историю',`${parent}:history`)]],parent);const short=parent==='dossier'?'p':'d',paging=[];if(page.newer)paging.push(button('‹ Новее',`history:${short}:${page.newer}`));if(page.older)paging.push(button('Старее ›',`history:${short}:${page.older}`));const rows=[...(paging.length?[paging]:[]),[button('Обновить историю',`${parent}:history`)]],body=`История пыли\nБаланс: ${u.balance} ✨\nВремя — московское.\n\n`+(page.rows.length?page.rows.map(historyRecordText).join('\n\n'):'Начислений и списаний пока нет.')+'\n\nНовые операции появятся после обновления. Минус означает расход пыли.';const chunks=economyChunks(body);for(let i=0;i<chunks.length;i++){if(i===chunks.length-1)await send(shellEnv(env,parent),id,chunks[i],{reply_markup:{inline_keyboard:rows}});else await tg(env,'sendMessage',{chat_id:id,text:chunks[i]});}}
+async function policyFaq(env){const s=await rewardState04(env),shop=await shopAvailable04(env);return[
+ ['Как составляется прогноз?','Тема дня связывает отношения, дела, настроение и совет.','Астра соединяет символику солнечного знака, стихии, модальности и традиционного управителя с выбранной темой дня. Это интерпретация, а не вычисление реальных транзитов или положения Луны.\n\nДля одного знака и московской даты сохраняется один текст. Число дня от 1 до 9 определяется знаком и датой; оно всегда бесплатно. Обновление Астры не меняет уже сохранённый прогноз.'],
+ ['Можно ли перечитать купленное?','Да, сохранённый материал открывается без новой оплаты.','Расклад на три карты и расширенный прогноз сохраняются после покупки. Повторное открытие возвращает тот же текст без нового списания. Расширенный покупается за конкретную московскую дату.\n\nПри сбое доставки откройте материал снова. Telegram иногда может повторить сообщение, но повтор сообщения не означает новую покупку. После удаления профиля обычные сохранённые материалы удаляются.'],
+ ['Какая колода используется?','22 Старших аркана, прямые и перевёрнутые положения.','В раскладе три разные карты рассматриваются как ситуация, препятствие и рекомендация. Позиция меняет контекст чтения аркана. Перевёрнутая карта не обязательно означает буквальное отрицание прямой: это может быть ограничение, избыток или внутреннее проявление темы. Младшие арканы пока не входят в колоду.'],
+ ['Насколько буквальны трактовки?','Это символический взгляд на вопрос, а не обещание события.','Астрология, Таро и числовые соответствия помогают рассмотреть ситуацию с другой стороны. Они не заменяют факты и профессиональную помощь в вопросах здоровья, права или финансов. Оплата открывает дополнительный материал и не делает предсказание достовернее.'],
+ ['Как получить и потратить пыль?','Начисления и расходы видны в истории.','Расклад на три карты — 5 ✨; расширенный прогноз — 4 ✨. Купленное можно перечитать бесплатно.\n\n'+rewardPause04(s)+(s.available?rewardText04(s.active)+(s.active?'\nНовый друг: вам +10 ✨, ему +3 ✨ после выбора знака. Канал: +15 ✨ подписавшемуся, ещё +5 ✨ его пригласившему при подтверждённой связи.':'\nНовый друг после выбора знака: +5 ✨. Первая подтверждённая подписка на канал: +5 ✨.'):'Сейчас новые бонусы не обещаются; уже накопленная пыль сохраняется.')+'\n\nПовторные обращения не дают тот же бонус снова. Правила бонусных отметок после удаления — /privacy. Пыль нельзя передать другому профилю или обменять обратно на Stars или деньги.'],
+ ['Что бесплатно?','Полный прогноз с числом дня, карта дня и повторное чтение купленного.','Бесплатный прогноз включает тему дня, отношения, дела, финансы, настроение и совет. Для чтения не нужны пыль или подписка на канал. Карта дня также бесплатна.\n\nРасширенный прогноз за 4 ✨ добавляет развилку выбора, символ и цвет, руну и дополнительные соответствия. Обычный расклад Таро на три карты стоит 5 ✨. Любая новая покупка требует подтверждения цены.'],
+ ['Что остаётся после удаления?','Обычные данные удаляются; для бонусов и платежей есть отдельные сроки.','/delete удаляет профиль, настройки, историю пыли, активность и сохранённые материалы.\n\n'+PRIVACY_BONUS04+'\n\nПлатёжные записи и нерешённые обязательства хранятся отдельно для помощи и разбора споров — /terms и /privacy. Сообщения в Telegram и резервные копии управляются отдельно.'],
+ ['Что ещё готовится?','Символический портрет, совместимость, натальная карта и коллекции.','Эти разделы пока не предоставляют платных услуг. Сроки открытия не объявлены, пыль за ожидание не списывается. Для натальной карты и лунных сведений нужен отдельный проверенный астрономический расчёт; сейчас Астра его не выполняет.'],
+ ['Как работают редакция и инженерное направление?','Редакция отвечает за трактовки; инженерное направление — за работу сервиса.','Редакционное направление определяет язык, структуру и символические соответствия. Инженерное — обработку обращений, сохранение материалов и точный учёт пыли.\n\nАстру создаёт один человек с помощью ИИ. Имена в редакционной структуре — псевдонимы направлений работы, а не реальный штат независимых специалистов.'],
+ ['Нужны ли сведения о рождении?','Для доступного прогноза достаточно солнечного знака.','Время и место рождения сейчас не запрашиваются. Астра не рассчитывает натальные дома, Асцендент, реальные транзиты или фазы Луны. Такие расчёты потребовали бы отдельного метода и проверенных исходных данных.'],
+ ['Доступны ли покупки Stars?',shop?'Да, пакеты открываются через «Звёздную пыль».':'Магазин пока закрыт.',shop?'Пакеты: 10 XTR → 40 ✨, 25 XTR → 110 ✨, 50 XTR → 240 ✨. Цена и условия видны до счёта. Начисление происходит после подтверждённой оплаты Telegram. Обратного обмена пыли нет; помощь и разбор обоснованных споров доступны через /paysupport.':'Счета сейчас не выставляются. Бесплатные материалы, пыль и история работают независимо от магазина. Условия — /terms, помощь с прежними платежами — /paysupport.']
+ ];}
+async function notificationsSet04(env,id,next,updateId){
+ // Same existing per-update target and write, with an explicit desired state instead of a new toggle.
+ await env.DB.prepare(`UPDATE astra_update_jobs SET notification_target=coalesce(notification_target,?) WHERE update_id=?`).bind(next,updateId).run();
+ const job=await env.DB.prepare('SELECT notification_target FROM astra_update_jobs WHERE update_id=?').bind(updateId).first();if(!job)throw Error('Profile no longer exists');
+ await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(job.notification_target,id).run();
+ return screen(env,id,'Утренний прогноз',job.notification_target?'Уведомления включены по вашему запросу. Полный прогноз с числом дня будет приходить с 09:00 до 11:00 по Москве. Выключить можно здесь или командой /stop.':'Уведомления выключены. Полный прогноз всегда можно открыть вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
+}
+async function shellPage(env,id,page,q=null,updateId=null){
+ const pages=new Set(['about','manifest','trust','trust:forecast','trust:tarot','trust:future','team','rules','self','dossier','notifications','notifications:confirm','notifications:enable','notifications:disable','tarot','faq']);
+ if(!pages.has(page))return pre04_shellPage(env,id,page,q,updateId);
+ const u=await getUser(env,id);
+ if(page==='about')return screen(env,id,'🏛 Об Астре','Астрология, Старшие арканы и язык чисел. Здесь — методы, редакция и правила работы Астры.',[[button('Об Астре','manifest'),button('Методы','trust')],[button('Редакция','team'),button('Справка','faq')],[button('Правила и данные','rules')]]);
+ if(page==='manifest')return screen(env,id,'Астра','Кабинет символических интерпретаций. Солнечный знак задаёт контекст прогноза, аркан и его позиция — контекст расклада.\n\nМы предпочитаем точную формулировку торжественному выводу. На торжественность отдельный тариф не предусмотрен.',[],'about');
+ if(page==='trust')return screen(env,id,'Методы Астры','У каждого метода — своя область и свои границы.',[[button('Прогноз','trust:forecast'),button('Таро','trust:tarot')],[button('Пыль и бонусы','trust:dust')],[button('Будущие разделы','trust:future')]],'about');
+ if(page==='trust:forecast'||page==='trust:tarot'||page==='trust:future'){const faq=await policyFaq(env),item=faq[page==='trust:forecast'?0:page==='trust:tarot'?2:7];return screen(env,id,item[0],item[2],[],'trust');}
+ if(page==='team')return screen(env,id,'Редакция Астры','Gideon Vale и Percival North — астрологическое направление.\nThalia Wren — корпус Таро.\n6th Registry — числовые соответствия.\nElias Voss — инженерное направление.\nM. Ejaculatum — сравнительная эзотерика.\n\nЭти редакционные имена обозначают роли внутри проекта. Об устройстве работы и реальном авторстве — в справке.',[[button('Об авторстве','faq:8:more')]],'about');
+ if(page==='rules')return screen(env,id,'Правила и данные','Астра предлагает символические интерпретации, а не гарантии событий. В вопросах здоровья, права и финансов нужны проверяемые данные и профильная помощь.\n\nНовая покупка требует подтверждения цены. Купленное можно перечитать бесплатно; скрытых подписок нет.\n\n/privacy — данные и бонусные отметки\n/terms — условия Stars и споры\n/delete — удалить профиль, его историю и сохранённые материалы',[[button('Мои данные','privacy'),button('Условия','stars:terms')]],'about');
+ if(page==='faq'){const faq=await policyFaq(env);return screen(env,id,'Справка',faq.map((f,i)=>`${i+1}. ${f[0]}\n${f[1]}`).join('\n\n'),faq.map((f,i)=>[button(FAQ_LABELS04[i],`faq:${i}:more`)]),'about');}
+ if(!u?.zodiac)return welcome(env,id);
+ if(page==='self')return screen(env,id,'🪞 Познай себя',`${zodiacName(u.zodiac)}\n\nСолнечный знак — отправная точка вашего дневного прогноза.\n\nСимволический портрет и совместимость ещё готовятся. Сейчас они не продаются и не требуют дополнительных данных.`,[[button('Мой прогноз — бесплатно','forecast:read')]]);
+ if(page==='dossier')return screen(env,id,'🗂 Досье',`${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\nУтренние уведомления: ${u.notifications_enabled?'включены по настройке профиля':'выключены'}\n\nМатериалы и настройки — под рукой.`,[[button('Пыль и активность','dossier:economy'),button('История пыли','dossier:history')],[button('Уведомления','notifications')],[button('Последний расклад','tarot:last')],[button('Мои данные','privacy')]]);
+ if(page==='tarot')return screen(env,id,'🃏 Таро','Карта дня — один аркан для размышления. Расклад на три карты рассматривает ситуацию, препятствие и возможный шаг.\n\nИспользуются 22 Старших аркана с прямыми и перевёрнутыми положениями. Купленный расклад можно перечитать бесплатно.',[[{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 5 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
+ if(page==='notifications')return screen(env,id,'Утренний прогноз',(u.notifications_enabled?'По настройке профиля уведомления включены. Если настройка появилась автоматически, это не подтверждение вашего согласия. Нажмите «Подтвердить подписку», если хотите получать прогноз.':'Уведомления выключены. Можно включить полный бесплатный прогноз с числом дня каждое утро.')+'\n\nВремя — с 09:00 до 11:00 по Москве. Прогноз можно читать вручную при любой настройке.',[[button(u.notifications_enabled?'Подтвердить подписку':'Включить уведомления',u.notifications_enabled?'notifications:confirm':'notifications:enable')],...(u.notifications_enabled?[[button('Отключить уведомления','notifications:disable')]]:[])],'dossier');
+ return notificationsSet04(env,id,page==='notifications:disable'?0:1,updateId);
+}
+
+Object.assign(HISTORY_LABELS,HISTORY_UI_LABELS04);
 
 const astraWorker = {
   async fetch(request,env) {

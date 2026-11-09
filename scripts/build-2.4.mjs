@@ -1,3 +1,4 @@
+import {patchTask04} from './patch-task04.mjs';
 import {patchTask03} from './patch-task03.mjs';
 import {patchTask02} from './patch-task02.mjs';
 import {patchTask01} from './patch-task01.mjs';
@@ -109,6 +110,7 @@ source+=`\nexport default {\n  fetch(request,env){return measureInvocation(env,'
 if(process.env.ASTRA_BUILD_BASELINE!=='1')({source,manifest}=patchTask01(source,manifest));
 if(process.env.ASTRA_BUILD_BASELINE!=='1'&&process.env.ASTRA_BUILD_TASK01!=='1')source=patchTask02(source);
 if(process.env.ASTRA_BUILD_BASELINE!=='1'&&process.env.ASTRA_BUILD_TASK01!=='1'&&process.env.ASTRA_BUILD_TASK02B!=='1')source=patchTask03(source);
+if(process.env.ASTRA_BUILD_BASELINE!=='1'&&process.env.ASTRA_BUILD_TASK01!=='1'&&process.env.ASTRA_BUILD_TASK02B!=='1'&&process.env.ASTRA_BUILD_TASK03!=='1')source=patchTask04(source);
 fs.writeFileSync(path.join(root,'release/ASTRA_2_4_WORKER.js'),source);
 fs.writeFileSync(path.join(root,'data/payment-schema-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log(`Built release/ASTRA_2_4_WORKER.js (${Buffer.byteLength(source)} bytes); schema ${manifest.length}`);

@@ -1,0 +1,27 @@
+{
+  "tool": "Chromium + Playwright, local generated HTML only",
+  "preview_sha256": "75c0e3b2c2357f98fbd3f40159e496eef221cdeade5d95b9d64780cedb28030f",
+  "widths": [
+    {
+      "viewport": 320,
+      "page": 320,
+      "panels": 92,
+      "overflow": 0
+    },
+    {
+      "viewport": 360,
+      "page": 360,
+      "panels": 92,
+      "overflow": 0
+    },
+    {
+      "viewport": 390,
+      "page": 390,
+      "panels": 92,
+      "overflow": 0
+    }
+  ],
+  "real_telegram_client": false,
+  "network_requests_allowed": false,
+  "limitation": "Checks local wrapping/overflow of actual message bodies, not native Telegram rendering or screen-reader behavior."
+}

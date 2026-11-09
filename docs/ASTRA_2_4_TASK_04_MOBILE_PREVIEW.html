@@ -1,0 +1,590 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Astra — локальное ревью TASK 04</title><style>body{margin:0;background:#090d18;color:#dbe2ee;font:16px/1.5 Arial,sans-serif}main{max-width:900px;margin:auto;padding:16px}h1{font-size:23px}h2{font-size:19px;margin:24px 0 12px}p{color:#aebbd0}.comparison{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}.phone{width:288px;max-width:100%;background:#111b2b;border:1px solid #33415b;border-radius:14px;padding:6px;box-sizing:border-box;min-width:0}header{padding:10px;color:#b4bfda}article{background:#192940;border-radius:9px;padding:10px;min-width:0}pre{font:15px/1.55 Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 10px}.row{display:flex;gap:4px;margin:4px 0}.button{flex:1;min-width:0;padding:7px 4px;background:#243955;border:1px solid #3f5472;border-radius:5px;text-align:center;font-size:12px;overflow-wrap:anywhere}a{color:#b5c8f3}</style><main><h1>Астра · ревью интерфейса</h1><p>Локальный макет фактических сообщений. Это не снимок клиента Telegram; его внешний вид зависит от приложения.</p><p>Данные получены из настоящего single-file Worker через локальный SQLite и перехваченный Telegram HTTP. Это синтетические аккаунты, контакты example.test и тестовые условия; они не установлены владельцу. Stars включены исключительно внутри помеченных mock-фикстур. Внешних платежей нет. UUID заказов, offer и время в отображении нормализованы для сравнения. Тела кэша и оплаченного расклада не редактировались. Дата компактной редакции задана только в локальных фикстурах.</p><h2 id="registration">Регистрация</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Астра
+Астрология · Таро · нумерологические соответствия
+
+Выберите солнечный знак. Баланс: 2 ✨. Бесплатный прогноз и число дня доступны независимо от бонусов. Условия защиты наград и удаления — /privacy.</pre><div class="buttons"><div class="row"><span class="button">♈ Овен</span><span class="button">♉ Телец</span></div><div class="row"><span class="button">♊ Близнецы</span><span class="button">♋ Рак</span></div><div class="row"><span class="button">♌ Лев</span><span class="button">♍ Дева</span></div><div class="row"><span class="button">♎ Весы</span><span class="button">♏ Скорпион</span></div><div class="row"><span class="button">♐ Стрелец</span><span class="button">♑ Козерог</span></div><div class="row"><span class="button">♒ Водолей</span><span class="button">♓ Рыбы</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Добро пожаловать в Астру
+
+Астрология, Таро и язык чисел — для внимательного взгляда на себя.
+
+Выберите солнечный знак. Полный прогноз и число дня бесплатны.
+Баланс: 2 ✨.
+Утренние уведомления выключены; включить их можно позже в «Досье».
+
+О данных и бонусах после удаления профиля — /privacy.</pre><div class="buttons"><div class="row"><span class="button">♈ Овен</span><span class="button">♉ Телец</span></div><div class="row"><span class="button">♊ Близнецы</span><span class="button">♋ Рак</span></div><div class="row"><span class="button">♌ Лев</span><span class="button">♍ Дева</span></div><div class="row"><span class="button">♎ Весы</span><span class="button">♏ Скорпион</span></div><div class="row"><span class="button">♐ Стрелец</span><span class="button">♑ Козерог</span></div><div class="row"><span class="button">♒ Водолей</span><span class="button">♓ Рыбы</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="home">Главное меню</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Астра · кабинет интерпретаций
+♈ Овен · 20 ✨
+Дневная дата определяется по Europe/Moscow.
+
+Выберите раздел.</pre><div class="buttons"><div class="row"><span class="button">🌙 Прогноз дня</span><span class="button">🃏 Таро</span></div><div class="row"><span class="button">🪞 Познай себя</span><span class="button">🗂 Досье</span></div><div class="row"><span class="button">✨ Звёздная пыль</span><span class="button">🏛 Об Астре</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Астра
+♈ Овен · 20 ✨
+
+Выберите, к чему обратиться сегодня.</pre><div class="buttons"><div class="row"><span class="button">🌙 Прогноз дня</span><span class="button">🃏 Таро</span></div><div class="row"><span class="button">🪞 Познай себя</span><span class="button">🗂 Досье</span></div><div class="row"><span class="button">✨ Звёздная пыль</span><span class="button">🏛 Об Астре</span></div></div></article></section></div><h2 id="forecast">Карточка прогноза</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🌙 Прогноз дня
+
+Общий прогноз по выбранному знаку: тема, отношения, дела, ресурсы, эмоциональный ритм, число дня и практический итог. Дата определяется по Europe/Moscow.</pre><div class="buttons"><div class="row"><span class="button">Открыть бесплатно</span></div><div class="row"><span class="button">Расширенный — 4 ✨</span></div><div class="row"><span class="button">Повторить расширенный</span></div><div class="row"><span class="button">🃏 Таро</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🌙 Прогноз дня
+
+Тема дня, отношения, дела, финансы, настроение и совет — в полном бесплатном прогнозе. Число дня тоже входит в него.
+
+Расширенный материал добавляет развилку выбора, символ, цвет и руну. Купленное за эту дату можно перечитать бесплатно.</pre><div class="buttons"><div class="row"><span class="button">Открыть бесплатно</span></div><div class="row"><span class="button">Подробнее — 4 ✨</span></div><div class="row"><span class="button">Карта дня — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="tarot">Таро</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🃏 Таро
+
+Трактовки 22 Старших арканов. В раскладе различаются позиции карт, прямое и перевёрнутое положение.
+
+Карта дня бесплатна; ситуационный расклад на три карты — 5 ✨. Сохранённый результат можно открыть повторно без оплаты.</pre><div class="buttons"><div class="row"><span class="button">Карта дня — бесплатно</span></div><div class="row"><span class="button">Три карты — 5 ✨</span></div><div class="row"><span class="button">Последний расклад — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🃏 Таро
+
+Карта дня — один аркан для размышления. Расклад на три карты рассматривает ситуацию, препятствие и возможный шаг.
+
+Используются 22 Старших аркана с прямыми и перевёрнутыми положениями. Купленный расклад можно перечитать бесплатно.</pre><div class="buttons"><div class="row"><span class="button">Карта дня — бесплатно</span></div><div class="row"><span class="button">Три карты — 5 ✨</span></div><div class="row"><span class="button">Последний расклад — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="self">Познай себя</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🪞 Познай себя
+
+Символический портрет, совместимость и подбор соответствий находятся в разработке. Их методика потребует отдельных исходных данных и правил сопоставления.
+
+Сейчас раздел не проводит анкетирование, не сохраняет новые личные сведения и не списывает пыль.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🪞 Познай себя
+
+♈ Овен
+
+Солнечный знак — отправная точка вашего дневного прогноза.
+
+Символический портрет и совместимость ещё готовятся. Сейчас они не продаются и не требуют дополнительных данных.</pre><div class="buttons"><div class="row"><span class="button">Мой прогноз — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="dossier">Досье</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🗂 Досье
+
+♈ Овен
+Баланс: 20 ✨
+Рассылка: выключена
+Дата: 2026-11-10 · Europe/Moscow
+
+Здесь показаны сохранённые настройки профиля. Активные дни и история пыли доступны в экономическом досье. Натальная карта и коллекции ещё не подключены.</pre><div class="buttons"><div class="row"><span class="button">Экономическое досье</span></div><div class="row"><span class="button">История операций</span></div><div class="row"><span class="button">Рассылка</span></div><div class="row"><span class="button">Последний расклад</span></div><div class="row"><span class="button">Состав данных</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🗂 Досье
+
+♈ Овен
+Баланс: 20 ✨
+Утренние уведомления: выключены
+
+Материалы и настройки — под рукой.</pre><div class="buttons"><div class="row"><span class="button">Пыль и активность</span><span class="button">История пыли</span></div><div class="row"><span class="button">Уведомления</span></div><div class="row"><span class="button">Последний расклад</span></div><div class="row"><span class="button">Мои данные</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="dust">Баланс</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>✨ Звёздная пыль
+
+Баланс: 20 ✨
+Долг по возвратам: 0 ✨
+
+Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.
+Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.
+При долге новые начисления сначала погашают его отдельной записью журнала.</pre><div class="buttons"><div class="row"><span class="button">История операций</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонус дня</span><span class="button">Пригласить участника</span></div><div class="row"><span class="button">Подписка на канал</span></div><div class="row"><span class="button">Магазин Stars</span><span class="button">Мои платежи</span></div><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>✨ Звёздная пыль
+
+Баланс: 20 ✨
+
+Пыль открывает дополнительные материалы.
+Таро на три карты — 5 ✨. Расширенный прогноз — 4 ✨. Повторное чтение купленного бесплатно.
+
+Новый профиль: +2 ✨.
+Бонус дня: +1 ✨ по кнопке.
+
+Полный прогноз, число дня и карта дня бесплатны.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонус дня</span><span class="button">Пригласить друга</span></div><div class="row"><span class="button">Канал Астры</span></div><div class="row"><span class="button">Мои платежи</span><span class="button">Помощь с оплатой</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="about">Об Астре</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🏛 Об Астре
+
+Тропический зодиак, Старшие арканы и числовые соответствия: содержание, методы и редакция Астры.</pre><div class="buttons"><div class="row"><span class="button">Об архиве</span></div><div class="row"><span class="button">Методология</span></div><div class="row"><span class="button">Отделы и консультанты</span><span class="button">FAQ</span></div><div class="row"><span class="button">Правила и данные</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🏛 Об Астре
+
+Астрология, Старшие арканы и язык чисел. Здесь — методы, редакция и правила работы Астры.</pre><div class="buttons"><div class="row"><span class="button">Об Астре</span><span class="button">Методы</span></div><div class="row"><span class="button">Редакция</span><span class="button">Справка</span></div><div class="row"><span class="button">Правила и данные</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="free">Полный бесплатный прогноз</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🌙 ГОРОСКОП · 10.11.2026
+♈ Овен
+
+✨ Главное: Огненный порыв стоит отличить от желания победить. Право начать не равно праву победить.
+
+💕 Отношения: Даже сильное влечение оставляет другому право отвечать по-своему. Желание можно назвать прямо.
+
+📚 Дела: Замысел оживает благодаря интересу, а не состязанию. Сопротивление материала не обязательно личный вызов.
+
+💰 Финансы: Покупка не доказывает ни силу, ни свободу. Желание стоит отличить от соперничества.
+
+🌿 Настроение: Внутренний жар без направления легко становится раздражением. Внутренней силе не обязательна победа. Раннее чувство допускает неизвестность.
+
+🍀 Совет дня: Выберите первый шаг для своего замысла, который нужен вам не ради победы над кем-то.
+
+🔢 Число дня: 1 — самостоятельная воля без превосходства.
+
+Символическая интерпретация солнечного знака.</pre><div class="buttons"><div class="row"><span class="button">Подробнее — 4 ✨</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🌙 ГОРОСКОП · 10.11.2026
+♈ Овен
+
+✨ Главное: Огненный порыв стоит отличить от желания победить. Право начать не равно праву победить.
+
+💕 Отношения: Даже сильное влечение оставляет другому право отвечать по-своему. Желание можно назвать прямо.
+
+📚 Дела: Замысел оживает благодаря интересу, а не состязанию. Сопротивление материала не обязательно личный вызов.
+
+💰 Финансы: Покупка не доказывает ни силу, ни свободу. Желание стоит отличить от соперничества.
+
+🌿 Настроение: Внутренний жар без направления легко становится раздражением. Внутренней силе не обязательна победа. Раннее чувство допускает неизвестность.
+
+🍀 Совет дня: Выберите первый шаг для своего замысла, который нужен вам не ради победы над кем-то.
+
+🔢 Число дня: 1 — самостоятельная воля без превосходства.
+
+Символическая интерпретация солнечного знака.</pre><div class="buttons"><div class="row"><span class="button">Подробнее — 4 ✨</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="paid-tarot">Ранее оплаченный расклад</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Три карты · ситуационный расклад
+
+1. Ситуация
+Звезда
+Восстановление перспективы, доверие к пути и ясный ориентир.
+
+2. Препятствие
+Верховная Жрица
+Наблюдение, скрытые связи и интуитивное понимание ситуации.
+
+3. Рекомендация
+Шут
+Открытость новому опыту; начало пути без готовой системы ориентиров.
+
+Рассматривайте значение каждого аркана в контексте его позиции.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Три карты · ситуационный расклад
+
+1. Ситуация
+Звезда
+Восстановление перспективы, доверие к пути и ясный ориентир.
+
+2. Препятствие
+Верховная Жрица
+Наблюдение, скрытые связи и интуитивное понимание ситуации.
+
+3. Рекомендация
+Шут
+Открытость новому опыту; начало пути без готовой системы ориентиров.
+
+Рассматривайте значение каждого аркана в контексте его позиции.</pre><div class="buttons"><div class="row"><span class="button">Прогноз дня — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="forecast-owned">Уже купленный расширенный прогноз</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>🌙 Прогноз дня
+
+Общий прогноз по выбранному знаку: тема, отношения, дела, ресурсы, эмоциональный ритм, число дня и практический итог. Дата определяется по Europe/Moscow.</pre><div class="buttons"><div class="row"><span class="button">Открыть бесплатно</span></div><div class="row"><span class="button">Расширенный — 4 ✨</span></div><div class="row"><span class="button">Повторить расширенный</span></div><div class="row"><span class="button">🃏 Таро</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>🌙 Прогноз дня
+
+Тема дня, отношения, дела, финансы, настроение и совет — в полном бесплатном прогнозе. Число дня тоже входит в него.
+
+Расширенный материал добавляет развилку выбора, символ, цвет и руну. Купленное за эту дату можно перечитать бесплатно.</pre><div class="buttons"><div class="row"><span class="button">Открыть бесплатно</span></div><div class="row"><span class="button">Открыть купленное</span></div><div class="row"><span class="button">Карта дня — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="forecast-confirm">Подтверждение расширенного</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Расширенный прогноз — 4 ✨
+
+В пакет входят разбор доминанты и развилки выбора, символ и цвет, дополнение к бесплатному числу, руна Старшего футарка и Совет Жирного. Одна покупка на московскую дату; повторное чтение бесплатно. Отмена ничего не списывает.</pre><div class="buttons"><div class="row"><span class="button">Подтвердить — 4 ✨</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Расширенный прогноз — 4 ✨
+
+Развилка выбора, символ и цвет, руна, дополнительная трактовка числа и Совет Жирного.
+
+Стоимость — 4 ✨ за эту московскую дату. Повторное чтение бесплатно. До подтверждения пыль не списывается.</pre><div class="buttons"><div class="row"><span class="button">Подтвердить — 4 ✨</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="tarot-confirm">Подтверждение Таро</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Подтверждение расклада
+
+Новый расклад на три карты стоит 5 ✨. Старое неоплаченное предложение за 3 ✨ не списывает новую цену. Уже купленный результат открывается бесплатно.</pre><div class="buttons"><div class="row"><span class="button">Подтвердить — 5 ✨</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Подтверждение расклада
+
+Три разных Старших аркана: ситуация, препятствие и рекомендация.
+
+Новый расклад — 5 ✨. Результат сохранится для бесплатного повторного чтения.</pre><div class="buttons"><div class="row"><span class="button">Подтвердить — 5 ✨</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="insufficient-tarot">Нехватка пыли для Таро</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Расклад не оплачен
+
+Для нового расклада требуется 5 ✨. Списания нет.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Немного не хватает
+
+Нужно: 5 ✨. У вас: 0 ✨.
+Не хватает: 5 ✨. Списания нет.
+
+Бонус дня: +1 ✨. За нового друга после выбора знака: +5 ✨. Первая подтверждённая подписка на канал: +5 ✨.
+
+Полный прогноз и карта дня доступны бесплатно.</pre><div class="buttons"><div class="row"><span class="button">Получить пыль</span><span class="button">Прогноз — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="insufficient-forecast">Нехватка пыли для прогноза</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Недостаточно пыли
+
+Для нового дневного пакета требуется 4 ✨. Бесплатный прогноз остаётся доступен; баланс не изменён.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Немного не хватает
+
+Нужно: 4 ✨. У вас: 0 ✨.
+Не хватает: 4 ✨. Списания нет.
+
+Бонус дня: +1 ✨. За нового друга после выбора знака: +5 ✨. Первая подтверждённая подписка на канал: +5 ✨.
+
+Полный прогноз и карта дня доступны бесплатно.</pre><div class="buttons"><div class="row"><span class="button">Получить пыль</span><span class="button">Прогноз — бесплатно</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="invite-active">Приглашение после перехода</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Приглашение
+
+После включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.
+
+https://t.me/LaDa_Iskra_Opel_Astrabot?start=ref_1</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Пригласить друга
+
+За нового друга после регистрации и выбора знака: вам +10 ✨, другу +3 ✨. Если он впервые подтвердит подписку на канал, вам ещё +5 ✨.
+
+Повторный вход существующего участника не считается новым приглашением. Ранее оформленные приглашения сохраняют свои условия.
+
+Ваша ссылка:
+https://t.me/LaDa_Iskra_Opel_Astrabot?start=ref_1</pre><div class="buttons"><div class="row"><span class="button">История пыли</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="channel-active">Канал после перехода</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Канал @examplechannel
+
+Подтверждённая подписка: 15 ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.</pre><div class="buttons"><div class="row"><span class="button">Открыть канал</span></div><div class="row"><span class="button">Проверить подписку</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Канал Астры
+
+@examplechannel
+
+Первая подтверждённая подписка: +15 ✨. Если вы пришли по приглашению, пригласивший получит ещё +5 ✨.
+
+Подпишитесь, затем нажмите «Проверить подписку». Ранее полученный бонус не выдаётся повторно. Бесплатные материалы не требуют подписки.</pre><div class="buttons"><div class="row"><span class="button">Открыть канал</span></div><div class="row"><span class="button">Проверить подписку</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="bonus-active">Бонусы после перехода</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.
+Баланс: 22 ✨.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Бонус дня
+
+За первый вход сегодня начисляется +2 ✨ автоматически. Повторное открытие не даёт второй бонус.
+Первые 3 дня подряд: +3 ✨ один раз; каждый 7-й: +4 ✨; 30 разных дней: +6 ✨ один раз.
+
+Баланс: 22 ✨. Пропуск дня не уменьшает накопленную пыль.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="dust-active">Активные правила бонусов</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>✨ Звёздная пыль
+
+Баланс: 22 ✨
+Долг по возвратам: 0 ✨
+
+Новый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.
+Первые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.
+Новые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.
+Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.
+При долге новые начисления сначала погашают его отдельной записью журнала.</pre><div class="buttons"><div class="row"><span class="button">История операций</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонус дня</span><span class="button">Пригласить участника</span></div><div class="row"><span class="button">Подписка на канал</span></div><div class="row"><span class="button">Магазин Stars</span><span class="button">Мои платежи</span></div><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>✨ Звёздная пыль
+
+Баланс: 22 ✨
+
+Пыль открывает дополнительные материалы.
+Таро на три карты — 5 ✨. Расширенный прогноз — 4 ✨. Повторное чтение купленного бесплатно.
+
+Новый профиль: +5 ✨.
+Первый вход за день: +2 ✨ автоматически.
+Первые 3 дня подряд: +3 ✨ один раз.
+Каждый 7-й день серии: +4 ✨.
+30 разных дней: +6 ✨ один раз.
+
+Полный прогноз, число дня и карта дня бесплатны.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонусы за посещения</span><span class="button">Пригласить друга</span></div><div class="row"><span class="button">Канал Астры</span></div><div class="row"><span class="button">Мои платежи</span><span class="button">Помощь с оплатой</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="dust-paused">Пауза начислений</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>✨ Звёздная пыль
+
+Баланс: 20 ✨
+Долг по возвратам: 0 ✨
+
+Новый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.
+Первые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.
+Новые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.
+Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.
+При долге новые начисления сначала погашают его отдельной записью журнала.</pre><div class="buttons"><div class="row"><span class="button">История операций</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонус дня</span><span class="button">Пригласить участника</span></div><div class="row"><span class="button">Подписка на канал</span></div><div class="row"><span class="button">Магазин Stars</span><span class="button">Мои платежи</span></div><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>✨ Звёздная пыль
+
+Баланс: 20 ✨
+
+Пыль открывает дополнительные материалы.
+Таро на три карты — 5 ✨. Расширенный прогноз — 4 ✨. Повторное чтение купленного бесплатно.
+
+Начисления за посещения, приглашения и канал сейчас недоступны. Бесплатные материалы можно читать как обычно.
+
+Начисления и расходы видны в истории.
+
+Полный прогноз, число дня и карта дня бесплатны.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонусы за посещения</span><span class="button">Пригласить друга</span></div><div class="row"><span class="button">Канал Астры</span></div><div class="row"><span class="button">Мои платежи</span><span class="button">Помощь с оплатой</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="invite-legacy">Приглашение до перехода</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Приглашение
+
+После включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.
+
+https://t.me/LaDa_Iskra_Opel_Astrabot?start=ref_1</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Пригласить друга
+
+За нового друга после регистрации и выбора знака: вам +5 ✨.
+
+Повторный вход существующего участника не считается новым приглашением. Ранее оформленные приглашения сохраняют свои условия.
+
+Ваша ссылка:
+https://t.me/LaDa_Iskra_Opel_Astrabot?start=ref_1</pre><div class="buttons"><div class="row"><span class="button">История пыли</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="channel-legacy">Канал до перехода</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Канал @examplechannel
+
+Подтверждённая подписка: 5 ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.</pre><div class="buttons"><div class="row"><span class="button">Открыть канал</span></div><div class="row"><span class="button">Проверить подписку</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Канал Астры
+
+@examplechannel
+
+Первая подтверждённая подписка: +5 ✨.
+
+Подпишитесь, затем нажмите «Проверить подписку». Ранее полученный бонус не выдаётся повторно. Бесплатные материалы не требуют подписки.</pre><div class="buttons"><div class="row"><span class="button">Открыть канал</span></div><div class="row"><span class="button">Проверить подписку</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="bonus-legacy">Бонус дня до перехода</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.
+Баланс: 21 ✨.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Бонус дня
+
+Бонус дня — +1 ✨ по этой кнопке, один раз за московскую дату. Уже полученный бонус повторно не начисляется.
+
+Баланс: 21 ✨. Пропуск дня не уменьшает накопленную пыль.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="notifications-off">Уведомления OFF</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Утренний прогноз
+
+Рассылка: выключена. Дневной прогноз можно открыть вручную независимо от настройки.</pre><div class="buttons"><div class="row"><span class="button">Изменить настройку</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Утренний прогноз
+
+Уведомления выключены. Можно включить полный бесплатный прогноз с числом дня каждое утро.
+
+Время — с 09:00 до 11:00 по Москве. Прогноз можно читать вручную при любой настройке.</pre><div class="buttons"><div class="row"><span class="button">Включить уведомления</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="notifications-old-on">Прежняя настройка ON</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Утренний прогноз
+
+Рассылка: включена. Дневной прогноз можно открыть вручную независимо от настройки.</pre><div class="buttons"><div class="row"><span class="button">Изменить настройку</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Утренний прогноз
+
+По настройке профиля уведомления включены. Если настройка появилась автоматически, это не подтверждение вашего согласия. Нажмите «Подтвердить подписку», если хотите получать прогноз.
+
+Время — с 09:00 до 11:00 по Москве. Прогноз можно читать вручную при любой настройке.</pre><div class="buttons"><div class="row"><span class="button">Подтвердить подписку</span></div><div class="row"><span class="button">Отключить уведомления</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="privacy">Данные</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Данные профиля
+
+Знак, баланс, Telegram ID, активные даты, журнал, результаты и реферальные связи хранятся для работы сервиса; /delete удаляет эти обычные данные.
+
+Для защиты от повторного получения бонусов мы отдельно сохраняем HMAC-псевдоним аккаунта и минимальные полученные права на 30 дней после фактического начисления. Это персональные псевдонимизированные данные, не анонимизация. Попытки регистрации не продлевают срок. /delete не стирает эти права до истечения срока; просроченные записи удаляются ограниченной фоновой очисткой. Права не содержат исходный Telegram ID, имя, вопросы или тексты и не восстанавливают удалённый профиль.
+
+Оплаченные доказательства, ID плательщика и долг сохраняются отдельно по /terms (срок ещё не утверждён дней после закрытия дел и погашения долга). Поддержка: не настроена. Сообщения Telegram и backup управляются отдельно. Публичная активация бонусов требует утверждённого уведомления и правового основания владельца.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Ваши данные
+
+Астра хранит Telegram ID, знак, настройки, баланс, историю пыли, активные дни, приглашения и сохранённые материалы. Телефон, дату рождения и фотографии мы не запрашиваем.
+
+/delete удаляет обычный профиль, его историю и материалы.
+
+После удаления профиля до 30 дней с момента получения бонуса сохраняется HMAC-псевдонимы аккаунта и связанных приглашений, а также отметки о полученных бонусах. Это персональные псевдонимизированные данные, не анонимизация. Они нужны, чтобы удаление и новая регистрация не давали тот же бонус снова. Имя, вопросы и тексты в этих отметках не хранятся. Повторная регистрация срок не продлевает; истёкшие отметки удаляются фоновой очисткой.
+
+Платёжные записи, включая ID плательщика, и непогашенные обязательства хранятся отдельно для поддержки и разбора споров. Срок хранения новых платёжных записей ещё не утверждён; магазин закрыт. Подробнее об остаточном контрольном отпечатке платежа — /terms.
+
+Сообщения Telegram и резервные копии управляются отдельно; уже начатую отправку нельзя отозвать.
+Поддержка: Контакт поддержки ещё не указан. Покупки Stars пока недоступны.</pre><div class="buttons"><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="delete">Удаление</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Профиль, обычный журнал, активность и материалы удалены. Минимальные HMAC-права на бонусы сохраняются до 30 дней после начисления; это персональные псевдонимизированные данные. Платёжные доказательства и долг сохраняются отдельно по /privacy и /terms. Для новой регистрации используйте /start.</pre><div class="buttons"></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Профиль, настройки, история пыли, активные дни и сохранённые расклады и прогнозы удалены.
+
+Бонусные отметки HMAC остаются до 30 дней с момента получения бонуса; повторная регистрация срок не продлевает. Платёжные записи и непогашенные обязательства сохраняются отдельно для поддержки и разбора споров — /privacy и /terms.
+
+Сообщения в Telegram и резервные копии эта команда не удаляет. Создать новый профиль: /start.</pre><div class="buttons"></div></article></section></div><h2 id="help">Помощь</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Помощь
+
+Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 5 ✨.
+
+/start — открыть профиль и меню
+/stop — отключить утреннюю рассылку
+/privacy — проверить состав данных
+/delete — удалить профиль и связанные записи
+
+Бонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.</pre><div class="buttons"><div class="row"><span class="button">FAQ</span><span class="button">Об Астре</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Помощь
+
+Полный прогноз и число дня — бесплатно. Карта дня тоже бесплатна. Расклад на три карты — 5 ✨; расширенный прогноз — 4 ✨. Цена всегда видна до подтверждения, купленное можно перечитать бесплатно.
+
+/start — главное меню
+/stop — выключить утренние уведомления
+/privacy — данные и удаление
+/delete — удалить профиль и материалы
+/terms — условия покупок
+/payments — мои платежи
+/paysupport — помощь с оплатой
+
+Пыль и бонусы — в «Звёздной пыли». О методах Астры — в справке.</pre><div class="buttons"><div class="row"><span class="button">Справка</span><span class="button">Об Астре</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="terms-unconfigured">Условия до настройки</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Условия Stars
+
+Пыль — внутренний доступ к материалам, без вывода в деньги. Стоимость пакета фиксируется в заказе до счёта. Пыль начисляется только после подтверждённой оплаты Telegram.
+
+При возврате уже выданные материалы не отзываются. Доступная пыль уменьшается на стоимость возвращённого пакета; недостаток становится явным долгом. Будущие начисления сначала погашают долг. Баланс не становится отрицательным.
+
+Поддержка: владелец ещё не указал контакт; магазин недоступен.
+Версия условий: не утверждена.
+Оплаченные заказы, charge ID и ID плательщика нужны для возвратов/споров: не утверждено дней после закрытия всех платёжных дел и погашения долга. Неразрешённые случаи сохраняются до завершения. После удаления персональных доказательств остаётся необратимый hash charge ID с суммой пакета и признаком возврата, без ID плательщика без ограничения срока для запрета повторного начисления. /delete не стирает незавершённые платежи/долги.
+
+До согласования условий, контакта, хранения и окружения магазин выключен.</pre><div class="buttons"><div class="row"><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Условия покупок
+
+Пакеты Stars: 10 XTR → 40 ✨; 25 XTR → 110 ✨; 50 XTR → 240 ✨. Доступность магазина показана в его разделе.
+
+Цена и количество пыли видны до счёта. Начисление происходит только после подтверждённой оплаты Telegram. Скрытых подписок нет.
+
+Пыль нельзя обменять обратно на Stars или деньги. Ошибки оплаты и обоснованные споры рассматривает поддержка; обязательные и исключительные возвраты сохраняются. При возврате купленный пакет вычитается из пыли. Если его уже потратили, остаток возмещается будущими начислениями; открытые материалы не отзываются.
+
+Поддержка: Контакт поддержки ещё не указан. Покупки Stars пока недоступны.
+Условия: ещё не утверждены.
+
+Платёжные записи сохраняются для помощи и разбора споров. Срок хранения новых платёжных записей ещё не утверждён; магазин закрыт. Незавершённые вопросы хранятся до решения. После удаления персональных платёжных данных остаётся контрольный отпечаток платежа с суммой и отметкой возврата без ID плательщика, бессрочно, чтобы не начислить тот же платёж повторно.
+
+/delete удаляет обычный профиль и материалы; условия бонусных отметок — /privacy.</pre><div class="buttons"><div class="row"><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="support-unconfigured">Поддержка до настройки</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Поддержка платежей
+
+Контакт поддержки владельцем ещё не установлен. Магазин не может выставлять счета. Текущие материалы и история пыли остаются доступны.</pre><div class="buttons"><div class="row"><span class="button">Мои платежи</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Помощь с оплатой
+
+Контакт поддержки ещё не указан. Покупки Stars пока недоступны.
+
+Сохранённые материалы и история пыли доступны. Контакт появится здесь после настройки владельцем.</pre><div class="buttons"><div class="row"><span class="button">Мои платежи</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="shop-off">Магазин выключен</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Магазин Stars
+
+Магазин выключен или ещё не принят для этого окружения. Счета не выставляются. Доступные материалы и история работают независимо от магазина.</pre><div class="buttons"><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Магазин Stars
+
+Магазин пока закрыт. Покупки недоступны; сохранённые материалы и история работают как обычно.</pre><div class="buttons"><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="shop-test-only">Открытый магазин — только mock</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Магазин Stars
+
+Пакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.</pre><div class="buttons"><div class="row"><span class="button">10 XTR → 40 ✨</span></div><div class="row"><span class="button">25 XTR → 110 ✨</span></div><div class="row"><span class="button">50 XTR → 240 ✨</span></div><div class="row"><span class="button">Мои платежи</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Магазин Stars
+
+Одноразовые пакеты звёздной пыли. Выберите пакет — затем увидите цену и условия до оплаты. Обратного обмена пыли на Stars или деньги нет.</pre><div class="buttons"><div class="row"><span class="button">10 XTR → 40 ✨</span></div><div class="row"><span class="button">25 XTR → 110 ✨</span></div><div class="row"><span class="button">50 XTR → 240 ✨</span></div><div class="row"><span class="button">Мои платежи</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="stars-consent">Покупка 10 XTR — только mock</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Подтверждение покупки
+
+10 XTR за 40 ✨.
+Прочитайте /terms версии test-v1. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.</pre><div class="buttons"><div class="row"><span class="button">Принимаю условия · 10 XTR</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Подтверждение покупки
+
+40 ✨ за 10 XTR
+
+Пыль нельзя обменять обратно на Stars или деньги. Обоснованные споры и обязательные возвраты рассматриваются по /terms.
+
+Условия: test-v1. Поддержка: support@example.test
+
+Нажимая «Принимаю условия», вы соглашаетесь с ними и переходите к счёту. Пыль появится после оплаты Telegram.</pre><div class="buttons"><div class="row"><span class="button">Принимаю условия · 10 XTR</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="stars-consent-25">Покупка 25 XTR — только mock</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Подтверждение покупки
+
+25 XTR за 110 ✨.
+Прочитайте /terms версии test-v1. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.</pre><div class="buttons"><div class="row"><span class="button">Принимаю условия · 25 XTR</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Подтверждение покупки
+
+110 ✨ за 25 XTR
+
+Пыль нельзя обменять обратно на Stars или деньги. Обоснованные споры и обязательные возвраты рассматриваются по /terms.
+
+Условия: test-v1. Поддержка: support@example.test
+
+Нажимая «Принимаю условия», вы соглашаетесь с ними и переходите к счёту. Пыль появится после оплаты Telegram.</pre><div class="buttons"><div class="row"><span class="button">Принимаю условия · 25 XTR</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="stars-consent-50">Покупка 50 XTR — только mock</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Подтверждение покупки
+
+50 XTR за 240 ✨.
+Прочитайте /terms версии test-v1. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.</pre><div class="buttons"><div class="row"><span class="button">Принимаю условия · 50 XTR</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Подтверждение покупки
+
+240 ✨ за 50 XTR
+
+Пыль нельзя обменять обратно на Stars или деньги. Обоснованные споры и обязательные возвраты рассматриваются по /terms.
+
+Условия: test-v1. Поддержка: support@example.test
+
+Нажимая «Принимаю условия», вы соглашаетесь с ними и переходите к счёту. Пыль появится после оплаты Telegram.</pre><div class="buttons"><div class="row"><span class="button">Принимаю условия · 50 XTR</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="terms-configured">Условия из тестовой конфигурации</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Условия Stars
+
+Пыль — внутренний доступ к материалам, без вывода в деньги. Стоимость пакета фиксируется в заказе до счёта. Пыль начисляется только после подтверждённой оплаты Telegram.
+
+При возврате уже выданные материалы не отзываются. Доступная пыль уменьшается на стоимость возвращённого пакета; недостаток становится явным долгом. Будущие начисления сначала погашают долг. Баланс не становится отрицательным.
+
+Поддержка: mailto:support@example.test.
+Версия условий: test-v1.
+Оплаченные заказы, charge ID и ID плательщика нужны для возвратов/споров: 365 дней после закрытия всех платёжных дел и погашения долга. Неразрешённые случаи сохраняются до завершения. После удаления персональных доказательств остаётся необратимый hash charge ID с суммой пакета и признаком возврата, без ID плательщика без ограничения срока для запрета повторного начисления. /delete не стирает незавершённые платежи/долги.
+
+До согласования условий, контакта, хранения и окружения магазин выключен.</pre><div class="buttons"><div class="row"><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Условия покупок
+
+Пакеты Stars: 10 XTR → 40 ✨; 25 XTR → 110 ✨; 50 XTR → 240 ✨. Доступность магазина показана в его разделе.
+
+Цена и количество пыли видны до счёта. Начисление происходит только после подтверждённой оплаты Telegram. Скрытых подписок нет.
+
+Пыль нельзя обменять обратно на Stars или деньги. Ошибки оплаты и обоснованные споры рассматривает поддержка; обязательные и исключительные возвраты сохраняются. При возврате купленный пакет вычитается из пыли. Если его уже потратили, остаток возмещается будущими начислениями; открытые материалы не отзываются.
+
+Поддержка: support@example.test
+Условия: test-v1.
+
+Платёжные записи сохраняются для помощи и разбора споров. Для новых заказов: 365 дней после завершения платёжных вопросов и погашения задолженности. Прежние заказы сохраняют срок, принятый при покупке. Незавершённые вопросы хранятся до решения. После удаления персональных платёжных данных остаётся контрольный отпечаток платежа с суммой и отметкой возврата без ID плательщика, бессрочно, чтобы не начислить тот же платёж повторно.
+
+/delete удаляет обычный профиль и материалы; условия бонусных отметок — /privacy.</pre><div class="buttons"><div class="row"><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="support-configured">Поддержка из тестовой конфигурации</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Поддержка платежей
+
+Контакт владельца: mailto:support@example.test
+
+Укажите номер заказа из «Мои платежи», сумму XTR и проблему. Не присылайте токен бота, webhook secret, данные других людей. Возврат рассматривается по /terms; долг не скрывается. При неопределённом исходе проводится сверка Telegram, а не повторное списание.</pre><div class="buttons"><div class="row"><span class="button">Мои платежи</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Помощь с оплатой
+
+support@example.test
+
+Укажите номер заказа из «Мои платежи», сумму Stars и опишите, что произошло. Если номер не сохранился, сообщите дату оплаты. Пароли и секретные ключи не нужны.
+
+Мы проверим оплату, начисление или возврат. Повторно платить за тот же заказ не нужно.</pre><div class="buttons"><div class="row"><span class="button">Мои платежи</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="payment-history">Мои платежи</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Мои платежи
+
+09.11.2026, 22:38:31
+Заказ b9e05d49-1e27-4953-94ce-11faa2f65edc
+10 XTR → 40 ✨ · created</pre><div class="buttons"><div class="row"><span class="button">Обновить</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Мои платежи
+
+09.11.2026, 22:50:26
+Заказ 4a5f0c5d-52e5-4130-bd0e-7b1f48ce18ee
+10 XTR → 40 ✨
+Счёт подготовлен</pre><div class="buttons"><div class="row"><span class="button">Обновить</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="payment-received">Оплата подтверждена — только mock</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Платёж сохранён · заказ 3bdbfb64-b656-4e84-bc3b-1db690e2e9cd.
+Состояние: credited. Номер обращения: 5fc7144e2689ec6f.
+Доступный баланс: 60 ✨.
+Повтор не начисляет пыль заново. /payments · /paysupport</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Оплата подтверждена
+
+Пакет 40 ✨ учтён. Повторно оплачивать его не нужно.
+Заказ: cf080f9b-ecc4-4033-b3d7-05ba3b00ba54
+Номер обращения: 5fc7144e2689ec6f.
+Баланс: 60 ✨.
+
+/payments — покупки · /paysupport — помощь</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="history">История пыли</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>История звёздной пыли
+Текущий баланс: 20 ✨
+Время записей: Europe/Moscow (UTC+3)
+
+09.11.2026, 22:38:31
+Исторический снимок баланса · +20 ✨
+
+Просмотр зафиксирован при открытии истории. Новые операции доступны по кнопке обновления. Исторический снимок — сохранённый старый баланс, не новая награда. Знак минус обозначает расход пыли, не платёж Telegram Stars.</pre><div class="buttons"><div class="row"><span class="button">Обновить историю</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>История пыли
+Баланс: 20 ✨
+Время — московское.
+
+09.11.2026, 22:50:26
+Баланс на начало учёта · +20 ✨
+
+Новые операции появятся после обновления. Минус означает расход пыли.</pre><div class="buttons"><div class="row"><span class="button">Обновить историю</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="activity">Активные дни</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Активные дни
+
+policy-v2: 1 разных дат; текущая серия 1 дн.
+Даты отсчитываются с принятой политики, без восстановления прежних посещений. +2 за дату, +3 за первые 3 подряд, +4 за каждый 7-дневный цикл и +6 за 30 разных дат. Пропуск не уменьшает баланс.</pre><div class="buttons"><div class="row"><span class="button">История операций</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Активные дни
+
+Всего учтено: 1
+Текущая серия: 1 дн.
+
+День считается по Москве. Пропуск прерывает серию, но не уменьшает пыль. Утренние сообщения Астры не считаются вашим посещением.
+
+За день +2 ✨; первые 3 дня подряд +3 ✨ один раз; каждый 7-й +4 ✨; 30 разных дней +6 ✨ один раз. Дни до начала учёта не восстанавливаются.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="economy-dossier">Пыль и активность</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Экономическое досье
+
+Баланс: 22 ✨
+Долг по возвратам: 0 ✨
+Дат policy-v2: 1
+Текущая серия policy-v2: 1 дн.
+
++2 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +4; 30 разных дат +6 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.</pre><div class="buttons"><div class="row"><span class="button">История операций</span><span class="button">Мои платежи</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Пыль и активность
+
+Баланс: 22 ✨
+Активных дней: 1
+Текущая серия: 1 дн.
+
+За первый вход в день: +2 ✨. Первая серия из 3 дней: +3 ✨; каждый 7-й день серии: +4 ✨; 30 разных дней: +6 ✨.
+
+История показывает каждое начисление и списание.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="faq">Справка</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Вопросы о методах и работе сервиса
+
+Краткие сведения. Откройте вопрос для подробного разбора.
+
+1. Как составляется дневной прогноз?
+Полный прогноз связан одной доминантой, символикой знака и московской датой; результат сохраняется в D1.
+
+2. Как устроены запросы и результаты?
+Cloudflare Workers обрабатывает webhook Telegram; D1 хранит профиль, учёт и расклады.
+
+3. Почему у колоды один хранитель?
+Единый хранитель обозначает преемственность тарологического корпуса.
+
+4. Что можно заключить из трактовки?
+Она задаёт способ рассмотрения вопроса, но не доказывает будущий исход.
+
+5. Как учитывается звёздная пыль?
+Это внутренняя единица доступа; баланс сверяется с журналом начислений и списаний.
+
+6. Что доступно бесплатно?
+Дневной прогноз с числом дня, карта дня и просмотр сохранённого расклада.
+
+7. Какие данные сохраняются?
+Профиль, настройки, финансовый журнал, результаты и технические статусы обработки.
+
+8. Какие разделы ещё разрабатываются?
+Портрет, совместимость, натальная карта и коллекции.
+
+9. Как взаимодействуют редакция и инженерное направление?
+Редакция задаёт структуру трактовок; инженерное направление обеспечивает обработку запросов, хранение результатов и согласованность учёта.
+
+10. Нужны ли время и место рождения?
+Для доступного прогноза достаточно выбранного солнечного знака.
+
+11. Можно ли оплатить через Stars?
+Магазин подготовлен: 10 XTR → 40 ✨; 25 → 110; 50 → 240. Включение требует отдельного решения.</pre><div class="buttons"><div class="row"><span class="button">Как составляется дневной прогноз?</span></div><div class="row"><span class="button">Как устроены запросы и результаты?</span></div><div class="row"><span class="button">Почему у колоды один хранитель?</span></div><div class="row"><span class="button">Что можно заключить из трактовки?</span></div><div class="row"><span class="button">Как учитывается звёздная пыль?</span></div><div class="row"><span class="button">Что доступно бесплатно?</span></div><div class="row"><span class="button">Какие данные сохраняются?</span></div><div class="row"><span class="button">Какие разделы ещё разрабатываются?</span></div><div class="row"><span class="button">Как взаимодействуют редакция и инженерное направление?</span></div><div class="row"><span class="button">Нужны ли время и место рождения?</span></div><div class="row"><span class="button">Можно ли оплатить через Stars?</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Справка
+
+1. Как составляется прогноз?
+Тема дня связывает отношения, дела, настроение и совет.
+
+2. Можно ли перечитать купленное?
+Да, сохранённый материал открывается без новой оплаты.
+
+3. Какая колода используется?
+22 Старших аркана, прямые и перевёрнутые положения.
+
+4. Насколько буквальны трактовки?
+Это символический взгляд на вопрос, а не обещание события.
+
+5. Как получить и потратить пыль?
+Начисления и расходы видны в истории.
+
+6. Что бесплатно?
+Полный прогноз с числом дня, карта дня и повторное чтение купленного.
+
+7. Что остаётся после удаления?
+Обычные данные удаляются; для бонусов и платежей есть отдельные сроки.
+
+8. Что ещё готовится?
+Символический портрет, совместимость, натальная карта и коллекции.
+
+9. Как работают редакция и инженерное направление?
+Редакция отвечает за трактовки; инженерное направление — за работу сервиса.
+
+10. Нужны ли сведения о рождении?
+Для доступного прогноза достаточно солнечного знака.
+
+11. Доступны ли покупки Stars?
+Магазин пока закрыт.</pre><div class="buttons"><div class="row"><span class="button">Прогноз по знаку</span></div><div class="row"><span class="button">Перечитать купленное</span></div><div class="row"><span class="button">Колода Таро</span></div><div class="row"><span class="button">Границы трактовки</span></div><div class="row"><span class="button">Пыль и бонусы</span></div><div class="row"><span class="button">Что бесплатно</span></div><div class="row"><span class="button">Данные и удаление</span></div><div class="row"><span class="button">Будущие разделы</span></div><div class="row"><span class="button">Редакция и авторство</span></div><div class="row"><span class="button">Сведения о рождении</span></div><div class="row"><span class="button">Покупки Stars</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="faq-authorship">Достоверное авторство</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Как взаимодействуют редакция и инженерное направление?
+
+Содержательная редакция задаёт язык зодиака, арканов и числовых соответствий. Инженерный контур отвечает за программную архитектуру: webhook Telegram, хранение результатов в D1, обработку повторов и согласованность журнала с балансом. Это разные задачи, даже когда их решает один создатель с помощью ИИ.
+
+Elias Voss обозначает инженерную роль в редакционной структуре. Имена на странице команды не являются биографиями независимого штата или свидетельством внешней аккредитации.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Как работают редакция и инженерное направление?
+
+Редакционное направление определяет язык, структуру и символические соответствия. Инженерное — обработку обращений, сохранение материалов и точный учёт пыли.
+
+Астру создаёт один человек с помощью ИИ. Имена в редакционной структуре — псевдонимы направлений работы, а не реальный штат независимых специалистов.</pre><div class="buttons"><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="rules">Правила</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>Правила и данные
+
+Астрологическая, тарологическая и нумерологическая трактовка не является гарантией события или профессиональным заключением о здоровье, праве либо инвестициях. Расчёты небесных координат следует отличать от символической интерпретации. Текущий набор методов описан в FAQ.
+
+Цена относится к доступу к материалу. Скрытых подписок нет, разрабатываемые услуги не продаются.
+
+/privacy — состав сохраняемых данных; /delete удаляет обычные данные профиля. Оплаченные доказательства и незавершённые долги сохраняются по /privacy и /terms для поддержки и возвратов. Сообщения Telegram и резервные копии управляются отдельно; уже начатую отправку отозвать нельзя.</pre><div class="buttons"><div class="row"><span class="button">Состав данных</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>Правила и данные
+
+Астра предлагает символические интерпретации, а не гарантии событий. В вопросах здоровья, права и финансов нужны проверяемые данные и профильная помощь.
+
+Новая покупка требует подтверждения цены. Купленное можно перечитать бесплатно; скрытых подписок нет.
+
+/privacy — данные и бонусные отметки
+/terms — условия Stars и споры
+/delete — удалить профиль, его историю и сохранённые материалы</pre><div class="buttons"><div class="row"><span class="button">Мои данные</span><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div><h2 id="debt">Существующий остаток по возврату</h2><div class="comparison"><section class="phone"><header>До · TASK 03</header><article><pre>✨ Звёздная пыль
+
+Баланс: 0 ✨
+Долг по возвратам: 40 ✨
+
+Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.
+Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.
+При долге новые начисления сначала погашают его отдельной записью журнала.</pre><div class="buttons"><div class="row"><span class="button">История операций</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонус дня</span><span class="button">Пригласить участника</span></div><div class="row"><span class="button">Подписка на канал</span></div><div class="row"><span class="button">Магазин Stars</span><span class="button">Мои платежи</span></div><div class="row"><span class="button">Условия</span><span class="button">Поддержка</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section><section class="phone"><header>После · TASK 04</header><article><pre>✨ Звёздная пыль
+
+Баланс: 0 ✨
+
+Пыль открывает дополнительные материалы.
+Таро на три карты — 5 ✨. Расширенный прогноз — 4 ✨. Повторное чтение купленного бесплатно.
+
+Новый профиль: +2 ✨.
+Бонус дня: +1 ✨ по кнопке.
+
+Полный прогноз, число дня и карта дня бесплатны.
+
+После возврата платежа осталось возместить 40 ✨. Новые начисления сначала уменьшают эту сумму. Подробнее — /terms; помощь — /paysupport.</pre><div class="buttons"><div class="row"><span class="button">История пыли</span><span class="button">Активные дни</span></div><div class="row"><span class="button">Бонус дня</span><span class="button">Пригласить друга</span></div><div class="row"><span class="button">Канал Астры</span></div><div class="row"><span class="button">Магазин Stars</span></div><div class="row"><span class="button">Мои платежи</span><span class="button">Помощь с оплатой</span></div><div class="row"><span class="button">Условия</span></div><div class="row"><span class="button">‹ Назад</span><span class="button">Главное меню</span></div></div></article></section></div></main></html>

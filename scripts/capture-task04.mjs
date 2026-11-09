@@ -1,0 +1,2 @@
+import fs from 'node:fs';import {createHash} from 'node:crypto';import {uiCases04,captureCase04} from '../tests/task04-scenarios.mjs';
+const screens=[];for(const row of uiCases04)screens.push(await captureCase04(row));const worker=fs.readFileSync('release/ASTRA_2_4_WORKER.js');fs.writeFileSync(process.argv[2],JSON.stringify({worker_sha256:createHash('sha256').update(worker).digest('hex'),screens},null,2)+'\n');
