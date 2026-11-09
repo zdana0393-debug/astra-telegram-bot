@@ -1,0 +1,262 @@
+{
+  "date_msk": "2026-11-09",
+  "runtime": "v24.22.1",
+  "engine_version": "forecast-1.0.0+compact.1",
+  "selection_seed_version": "forecast-1.0.0",
+  "source_catalog_version": "2026.11-v1",
+  "editorial_content_version": "2026.11-compact-v1",
+  "worker_bytes": 823234,
+  "worker_sha256": "a7ac948387023c3b7de28a5845d0715e4590c199736d39f40400910a7706727a",
+  "audit_90_days": {
+    "forecasts": 1080,
+    "signs": 12,
+    "dates": 90,
+    "free_words": {
+      "count": 1080,
+      "min": 90,
+      "mean": 103.827,
+      "median": 104,
+      "p95": 111,
+      "max": 118
+    },
+    "free_characters": {
+      "count": 1080,
+      "min": 805,
+      "mean": 888.795,
+      "median": 888,
+      "p95": 943,
+      "max": 998
+    },
+    "expanded_characters": {
+      "count": 1080,
+      "min": 1060,
+      "mean": 1146.51,
+      "median": 1147,
+      "p95": 1192,
+      "max": 1216
+    },
+    "whole_without_heading_or_date": {
+      "unique": 1080,
+      "repeated_occurrences": 0
+    },
+    "paragraphs": {
+      "theme": {
+        "total": 1080,
+        "unique": 571,
+        "repeated_occurrences": 509,
+        "distinct_selected_semantic_structures": 571
+      },
+      "relations": {
+        "total": 1080,
+        "unique": 538,
+        "repeated_occurrences": 542,
+        "distinct_selected_semantic_structures": 538
+      },
+      "work": {
+        "total": 1080,
+        "unique": 573,
+        "repeated_occurrences": 507,
+        "distinct_selected_semantic_structures": 573
+      },
+      "finance": {
+        "total": 1080,
+        "unique": 589,
+        "repeated_occurrences": 491,
+        "distinct_selected_semantic_structures": 589
+      },
+      "mood": {
+        "total": 1080,
+        "unique": 572,
+        "repeated_occurrences": 508,
+        "distinct_selected_semantic_structures": 572
+      },
+      "action": {
+        "total": 1080,
+        "unique": 276,
+        "repeated_occurrences": 804,
+        "distinct_selected_semantic_structures": 276
+      }
+    },
+    "source_coverage": {
+      "selected": 462,
+      "modality_sources_emitted": 45,
+      "modality_sources_retained_as_constraint": 25
+    },
+    "adjacent": {
+      "comparisons": 6408,
+      "exact": 0,
+      "at_least_60_percent": 0,
+      "similarity": {
+        "count": 6408,
+        "min": 0,
+        "mean": 0.119,
+        "median": 0.047619047619047616,
+        "p95": 0.35294117647058826,
+        "max": 0.5
+      },
+      "closest": [
+        {
+          "sign": "aries",
+          "from": "2026-11-25",
+          "to": "2026-11-26",
+          "section": "theme",
+          "similarity": 0.5,
+          "exact": false
+        },
+        {
+          "sign": "taurus",
+          "from": "2027-01-15",
+          "to": "2027-01-16",
+          "section": "theme",
+          "similarity": 0.5,
+          "exact": false
+        },
+        {
+          "sign": "sagittarius",
+          "from": "2026-12-31",
+          "to": "2027-01-01",
+          "section": "theme",
+          "similarity": 0.5,
+          "exact": false
+        },
+        {
+          "sign": "capricorn",
+          "from": "2026-11-01",
+          "to": "2026-11-02",
+          "section": "theme",
+          "similarity": 0.5,
+          "exact": false
+        },
+        {
+          "sign": "gemini",
+          "from": "2026-11-15",
+          "to": "2026-11-16",
+          "section": "finance",
+          "similarity": 0.47058823529411764,
+          "exact": false
+        },
+        {
+          "sign": "libra",
+          "from": "2026-11-28",
+          "to": "2026-11-29",
+          "section": "finance",
+          "similarity": 0.47058823529411764,
+          "exact": false
+        },
+        {
+          "sign": "capricorn",
+          "from": "2027-01-28",
+          "to": "2027-01-29",
+          "section": "theme",
+          "similarity": 0.47058823529411764,
+          "exact": false
+        },
+        {
+          "sign": "aries",
+          "from": "2026-12-19",
+          "to": "2026-12-20",
+          "section": "theme",
+          "similarity": 0.4666666666666667,
+          "exact": false
+        }
+      ]
+    },
+    "same_date_signs": {
+      "comparisons": 35640,
+      "exact": 0,
+      "at_least_60_percent": 0,
+      "similarity": {
+        "count": 35640,
+        "min": 0,
+        "mean": 0.027,
+        "median": 0,
+        "p95": 0.1111111111111111,
+        "max": 0.35
+      },
+      "closest": [
+        {
+          "day": "2026-12-24",
+          "a": "leo",
+          "b": "aquarius",
+          "section": "finance",
+          "similarity": 0.35,
+          "exact": false
+        },
+        {
+          "day": "2026-12-24",
+          "a": "gemini",
+          "b": "sagittarius",
+          "section": "theme",
+          "similarity": 0.3181818181818182,
+          "exact": false
+        },
+        {
+          "day": "2027-01-17",
+          "a": "gemini",
+          "b": "sagittarius",
+          "section": "theme",
+          "similarity": 0.3181818181818182,
+          "exact": false
+        },
+        {
+          "day": "2026-11-18",
+          "a": "sagittarius",
+          "b": "pisces",
+          "section": "theme",
+          "similarity": 0.30434782608695654,
+          "exact": false
+        },
+        {
+          "day": "2026-11-09",
+          "a": "gemini",
+          "b": "pisces",
+          "section": "finance",
+          "similarity": 0.3,
+          "exact": false
+        },
+        {
+          "day": "2026-12-18",
+          "a": "libra",
+          "b": "capricorn",
+          "section": "finance",
+          "similarity": 0.3,
+          "exact": false
+        },
+        {
+          "day": "2026-11-07",
+          "a": "aries",
+          "b": "cancer",
+          "section": "mood",
+          "similarity": 0.2857142857142857,
+          "exact": false
+        },
+        {
+          "day": "2026-11-21",
+          "a": "gemini",
+          "b": "virgo",
+          "section": "theme",
+          "similarity": 0.2857142857142857,
+          "exact": false
+        }
+      ]
+    },
+    "caveat": "Exact repeats, selected semantic-key structures and lexical stem Jaccard are measured separately. They do not prove absence of synonymous or conceptual repetition; manual review remains required."
+  },
+  "regression_corpus": {
+    "signs": 12,
+    "dates_per_sign": 366,
+    "forecasts": 4392
+  },
+  "cold_local_vm": {
+    "samples": 20,
+    "median_ms": 2.559396000000106,
+    "p95_ms": 12.07319799999982
+  },
+  "warm_local_generate": {
+    "samples": 100,
+    "median_ms": 0.15622599999983322,
+    "p95_ms": 0.4042509999999311
+  },
+  "protected_task01_files": 52,
+  "limitations": "Local Node wall time, not Workers CPU. No real D1 rows/CPU/1102 or Telegram measured. Engine directives, curated provenance and lexical comparisons do not prove full natural-language semantic equivalence."
+}
