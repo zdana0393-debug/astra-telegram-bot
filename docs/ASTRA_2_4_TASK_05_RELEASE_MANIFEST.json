@@ -1,0 +1,127 @@
+{
+  "base_owner_commit": "6798c67",
+  "privacy_fix_commit": "2c0c341",
+  "scope": "STAGING_MANUAL_ONLY",
+  "public_ready": false,
+  "broadcast_allowed": false,
+  "consent_migration28": "PROPOSAL_NOT_APPROVED_NOT_INCLUDED",
+  "runtime": "v24.22.1",
+  "files": {
+    "release/ASTRA_2_4_WORKER.js": {
+      "bytes": 889963,
+      "sha256": "ea9b6eef41b59e0275d2d829722bb9ff02492d451e465849ce791657728598a7"
+    },
+    "release/ASTRA_2_4_MAINTENANCE.js": {
+      "bytes": 520,
+      "sha256": "002c71fe1580816566e6552bb0ecd44df9b06a6f29d45df3b2b9032a8bf94862"
+    },
+    "migrations/0024_activity_history.sql": {
+      "bytes": 1296,
+      "sha256": "59afa3b4517608f340b664b7ceb6c1aeb42ba0307e351eef2c665e342a2eee9b"
+    },
+    "migrations/0025_rewards_stars.sql": {
+      "bytes": 32409,
+      "sha256": "5e85b25583e6a6bafca83d2a80ca2029e838ea4a3ddf7161634a4ca0d5a81a94"
+    },
+    "migrations/0026_economy_fence.sql": {
+      "bytes": 47750,
+      "sha256": "4068dc6370ab381dfb2575c07e7745f13198637bfd5a50a3186da936c5483e17"
+    },
+    "migrations/0027_broadcast.sql": {
+      "bytes": 4439,
+      "sha256": "58af0861a595c6d72f3d36b46831e78067ad90c1c70d5b8e070fddcadebd7261"
+    },
+    "migrations/0024_steps/01_activity.sql": {
+      "bytes": 527,
+      "sha256": "eb625d7cb40496675104a6ca12667e591a4f02d1ac4346624327d3a5a808b476"
+    },
+    "migrations/0024_steps/02_history_index.sql": {
+      "bytes": 127,
+      "sha256": "ce6ff9e6f33d5ca3a107e05884ea54e127802ed4b0fd20cafd80e5dade54bb55"
+    },
+    "migrations/0024_steps/03_activity_guard.sql": {
+      "bytes": 416,
+      "sha256": "a5615091dc60a2140b665d31b2f2774509689775adfd7ef1e492eb3ecfc223e8"
+    },
+    "migrations/0024_steps/04_activity_erase.sql": {
+      "bytes": 226,
+      "sha256": "cbfe052fcf71d74d3b50800e01e8400b47fc48dcf510344a2edf26438240a4e3"
+    },
+    "migrations/0025_steps/01_policy.sql": {
+      "bytes": 3850,
+      "sha256": "756ca8f8b527e21f982cd912756d87ae5fc5aba44487e9c0cdcd04c0f78935e5"
+    },
+    "migrations/0025_steps/02_legacy_snapshot.sql": {
+      "bytes": 1084,
+      "sha256": "16a34d3fc49534f3f0df4824e212be531cf16bf6f290836d065db0b65021cf14"
+    },
+    "migrations/0025_steps/03_rewards.sql": {
+      "bytes": 6996,
+      "sha256": "c1dc19adda0a0568e676b3e4b74cc0b225336214654c1c66357e7c2501262a56"
+    },
+    "migrations/0025_steps/04_legacy_cutover.sql": {
+      "bytes": 3595,
+      "sha256": "3923e9e1c7895ceee6178dfe5f92285a258085356de38d77554eeb18a51bef26"
+    },
+    "migrations/0025_steps/05_payment_tables.sql": {
+      "bytes": 4162,
+      "sha256": "02cbddb2be140d84333158db69bc647aba42a0fb8fb2d45724782481cf5f4998"
+    },
+    "migrations/0025_steps/06_payment_credit.sql": {
+      "bytes": 2651,
+      "sha256": "7702d9588cd1892b0dba40eda9bee330907c02a4fcb1fbe78e0d432b5e60f575"
+    },
+    "migrations/0025_steps/07_refund_debt.sql": {
+      "bytes": 5696,
+      "sha256": "14b8a4ef9f1fda4b29780a3ce8197f3540147c4507a77b64352c700bd9209262"
+    },
+    "migrations/0025_steps/08_cleanup_fence.sql": {
+      "bytes": 1695,
+      "sha256": "f4e91da3c2747b8e6828eb9deaef8612372738e2498190b5b5e48f88137eb76b"
+    },
+    "migrations/0025_steps/09_audit_retention.sql": {
+      "bytes": 2680,
+      "sha256": "e13262ab13a9d74c55415444e3b3d5bf9386d88d6c1593d3326933f7d86b7be8"
+    },
+    "migrations/0026_steps/01_policy_fences.sql": {
+      "bytes": 4894,
+      "sha256": "8390c36fcb404a54f8a0af2a2e6ca4dd515e46795743e71e1768ebf271b5d706"
+    },
+    "migrations/0026_steps/02_awards.sql": {
+      "bytes": 9183,
+      "sha256": "bcf0921af4a9e80b17e801f85648fe7ef99e75752631e8555d8cfd2c55c18ca5"
+    },
+    "migrations/0026_steps/03_days_commands.sql": {
+      "bytes": 10953,
+      "sha256": "a445fb33d184626025d38737eb76341bf96d4ab1e13231916f329c3e524ee620"
+    },
+    "migrations/0026_steps/04_cutover_legacy.sql": {
+      "bytes": 5314,
+      "sha256": "5e37567860e26a7bfa6a7a73ada3f0e9b39cfe1a34ec706b64b9c6c088361abe"
+    },
+    "migrations/0026_steps/05_tarot.sql": {
+      "bytes": 2277,
+      "sha256": "2b9005c2d55773bb6384c0e7da66a2eb904ec7ca0ee81ff6926124ca0a9ea2cc"
+    },
+    "migrations/0026_steps/06_payment_versions.sql": {
+      "bytes": 8869,
+      "sha256": "50a2c679b91d5da2a8449a8299c000ae5991845ab15a558e5f3f95710d5c49e3"
+    },
+    "migrations/0026_steps/07_refunds_cleanup.sql": {
+      "bytes": 6260,
+      "sha256": "d394a74692c4bde241bddb8d377dec5d8293045e27f4bebbe3c8b52b2c80a360"
+    },
+    "migrations/0027_steps/01_queue.sql": {
+      "bytes": 1335,
+      "sha256": "53572fbaf2a4f9a0ecec2c946638152406751380b878c59cf26e44190519c4ea"
+    },
+    "migrations/0027_steps/02_delivery_guards.sql": {
+      "bytes": 2675,
+      "sha256": "da6481c691499163729a911964a6724f93a14fac9aae71f4e08c70a2256b6cdc"
+    },
+    "migrations/0027_steps/03_cleanup.sql": {
+      "bytes": 429,
+      "sha256": "45dbd6595f89ecdd97fb62025c5ffebd89a24aa6b1c6df25666f9d8b1c728041"
+    }
+  }
+}

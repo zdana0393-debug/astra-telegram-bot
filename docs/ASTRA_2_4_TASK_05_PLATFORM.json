@@ -1,0 +1,113 @@
+{
+  "worker_raw_bytes": 889963,
+  "worker_gzip_bytes": 159654,
+  "worker_sha256": "ea9b6eef41b59e0275d2d829722bb9ff02492d451e465849ce791657728598a7",
+  "base_schema_objects": 126,
+  "broadcast_schema_objects": 11,
+  "actual_migrations": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "console_files": 23,
+  "final_blocked_cron": [
+    {
+      "subscribers": 8,
+      "delivered": 0,
+      "queue": {
+        "event": "astra_broadcast05",
+        "reason": "CONSENT_REGISTRY_NOT_APPROVED",
+        "claimed": 0,
+        "sent": 0,
+        "http": 0,
+        "d1_calls": 4,
+        "statements": 7,
+        "maintenance": "bounded_cleanup"
+      },
+      "invocation": {
+        "event": "astra_d1_invocation",
+        "kind": "cron",
+        "d1_calls": 6,
+        "statements": 9,
+        "batches": 1,
+        "failed_calls": 0,
+        "meta_results": 0,
+        "results_without_meta": 9,
+        "rows_read_observed": 0,
+        "rows_written_observed": 0,
+        "db_size_after_max": null,
+        "wall_ms": 15.186,
+        "rows_complete": false
+      }
+    },
+    {
+      "subscribers": 20,
+      "delivered": 0,
+      "queue": {
+        "event": "astra_broadcast05",
+        "reason": "CONSENT_REGISTRY_NOT_APPROVED",
+        "claimed": 0,
+        "sent": 0,
+        "http": 0,
+        "d1_calls": 4,
+        "statements": 7,
+        "maintenance": "bounded_cleanup"
+      },
+      "invocation": {
+        "event": "astra_d1_invocation",
+        "kind": "cron",
+        "d1_calls": 6,
+        "statements": 9,
+        "batches": 1,
+        "failed_calls": 0,
+        "meta_results": 0,
+        "results_without_meta": 9,
+        "rows_read_observed": 0,
+        "rows_written_observed": 0,
+        "db_size_after_max": null,
+        "wall_ms": 0.821,
+        "rows_complete": false
+      }
+    },
+    {
+      "subscribers": 100,
+      "delivered": 0,
+      "queue": {
+        "event": "astra_broadcast05",
+        "reason": "CONSENT_REGISTRY_NOT_APPROVED",
+        "claimed": 0,
+        "sent": 0,
+        "http": 0,
+        "d1_calls": 4,
+        "statements": 7,
+        "maintenance": "bounded_cleanup"
+      },
+      "invocation": {
+        "event": "astra_d1_invocation",
+        "kind": "cron",
+        "d1_calls": 6,
+        "statements": 9,
+        "batches": 1,
+        "failed_calls": 0,
+        "meta_results": 0,
+        "results_without_meta": 9,
+        "rows_read_observed": 0,
+        "rows_written_observed": 0,
+        "db_size_after_max": null,
+        "wall_ms": 1.151,
+        "rows_complete": false
+      }
+    }
+  ],
+  "previous_operational_queue_budget": {
+    "max_statements_plus_http": 47,
+    "limit": 50,
+    "status": "pre-stopship local model; NOT actual delivery on final gated candidate"
+  },
+  "cloudflare_cpu": "NOT_MEASURED",
+  "d1_rows_read": "NOT_MEASURED",
+  "d1_rows_written": "NOT_MEASURED",
+  "d1_storage_limit_assumption_bytes": 500000000,
+  "limitations": "No real Cloudflare measurements. Node VM elapsed and local SQLite metadata are not Cloudflare CPU/rows. Code STOP-SHIP does not change the existing deployed bot until a separately authorized deployment."
+}

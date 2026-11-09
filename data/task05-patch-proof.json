@@ -1,0 +1,37 @@
+{
+  "base_worker_sha256": "9b7d54726a6b5e71c34f64b3776019a19ed8d419954f5c6671df15ab5fefcedc",
+  "changes": [
+    {
+      "from": "'ASTRA-2.4-task04'",
+      "to": "'ASTRA-2.4-task05-rc'"
+    },
+    {
+      "from": "async function broadcast(",
+      "to": "async function pre05_broadcast("
+    },
+    {
+      "from": "async function runBroadcast03(",
+      "to": "async function pre05_runBroadcast03("
+    },
+    {
+      "from": "async function broadcastSend03(",
+      "to": "async function pre05_broadcastSend03("
+    },
+    {
+      "from": "async function health(",
+      "to": "async function pre05_health("
+    },
+    {
+      "from": "'Уведомления включены по вашему запросу. Полный прогноз с числом дня будет приходить с 09:00 до 11:00 по Москве. Выключить можно здесь или командой /stop.'",
+      "to": "'Ваш выбор сохранён. Автоматическая рассылка пока отключена до завершения проверки согласия. Полный бесплатный прогноз можно открыть вручную. Отменить выбор — здесь или командой /stop.'"
+    },
+    {
+      "from": "\"Утренние уведомления включены по вашему запросу. Полный прогноз с числом дня приходит с 09:00 до 11:00 по Москве. Выключить — /stop.\"",
+      "to": "\"Ваш выбор сохранён. Автоматическая рассылка пока отключена. Полный прогноз доступен вручную; отменить выбор — /stop.\""
+    },
+    {
+      "from": "if(page==='notifications')return screen(env,id,'Утренний прогноз',",
+      "to": "if(page==='notifications')return screen(env,id,'Утренний прогноз','Автоматическая рассылка пока отключена. Полный прогноз доступен вручную.\\n\\n'+"
+    }
+  ]
+}

@@ -9,7 +9,7 @@
  *
  * ВАЖНО: читать docs/ASTRA_2_4_STAGING_GUIDE.md. /activate отключён; webhook не менять.
  */
-const VERSION = 'ASTRA-2.4-task04';
+const VERSION = 'ASTRA-2.4-task05-rc';
 const BOT_USERNAME = 'LaDa_Iskra_Opel_Astrabot';
 const ZODIAC = [
   ['aries','♈ Овен'], ['taurus','♉ Телец'], ['gemini','♊ Близнецы'],
@@ -582,7 +582,7 @@ async function incoming(env,m,updateId) {
     if (!job) throw new Error('Profile no longer exists');
     const next=job.notification_target;
     await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(next,id).run();
-    return send(env,id,next?"Утренние уведомления включены по вашему запросу. Полный прогноз с числом дня приходит с 09:00 до 11:00 по Москве. Выключить — /stop.":"Рассылка отключена. Прогноз можно открыть в разделе «Прогноз дня».");
+    return send(env,id,next?"Ваш выбор сохранён. Автоматическая рассылка пока отключена. Полный прогноз доступен вручную; отменить выбор — /stop.":"Рассылка отключена. Прогноз можно открыть в разделе «Прогноз дня».");
   }
   return send(env,id,"Выберите раздел главного меню.",{reply_markup:keyboard});
 }
@@ -18488,7 +18488,7 @@ function budget03(env,stats){
  const raw=new WeakMap(),wrap=s=>{const w={bind(...args){return wrap(s.bind(...args));}};raw.set(w,s);for(const m of ['first','all','run'])w[m]=async(...args)=>{consume(1);return s[m](...args);};return w;};
  return{...env,DB:{prepare(sql){return wrap(env.DB.prepare(sql));},async batch(ss){consume(ss.length);return env.DB.batch(ss.map(s=>raw.get(s)||s));}}};
 }
-async function broadcastSend03(env,id,text,rows){
+async function pre05_broadcastSend03(env,id,text,rows){
  const test=env.ASTRA_TELEGRAM_TEST_MODE===true||env.ASTRA_TELEGRAM_TEST_MODE==='true';let response,body;
  try{response=await fetch(`https://api.telegram.org/bot${env.ASTRA_BOT_TOKEN}/${test?'test/':''}sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:id,text,...(rows.length?{reply_markup:{inline_keyboard:rows}}:{})}),signal:AbortSignal.timeout(3500)});body=await response.json();}catch{throw Error('Broadcast outcome unknown');}
  if(response.ok&&body?.ok===true&&body.result!=null)return body.result;
@@ -18499,7 +18499,7 @@ function forecastCta03(day,owned){return[[{text:owned?'Открыть купле
 async function finish03(env,user,day,token,state,parts,reason,code=null,next=0){
  return env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=?,parts_sent=?,last_reason=?,last_code=?,not_before=?,updated_at=CURRENT_TIMESTAMP WHERE telegram_id=? AND day=? AND token=? AND state='sending'`).bind(state,parts,reason,code,next,user.telegram_id,day,token).run();
 }
-async function runBroadcast03(original,{load=(env,sign,day)=>getForecastDaily(env,sign,day,(s,d,l)=>generateForecastForEnv(env,s,d,l)),sendMessage=broadcastSend03}={}){
+async function pre05_runBroadcast03(original,{load=(env,sign,day)=>getForecastDaily(env,sign,day,(s,d,l)=>generateForecastForEnv(env,s,d,l)),sendMessage=broadcastSend03}={}){
  const stats={event:'astra_broadcast03',reason:null,candidates:0,claimed:0,sent:0,retry:0,blocked:0,unknown:0,failed:0,cancelled:0,skipped:0,d1_calls:0,statements:0,http:0};
  const env=budget03(original,stats),run=crypto.randomUUID();let locked=false;
  const canWork=n=>stats.statements+stats.http+n+1<=48; // include release statement
@@ -18570,12 +18570,12 @@ async function sendFreeForecast(env,id,sign,day=dayMSK()){
  const f=await getForecastDaily(env,sign,day),owned=await getForecastUnlock(env,id,day);
  return sendForecastText(env,id,f.free_text,forecastCta03(day,Boolean(owned)));
 }
-async function broadcast(env){
+async function pre05_broadcast(env){
  if(!engineActive(env,dayMSK())){console.log(JSON.stringify({event:'astra_broadcast03',reason:'forecast_not_active'}));return;}
  try{compactStartDay(env);}catch{console.log(JSON.stringify({event:'astra_broadcast03',reason:'forecast_config_invalid'}));return;}
  return runBroadcast03(env);
 }
-async function health(env){
+async function pre05_health(env){
  const response=await pre03_health(env),state=await response.json(),schema=await broadcastSchema03(env);let config=true;try{compactStartDay(env);}catch{config=false;}
  state.broadcast_schema_ready=broadcastSchemaReady03(schema);state.broadcast_ready=state.broadcast_schema_ready&&Boolean(env.ASTRA_BOT_TOKEN)&&engineActive(env,dayMSK())&&config;
  state.broadcast_blocker=!state.broadcast_schema_ready?'broadcast_schema_unavailable':!env.ASTRA_BOT_TOKEN?'token_missing':!config?'forecast_config_invalid':!engineActive(env,dayMSK())?'forecast_not_active':null;
@@ -18647,7 +18647,7 @@ async function notificationsSet04(env,id,next,updateId){
  await env.DB.prepare(`UPDATE astra_update_jobs SET notification_target=coalesce(notification_target,?) WHERE update_id=?`).bind(next,updateId).run();
  const job=await env.DB.prepare('SELECT notification_target FROM astra_update_jobs WHERE update_id=?').bind(updateId).first();if(!job)throw Error('Profile no longer exists');
  await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(job.notification_target,id).run();
- return screen(env,id,'Утренний прогноз',job.notification_target?'Уведомления включены по вашему запросу. Полный прогноз с числом дня будет приходить с 09:00 до 11:00 по Москве. Выключить можно здесь или командой /stop.':'Уведомления выключены. Полный прогноз всегда можно открыть вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
+ return screen(env,id,'Утренний прогноз',job.notification_target?'Ваш выбор сохранён. Автоматическая рассылка пока отключена до завершения проверки согласия. Полный бесплатный прогноз можно открыть вручную. Отменить выбор — здесь или командой /stop.':'Уведомления выключены. Полный прогноз всегда можно открыть вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
 }
 async function shellPage(env,id,page,q=null,updateId=null){
  const pages=new Set(['about','manifest','trust','trust:forecast','trust:tarot','trust:future','team','rules','self','dossier','notifications','notifications:confirm','notifications:enable','notifications:disable','tarot','faq']);
@@ -18664,11 +18664,43 @@ async function shellPage(env,id,page,q=null,updateId=null){
  if(page==='self')return screen(env,id,'🪞 Познай себя',`${zodiacName(u.zodiac)}\n\nСолнечный знак — отправная точка вашего дневного прогноза.\n\nСимволический портрет и совместимость ещё готовятся. Сейчас они не продаются и не требуют дополнительных данных.`,[[button('Мой прогноз — бесплатно','forecast:read')]]);
  if(page==='dossier')return screen(env,id,'🗂 Досье',`${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\nУтренние уведомления: ${u.notifications_enabled?'включены по настройке профиля':'выключены'}\n\nМатериалы и настройки — под рукой.`,[[button('Пыль и активность','dossier:economy'),button('История пыли','dossier:history')],[button('Уведомления','notifications')],[button('Последний расклад','tarot:last')],[button('Мои данные','privacy')]]);
  if(page==='tarot')return screen(env,id,'🃏 Таро','Карта дня — один аркан для размышления. Расклад на три карты рассматривает ситуацию, препятствие и возможный шаг.\n\nИспользуются 22 Старших аркана с прямыми и перевёрнутыми положениями. Купленный расклад можно перечитать бесплатно.',[[{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 5 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
- if(page==='notifications')return screen(env,id,'Утренний прогноз',(u.notifications_enabled?'По настройке профиля уведомления включены. Если настройка появилась автоматически, это не подтверждение вашего согласия. Нажмите «Подтвердить подписку», если хотите получать прогноз.':'Уведомления выключены. Можно включить полный бесплатный прогноз с числом дня каждое утро.')+'\n\nВремя — с 09:00 до 11:00 по Москве. Прогноз можно читать вручную при любой настройке.',[[button(u.notifications_enabled?'Подтвердить подписку':'Включить уведомления',u.notifications_enabled?'notifications:confirm':'notifications:enable')],...(u.notifications_enabled?[[button('Отключить уведомления','notifications:disable')]]:[])],'dossier');
+ if(page==='notifications')return screen(env,id,'Утренний прогноз','Автоматическая рассылка пока отключена. Полный прогноз доступен вручную.\n\n'+(u.notifications_enabled?'По настройке профиля уведомления включены. Если настройка появилась автоматически, это не подтверждение вашего согласия. Нажмите «Подтвердить подписку», если хотите получать прогноз.':'Уведомления выключены. Можно включить полный бесплатный прогноз с числом дня каждое утро.')+'\n\nВремя — с 09:00 до 11:00 по Москве. Прогноз можно читать вручную при любой настройке.',[[button(u.notifications_enabled?'Подтвердить подписку':'Включить уведомления',u.notifications_enabled?'notifications:confirm':'notifications:enable')],...(u.notifications_enabled?[[button('Отключить уведомления','notifications:disable')]]:[])],'dossier');
  return notificationsSet04(env,id,page==='notifications:disable'?0:1,updateId);
 }
 
 Object.assign(HISTORY_LABELS,HISTORY_UI_LABELS04);
+
+
+// TASK05 release gates: approved manual-only candidate; broadcast remains STOP-SHIP.
+// STOP-SHIP: no approved durable consent registry exists. This has no runtime bypass.
+const BROADCAST_BLOCKER05='CONSENT_REGISTRY_NOT_APPROVED';
+async function runBroadcast03(env={}){
+ const stats={event:'astra_broadcast05',reason:BROADCAST_BLOCKER05,claimed:0,sent:0,http:0,d1_calls:0,statements:0};let locked=false;const token=crypto.randomUUID(),now=epoch03(),day=activityDay();
+ try{
+  // Preserve bounded non-delivery maintenance; no candidate query, cache generation or send.
+  if(!env.DB||!morning03())return stats;
+  stats.d1_calls++;stats.statements++;if(!broadcastSchemaReady03(await broadcastSchema03(env))){stats.maintenance='schema_unavailable';return stats;}
+  stats.d1_calls++;stats.statements++;locked=Boolean(await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=?,lease_until=? WHERE singleton=1 AND migration_done=1 AND lease_until<=? RETURNING singleton').bind(token,now+90,now).first());
+  if(!locked){stats.maintenance='busy';return stats;}
+  stats.d1_calls++;stats.statements+=4;await env.DB.batch([
+   env.DB.prepare(`DELETE FROM astra_broadcast_jobs WHERE rowid IN(SELECT rowid FROM astra_broadcast_jobs WHERE day<date(?,'-14 days') ORDER BY day LIMIT 100)`).bind(day),
+   env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=CASE WHEN state='sending' THEN 'unknown' ELSE 'expired' END,last_reason=CASE WHEN state='sending' THEN 'interrupted_delivery' ELSE 'day_expired' END,updated_at=CURRENT_TIMESTAMP WHERE rowid IN(SELECT rowid FROM astra_broadcast_outbox03 WHERE(state='sending' AND last_try_at<?) OR(state='retry' AND day<?) LIMIT 100)`).bind(now-90,day),
+   env.DB.prepare("DELETE FROM astra_processed_updates WHERE rowid IN(SELECT rowid FROM astra_processed_updates WHERE received_at<datetime('now','-14 days') LIMIT 100)"),
+   env.DB.prepare("DELETE FROM astra_update_jobs WHERE rowid IN(SELECT rowid FROM astra_update_jobs WHERE received_at<datetime('now','-14 days') AND status='done' LIMIT 100)")
+  ]);stats.maintenance='bounded_cleanup';return stats;
+ }catch{stats.maintenance='storage_unavailable';return stats;}
+ finally{if(locked)try{stats.d1_calls++;stats.statements++;await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=NULL,lease_until=0 WHERE singleton=1 AND lease=?').bind(token).run();}catch{stats.maintenance='release_unavailable';}console.log(JSON.stringify(stats));}
+}
+async function broadcast(env){return runBroadcast03(env);}
+async function broadcastSend03(){throw Error(BROADCAST_BLOCKER05);}
+async function health(env){
+ const response=await pre05_health(env),state=await response.json();let config=true;try{compactStartDay(env);}catch{config=false;}
+ state.manual_content_ready=Boolean(state.free_content_ready&&state.secrets_ready&&state.policy_ready&&config);
+ state.broadcast_prerequisite_blocker=state.broadcast_blocker;state.broadcast_ready=false;state.broadcast_blocker=BROADCAST_BLOCKER05;
+ state.broadcast_consent_implemented=false;state.broadcast_delivery_allowed=false;state.public_ready=false;
+ state.release_scope='STAGING_MANUAL_ONLY';state.ready=false;
+ return Response.json(state,{status:503,headers:{'Cache-Control':'no-store'}});
+}
 
 const astraWorker = {
   async fetch(request,env) {
