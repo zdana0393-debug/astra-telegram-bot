@@ -1,0 +1,181 @@
+{
+  "baseline": "c437cfabfe025d04749a82d210b4eda7d46b9a1a",
+  "files": [
+    {
+      "path": "data/forecast/catalog.v1.json",
+      "sha256": "89870b1e8f2d0e813964296ea8aea755f4ac391e2c2a88388e53b45f6e02adc2"
+    },
+    {
+      "path": "migrations/0021_wallet.sql",
+      "sha256": "db3b3f02c1f2a374415eff4d1622867962e9f03fd6816ac83e3a5c8dc41da798"
+    },
+    {
+      "path": "migrations/0022_shell.sql",
+      "sha256": "ad7203bf9431a9ca8aea178b030139948c562041783d893118de9221e58e5d70"
+    },
+    {
+      "path": "migrations/0022_steps/01_rewards.sql",
+      "sha256": "9f4fbc2a1cbf9206b9cd7b42f9fb6cfd5977de0fcdd088e5a17e5435ce64c9f6"
+    },
+    {
+      "path": "migrations/0022_steps/02_guard.sql",
+      "sha256": "a490d148314ac2ebc2ecb50a573bfb10165ff64d01e167e38dd1215c69ecd2bd"
+    },
+    {
+      "path": "migrations/0022_steps/03_post.sql",
+      "sha256": "561f9655408961b8c0f4fb4a5878f7a80725f955770d64b81d13ae4ef29d2873"
+    },
+    {
+      "path": "migrations/0022_steps/04_erase.sql",
+      "sha256": "9eedbde25855b615e62a053100aa7a04c15e5d213798b137e54c9b11220510a3"
+    },
+    {
+      "path": "migrations/0023_forecast.sql",
+      "sha256": "ab9f185d5667faab23fb2ffc179161e9227a8b1eb0fab022671304755ab7f2fd"
+    },
+    {
+      "path": "migrations/0023_steps/01_daily.sql",
+      "sha256": "f8977a9f42867767780de73027a779c3cf3e0573f50631856f28d9907a3ea39b"
+    },
+    {
+      "path": "migrations/0023_steps/02_unlocks.sql",
+      "sha256": "9aef03c8076c74b2427876965970ce419442521c92194203058804e2d05cbcb9"
+    },
+    {
+      "path": "migrations/0023_steps/03_guard.sql",
+      "sha256": "4e73d7e212c9b862a4fd53ee77659ad634eefc6dd8344eef5e3007e63d5d3c0e"
+    },
+    {
+      "path": "migrations/0023_steps/04_post.sql",
+      "sha256": "01fc62aceda3592a2902c29dfb87881020951d3de5a6586e9812619798f91aba"
+    },
+    {
+      "path": "migrations/0023_steps/05_erase.sql",
+      "sha256": "080c417f461d478dd013ed555c5ea23254a88922abf6cb31133295a50794059c"
+    },
+    {
+      "path": "migrations/0023_steps/06_cache_immutable.sql",
+      "sha256": "ed34ded5d1e2378665b23e5214defd8920a625a2200480aff5422df4b7be7b93"
+    },
+    {
+      "path": "migrations/0023_steps/07_unlock_immutable.sql",
+      "sha256": "1d6dc781259d1acbc7711e8bc26d49b2902919c5f9b18005f2c23f021bbd820a"
+    },
+    {
+      "path": "migrations/0024_activity_history.sql",
+      "sha256": "59afa3b4517608f340b664b7ceb6c1aeb42ba0307e351eef2c665e342a2eee9b"
+    },
+    {
+      "path": "migrations/0024_steps/01_activity.sql",
+      "sha256": "eb625d7cb40496675104a6ca12667e591a4f02d1ac4346624327d3a5a808b476"
+    },
+    {
+      "path": "migrations/0024_steps/02_history_index.sql",
+      "sha256": "ce6ff9e6f33d5ca3a107e05884ea54e127802ed4b0fd20cafd80e5dade54bb55"
+    },
+    {
+      "path": "migrations/0024_steps/03_activity_guard.sql",
+      "sha256": "a5615091dc60a2140b665d31b2f2774509689775adfd7ef1e492eb3ecfc223e8"
+    },
+    {
+      "path": "migrations/0024_steps/04_activity_erase.sql",
+      "sha256": "cbfe052fcf71d74d3b50800e01e8400b47fc48dcf510344a2edf26438240a4e3"
+    },
+    {
+      "path": "migrations/0025_rewards_stars.sql",
+      "sha256": "5e85b25583e6a6bafca83d2a80ca2029e838ea4a3ddf7161634a4ca0d5a81a94"
+    },
+    {
+      "path": "migrations/0025_steps/01_policy.sql",
+      "sha256": "756ca8f8b527e21f982cd912756d87ae5fc5aba44487e9c0cdcd04c0f78935e5"
+    },
+    {
+      "path": "migrations/0025_steps/02_legacy_snapshot.sql",
+      "sha256": "16a34d3fc49534f3f0df4824e212be531cf16bf6f290836d065db0b65021cf14"
+    },
+    {
+      "path": "migrations/0025_steps/03_rewards.sql",
+      "sha256": "c1dc19adda0a0568e676b3e4b74cc0b225336214654c1c66357e7c2501262a56"
+    },
+    {
+      "path": "migrations/0025_steps/04_legacy_cutover.sql",
+      "sha256": "3923e9e1c7895ceee6178dfe5f92285a258085356de38d77554eeb18a51bef26"
+    },
+    {
+      "path": "migrations/0025_steps/05_payment_tables.sql",
+      "sha256": "02cbddb2be140d84333158db69bc647aba42a0fb8fb2d45724782481cf5f4998"
+    },
+    {
+      "path": "migrations/0025_steps/06_payment_credit.sql",
+      "sha256": "7702d9588cd1892b0dba40eda9bee330907c02a4fcb1fbe78e0d432b5e60f575"
+    },
+    {
+      "path": "migrations/0025_steps/07_refund_debt.sql",
+      "sha256": "14b8a4ef9f1fda4b29780a3ce8197f3540147c4507a77b64352c700bd9209262"
+    },
+    {
+      "path": "migrations/0025_steps/08_cleanup_fence.sql",
+      "sha256": "f4e91da3c2747b8e6828eb9deaef8612372738e2498190b5b5e48f88137eb76b"
+    },
+    {
+      "path": "migrations/0025_steps/09_audit_retention.sql",
+      "sha256": "e13262ab13a9d74c55415444e3b3d5bf9386d88d6c1593d3326933f7d86b7be8"
+    },
+    {
+      "path": "src/02_SCHEMA.sql",
+      "sha256": "f3a75766841038c8f9c8751806ad1f6055eaab06a9b3754b45597a1a1d44ffa4"
+    },
+    {
+      "path": "src/economy/activity.mjs",
+      "sha256": "31b186c66f2e43a734e65bef7b13b47bfcbc577ecf5c2a2efd2a35e4665a2f51"
+    },
+    {
+      "path": "src/economy/history.mjs",
+      "sha256": "516ef395651ebebdbcdaef02b09053eb4f721e770c57da27358b1657d5d7b197"
+    },
+    {
+      "path": "src/economy/ui.js",
+      "sha256": "2502f515e108bfe28dfd0e1d5224d7e27c3567e5e29cf34385efc1605a50d128"
+    },
+    {
+      "path": "src/forecast/configured.mjs",
+      "sha256": "a6284fb4a8f934ece6c2898bd4aa512d34318ecae5d87728c80a24a7dd482c17"
+    },
+    {
+      "path": "src/forecast/engine.mjs",
+      "sha256": "aaf1196f3c6d8a16a4cd16f54e7b20ba6d09eff1f01aa9e7659da6084c8553f4"
+    },
+    {
+      "path": "src/forecast/service.mjs",
+      "sha256": "cf89cf73ab068af9c4c001c6cbcbbf1cb2cbddc33636d21044a7edb7936667a5"
+    },
+    {
+      "path": "src/forecast/ui.js",
+      "sha256": "c9eddd75cf439838e1b3397d86fb1ae1ebbbd3804ef8dd99c7dfd6e81a230971"
+    },
+    {
+      "path": "src/payments/admin.mjs",
+      "sha256": "d70c89d367630f60924672f9dba1b5207c02875f3fbeb02d3387050f42cef557"
+    },
+    {
+      "path": "src/payments/service.mjs",
+      "sha256": "72b16920f53372080e97d950ca7682f2f21de53de749889c349fa263b2c6dff5"
+    },
+    {
+      "path": "src/payments/transport.mjs",
+      "sha256": "c9e2a8f2cca3c67e8455062b387ca752db3ba25bbfe01e796a4547ec6cd20d9f"
+    },
+    {
+      "path": "src/payments/ui.js",
+      "sha256": "63123bcb06db066f9bc8299d276c8bbb1fe4cb36b062a6cd04415e930085d851"
+    },
+    {
+      "path": "src/rewards/policy.mjs",
+      "sha256": "299c5ca29b8b7cd8d24abb415e960e8531d6f3589cc154e76cdd868cc3ecb081"
+    },
+    {
+      "path": "src/rewards/ui.js",
+      "sha256": "9c615f31e9ee23206db524f889db8a65e2e4a6c42c3d11d86c741991013b9814"
+    }
+  ]
+}

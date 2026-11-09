@@ -9,7 +9,7 @@
  *
  * ВАЖНО: читать docs/ASTRA_2_4_STAGING_GUIDE.md. /activate отключён; webhook не менять.
  */
-const VERSION = 'ASTRA-2.4-candidate';
+const VERSION = 'ASTRA-2.4-task01';
 const BOT_USERNAME = 'LaDa_Iskra_Opel_Astrabot';
 const ZODIAC = [
   ['aries','♈ Овен'], ['taurus','♉ Телец'], ['gemini','♊ Близнецы'],
@@ -251,7 +251,7 @@ const signKeyboard = {inline_keyboard:Array.from({length:6},(_,j)=>
   ZODIAC.slice(j*2,j*2+2).map(([id,name])=>({text:name, callback_data:`sign:${id}`})))};
 const tarotKeyboard = {inline_keyboard:[
   [{text:"Карта дня — бесплатно", callback_data:'tarot:day'}],
-  [{text:"Три карты — 3 ✨", callback_data:'tarot:three'}],
+  [{text:"Три карты — 5 ✨", callback_data:'tarot:three'}],
 ]};
 
 async function tg(env, method, args) {
@@ -278,7 +278,7 @@ const send = (env, id, text, opts={}) => {
 };
 const getUser = (env, id) => env.DB.prepare('SELECT * FROM astra_users WHERE telegram_id=?').bind(id).first();
 
-async function createUser(env, id, referral='') {
+async function pre26_createUser(env, id, referral='') {
   let u = await getUser(env, id);
   if (u) return u;
   let friend = null;
@@ -299,7 +299,7 @@ async function legacyWelcome(env,id,ref='') {
   if (u.zodiac) return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nПрогноз по солнечному знаку, Таро и сохранённые результаты — в главном меню.`,{reply_markup:keyboard});
   return send(env,id,"Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак для ежедневного прогноза. Дата и время рождения не требуются.\n\nНачальный баланс: 2 ✨. Прогноз с числом дня и карта дня доступны бесплатно.",{reply_markup:signKeyboard});
 }
-async function setZodiac(env,id,sign) {
+async function pre26_setZodiac(env,id,sign) {
   if (!zodiacName(sign)) return;
   const old = await getUser(env,id);
   if (!old) return welcome(env,id);
@@ -323,7 +323,7 @@ async function legacyBonus(env,id) {
   const u=await getUser(env,id);
   return send(env,id,r.meta.changes ? `Дневной бонус: +1 ✨. Баланс: ${u.balance} ✨.` : `Бонус на текущую московскую дату уже получен. Баланс: ${u.balance} ✨.`);
 }
-async function threeCards(env,id,key) {
+async function pre26_threeCards(env,id,key) {
   const requestKey=`tarot:${id}:${key}`;
   // Bind this menu durably before sending or creating a purchase. Otherwise a
   // crash after recovery delivery could charge this menu on the webhook retry.
@@ -469,7 +469,7 @@ async function home(env,id) {
   if (!u?.zodiac) return welcome(env,id);
   return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)} · ${u.balance} ✨\nДневная дата определяется по Europe/Moscow.\n\nВыберите раздел.`,{reply_markup:keyboard});
 }
-async function shellPage(env,id,page,q=null,updateId=null) {
+async function pre26_shellPage(env,id,page,q=null,updateId=null) {
   const u=await getUser(env,id);
   const branch=page.split(':')[0];
   const scoped=shellEnv(env,branch==='gift'||branch==='invite'||branch==='channel'?'dust':branch);
@@ -517,8 +517,8 @@ async function shellPage(env,id,page,q=null,updateId=null) {
   if(page==='channel') return channelMenu(scoped,id);
   if(page==='notifications') return screen(env,id,"Утренний прогноз",`Рассылка: ${u.notifications_enabled?'включена':'выключена'}. Дневной прогноз можно открыть вручную независимо от настройки.`,[[button("Изменить настройку",'notifications:toggle')]],'dossier');
   if(page==='notifications:toggle') return incoming(shellEnv(env,'notifications'),{from:{id},chat:{type:'private'},text:'🔔 Рассылка'},updateId);
-  if(page==='tarot') return screen(env,id,'🃏 Таро',"Трактовки 22 Старших арканов. В раскладе различаются позиции карт, прямое и перевёрнутое положение.\n\nКарта дня бесплатна; ситуационный расклад на три карты — 3 ✨. Сохранённый результат можно открыть повторно без оплаты.",[
-    [{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 3 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
+  if(page==='tarot') return screen(env,id,'🃏 Таро',"Трактовки 22 Старших арканов. В раскладе различаются позиции карт, прямое и перевёрнутое положение.\n\nКарта дня бесплатна; ситуационный расклад на три карты — 5 ✨. Сохранённый результат можно открыть повторно без оплаты.",[
+    [{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 5 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
   if(page==='buy') {
     const mid=q?.message?.message_id;
     if(!Number.isSafeInteger(mid) || mid<1) return screen(env,id,"Предложение недоступно","Откройте новое предложение в разделе «Таро». У этого сообщения нет действующего номера; списание не выполнено.",[],'tarot');
@@ -532,7 +532,7 @@ async function shellPage(env,id,page,q=null,updateId=null) {
   }
   return screen(env,id,"Раздел недоступен","Пункт отсутствует в текущем меню или сообщение устарело. Вернитесь в главное меню и выберите нужный раздел.",[]);
 }
-async function secretArchive(env,id) {
+async function pre26_secretArchive(env,id) {
   await createUser(env,id);
   const award=await env.DB.prepare(`INSERT INTO astra_shell_rewards(telegram_id,code) VALUES(?,'gpt6')
     ON CONFLICT(telegram_id,code) DO NOTHING`).bind(id).run();
@@ -542,7 +542,7 @@ async function secretArchive(env,id) {
 }
 
 async function help(env,id) {
-  return screen(env,id,"Помощь","Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 3 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",[[button('FAQ','faq'),button('Об Астре','about')]]);
+  return screen(env,id,"Помощь","Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 5 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",[[button('FAQ','faq'),button('Об Астре','about')]]);
 }
 async function incoming(env,m,updateId) {
   if(m.chat?.type==='private'&&m.from&&await paymentCommand(env,m))return;
@@ -556,8 +556,9 @@ async function incoming(env,m,updateId) {
   if (/^\/start(?:\s|$)/.test(text)) return welcome(env,id,text.split(/\s+/)[1]||'');
   if (text==='/privacy') return send(env,id,"Данные профиля\n\nВ D1 сохраняются Telegram ID, знак, баланс, связь с пригласившим, даты бонусов и рассылок, настройки, журнал начислений и списаний, оплаченные расклады и расширенные прогнозы, активные московские даты и тип обращения (сообщение или кнопка), отметка однократной награды и технические статусы доставки. Телефон, дата рождения и фотографии не собираются.\n\n/delete удаляет профиль и связанные записи, очищает ссылки на ваш ID у других участников. Номера обработанных обновлений без Telegram ID временно сохраняются для защиты от повторов. Уже начатую отправку нельзя отозвать; сообщения Telegram и резервные копии не удаляются этой командой. За обращение с данными отвечает владелец проекта.");
   if (text==='/delete') {
+    await syncBonusOwner26(env,id);
     await env.DB.prepare('DELETE FROM astra_users WHERE telegram_id=?').bind(id).run();
-    return send(env,id,"Профиль, обычный журнал, активность и материалы удалены. Оплаченные доказательства и незавершённые долги сохраняются по /privacy и /terms для поддержки/возвратов. Для новой регистрации используйте /start.",{reply_markup:{remove_keyboard:true}});
+    return send(env,id,"Профиль, обычный журнал, активность и материалы удалены. Минимальные HMAC-права на бонусы сохраняются до 30 дней после начисления; это персональные псевдонимизированные данные. Платёжные доказательства и долг сохраняются отдельно по /privacy и /terms. Для новой регистрации используйте /start.",{reply_markup:{remove_keyboard:true}});
   }
   if (text==='/help'||text==='⚙️ Помощь') return help(env,id);
   if (text==='/stop') {
@@ -635,12 +636,7 @@ async function dispatch(env, update) {
   }
 }
 
-async function schemaReady(env){
-  if(!env.DB||!activationReady(env))return false;
-  try{const r=await env.DB.prepare("SELECT count(*) AS n,(SELECT migration_done FROM astra_policy WHERE singleton=1) AS migration_done,(SELECT count(*) FROM sqlite_master WHERE type='trigger' AND name='astra_referral') AS old_referral FROM sqlite_master WHERE name IN ('astra_users','astra_processed_updates','astra_operations','astra_wallet_ledger','astra_update_jobs','astra_broadcast_jobs','astra_tarot_requests','astra_shell_rewards','astra_forecast_daily','astra_forecast_unlocks','astra_activity_days','astra_register','astra_operation_guard','astra_operation_post','astra_referral_policy','astra_erase','astra_shell_reward_guard','astra_shell_reward_post','astra_shell_erase','astra_forecast_guard','astra_forecast_post','astra_forecast_erase','astra_forecast_daily_immutable','astra_forecast_unlock_immutable','astra_activity_guard','astra_activity_erase','idx_forecast_daily_day','idx_forecast_unlocks_day','idx_astra_ledger_history','astra_policy','astra_user_policy','astra_referral_contracts','astra_policy_events','idx_policy_events_owner','astra_policy_days','astra_reward_claims','idx_reward_claims_owner','astra_referral_payouts','astra_reward_guard','astra_reward_post','astra_policy_day_guard','astra_policy_day_post','astra_referral_payout_guard','astra_referral_payout_post','astra_reward_immutable','astra_policy_day_immutable','astra_payment_orders','idx_payment_orders_owner','astra_payment_tombstones','astra_payment_receipts','astra_payment_anomalies','astra_refund_requests','astra_external_refunds','astra_refund_accounts','astra_refund_settlements','astra_debt_repayments','astra_payment_receipt_guard','astra_payment_receipt_post','astra_payment_receipt_immutable','astra_payment_order_snapshot','astra_refund_notice_guard','astra_refund_notice_post','astra_refund_settlement_post','astra_positive_debt','astra_debt_repayment_guard','astra_debt_repayment_post','astra_refund_notice_immutable','astra_refund_settlement_immutable','astra_debt_repayment_immutable','astra_policy_date_guard','astra_policy_erase','astra_referrer_erasing','astra_payment_audit','astra_refund_request_audit','astra_payment_purge','astra_payment_purge_closed','astra_refund_account_erasing')").first();
-    return r?.n===77&&r.migration_done===1&&r.old_referral===0;
-  }catch{return false;}
-}
+async function schemaReady(env){if(!env.DB||!activationReady(env))return false;try{const r=await env.DB.prepare("SELECT count(*) n,(SELECT migration_done FROM astra_patch26 WHERE singleton=1) complete,(SELECT migration_done FROM astra_policy WHERE singleton=1) old_complete FROM sqlite_master WHERE name IN ('astra_users','astra_processed_updates','astra_operations','astra_wallet_ledger','astra_update_jobs','astra_broadcast_jobs','astra_tarot_requests','astra_shell_rewards','astra_forecast_daily','astra_forecast_unlocks','astra_activity_days','astra_operation_post','astra_erase','astra_shell_reward_guard','astra_shell_erase','astra_forecast_guard','astra_forecast_post','astra_forecast_erase','astra_forecast_daily_immutable','astra_forecast_unlock_immutable','astra_activity_guard','astra_activity_erase','idx_forecast_daily_day','idx_forecast_unlocks_day','idx_astra_ledger_history','astra_policy','astra_user_policy','astra_referral_contracts','astra_policy_events','idx_policy_events_owner','astra_policy_days','astra_reward_claims','idx_reward_claims_owner','astra_referral_payouts','astra_reward_guard','astra_referral_payout_guard','astra_referral_payout_post','astra_reward_immutable','astra_policy_day_immutable','astra_payment_orders','idx_payment_orders_owner','astra_payment_tombstones','astra_payment_receipts','astra_payment_anomalies','astra_refund_requests','astra_external_refunds','astra_refund_accounts','astra_refund_settlements','astra_debt_repayments','astra_payment_receipt_guard','astra_payment_receipt_post','astra_payment_receipt_immutable','astra_payment_order_snapshot','astra_refund_notice_guard','astra_refund_notice_post','astra_refund_settlement_post','astra_positive_debt','astra_debt_repayment_guard','astra_debt_repayment_post','astra_refund_notice_immutable','astra_refund_settlement_immutable','astra_debt_repayment_immutable','astra_policy_date_guard','astra_policy_erase','astra_referrer_erasing','astra_payment_audit','astra_refund_request_audit','astra_payment_purge','astra_payment_purge_closed','astra_refund_account_erasing','astra_patch26','astra_bonus_keys26','astra_bonus_profiles26','astra_bonus_aliases26','astra_bonus_fences26','idx_bonus_fences26_expiry','astra_bonus_awards26','idx_bonus_awards26_owner','astra_bonus_days26','astra_bonus_referrals26','astra_bonus_commands26','astra_bonus_award_guard26','astra_bonus_award_post26','astra_bonus_award_immutable26','astra_bonus_day_guard26','astra_bonus_day_post26','astra_bonus_day_immutable26','astra_bonus_command_guard26','astra_bonus_command_post26','astra_old_reward_disabled26','astra_old_day_disabled26','astra_old_shell_disabled26','astra_operation_guard26','astra_register26','astra_patch_policy_guard26','astra_bonus_referrer_erasing26','astra_bonus_erase26','astra_bonus_referral_immutable26','astra_tarot_offers26','astra_tarot_purchases26','idx_tarot_purchases26_owner','astra_tarot_guard26','astra_tarot_post26','astra_tarot_immutable26','astra_tarot_erase26','astra_payment_orders26','idx_payment_orders26_owner','astra_payment_receipts26','astra_payment_order_index26','astra_all_orders26','astra_all_receipts26','astra_orders_index_old26','astra_orders_index_new26','astra_orders_unindex_old26','astra_orders_unindex_new26','astra_orders_insert26','astra_orders_update26','astra_orders_delete26','astra_receipts_insert26','astra_payment_receipt_guard26','astra_payment_receipt_post26','astra_payment_receipt_immutable26','astra_payment_order_snapshot26','astra_payment_purge26','astra_payment_purge_closed26','astra_payment_erase26')").first();return r?.n===126&&r.complete===1&&r.old_complete===1;}catch{return false;}}
 
 async function health(env) {
   const state={
@@ -660,7 +656,9 @@ async function health(env) {
     state.policy_ready=(!env.ASTRA_ECONOMY_V2_START_DAY||env.ASTRA_ECONOMY_V2_START_DAY===p.start_day)&&!(p.enabled&&p.start_day&&dayMSK()>=p.start_day&&!POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED));
     state.stars_flag=POLICY_TRUE(env.STARS_SHOP_ENABLED);state.stars_configured=Boolean(p.payment_scope&&p.terms_version&&p.support&&p.retention_days);
   }catch{state.policy_ready=false;}
-  state.ready=state.schema_ready && state.policy_ready && state.db_query==='OK' && state.users_table==='FOUND' && state.secrets_ready;
+  try{const fence=await fenceContext26(env);state.bonus_fence_ready=fence.ok;state.bonus_fence_blocker=fence.blocker;state.bonus_fence_expired_pending=Boolean(fence.expired_pending);state.bonus_notice_ready=Boolean(fence.notice_ready);}catch{state.bonus_fence_ready=false;state.bonus_fence_blocker='BONUS_FENCE_SCHEMA_MISSING';}
+  state.free_content_ready=state.schema_ready&&state.db_query==='OK';
+  state.ready=state.bonus_fence_ready && state.schema_ready && state.policy_ready && state.db_query==='OK' && state.users_table==='FOUND' && state.secrets_ready;
   return new Response(JSON.stringify(state,null,2),{
     status:state.ready?200:503,
     headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'},
@@ -13471,7 +13469,7 @@ function economyEvent(update){
     const page=data.startsWith('shell:')?data.slice(6):null;
     const faq=/^faq:([0-9]{1,2})(?::more)?$/.exec(page||'');
     const validSign=data.startsWith('sign:')&&Boolean(zodiacName(data.slice(5)));
-    const recognized=/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
+    const recognized=/^tarot26:[a-f0-9]{32}$/.test(page||'')||/^stars:(?:buy26:(?:10|25|50)|accept26:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
     return recognized?{id:from.id,source:'callback',signSelection:validSign}:null;
   }
   const text=String(m.text||'').trim();
@@ -13500,8 +13498,8 @@ async function measureInvocation(env,kind,work){
 
 const POLICY_VERSION='policy-v2';
 const POLICY_TRUE=value=>value===true||value==='true';
-async function readPolicy(env){return env.DB.prepare('SELECT * FROM astra_policy WHERE singleton=1').first();}
-async function policyClock(env,day=activityDay()){
+async function pre26_readPolicy(env){return env.DB.prepare('SELECT * FROM astra_policy WHERE singleton=1').first();}
+async function pre26_policyClock(env,day=activityDay()){
   if(!validDay(day))throw Error('Invalid policy day');
   let p=await readPolicy(env);if(!p)throw Error('Policy missing');
   if(env.ASTRA_ECONOMY_V2_START_DAY&&env.ASTRA_ECONOMY_V2_START_DAY!==p.start_day)throw Error('Policy date mismatch');
@@ -13510,12 +13508,12 @@ async function policyClock(env,day=activityDay()){
     await env.DB.prepare('UPDATE astra_policy SET activated=1 WHERE singleton=1 AND activated=0 AND start_day<=?').bind(day).run();p=await readPolicy(env);
   }return p;
 }
-async function armPolicy(env,startDay,today=activityDay()){
+async function pre26_armPolicy(env,startDay,today=activityDay()){
   if(!validDay(startDay)||startDay<=today)throw Error('Choose a future Moscow day');
   const p=await readPolicy(env);if(p.start_day&&p.start_day!==startDay)throw Error('Policy cutover already fixed');
   await env.DB.prepare('UPDATE astra_policy SET start_day=?,enabled=1 WHERE singleton=1 AND activated=0').bind(startDay).run();return readPolicy(env);
 }
-async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
+async function pre26_capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
   if(!event||!Number.isSafeInteger(updateId)||!validDay(day))return null;
   const enabled=p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED);
   const legacy=enabled?0:1;
@@ -13526,7 +13524,7 @@ async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
   if(!returnRow)return;
   return env.DB.prepare('SELECT * FROM astra_policy_events WHERE update_id=? AND telegram_id=?').bind(updateId,event.id).first();
 }
-async function settlePolicyEvents(env,owner){
+async function pre26_settlePolicyEvents(env,owner){
   const p=await readPolicy(env);if(!p?.activated||!p.enabled||!POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))return;
   await env.DB.prepare(`INSERT INTO astra_reward_claims(claim_id,telegram_id,generation,kind,day,amount,reference) SELECT 'reward:'||generation||':initial:once',telegram_id,generation,'initial',registered_day,12,'once' FROM astra_user_policy WHERE telegram_id=? AND mode='v2' AND NOT EXISTS(SELECT 1 FROM astra_reward_claims WHERE telegram_id=? AND kind='initial') ON CONFLICT(claim_id) DO NOTHING`).bind(owner,owner).run();
   const rows=await env.DB.prepare(`SELECT e.* FROM astra_policy_events e JOIN astra_users u ON u.telegram_id=e.telegram_id
@@ -13547,7 +13545,7 @@ async function policyClaim(env,owner,kind,day,amount,reference='once'){
     SELECT 'reward:'||generation||':'||?||':'||?,telegram_id,generation,?,?,?,? FROM astra_user_policy WHERE telegram_id=?
     ON CONFLICT(claim_id) DO NOTHING`).bind(kind,reference,kind,day,amount,reference,owner).run();
 }
-async function policySummary(env,owner,today=activityDay()){
+async function pre26_policySummary(env,owner,today=activityDay()){
   const yesterday=new Date(Date.parse(today+'T12:00:00Z')-86400000).toISOString().slice(0,10);
   const row=await env.DB.prepare(`SELECT (SELECT count(*) FROM astra_policy_days WHERE telegram_id=?) AS total,
     coalesce((SELECT streak FROM astra_policy_days WHERE telegram_id=? AND day IN (?,?) ORDER BY day DESC LIMIT 1),0) AS streak,
@@ -13556,7 +13554,7 @@ async function policySummary(env,owner,today=activityDay()){
   return row;
 }
 
-const STAR_PACKAGES=Object.freeze({10:{xtr:10,dust:100},25:{xtr:25,dust:270},50:{xtr:50,dust:570}});
+const STAR_PACKAGES=Object.freeze({10:{xtr:10,dust:40},25:{xtr:25,dust:110},50:{xtr:50,dust:240}});
 const paymentScope=env=>POLICY_TRUE(env.ASTRA_TELEGRAM_TEST_MODE)?'test':'production';
 async function chargeHash(charge){
   if(typeof charge!=='string'||charge.length<1||charge.length>512)throw Error('Invalid charge ID');
@@ -13584,8 +13582,8 @@ async function starsApi(env,method,args,timeout=4000){
   return body.result;
 }
 
-const readPaymentOrder=(env,payload)=>env.DB.prepare('SELECT * FROM astra_payment_orders WHERE payload=?').bind(payload).first();
-async function createStarOrder(env,owner,pack,requestKey,termsVersion){
+const pre26_readPaymentOrder=(env,payload)=>env.DB.prepare('SELECT * FROM astra_payment_orders WHERE payload=?').bind(payload).first();
+async function pre26_createStarOrder(env,owner,pack,requestKey,termsVersion){
   const p=await paymentEnvironment(env,{shop:true,probe:true}),price=STAR_PACKAGES[pack];
   if(!price||termsVersion!==p.terms_version||!Number.isSafeInteger(owner)||owner<=0||typeof requestKey!=='string'||requestKey.length>100)throw Error('Invalid purchase consent');
   const order=crypto.randomUUID(),payload='a24:'+order;
@@ -13595,7 +13593,7 @@ async function createStarOrder(env,owner,pack,requestKey,termsVersion){
   const saved=await env.DB.prepare('SELECT * FROM astra_payment_orders WHERE payer_id=? AND request_key=?').bind(owner,requestKey).first();
   if(!saved)throw Error('A registered profile is required');if(saved.package!==Number(pack)||saved.terms_version!==termsVersion||saved.scope!==paymentScope(env))throw Error('Purchase request snapshot conflict');return saved;
 }
-async function sendStarInvoice(env,order){
+async function pre26_sendStarInvoice(env,order){
   await paymentEnvironment(env,{shop:true,probe:true});
   if(order.scope!==paymentScope(env))throw Error('Wrong payment environment');
   const lease=crypto.randomUUID(),r=await env.DB.prepare(`UPDATE astra_payment_orders SET delivery='sending',invoice_lease=?,updated_at=CURRENT_TIMESTAMP
@@ -13607,7 +13605,7 @@ async function sendStarInvoice(env,order){
     return {sent:true};
   }catch(e){await env.DB.prepare("UPDATE astra_payment_orders SET delivery=?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?").bind(e.telegramCode?'failed':'unknown',order.order_id,lease).run();throw e;}
 }
-async function reservePrecheckout(env,q,{deadline=Infinity}={}){
+async function pre26_reservePrecheckout(env,q,{deadline=Infinity}={}){
   await paymentEnvironment(env,{shop:true});
   if(performance.now()>=deadline)return false;
   const o=await readPaymentOrder(env,q.invoice_payload);
@@ -13616,19 +13614,19 @@ async function reservePrecheckout(env,q,{deadline=Infinity}={}){
     WHERE order_id=? AND payer_id=? AND status IN ('created','invoiced','confirmed') AND (precheckout_id IS NULL OR precheckout_id=?)`).bind(q.id,o.order_id,q.from.id,q.id).run();
   return Boolean(r.meta.changes);
 }
-async function answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
+async function pre26_answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
   let timer,ok=false;const deadline=startedAt+6000;
   const validate=async()=>await ready()&&performance.now()<deadline?reservePrecheckout(env,q,{deadline}):false;
   try{ok=await Promise.race([validate(),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),Math.max(0,deadline-performance.now()));})]);}catch{ok=false;}finally{clearTimeout(timer);}
   await starsApi(env,'answerPreCheckoutQuery',{pre_checkout_query_id:q.id,ok,...(ok?{}:{error_message:'Предложение недоступно. Откройте магазин заново или обратитесь в /paysupport.'})},2500);
   return ok;
 }
-function validStarProof(proof){return proof&&proof.currency==='XTR'&&Number.isSafeInteger(proof.total_amount)&&proof.total_amount>0&&typeof proof.invoice_payload==='string'&&new TextEncoder().encode(proof.invoice_payload).length<=128&&typeof proof.telegram_payment_charge_id==='string'&&proof.telegram_payment_charge_id.length>0&&proof.telegram_payment_charge_id.length<=512;}
-async function savePaymentAnomaly(env,owner,proof,hash,reason){
+function pre26_validStarProof(proof){return proof&&proof.currency==='XTR'&&Number.isSafeInteger(proof.total_amount)&&proof.total_amount>0&&typeof proof.invoice_payload==='string'&&new TextEncoder().encode(proof.invoice_payload).length<=128&&typeof proof.telegram_payment_charge_id==='string'&&proof.telegram_payment_charge_id.length>0&&proof.telegram_payment_charge_id.length<=512;}
+async function pre26_savePaymentAnomaly(env,owner,proof,hash,reason){
   await env.DB.prepare(`INSERT INTO astra_payment_anomalies(charge_hash,charge_id,payer_id,payload,currency,xtr,scope,reason)
     VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(charge_hash) DO NOTHING`).bind(hash,proof.telegram_payment_charge_id,owner,String(proof.invoice_payload||'').slice(0,128),String(proof.currency||'').slice(0,8),Number.isSafeInteger(proof.total_amount)?proof.total_amount:0,paymentScope(env),reason).run();
 }
-async function receiveStarPayment(env,owner,proof){
+async function pre26_receiveStarPayment(env,owner,proof){
   if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed successful payment');
   const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
   const old=await env.DB.prepare('SELECT * FROM astra_payment_receipts WHERE charge_hash=? OR charge_id=?').bind(hash,proof.telegram_payment_charge_id).first();
@@ -13647,7 +13645,7 @@ async function receiveStarPayment(env,owner,proof){
   if(!receipt){await savePaymentAnomaly(env,owner,proof,hash,'concurrent_order_conflict');return {status:'needs_review',hash};}
   return {status:receipt.credited_dust>0?'credited':'needs_review',receipt,hash};
 }
-async function receiveStarRefund(env,owner,proof,source='message'){
+async function pre26_receiveStarRefund(env,owner,proof,source='message'){
   if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed refund');
   const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
   const receipt=await env.DB.prepare('SELECT * FROM astra_payment_receipts WHERE charge_hash=?').bind(hash).first();
@@ -13662,7 +13660,7 @@ async function receiveStarRefund(env,owner,proof,source='message'){
   if(settlement&&settlement.payer_id!==owner)throw Error('Refund owner mismatch');
   return settlement||{payer_id:owner,removed:0,debt_added:0,archived:true};
 }
-async function requestStarRefund(env,chargeId){
+async function pre26_requestStarRefund(env,chargeId){
   await paymentEnvironment(env,{probe:true});
   const hash=await chargeHash(chargeId);
   let proof=await env.DB.prepare(`SELECT r.*,o.payload AS invoice_payload,o.scope FROM astra_payment_receipts r JOIN astra_payment_orders o ON o.order_id=r.order_id WHERE r.charge_hash=?`).bind(hash).first();
@@ -13687,7 +13685,7 @@ async function requestStarRefund(env,chargeId){
     return {status:safeRetry?'requested':'needs_review'};
   }
 }
-async function reconcileStarPage(env,offset=0,recoverArchived=false){
+async function pre26_reconcileStarPage(env,offset=0,recoverArchived=false){
   await paymentEnvironment(env,{probe:true});if(!Number.isSafeInteger(offset)||offset<0)throw Error('Invalid offset');
   const page=await starsApi(env,'getStarTransactions',{offset,limit:5});
   if(!Array.isArray(page?.transactions))throw Error('Unknown Telegram transaction schema');
@@ -13709,7 +13707,7 @@ async function reconcileStarPage(env,offset=0,recoverArchived=false){
     else{await receiveStarRefund(env,partner.user.id,proof,'reconcile');result.refunds++;}
   }return result;
 }
-async function readStarHistory(env,owner,cursor=null){
+async function pre26_readStarHistory(env,owner,cursor=null){
   if(!Number.isSafeInteger(owner)||owner<=0)throw Error('Invalid payment history owner');
   let snapshot,boundary=null,direction='o';
   if(cursor){const c=decodeHistoryCursor(cursor);if(!c)return {expired:true};({snapshot,direction}=c);
@@ -13735,19 +13733,19 @@ async function configurePayments(env,b){
 }
 async function purgePaymentData(env,dryRun=true){
   const p=await readPolicy(env);if(!p.retention_days)throw Error('Retention not approved');
-  const rows=await env.DB.prepare(`SELECT o.payer_id FROM astra_payment_orders o GROUP BY o.payer_id HAVING
+  const rows=await env.DB.prepare(`SELECT o.payer_id FROM astra_all_orders26 o GROUP BY o.payer_id HAVING
     sum(CASE WHEN o.status NOT IN ('credited','refunded') OR o.updated_at>=datetime('now','-'||o.retention_days||' days') THEN 1 ELSE 0 END)=0
     AND NOT EXISTS(SELECT 1 FROM astra_refund_accounts a WHERE a.payer_id=o.payer_id AND (a.debt>0 OR a.updated_at>=datetime('now','-'||o.retention_days||' days')))
     AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies a WHERE a.payer_id=o.payer_id AND a.status='needs_review')
-    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_payment_receipts r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 10`).all();
-  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 10`).bind(p.retention_days).all();
+    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_all_receipts26 r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 10`).all();
+  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_all_orders26 o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 10`).bind(p.retention_days).all();
   if(dryRun)return {dry_run:true,eligible:rows.results.length+closed.results.length};
   // Each deletion is a single statement with explicit FK-OFF cleanup trigger.
-  for(const o of rows.results)await env.DB.prepare('DELETE FROM astra_payment_orders WHERE payer_id=?').bind(o.payer_id).run();
+  for(const o of rows.results)await env.DB.prepare('DELETE FROM astra_all_orders26 WHERE payer_id=?').bind(o.payer_id).run();
   for(const a of closed.results)await env.DB.prepare('DELETE FROM astra_refund_accounts WHERE payer_id=?').bind(a.payer_id).run();
   await paymentAudit(env,'retention_purge');return {dry_run:false,deleted_payer_archives:rows.results.length,deleted_closed_accounts:closed.results.length};
 }
-async function paymentsAdmin(request,env){
+async function pre26_paymentsAdmin(request,env){
   const url=new URL(request.url);if(!url.pathname.startsWith('/internal/payments/')&&url.pathname!=='/internal/economy/policy')return null;
   if(request.method!=='POST'||!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!==`Bearer ${env.ASTRA_ADMIN_KEY}`)return new Response('Forbidden',{status:403});
   const b=await request.json();
@@ -13760,7 +13758,7 @@ async function paymentsAdmin(request,env){
     if(b.enabled)await paymentEnvironment(env);await env.DB.prepare('UPDATE astra_policy SET stars_enabled=? WHERE singleton=1').bind(b.enabled===true?1:0).run();await paymentAudit(env,b.enabled?'shop_enabled':'shop_disabled');return Response.json({enabled:b.enabled===true});
   }
   if(url.pathname==='/internal/payments/status'){
-    if(b.order_id){const row=await env.DB.prepare('SELECT o.order_id,o.payer_id,o.xtr,o.dust,o.status,r.charge_id,r.charge_hash,r.credited_dust FROM astra_payment_orders o LEFT JOIN astra_payment_receipts r ON r.order_id=o.order_id WHERE o.order_id=?').bind(b.order_id).first();return Response.json({order:row},{headers:{'Cache-Control':'no-store'}});}
+    if(b.order_id){const row=await env.DB.prepare('SELECT o.order_id,o.payer_id,o.xtr,o.dust,o.status,r.charge_id,r.charge_hash,r.credited_dust FROM astra_all_orders26 o LEFT JOIN astra_all_receipts26 r ON r.order_id=o.order_id WHERE o.order_id=?').bind(b.order_id).first();return Response.json({order:row},{headers:{'Cache-Control':'no-store'}});}
     if(typeof b.charge_prefix!=='string'||!/^[a-f0-9]{12,64}$/.test(b.charge_prefix))throw Error('Order or support reference required');const rows=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash>=? AND charge_hash<? LIMIT 5').bind(b.charge_prefix,b.charge_prefix+'g').all();return Response.json({cases:rows.results},{headers:{'Cache-Control':'no-store'}});
   }
   if(url.pathname==='/internal/payments/refund'){await paymentAudit(env,'operator_refund_requested');return Response.json(await requestStarRefund(env,b.charge_id));}
@@ -13774,26 +13772,26 @@ async function paymentsAdmin(request,env){
 }
 
 // Integration in the single Worker scope; the old A/B modules remain separate.
-async function policyWelcome(env,id,ref=''){
+async function pre26_policyWelcome(env,id,ref=''){
   const p=await readPolicy(env);if(!p.activated)return legacyWelcome(env,id,ref);
   const u=await createUser(env,id,ref);
   if(u.zodiac)return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nВыберите раздел.`,{reply_markup:keyboard});
   return send(env,id,`Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак. Баланс: ${u.balance} ✨. Новый профиль по policy-v2 получает 12 ✨ один раз${p.enabled?'':'; начисления сейчас приостановлены'}. Прогноз с числом дня и карта дня бесплатны.`,{reply_markup:signKeyboard});
 }
-async function bonus(env,id){
+async function pre26_bonus(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyBonus(env,id);
   const u=await getUser(env,id);return send(shellEnv(env,'dust'),id,`Бонус первого осмысленного входа: +3 ✨ автоматически один раз на московскую дату${p.enabled?'':'. Начисления приостановлены'}. Ручной +1 больше не действует.\nБаланс: ${u.balance} ✨. Состояние начислений доступно в истории.`);
 }
-async function invite(env,id){
+async function pre26_invite(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyInvite(env,id);
   return send(shellEnv(env,'dust'),id,`Приглашение\n\nНовым участникам после запуска policy-v2: 14 ✨ пригласившему и 4 ✨ приглашённому после выбора знака и двух разных активных московских дат. Если пригласивший удалён до выплаты, договор отменяется. Старые незавершённые приглашения сохраняют исходные +5 пригласившему. Повторной выплаты за уже оплаченный договор нет.\n\nhttps://t.me/${botUsername(env)}?start=ref_${id}`);
 }
-async function channelMenu(env,id){
+async function pre26_channelMenu(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyChannelMenu(env,id);
   const c=channelName(env);if(!c)return send(shellEnv(env,'dust'),id,'Канал пока не подключён. Бесплатные функции доступны без подписки.');
   return send(shellEnv(env,'dust'),id,`Канал ${c}\n\nПервая подтверждённая подписка: +8 ✨. Ранее полученные +5 не доплачиваются.`,{reply_markup:{inline_keyboard:[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]]}});
 }
-async function channelCheck(env,id){
+async function pre26_channelCheck(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyChannelCheck(env,id);
   if(!p.enabled||!POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))return send(shellEnv(env,'dust'),id,'Новые начисления приостановлены.');
   const c=channelName(env);if(!c)return channelMenu(env,id);
@@ -13805,21 +13803,21 @@ async function channelCheck(env,id){
 }
 async function economyDust(env,id,u){
   const p=await readPolicy(env),s=await policySummary(env,id);
-  const rates=p.activated?'Новый профиль: 12 ✨ один раз. Первый активный вход: +3 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +5; 30 разных активных дат: +12 один раз.\nНовые рефералы: +14/+4 после двух дат. Новый канал: +8 один раз; старые +5 закрывают право.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.';
-  return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\n\n${rates}\n${p.activated&&!p.enabled?'Начисления приостановлены.\n':''}Таро: 3 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.`,[
+  const rates=p.activated?'Новый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.\nНовые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.';
+  return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\n\n${rates}\n${p.activated&&!p.enabled?'Начисления приостановлены.\n':''}Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.`,[
     [button('История операций','dust:history'),button('Активные дни','dust:activity')],
     [button('Бонус дня','gift'),button('Пригласить участника','invite')],[button('Подписка на канал','channel')],
     [button('Магазин Stars','dust:shop'),button('Мои платежи','stars:history')],[button('Условия','stars:terms'),button('Поддержка','stars:support')]]);
 }
 async function economyDossier(env,id,u){
   const p=await readPolicy(env);if(!p.activated)return legacyEconomyDossier(env,id,u);
-  const s=await policySummary(env,id);return screen(env,id,'Экономическое досье',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\nДат policy-v2: ${s.total}\nТекущая серия policy-v2: ${s.streak} дн.\n\n+3 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +5; 30 разных дат +12 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.`,[[button('История операций','dossier:history'),button('Мои платежи','stars:history')]],'dossier');
+  const s=await policySummary(env,id);return screen(env,id,'Экономическое досье',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\nДат policy-v2: ${s.total}\nТекущая серия policy-v2: ${s.streak} дн.\n\n+2 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +4; 30 разных дат +6 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.`,[[button('История операций','dossier:history'),button('Мои платежи','stars:history')]],'dossier');
 }
 async function activityScreen(env,id,parent){
   const p=await readPolicy(env);if(!p.activated)return legacyActivityScreen(env,id,parent);
-  const s=await policySummary(env,id);return screen(env,id,'Активные дни',`policy-v2: ${s.total} разных дат; текущая серия ${s.streak} дн.\nДаты отсчитываются с принятой политики, без восстановления прежних посещений. +3 за дату, +3 за первые 3 подряд, +5 за каждый 7-дневный цикл и +12 за 30 разных дат. Пропуск не уменьшает баланс.`,[[button('История операций',`${parent}:history`)]],parent);
+  const s=await policySummary(env,id);return screen(env,id,'Активные дни',`policy-v2: ${s.total} разных дат; текущая серия ${s.streak} дн.\nДаты отсчитываются с принятой политики, без восстановления прежних посещений. +2 за дату, +3 за первые 3 подряд, +4 за каждый 7-дневный цикл и +6 за 30 разных дат. Пропуск не уменьшает баланс.`,[[button('История операций',`${parent}:history`)]],parent);
 }
-async function policyBefore(env,update){
+async function pre26_policyBefore(env,update){
   const event=economyEvent(update),p=await policyClock(env);
   if(event&&p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED)){
     const existing=await env.DB.prepare('SELECT update_id FROM astra_policy_events WHERE update_id=?').bind(update.update_id).first();
@@ -13829,9 +13827,9 @@ async function policyBefore(env,update){
   if(event&&p.activated)await settlePolicyEvents(env,event.id);
   return event?{...event,policyActive:Boolean(p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))}:null;
 }
-async function policyAfter(env,event){if(event?.signSelection)await settlePolicyEvents(env,event.id);}
+async function pre26_policyAfter(env,event){if(event?.signSelection)await settlePolicyEvents(env,event.id);}
 
-async function policyFaq(env){
+async function pre26_policyFaq(env){
   const p=await readPolicy(env),items=FAQ.map(row=>[...row]);
   let shop=false;try{await paymentEnvironment(env,{shop:true});shop=true;}catch{}
   const rates=p.activated?'Новый профиль: 12 ✨ один раз; первый осмысленный вход за московскую дату: +3 автоматически. Первые три дня подряд: +3 один раз; каждый седьмой день серии: +5; 30 разных дат: +12 один раз. Новое приглашение: +14/+4 после выбора знака и двух активных дат; старый незавершённый договор: прежние +5. Канал: +8 один раз; прежние +5 исключают повтор.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Приглашение после выбора знака: +5; первая подтверждённая подписка: +5. Новая политика ещё не вступила в силу.';
@@ -13861,7 +13859,7 @@ async function paymentHistory(env,id,cursor=null){
 }
 async function starsShop(env,id){
   try{await paymentEnvironment(env,{shop:true});}catch{return screen(env,id,'Магазин Stars','Магазин выключен или ещё не принят для этого окружения. Счета не выставляются. Доступные материалы и история работают независимо от магазина.',[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'dust');}
-  return screen(env,id,'Магазин Stars','Пакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');
+  return screen(env,id,'Магазин Stars','Пакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy26:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');
 }
 async function starsRoute(env,id,page,q){
   if(page==='stars:terms')return paymentTerms(env,id);
@@ -13870,16 +13868,16 @@ async function starsRoute(env,id,page,q){
   if(page.startsWith('stars:history:'))return paymentHistory(env,id,page.slice(14));
   if(page==='dust:shop')return starsShop(env,id);
   let p;try{p=await paymentEnvironment(env,{shop:true});}catch{return starsShop(env,id);}
-  const buy=/^stars:buy:(10|25|50)$/.exec(page);
-  if(buy){const token=(await chargeHash(p.terms_version)).slice(0,12),pack=STAR_PACKAGES[buy[1]];return screen(env,id,'Подтверждение покупки',`${pack.xtr} XTR за ${pack.dust} ✨.\nПрочитайте /terms версии ${p.terms_version}. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.`,[[button(`Принимаю условия · ${pack.xtr} XTR`,`stars:accept:${buy[1]}:${token}`)],[button('Условия','stars:terms')]],'dust');}
-  const consent=/^stars:accept:(10|25|50):([a-f0-9]{12})$/.exec(page);
+  const buy=/^stars:buy26:(10|25|50)$/.exec(page);
+  if(buy){const token=(await chargeHash(p.terms_version)).slice(0,12),pack=STAR_PACKAGES[buy[1]];return screen(env,id,'Подтверждение покупки',`${pack.xtr} XTR за ${pack.dust} ✨.\nПрочитайте /terms версии ${p.terms_version}. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.`,[[button(`Принимаю условия · ${pack.xtr} XTR`,`stars:accept26:${buy[1]}:${token}`)],[button('Условия','stars:terms')]],'dust');}
+  const consent=/^stars:accept26:(10|25|50):([a-f0-9]{12})$/.exec(page);
   if(!consent||consent[2]!== (await chargeHash(p.terms_version)).slice(0,12)||(!Number.isSafeInteger(q?.message?.message_id)||q.message.message_id<1))return screen(env,id,'Предложение устарело','Откройте магазин заново и прочитайте действующие условия.',[],'dust');
-  const key=`${q.message.message_id}:${consent[1]}:${consent[2]}`;
+  const key=`stars-pack-v2:${q.message.message_id}:${consent[1]}:${consent[2]}`;
   const order=await createStarOrder(env,id,consent[1],key,p.terms_version);
   try{await sendStarInvoice(env,order);return screen(env,id,'Заказ сохранён',`Номер: ${order.order_id}.\nПыль появится только после подтверждённой оплаты. Состояние доступно в «Мои платежи».`,[[button('Мои платежи','stars:history')]],'dust');}
   catch{return screen(env,id,'Отправка счёта не подтверждена',`Заказ ${order.order_id} сохранён. Повторная автоматическая отправка отключена; проверьте сообщения и обратитесь в поддержку. Пыль за отправку счёта не начисляется.`,[[button('Мои платежи','stars:history'),button('Поддержка','stars:support')]],'dust');}
 }
-async function paymentCommand(env,m){
+async function pre26_paymentCommand(env,m){
   const id=m.from.id,text=String(m.text||'').trim();
   if(text==='/terms'){await paymentTerms(env,id);return true;}
   if(text==='/paysupport'||text==='/support'){await paymentSupport(env,id);return true;}
@@ -13901,11 +13899,343 @@ async function paymentUpdate(env,update){
 
 Object.assign(HISTORY_LABELS,{"reward:v2:initial":"Новый профиль policy-v2","reward:v2:daily":"Активный день","reward:v2:first3":"Первые три дня подряд","reward:v2:weekly":"Семидневный цикл","reward:v2:thirty":"Тридцать разных дат","reward:v2:channel":"Новая подтверждённая подписка","reward:v2:referrer":"Реферальная награда за две даты","reward:v2:invitee":"Награда приглашённому за две даты","payment:stars":"Пакет пыли за Stars","refund:cash":"Возврат пакета: уменьшение пыли","refund:repayment":"Погашение долга по возврату"});
 
+
+// TASK01 only: economic version and transparent finite bonus rights.
+const TASK26_CONTEXT=Symbol('astra-task01');
+const BONUS_NOTICE26='bonus-fence-30d-v1';
+const bonusNow26=()=>Math.floor(Date.now()/1000);
+const task01Env=env=>({...env,[TASK26_CONTEXT]:{synced:new Set()}});
+const true26=value=>value===true||value==='true';
+async function readPolicy(env){return env.DB.prepare(`SELECT p.singleton,p.version,p.enabled,p.start_day,p.activated,p.migration_done,p.notice_approved,p.active_key_id,p.unsafe_until,
+ b.stars_enabled,b.payment_scope,b.support,b.terms_version,b.retention_days,b.verified_bot_id FROM astra_patch26 p JOIN astra_policy b USING(singleton) WHERE p.singleton=1`).first();}
+async function hmac26(key,domain,id){
+ if(!['owner','invitee','check','pair'].includes(domain))throw Error('Invalid HMAC domain');
+ const imported=typeof key==='string'?await crypto.subtle.importKey('raw',new TextEncoder().encode(key),{name:'HMAC',hash:'SHA-256'},false,['sign']):key;
+ return [...new Uint8Array(await crypto.subtle.sign('HMAC',imported,new TextEncoder().encode('astra:bonus-fence:v1:'+domain+':'+id)))].map(n=>n.toString(16).padStart(2,'0')).join('');
+}
+async function secrets26(env){
+ const id=env.ASTRA_BONUS_FENCE_KEY_ID||'v1',secret=env.ASTRA_BONUS_FENCE_KEY;
+ if(typeof secret!=='string'||new TextEncoder().encode(secret).length<32)throw Error('BONUS_FENCE_KEY_MISSING');
+ if(!/^[-a-zA-Z0-9_]{1,32}$/.test(id))throw Error('BONUS_FENCE_KEY_ID_INVALID');
+ let previous={};try{previous=env.ASTRA_BONUS_FENCE_PREVIOUS_KEYS?JSON.parse(env.ASTRA_BONUS_FENCE_PREVIOUS_KEYS):{};}catch{throw Error('BONUS_FENCE_KEY_RING_INVALID');}
+ if(!previous||Array.isArray(previous)||typeof previous!=='object'||Object.keys(previous).length>3)throw Error('BONUS_FENCE_KEY_RING_INVALID');
+ const values={...previous,[id]:secret},ring=[];for(const [keyId,value] of Object.entries(values)){
+  if(!/^[-a-zA-Z0-9_]{1,32}$/.test(keyId)||typeof value!=='string'||new TextEncoder().encode(value).length<32||value.length>512)throw Error('BONUS_FENCE_KEY_RING_INVALID');
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(value),{name:'HMAC',hash:'SHA-256'},false,['sign']);ring.push({id:keyId,key,check:await hmac26(key,'check','configuration')});
+ }return{id,ring};
+}
+async function fenceContext26(env){
+ const scoped=env[TASK26_CONTEXT];if(scoped?.promise)return scoped.promise;
+ const load=async()=>{const config=await readPolicy(env),now=bonusNow26();let parsed;try{parsed=await secrets26(env);}catch(e){return{ok:false,keys_ready:false,blocker:e.message,config,now};}
+ const rows=await env.DB.prepare(`SELECT k.*,EXISTS(SELECT 1 FROM astra_bonus_fences26 f WHERE f.key_id=k.key_id AND f.expires_at>?) AS live,EXISTS(SELECT 1 FROM astra_bonus_fences26 expired WHERE expired.expires_at<=?) AS expired_pending FROM astra_bonus_keys26 k`).bind(now,now).all();
+ for(const row of rows.results){const key=parsed.ring.find(k=>k.id===row.key_id);if((row.live||row.key_id===config.active_key_id)&&!key)return{...parsed,config,now,ok:false,keys_ready:false,blocker:'BONUS_FENCE_PREVIOUS_KEYS_REQUIRED'};if(key&&key.check!==row.check_hmac)return{...parsed,config,now,ok:false,keys_ready:false,blocker:'BONUS_FENCE_KEY_CHANGED'};}
+ if(parsed.ring.some(k=>k.id!==parsed.id&&!rows.results.some(r=>r.key_id===k.id)))return{...parsed,config,now,ok:false,keys_ready:false,blocker:'BONUS_FENCE_KEY_RING_INVALID'};
+ const registered=rows.results.some(r=>r.key_id===parsed.id&&r.check_hmac===parsed.ring.find(k=>k.id===parsed.id).check)&&config.active_key_id===parsed.id;
+ const expired=rows.results.some(r=>r.expired_pending);
+ const notice=config.notice_approved===1&&env.ASTRA_BONUS_FENCE_NOTICE_ACK==='APPROVED_BONUS_FENCE_30_DAYS';
+ return{...parsed,config,now,keys_ready:registered,notice_ready:notice,expired_pending:expired,ok:registered&&notice&&!expired&&config.unsafe_until<=now,blocker:!registered?'BONUS_FENCE_KEY_NOT_CONFIGURED':!notice?'BONUS_FENCE_NOTICE_NOT_APPROVED':expired?'BONUS_FENCE_PURGE_PENDING':config.unsafe_until>now?'BONUS_FENCE_SEED_QUARANTINE':null};};
+ const result=load();if(scoped)scoped.promise=result;return result;
+}
+function invalidate26(env){if(env[TASK26_CONTEXT]){env[TASK26_CONTEXT].promise=null;env[TASK26_CONTEXT].synced.clear();}}
+async function configureFence26(env){
+ const parsed=await secrets26(env),now=bonusNow26(),rows=await env.DB.prepare('SELECT k.*,EXISTS(SELECT 1 FROM astra_bonus_fences26 f WHERE f.key_id=k.key_id AND f.expires_at>?) live FROM astra_bonus_keys26 k').bind(now).all();
+ for(const r of rows.results){const candidate=parsed.ring.find(k=>k.id===r.key_id);if(r.live&&!candidate)throw Error('Active TTL key must remain in previous-key ring');if(candidate&&candidate.check!==r.check_hmac)throw Error('Existing key ID cannot change secret');}
+ const current=parsed.ring.find(k=>k.id===parsed.id);await env.DB.batch([
+  env.DB.prepare('INSERT INTO astra_bonus_keys26(key_id,check_hmac,added_at) VALUES(?,?,?) ON CONFLICT(key_id) DO NOTHING').bind(parsed.id,current.check,now),
+  env.DB.prepare('UPDATE astra_patch26 SET active_key_id=? WHERE singleton=1').bind(parsed.id)
+ ]);invalidate26(env);return{configured:true,key_id:parsed.id,live_previous_keys:rows.results.filter(r=>r.live&&r.key_id!==parsed.id).length};
+}
+async function approveFenceNotice26(env,version,ack){
+ if(version!==BONUS_NOTICE26||ack!=='APPROVED_BONUS_FENCE_30_DAYS'||env.ASTRA_BONUS_FENCE_NOTICE_ACK!==ack)throw Error('Approve the exact privacy notice and lawful basis first');
+ await env.DB.prepare('UPDATE astra_patch26 SET notice_approved=1 WHERE singleton=1').run();invalidate26(env);return{notice_approved:true,version};
+}
+async function purgeFences26(env){
+ const r=await env.DB.prepare('DELETE FROM astra_bonus_fences26 WHERE rowid IN(SELECT rowid FROM astra_bonus_fences26 WHERE expires_at<=? ORDER BY expires_at LIMIT 200)').bind(bonusNow26()).run();invalidate26(env);return{deleted:r.meta.changes,limit:200};
+}
+function observable26(row,owner){
+ const reason=row.reason;let purpose=null,domain='owner',id=owner,reference='once';
+ if(reason==='registration'&&row.delta===2)purpose='initial';
+ else if(reason==='easter:gpt6')purpose='gpt6';
+ else if(reason==='channel'||reason==='reward:v2:channel')purpose='channel';
+ else if(reason==='referral'||reason==='reward:v2:referrer'){if(!row.source_id)return null;purpose='inviter_referral';domain='invitee';id=row.source_id;}
+ else if(reason==='reward:v2:invitee'){purpose='invitee_welcome';domain='invitee';}
+ else if(['daily','reward:v2:daily','reward:v2:weekly'].includes(reason)){if(!validDay(row.day))return null;purpose=reason.endsWith('weekly')?'weekly':'daily';reference=row.day;}
+ else if(reason==='reward:v2:initial')purpose='initial';
+ else if(reason==='reward:v2:first3')purpose='first3';else if(reason==='reward:v2:thirty')purpose='thirty';
+ return purpose?{purpose,domain,id,reference}:null;
+}
+async function syncBonusOwner26(env,owner,context=null){
+ if(!Number.isSafeInteger(owner)||owner<=0)throw Error('Invalid bonus owner');const ctx=context||await fenceContext26(env);if(!ctx.ok)return false;
+ const scoped=env[TASK26_CONTEXT];if(scoped?.synced.has(owner))return true;
+ const profile=await env.DB.prepare('SELECT * FROM astra_bonus_profiles26 WHERE telegram_id=?').bind(owner).first();if(!profile)return false;
+ const writes=[];for(const k of ctx.ring){writes.push(env.DB.prepare(`INSERT INTO astra_bonus_aliases26(telegram_id,key_id,owner_hash,invitee_hash) VALUES(?,?,?,?) ON CONFLICT(telegram_id,key_id) DO UPDATE SET owner_hash=excluded.owner_hash,invitee_hash=excluded.invitee_hash`).bind(owner,k.id,await hmac26(k.key,'owner',owner),await hmac26(k.key,'invitee',owner)));}
+ let complete=Boolean(profile.seeded);
+ if(!complete){
+  const rows=await env.DB.prepare(`SELECT l.rowid AS cursor,l.reason,l.delta,unixepoch(l.created_at) AS awarded_at,coalesce(o.day,c.day) AS day,coalesce(o.source_id,r.invitee) AS source_id FROM astra_wallet_ledger l LEFT JOIN astra_operations o ON o.operation_id=l.operation_id LEFT JOIN astra_reward_claims c ON c.claim_id=l.idempotency_key LEFT JOIN astra_referral_contracts r ON r.generation=c.reference WHERE l.telegram_id=? AND l.rowid>? AND l.delta>0 AND l.reason<>'opening' AND l.reason NOT LIKE 'reward:v3:%' AND unixepoch(l.created_at)>? AND unixepoch(l.created_at)<=? ORDER BY l.rowid LIMIT 6`).bind(owner,profile.seed_cursor,ctx.now-2592000,ctx.now).all();
+  const batch=rows.results.slice(0,5);for(const row of batch){const right=observable26(row,owner);if(!right)continue;for(const k of ctx.ring)writes.push(env.DB.prepare(`INSERT INTO astra_bonus_fences26(key_id,subject_hash,purpose,reference,awarded_at,expires_at) VALUES(?,?,?,?,?,?) ON CONFLICT(key_id,subject_hash,purpose,reference) DO UPDATE SET awarded_at=excluded.awarded_at,expires_at=excluded.expires_at WHERE excluded.awarded_at>astra_bonus_fences26.awarded_at`).bind(k.id,await hmac26(k.key,right.domain,right.id),right.purpose,right.reference,row.awarded_at,row.awarded_at+2592000));}
+  complete=rows.results.length<=5;writes.push(env.DB.prepare('UPDATE astra_bonus_profiles26 SET seed_cursor=?,seeded=? WHERE telegram_id=?').bind(batch.at(-1)?.cursor||profile.seed_cursor,complete?1:0,owner));
+ }
+ await env.DB.batch(writes);if(complete)scoped?.synced.add(owner);return complete;
+}
+async function bonusCommand26(env,owner,kind,{day=activityDay(),channel=null}={}){
+ const ctx=await fenceContext26(env);if(!ctx.ok||!await syncBonusOwner26(env,owner,ctx))return false;
+ const p=ctx.config;if(kind==='initial'&&p.activated&&!true26(env.ASTRA_ECONOMY_V2_ENABLED))return false;if(['referral','channel'].includes(kind)&&p.activated&&(!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED)))return false;
+ let c=null;if(['referral','channel'].includes(kind)){c=await env.DB.prepare('SELECT inviter FROM astra_bonus_referrals26 WHERE invitee=?').bind(owner).first();if(kind==='referral'&&!c?.inviter)return false;if(c?.inviter&&!await syncBonusOwner26(env,c.inviter,ctx))return false;}
+ await env.DB.prepare('INSERT INTO astra_bonus_commands26(command_id,telegram_id,kind,day,awarded_at,verified_channel) VALUES(?,?,?,?,?,?)').bind(crypto.randomUUID(),owner,kind,day,bonusNow26(),channel).run();return true;
+}
+async function policyClock(env,day=activityDay()){
+ if(!validDay(day))throw Error('Invalid day');let p=await readPolicy(env);
+ if(env.ASTRA_ECONOMY_V2_START_DAY&&env.ASTRA_ECONOMY_V2_START_DAY!==p.start_day)throw Error('Policy date mismatch');
+ if(!p.activated&&p.start_day&&day>=p.start_day){await env.DB.prepare('UPDATE astra_patch26 SET activated=1 WHERE singleton=1 AND start_day<=?').bind(day).run();invalidate26(env);p=await readPolicy(env);}return p;
+}
+async function armPolicy(env,startDay,today=activityDay()){
+ if(!validDay(startDay)||startDay<=today)throw Error('Choose a future Moscow date');const ctx=await fenceContext26(env);if(!ctx.ok||!true26(env.ASTRA_ECONOMY_V2_ENABLED))throw Error('Bonus key,notice and runtime approval required');
+ if(await env.DB.prepare('SELECT telegram_id FROM astra_bonus_profiles26 WHERE seeded=0 LIMIT 1').first())throw Error('Finish observed-right bootstrap before arming');
+ const p=await readPolicy(env);if(p.start_day&&p.start_day!==startDay)throw Error('Policy date fixed');await env.DB.prepare('UPDATE astra_patch26 SET start_day=?,enabled=1 WHERE singleton=1 AND activated=0').bind(startDay).run();invalidate26(env);return readPolicy(env);
+}
+async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
+ if(!event||!Number.isSafeInteger(updateId)||!validDay(day))return null;
+ await env.DB.prepare(`INSERT INTO astra_policy_events(update_id,telegram_id,day,source,legacy,processed) SELECT ?,u.telegram_id,?,?,0,0 FROM astra_users u WHERE u.telegram_id=? AND(u.zodiac IS NOT NULL OR ?=1) AND NOT EXISTS(SELECT 1 FROM astra_bonus_days26 d WHERE d.telegram_id=u.telegram_id AND d.day=?) ON CONFLICT(update_id) DO NOTHING`).bind(updateId,day,event.source,event.id,event.signSelection?1:0,day).run();
+ if(returnRow)return env.DB.prepare('SELECT * FROM astra_policy_events WHERE update_id=? AND telegram_id=?').bind(updateId,event.id).first();
+}
+async function settlePolicyEvents(env,owner){
+ const ctx=await fenceContext26(env);if(!ctx.ok||!await syncBonusOwner26(env,owner,ctx))return;
+ await bonusCommand26(env,owner,'initial');await bonusCommand26(env,owner,'referral');const p=await readPolicy(env);if(!p.activated||!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED))return;
+ const rows=await env.DB.prepare(`SELECT e.* FROM astra_policy_events e JOIN astra_users u ON u.telegram_id=e.telegram_id WHERE e.telegram_id=? AND e.legacy=0 AND e.processed=0 AND u.zodiac IS NOT NULL AND e.update_id IN(SELECT min(update_id) FROM astra_policy_events WHERE telegram_id=? AND legacy=0 AND processed=0 GROUP BY day) ORDER BY e.day,e.update_id LIMIT 3`).bind(owner,owner).all();
+ for(const e of rows.results){await recordActivity(env,owner,e.day,e.source);await env.DB.prepare(`INSERT INTO astra_bonus_days26(telegram_id,day,streak,event_id,awarded_at) SELECT ?,?,coalesce((SELECT streak FROM astra_bonus_days26 WHERE telegram_id=? AND day=date(?,'-1 day')),0)+1,?,? ON CONFLICT(telegram_id,day) DO NOTHING`).bind(owner,e.day,owner,e.day,e.update_id,bonusNow26()).run();if(!await env.DB.prepare('SELECT day FROM astra_bonus_days26 WHERE telegram_id=? AND day=?').bind(owner,e.day).first())throw Error('Bonus day not committed');await env.DB.prepare('UPDATE astra_policy_events SET processed=1 WHERE telegram_id=? AND day=? AND legacy=0').bind(owner,e.day).run();}
+ if(await env.DB.prepare('SELECT e.update_id FROM astra_policy_events e JOIN astra_users u ON u.telegram_id=e.telegram_id WHERE e.telegram_id=? AND e.legacy=0 AND e.processed=0 AND u.zodiac IS NOT NULL LIMIT 1').bind(owner).first())throw Error('Bonus backlog; retry committed batch');
+}
+async function policySummary(env,owner,today=activityDay()){
+ const yesterday=new Date(Date.parse(today+'T12:00:00Z')-86400000).toISOString().slice(0,10);return env.DB.prepare(`SELECT(SELECT count(*) FROM astra_bonus_days26 WHERE telegram_id=?) total,coalesce((SELECT streak FROM astra_bonus_days26 WHERE telegram_id=? AND day IN(?,?) ORDER BY day DESC LIMIT 1),0) streak,coalesce((SELECT debt FROM astra_refund_accounts WHERE payer_id=?),0) debt`).bind(owner,owner,today,yesterday,owner).first();
+}
+async function policyBefore(env,update){
+ try{await purgeFences26(env);}catch{console.error('Bonus fence cleanup unavailable');}
+ const event=economyEvent(update),p=await policyClock(env),ctx=await fenceContext26(env),active=Boolean(p.activated&&p.enabled&&true26(env.ASTRA_ECONOMY_V2_ENABLED)&&ctx.ok);
+ if(event&&ctx.ok&&await syncBonusOwner26(env,event.id,ctx)){if(active){const previous=await env.DB.prepare('SELECT update_id FROM astra_policy_events WHERE update_id=? UNION ALL SELECT update_id FROM astra_update_jobs WHERE update_id=? LIMIT 1').bind(update.update_id,update.update_id).first();if(!previous)await capturePolicyEvent(env,event,update.update_id,activityDay(),p,false);}await settlePolicyEvents(env,event.id);}
+ return event?{...event,policyActive:active}:null;
+}
+async function policyAfter(env,event){if(event?.signSelection&&!env[TASK26_CONTEXT]?.signSettled?.has(event.id))await settlePolicyEvents(env,event.id);}
+
+const STARS_PACKAGES26=Object.freeze({10:{xtr:10,dust:40},25:{xtr:25,dust:110},50:{xtr:50,dust:240}});
+const readPaymentOrder=(env,payload)=>env.DB.prepare('SELECT * FROM astra_all_orders26 WHERE payload=?').bind(payload).first();
+async function createStarOrder(env,owner,pack,requestKey,termsVersion){
+  const p=await paymentEnvironment(env,{shop:true,probe:true}),price=STARS_PACKAGES26[pack];
+  if(!price||termsVersion!==p.terms_version||!Number.isSafeInteger(owner)||owner<=0||typeof requestKey!=='string'||requestKey.length>100)throw Error('Invalid purchase consent');
+  const order=crypto.randomUUID(),payload='a24:'+order;
+  await env.DB.prepare(`INSERT INTO astra_all_orders26(order_id,payload,owner_id,payer_id,request_key,package,xtr,dust,price_version,scope,terms_version,retention_days,created_at)
+    SELECT ?,?,?,?,?,?,?,?,'stars-pack-v2',?,?,?,? WHERE EXISTS(SELECT 1 FROM astra_users WHERE telegram_id=?)
+    `).bind(order,payload,owner,owner,requestKey,Number(pack),price.xtr,price.dust,paymentScope(env),p.terms_version,p.retention_days,new Date().toISOString().slice(0,19).replace('T',' '),owner).run();
+  const saved=await env.DB.prepare('SELECT * FROM astra_all_orders26 WHERE payer_id=? AND request_key=?').bind(owner,requestKey).first();
+  if(!saved)throw Error('A registered profile is required');if(saved.package!==Number(pack)||saved.terms_version!==termsVersion||saved.scope!==paymentScope(env))throw Error('Purchase request snapshot conflict');return saved;
+}
+async function sendStarInvoice(env,order){
+  await paymentEnvironment(env,{shop:true,probe:true});
+  if(order.scope!==paymentScope(env))throw Error('Wrong payment environment');
+  const lease=crypto.randomUUID(),r=await env.DB.prepare(`UPDATE astra_all_orders26 SET delivery='sending',invoice_lease=?,updated_at=CURRENT_TIMESTAMP
+    WHERE order_id=? AND payer_id=? AND status='created' AND delivery='pending' RETURNING order_id`).bind(lease,order.order_id,order.payer_id).first();
+  if(!r)return {sent:false,status:order.status};
+  try{
+    await starsApi(env,'sendInvoice',{chat_id:order.payer_id,title:'Звёздная пыль Астры',description:`${order.dust} ✨. Условия: ${order.terms_version}.`,payload:order.payload,currency:'XTR',prices:[{label:`${order.dust} ✨`,amount:order.xtr}],provider_token:'',start_parameter:'stars'});
+    await env.DB.prepare(`UPDATE astra_all_orders26 SET status=CASE WHEN status='created' THEN 'invoiced' ELSE status END,delivery='sent',updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?`).bind(order.order_id,lease).run();
+    return {sent:true};
+  }catch(e){await env.DB.prepare("UPDATE astra_all_orders26 SET delivery=?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?").bind(e.telegramCode?'failed':'unknown',order.order_id,lease).run();throw e;}
+}
+async function reservePrecheckout(env,q,{deadline=Infinity}={}){
+  await paymentEnvironment(env,{shop:true});
+  if(performance.now()>=deadline)return false;
+  const o=await readPaymentOrder(env,q.invoice_payload);
+  if(performance.now()>=deadline||!o||Date.now()-Date.parse(o.created_at.replace(' ','T')+'Z')>86400000||o.payer_id!==q.from?.id||o.owner_id!==q.from.id||o.scope!==paymentScope(env)||q.currency!=='XTR'||q.total_amount!==o.xtr||!['created','invoiced','confirmed'].includes(o.status))return false;
+  const r=await env.DB.prepare(`UPDATE astra_all_orders26 SET precheckout_id=?,status='confirmed',updated_at=CURRENT_TIMESTAMP
+    WHERE order_id=? AND payer_id=? AND status IN ('created','invoiced','confirmed') AND (precheckout_id IS NULL OR precheckout_id=?) RETURNING order_id`).bind(q.id,o.order_id,q.from.id,q.id).first();
+  return Boolean(r);
+}
+async function answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
+  let timer,ok=false;const deadline=startedAt+6000;
+  const validate=async()=>await ready()&&performance.now()<deadline?reservePrecheckout(env,q,{deadline}):false;
+  try{ok=await Promise.race([validate(),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),Math.max(0,deadline-performance.now()));})]);}catch{ok=false;}finally{clearTimeout(timer);}
+  await starsApi(env,'answerPreCheckoutQuery',{pre_checkout_query_id:q.id,ok,...(ok?{}:{error_message:'Предложение недоступно. Откройте магазин заново или обратитесь в /paysupport.'})},2500);
+  return ok;
+}
+function validStarProof(proof){return proof&&proof.currency==='XTR'&&Number.isSafeInteger(proof.total_amount)&&proof.total_amount>0&&typeof proof.invoice_payload==='string'&&new TextEncoder().encode(proof.invoice_payload).length<=128&&typeof proof.telegram_payment_charge_id==='string'&&proof.telegram_payment_charge_id.length>0&&proof.telegram_payment_charge_id.length<=512;}
+async function savePaymentAnomaly(env,owner,proof,hash,reason){
+  await env.DB.prepare(`INSERT INTO astra_payment_anomalies(charge_hash,charge_id,payer_id,payload,currency,xtr,scope,reason)
+    VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(charge_hash) DO NOTHING`).bind(hash,proof.telegram_payment_charge_id,owner,String(proof.invoice_payload||'').slice(0,128),String(proof.currency||'').slice(0,8),Number.isSafeInteger(proof.total_amount)?proof.total_amount:0,paymentScope(env),reason).run();
+}
+async function receiveStarPayment(env,owner,proof){
+  if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed successful payment');
+  const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
+  const old=await env.DB.prepare('SELECT * FROM astra_all_receipts26 WHERE charge_hash=? OR charge_id=?').bind(hash,proof.telegram_payment_charge_id).first();
+  if(old){if(old.payer_id!==owner||old.order_id!==o?.order_id||old.xtr!==proof.total_amount||old.currency!==proof.currency){await savePaymentAnomaly(env,owner,proof,hash,'charge_identity_conflict');return {status:'needs_review',hash};}return {status:'recorded',receipt:old,hash};}
+  if(await env.DB.prepare('SELECT charge_hash FROM astra_payment_tombstones WHERE charge_hash=?').bind(hash).first())return {status:'archived',hash};
+  if(!o||o.payer_id!==owner||o.scope!==paymentScope(env)||o.xtr!==proof.total_amount||proof.currency!=='XTR'){
+    await savePaymentAnomaly(env,owner,proof,hash,'order_snapshot_mismatch');return {status:'needs_review',hash};
+  }
+  if(await env.DB.prepare('SELECT charge_id FROM astra_all_receipts26 WHERE order_id=?').bind(o.order_id).first()){
+    await savePaymentAnomaly(env,owner,proof,hash,'second_charge_for_order');return {status:'needs_review',hash};
+  }
+  await env.DB.prepare(`INSERT INTO astra_all_receipts26(charge_id,charge_hash,order_id,payer_id,currency,xtr,dust,kind,credited_dust)
+    SELECT ?,?,?,?,'XTR',o.xtr,o.dust,'paid',CASE WHEN o.owner_id=? AND EXISTS(SELECT 1 FROM astra_users WHERE telegram_id=?) AND NOT EXISTS(SELECT 1 FROM astra_external_refunds WHERE charge_hash=?) THEN o.dust ELSE 0 END
+    FROM astra_all_orders26 o WHERE o.order_id=? `).bind(proof.telegram_payment_charge_id,hash,o.order_id,owner,owner,owner,hash,o.order_id).run();
+  const receipt=await env.DB.prepare('SELECT * FROM astra_all_receipts26 WHERE charge_hash=?').bind(hash).first();
+  if(!receipt){await savePaymentAnomaly(env,owner,proof,hash,'concurrent_order_conflict');return {status:'needs_review',hash};}
+  return {status:receipt.credited_dust>0?'credited':'needs_review',receipt,hash};
+}
+async function receiveStarRefund(env,owner,proof,source='message'){
+  if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed refund');
+  const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
+  const receipt=await env.DB.prepare('SELECT * FROM astra_all_receipts26 WHERE charge_hash=?').bind(hash).first();
+  if(receipt&&(receipt.payer_id!==owner||receipt.order_id!==o?.order_id||receipt.xtr!==proof.total_amount))throw Error('Refund identity mismatch');
+  const tomb=await env.DB.prepare('SELECT * FROM astra_payment_tombstones WHERE charge_hash=?').bind(hash).first();
+  if(o&&o.scope!==paymentScope(env))throw Error('Refund environment mismatch');
+  if(tomb&&(tomb.scope!==paymentScope(env)||tomb.xtr!==proof.total_amount))throw Error('Archived refund snapshot mismatch');
+  if(tomb?.refunded&&!receipt)return {payer_id:owner,removed:0,debt_added:0,archived:true};
+  if(!receipt&&!tomb&&(!o||o.payer_id!==owner||o.xtr!==proof.total_amount||o.scope!==paymentScope(env)))await savePaymentAnomaly(env,owner,proof,hash,'unmatched_refund');
+  await env.DB.prepare(`INSERT INTO astra_external_refunds(charge_hash,charge_id,order_id,payer_id,currency,xtr,source) VALUES(?,?,?,?,?,?,?) ON CONFLICT(charge_hash) DO NOTHING`).bind(hash,proof.telegram_payment_charge_id,o?.payer_id===owner&&o.xtr===proof.total_amount?o.order_id:null,owner,proof.currency,proof.total_amount,source).run();
+  const settlement=await env.DB.prepare('SELECT * FROM astra_refund_settlements WHERE charge_hash=?').bind(hash).first();
+  if(settlement&&settlement.payer_id!==owner)throw Error('Refund owner mismatch');
+  return settlement||{payer_id:owner,removed:0,debt_added:0,archived:true};
+}
+async function requestStarRefund(env,chargeId){
+  await paymentEnvironment(env,{probe:true});
+  const hash=await chargeHash(chargeId);
+  let proof=await env.DB.prepare(`SELECT r.*,o.payload AS invoice_payload,o.scope FROM astra_all_receipts26 r JOIN astra_all_orders26 o ON o.order_id=r.order_id WHERE r.charge_hash=?`).bind(hash).first();
+  if(!proof){const a=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash=? AND reason<>?').bind(hash,'unmatched_refund').first();if(a)proof={...a,invoice_payload:a.payload};}
+  const archived=await env.DB.prepare('SELECT * FROM astra_payment_tombstones WHERE charge_hash=?').bind(hash).first();
+  if(archived&&proof&&(archived.xtr!==proof.xtr||archived.scope!==proof.scope))throw Error('Archived payment snapshot mismatch');
+  if(!proof||proof.scope!==paymentScope(env)||proof.currency!=='XTR'||proof.xtr<=0)throw Error('Known charge proof required');
+  if(await env.DB.prepare('SELECT charge_hash FROM astra_external_refunds WHERE charge_hash=?').bind(hash).first())return {status:'refunded'};
+  await env.DB.prepare('INSERT INTO astra_refund_requests(charge_hash) VALUES(?) ON CONFLICT(charge_hash) DO NOTHING').bind(hash).run();
+  const lease=crypto.randomUUID(),now=Date.now();
+  const claim=await env.DB.prepare(`UPDATE astra_refund_requests SET status='in_progress',lease=?,lease_until=?,attempts=attempts+1,updated_at=CURRENT_TIMESTAMP WHERE charge_hash=? AND status='requested' AND lease_until<=?`).bind(lease,now+60000,hash,now).run();
+  if(!claim.meta.changes)return {status:(await env.DB.prepare('SELECT status FROM astra_refund_requests WHERE charge_hash=?').bind(hash).first()).status};
+  await env.DB.prepare("UPDATE astra_all_orders26 SET status='refund_in_progress',updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND status<>'refunded'").bind(proof.order_id||'').run();
+  try{
+    const ok=await starsApi(env,'refundStarPayment',{user_id:proof.payer_id,telegram_payment_charge_id:chargeId});
+    if(ok!==true)throw Error('Refund outcome unknown');
+    const settlement=await receiveStarRefund(env,proof.payer_id,{currency:proof.currency,total_amount:proof.xtr,invoice_payload:proof.invoice_payload,telegram_payment_charge_id:chargeId},'api');
+    return {status:'refunded',settlement};
+  }catch(e){
+    const safeRetry=e.telegramCode===429;
+    await env.DB.prepare(`UPDATE astra_refund_requests SET status=?,last_error=?,lease_until=?,updated_at=CURRENT_TIMESTAMP WHERE charge_hash=? AND lease=? AND status<>'refunded'`).bind(safeRetry?'requested':'needs_review',safeRetry?'rate_limited':'reconcile_before_retry',safeRetry?Date.now()+Math.max(1,e.retryAfter||60)*1000:0,hash,lease).run();
+    return {status:safeRetry?'requested':'needs_review'};
+  }
+}
+async function reconcileStarPage(env,offset=0,recoverArchived=false){
+  await paymentEnvironment(env,{probe:true});if(!Number.isSafeInteger(offset)||offset<0)throw Error('Invalid offset');
+  const page=await starsApi(env,'getStarTransactions',{offset,limit:5});
+  if(!Array.isArray(page?.transactions))throw Error('Unknown Telegram transaction schema');
+  // Bound D1/API work per HTTP request; caller advances manually with overlap.
+  const transactions=page.transactions.slice(0,5);
+  const result={scanned:transactions.length,credited_or_recorded:0,refunds:0,needs_review:0,next_offset:offset+transactions.length};
+  for(const t of transactions){
+    if(typeof t.id!=='string'||!Number.isSafeInteger(t.amount))continue;
+    const incoming=t.source?.type==='user'&&t.source.transaction_type==='invoice_payment';
+    const outgoing=t.receiver?.type==='user'&&t.receiver.transaction_type==='invoice_payment';
+    const partner=incoming?t.source:outgoing?t.receiver:null;if(!partner||!Number.isSafeInteger(partner.user?.id))continue;
+    if(t.amount<=0||(t.nanostar_amount!=null&&t.nanostar_amount!==0)){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:0,invoice_payload:partner.invoice_payload||''},await chargeHash(t.id),'unsupported_transaction_amount');result.needs_review++;continue;}
+    let payload=partner.invoice_payload;
+    if(!payload){const r=await env.DB.prepare('SELECT o.payload FROM astra_all_receipts26 r JOIN astra_all_orders26 o ON o.order_id=r.order_id WHERE r.charge_id=? AND r.payer_id=?').bind(t.id,partner.user.id).first();payload=r?.payload;}
+    if(!payload&&outgoing&&await env.DB.prepare('SELECT charge_hash FROM astra_payment_tombstones WHERE charge_hash=?').bind(await chargeHash(t.id)).first())payload='';
+    if(payload==null){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:Math.abs(t.amount),invoice_payload:''},await chargeHash(t.id),'transaction_payload_missing');result.needs_review++;continue;}
+    const proof={currency:'XTR',total_amount:Math.abs(t.amount),invoice_payload:payload,telegram_payment_charge_id:t.id};
+    if(incoming){const saved=await receiveStarPayment(env,partner.user.id,proof);if(saved.status==='archived'&&recoverArchived)await savePaymentAnomaly(env,partner.user.id,proof,saved.hash,'archived_recovery_verified');saved.status==='needs_review'?result.needs_review++:result.credited_or_recorded++;}
+    else{await receiveStarRefund(env,partner.user.id,proof,'reconcile');result.refunds++;}
+  }return result;
+}
+async function readStarHistory(env,owner,cursor=null){
+  if(!Number.isSafeInteger(owner)||owner<=0)throw Error('Invalid payment history owner');
+  let snapshot,boundary=null,direction='o';
+  if(cursor){const c=decodeHistoryCursor(cursor);if(!c)return {expired:true};({snapshot,direction}=c);
+    const r=await env.DB.prepare('SELECT rowid AS mark,created_at,order_id FROM astra_all_orders26 WHERE payer_id=? AND rowid IN (?,?)').bind(owner,snapshot,c.anchor).all();
+    boundary=r.results.find(r=>r.mark===c.anchor);if(!boundary||!r.results.some(r=>r.mark===snapshot))return {expired:true};
+  }else snapshot=(await env.DB.prepare('SELECT rowid AS mark FROM astra_all_orders26 WHERE payer_id=? ORDER BY rowid DESC LIMIT 1').bind(owner).first())?.mark;
+  if(!snapshot)return {rows:[],older:null,newer:null};const newer=direction==='n',clause=boundary?` AND (created_at,order_id) ${newer?'>':'<'} (?,?)`:'';
+  const r=await env.DB.prepare(`SELECT rowid AS mark,order_id,xtr,dust,status,created_at FROM astra_all_orders26 WHERE payer_id=? AND rowid<=?${clause} ORDER BY created_at ${newer?'ASC':'DESC'},order_id ${newer?'ASC':'DESC'} LIMIT 13`).bind(owner,snapshot,...(boundary?[boundary.created_at,boundary.order_id]:[])).all();
+  let rows=r.results.slice(0,12);if(newer)rows.reverse();if(!rows.length)return {expired:true};
+  return {rows,older:(!newer?r.results.length>12:Boolean(boundary))?encodeHistoryCursor('o',snapshot,rows.at(-1).mark):null,newer:(newer?r.results.length>12:Boolean(boundary))?encodeHistoryCursor('n',snapshot,rows[0].mark):null};
+}
+
+async function createUser(env,id,referral=''){
+ let u=await getUser(env,id);if(!u){let friend=null;if(/^ref_[0-9]{1,17}$/.test(referral)){const candidate=Number(referral.slice(4)),inviter=Number.isSafeInteger(candidate)&&candidate!==id?await getUser(env,candidate):null;if(inviter?.zodiac)friend=candidate;}
+ await env.DB.prepare('INSERT OR IGNORE INTO astra_users(telegram_id,referrer_id,created_at) VALUES(?,?,?)').bind(id,friend,new Date().toISOString().slice(0,19).replace('T',' ')).run();}
+ await syncBonusOwner26(env,id);await bonusCommand26(env,id,'initial');return getUser(env,id);
+}
+async function policyWelcome(env,id,ref=''){
+ const u=await createUser(env,id,ref);if(u.zodiac)return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nВыберите раздел.`,{reply_markup:keyboard});
+ return send(env,id,`Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак. Баланс: ${u.balance} ✨. Бесплатный прогноз и число дня доступны независимо от бонусов. Условия защиты наград и удаления — /privacy.`,{reply_markup:signKeyboard});
+}
+async function setZodiac(env,id,sign){
+ if(!zodiacName(sign))return;const u=await getUser(env,id);if(!u)return welcome(env,id);await syncBonusOwner26(env,id);await env.DB.prepare('UPDATE astra_users SET zodiac=? WHERE telegram_id=? AND zodiac IS NULL').bind(sign,id).run();await settlePolicyEvents(env,id);if(env[TASK26_CONTEXT]){env[TASK26_CONTEXT].signSettled??=new Set();env[TASK26_CONTEXT].signSettled.add(id);}const current=await getUser(env,id);
+ await send(env,id,`Солнечный знак: ${zodiacName(current.zodiac)}\nБаланс: ${current.balance} ✨\n\nНиже — дневной прогноз. Остальные разделы доступны в меню.`,{reply_markup:keyboard});await sendFreeForecast(env,id,current.zodiac);
+}
+async function secretArchive(env,id){
+ await createUser(env,id);const before=await env.DB.prepare("SELECT award_id FROM astra_bonus_awards26 WHERE telegram_id=? AND kind='gpt6'").bind(id).first();await bonusCommand26(env,id,'gpt6');const paid=await env.DB.prepare("SELECT award_id FROM astra_bonus_awards26 WHERE telegram_id=? AND kind='gpt6'").bind(id).first();return screen(env,id,'Запись № 06',!before&&paid?'Последовательность распознана. Начислено: +5 ✨.':'Повторного начисления нет. Награда могла быть получена раньше либо начисления временно недоступны.',[]);
+}
+async function bonus(env,id){const p=await readPolicy(env);if(!p.activated)await bonusCommand26(env,id,'legacy_daily');const u=await getUser(env,id);return send(shellEnv(env,'dust'),id,`Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.\nБаланс: ${u.balance} ✨.`);}
+async function invite(env,id){return send(shellEnv(env,'dust'),id,`Приглашение\n\nПосле включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.\n\nhttps://t.me/${botUsername(env)}?start=ref_${id}`);}
+async function channelMenu(env,id){const c=channelName(env);if(!c)return send(shellEnv(env,'dust'),id,'Канал пока не подключён.');const p=await readPolicy(env);return send(shellEnv(env,'dust'),id,`Канал ${c}\n\nПодтверждённая подписка: ${p.activated?15:5} ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.`,{reply_markup:{inline_keyboard:[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]]}});}
+async function channelCheck(env,id){
+ const ctx=await fenceContext26(env),p=await readPolicy(env),c=channelName(env);if(!ctx.ok||(p.activated&&(!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED))))return send(shellEnv(env,'dust'),id,'Начисления временно недоступны. Бесплатные функции доступны.');if(!c)return channelMenu(env,id);
+ const u=await getUser(env,id);if(u.channel_rewarded)return send(shellEnv(env,'dust'),id,'Начисление за канал уже проведено. Доплаты нет.');
+ let member;try{const me=await tg(env,'getMe',{});if(!Number.isSafeInteger(me?.id))throw Error('Bot identity unavailable');const admin=await tg(env,'getChatMember',{chat_id:c,user_id:me.id});if(!['administrator','creator'].includes(admin?.status))throw Error('Bot admin rights required');member=await tg(env,'getChatMember',{chat_id:c,user_id:id});}catch{return send(shellEnv(env,'dust'),id,'Проверка подписки недоступна. Начисление не выполнено.');}
+ if(!['member','administrator','creator'].includes(member?.status)&&!(member?.status==='restricted'&&member.is_member===true))return send(shellEnv(env,'dust'),id,'Подписка не подтверждена.');
+ await bonusCommand26(env,id,'channel',{channel:c});return send(shellEnv(env,'dust'),id,'Подписка подтверждена. Фактическое начисление или ограничение повторного права отражено в истории.');
+}
+async function threeCards(env,id,key){
+ const requestKey=`tarot:${id}:${key}`,old=await env.DB.prepare(`SELECT o.operation_id,o.result FROM astra_tarot_requests r JOIN astra_operations o ON o.operation_id=r.operation_id WHERE r.request_key=? AND r.telegram_id=? AND o.reason='tarot'`).bind(requestKey,id).first();if(old){await send(shellEnv(env,'tarot'),id,old.result);await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(old.operation_id,id).run();return;}
+ const undelivered=await env.DB.prepare("SELECT operation_id,result FROM astra_operations WHERE telegram_id=? AND reason='tarot' AND delivery<>'sent' ORDER BY created_at,operation_id LIMIT 1").bind(id).first();if(undelivered){await send(shellEnv(env,'tarot'),id,undelivered.result);await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(undelivered.operation_id,id).run();return;}
+ const candidate=crypto.randomUUID().replaceAll('-','');await env.DB.prepare(`INSERT INTO astra_tarot_offers26(offer_id,telegram_id,generation,request_key) SELECT ?,telegram_id,generation,? FROM astra_user_policy WHERE telegram_id=? ON CONFLICT(telegram_id,generation,request_key) DO NOTHING`).bind(candidate,requestKey,id).run();
+ const offer=await env.DB.prepare('SELECT offer_id FROM astra_tarot_offers26 WHERE telegram_id=? AND request_key=?').bind(id,requestKey).first();if(!offer)throw Error('Profile no longer exists');return screen(env,id,'Подтверждение расклада','Новый расклад на три карты стоит 5 ✨. Старое неоплаченное предложение за 3 ✨ не списывает новую цену. Уже купленный результат открывается бесплатно.',[[button('Подтвердить — 5 ✨','tarot26:'+offer.offer_id)]],'tarot');
+}
+async function payTarot26(env,id,offerId){
+ await env.DB.prepare(`INSERT INTO astra_tarot_purchases26(offer_id,telegram_id,price,result) SELECT offer_id,telegram_id,5,? FROM astra_tarot_offers26 WHERE offer_id=? AND telegram_id=? ON CONFLICT(offer_id) DO NOTHING`).bind(threeCardSpread(),offerId,id).run();
+ const op=await env.DB.prepare('SELECT * FROM astra_tarot_purchases26 WHERE offer_id=? AND telegram_id=?').bind(offerId,id).first();if(!op)return screen(env,id,'Расклад не оплачен','Для нового расклада требуется 5 ✨. Списания нет.',[],'tarot');
+ const lease=crypto.randomUUID(),now=Date.now();const claimed=await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sending',lease=?,lease_until=? WHERE offer_id=? AND telegram_id=? AND (delivery<>'sending' OR lease_until<?)").bind(lease,now+30000,offerId,id,now).run();if(!claimed.meta.changes)throw Error('Saved reading delivery in progress');
+ try{await send(shellEnv(env,'tarot'),id,op.result);await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sent' WHERE offer_id=? AND lease=?").bind(offerId,lease).run();}catch(e){await env.DB.prepare('UPDATE astra_tarot_purchases26 SET delivery=? WHERE offer_id=? AND lease=?').bind(e.telegramCode>=400&&e.telegramCode<500?'rejected':e.telegramCode>=500?'retry':'unknown',offerId,lease).run();throw Error('Saved reading delivery failed');}
+}
+async function shellPage(env,id,page,q=null,updateId=null){
+ const buy=/^tarot26:([a-f0-9]{32})$/.exec(page);if(buy)return payTarot26(env,id,buy[1]);
+ if(page==='buy')return threeCards(env,id,String(q?.message?.message_id||updateId||''));
+ const oldPay=/^pay:([1-9][0-9]{0,15})$/.exec(page);if(oldPay)return threeCards(env,id,oldPay[1]);
+ if(page==='tarot:last'){const row=await env.DB.prepare(`SELECT result FROM(SELECT result,created_at,rowid AS mark,1 AS version FROM astra_operations WHERE telegram_id=? AND reason='tarot' UNION ALL SELECT result,created_at,rowid,2 FROM astra_tarot_purchases26 WHERE telegram_id=?) ORDER BY created_at DESC,version DESC,mark DESC LIMIT 1`).bind(id,id).first();return send(shellEnv(env,'tarot'),id,row?.result||'Сохранённых раскладов пока нет. Новый расклад стоит 5 ✨.');}
+ return pre26_shellPage(env,id,page,q,updateId);
+}
+const FENCE_PRIVACY26='Для защиты от повторного получения бонусов мы отдельно сохраняем HMAC-псевдоним аккаунта и минимальные полученные права на 30 дней после фактического начисления. Это персональные псевдонимизированные данные, не анонимизация. Попытки регистрации не продлевают срок. /delete не стирает эти права до истечения срока; просроченные записи удаляются ограниченной фоновой очисткой. Права не содержат исходный Telegram ID, имя, вопросы или тексты и не восстанавливают удалённый профиль.';
+async function paymentCommand(env,m){
+ if(String(m.text||'').trim()==='/privacy'){const p=await readPolicy(env);await send(shellEnv(env,'rules'),m.from.id,`Данные профиля\n\nЗнак, баланс, Telegram ID, активные даты, журнал, результаты и реферальные связи хранятся для работы сервиса; /delete удаляет эти обычные данные.\n\n${FENCE_PRIVACY26}\n\nОплаченные доказательства, ID плательщика и долг сохраняются отдельно по /terms (${p.retention_days||'срок ещё не утверждён'} дней после закрытия дел и погашения долга). Поддержка: ${p.support||'не настроена'}. Сообщения Telegram и backup управляются отдельно. Публичная активация бонусов требует утверждённого уведомления и правового основания владельца.`);return true;}
+ return pre26_paymentCommand(env,m);
+}
+async function policyFaq(env){const items=await pre26_policyFaq(env),p=await readPolicy(env);items[4][2]=`Баланс и история учитывают фактические начисления и списания. Новый расклад Таро — 5 ✨; ранее оплаченный результат за 3 ✨ сохраняется и читается бесплатно. Расширенный прогноз — 4 ✨.\n\n${p.activated?'Новый профиль +5; активная дата +2; первые3подряд +3; каждый7-й +4;30разных +6. Новый реферал +10/+3 после выбора знака; канал +15 самому и +5 исходному пригласившему при подтверждённой связи.':'До переключения сохраняются прежние номинальные бонусы; фактическая выплата зависит от права и настройки защиты.'}\n\n${FENCE_PRIVACY26}`;items[5][2]=items[5][2].replace('Новый расклад на три карты стоит 3 ✨','Новый расклад на три карты стоит 5 ✨');items[6][2]+='\n\n'+FENCE_PRIVACY26;items[10][1]='Магазин подготовлен: 10 XTR → 40 ✨; 25 → 110; 50 → 240. Включение требует отдельного решения.';items[10][2]=items[10][2].replace('10 XTR → 100 ✨; 25 → 270; 50 → 570.','10 XTR → 40 ✨; 25 → 110; 50 → 240.');return items;}
+
+async function paymentsAdmin(request,env){
+ const url=new URL(request.url);if(url.pathname!=='/internal/economy/policy'&&url.pathname!=='/internal/economy/fence')return pre26_paymentsAdmin(request,env);
+ if(request.method!=='POST'||!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!=='Bearer '+env.ASTRA_ADMIN_KEY)return new Response('Forbidden',{status:403});
+ const b=await request.json();
+ if(url.pathname==='/internal/economy/fence'){
+  if(b.action==='configure_key')return Response.json(await configureFence26(env));
+  if(b.action==='approve_notice')return Response.json(await approveFenceNotice26(env,b.version,b.acknowledgement));
+  if(b.action==='purge')return Response.json(await purgeFences26(env));
+  if(b.action==='bootstrap'){
+   const ctx=await fenceContext26(env);if(!ctx.ok)throw Error('Fence configuration unavailable');
+   const row=await env.DB.prepare('SELECT telegram_id FROM astra_bonus_profiles26 WHERE seeded=0 ORDER BY telegram_id LIMIT 1').first();if(row)await syncBonusOwner26(env,row.telegram_id,ctx);
+   return Response.json({processed_profile:Boolean(row),remaining:(await env.DB.prepare('SELECT count(*) n FROM astra_bonus_profiles26 WHERE seeded=0').first()).n});
+  }
+  if(b.action==='status'){const ctx=await fenceContext26(env);return Response.json({keys_ready:ctx.keys_ready,notice_ready:Boolean(ctx.notice_ready),blocker:ctx.blocker,bootstrap_pending:(await env.DB.prepare('SELECT count(*) n FROM astra_bonus_profiles26 WHERE seeded=0').first()).n},{headers:{'Cache-Control':'no-store'}});}
+ }
+ if(b.action==='arm'){const p=await armPolicy(env,b.start_day);return Response.json({start_day:p.start_day,enabled:Boolean(p.enabled)});}
+ if(b.action==='stop'||b.action==='resume'){
+  if(b.action==='resume'){if(!(await fenceContext26(env)).ok||!true26(env.ASTRA_ECONOMY_V2_ENABLED)||!(await readPolicy(env)).start_day)throw Error('Approved key,notice,date and runtime flag required');}
+  await env.DB.prepare('UPDATE astra_patch26 SET enabled=? WHERE singleton=1').bind(b.action==='resume'?1:0).run();invalidate26(env);return Response.json({ok:true});
+ }return new Response('Not found',{status:404});
+}
+
+Object.assign(HISTORY_LABELS,{"tarot:v2":"Новый расклад на три карты (5 ✨)","reward:v3:initial":"Новый профиль","reward:v3:legacy_initial":"Начальный баланс прежних правил","reward:v3:daily":"Активный день","reward:v3:legacy_daily":"Ручной бонус прежних правил","reward:v3:first3":"Первые три дня подряд","reward:v3:weekly":"Семидневный цикл","reward:v3:thirty":"Тридцать разных дат","reward:v3:gpt6":"Секретный архив","reward:v3:channel":"Подтверждённая подписка","reward:v3:legacy_channel":"Подписка прежних правил","reward:v3:referrer":"Приглашённый завершил регистрацию","reward:v3:legacy_referrer":"Старый реферальный договор","reward:v3:invitee":"Награда приглашённому","reward:v3:inviter_channel":"Подписка приглашённого на канал"});
+
 const astraWorker = {
   async fetch(request,env) {
     const receivedAt=performance.now();
     const u=new URL(request.url);
-    if(u.pathname.startsWith('/internal/payments/')||u.pathname==='/internal/economy/policy'){
+    if(u.pathname.startsWith('/internal/payments/')||(u.pathname==='/internal/economy/policy'||u.pathname==='/internal/economy/fence')){
       try{if(!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!=='Bearer '+env.ASTRA_ADMIN_KEY)return new Response('Forbidden',{status:403});if(!await schemaReady(env))return new Response('D1 schema unavailable',{status:503});return await paymentsAdmin(request,env);}catch{return new Response('Administrative operation unavailable; reconcile before retry',{status:503});}
     }
     if (request.method==='GET' && u.pathname==='/')
@@ -13945,6 +14275,6 @@ const astraWorker = {
 };
 
 export default {
-  fetch(request,env){return measureInvocation(env,'http',scoped=>astraWorker.fetch(request,scoped));},
-  scheduled(event,env){return measureInvocation(env,'cron',scoped=>astraWorker.scheduled(event,scoped));}
+  fetch(request,env){return measureInvocation(env,'http',scoped=>astraWorker.fetch(request,task01Env(scoped)));},
+  scheduled(event,env){return measureInvocation(env,'cron',async scoped=>{try{if(scoped.DB)await purgeFences26(scoped);}catch{console.error('Bonus fence cleanup unavailable');}return astraWorker.scheduled(event,task01Env(scoped));});}
 };

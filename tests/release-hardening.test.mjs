@@ -31,9 +31,9 @@ check('diagnostics counts metadata and batches without adding queries or exposin
 check('diagnostic counters remain isolated across concurrent invocations',async f=>{
  const m=await metrics(f,()=>Promise.all([f.bot.fetch(new Request('https://astra.test/health'),f.env),f.bot.fetch(new Request('https://astra.test/'),f.env)]));assert.equal(m.rows.length,2);assert.deepEqual(m.rows.map(r=>r.d1_calls).sort((a,b)=>a-b),[0,4]);
 });
-for(const active of [false,true])check(`ordinary history, free/paid forecast and retries fit D1 Free with policy ${active}`,async f=>{
+for(const active of [false,true])check(`ordinary history, free/paid forecast and retries fit D1 Free with policy ${active}`,async f=>morning(async()=>{
  f.user(1,137);if(active)activate(f);const results=[];for(const page of ['home','forecast:read','forecast:pay:2026-11-07','dust:history','dossier:economy','faq','stars:terms']){const m=await metrics(f,()=>click(f,page));assert.equal(m.result.status,200);assert.ok(m.rows[0].d1_calls<50,page);results.push(m.rows[0].d1_calls);}assert.equal(count(f,'astra_forecast_unlocks'),1);integrity(f);
-});
+}));
 check('retention purges at most ten payer groups per HTTP and repeated batches are complete',async f=>{
  payments(f);for(let i=1;i<=25;i++){f.user(i,0);const o=await order(f,i);await receiveStarPayment(f.env,i,proof(o));}f.db.exec("UPDATE astra_payment_orders SET updated_at='2020-01-01 00:00:00'");
  const m=await metrics(f,()=>admin(f,'purge',{dry_run:false}));assert.equal(m.result.status,200);assert.equal((await m.result.json()).deleted_payer_archives,10);assert.ok(m.rows[0].d1_calls<50);assert.equal(count(f,'astra_payment_orders'),15);await admin(f,'purge',{dry_run:false});await admin(f,'purge',{dry_run:false});assert.equal(count(f,'astra_payment_orders'),0);assert.equal(count(f,'astra_payment_tombstones'),25);integrity(f);
@@ -61,13 +61,13 @@ check('several forwarded charges remain distinct cases; refunds never debit the 
 check('fraction-only and negative outgoing invoice transactions are review cases under official source/receiver semantics',async f=>{
  f.user(1,0);payments(f);const o=await order(f);f.setStarTransactions([{id:'FAKE_FRACTION',amount:0,nanostar_amount:1,source:{type:'user',transaction_type:'invoice_payment',user:{id:1},invoice_payload:o.payload}},{id:'FAKE_NEGATIVE_REFUND',amount:-10,receiver:{type:'user',transaction_type:'invoice_payment',user:{id:1},invoice_payload:o.payload}}]);const r=await reconcileStarPage(f.env);assert.equal(r.needs_review,2);assert.equal(count(f,'astra_payment_anomalies'),2);assert.equal(f.balance(1),0);integrity(f);
 });
-test('actual old 2.4A Tarot and paid forecast survive local 0025 and unified OFF Worker unchanged',async()=>{
+test('actual old 2.4A Tarot and paid forecast survive local 0025 and unified OFF Worker unchanged',async()=>morning(async()=>{
  // Use the pre-0025 Worker/schema on a separate fixture, then migrate the same SQLite.
  const a=fixture({economy:true,full:false});try{a.user(1,137);await a.hook(a.click(1));const q=a.click(1);q.callback_query.data='shell:forecast:pay:2026-11-07';await a.hook(q);const old=a.db.prepare('SELECT result_text FROM astra_forecast_unlocks').get().result_text,before=a.db.prepare('SELECT * FROM astra_wallet_ledger').all();a.db.exec(migration25);const worker=(await import('../release/ASTRA_2_4_WORKER.js')).default;
   for(const page of ['forecast:repeat','tarot:last','dust:history']){const u=a.click(1);u.callback_query.data='shell:'+page;const r=await worker.fetch(new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(u)}),a.env);assert.equal(r.status,200);}
   assert.equal(a.balance(1),130);assert.equal(a.query('SELECT result_text FROM astra_forecast_unlocks').result_text,old);assert.deepEqual(a.db.prepare('SELECT * FROM astra_wallet_ledger').all(),before);integrity(a);
  }finally{a.close();}
-});
+}));
 
 check('four old pending policy dates plus a new invoice-consent callback stay within the hard D1 cap',async f=>{
  await morning(async()=>{f.user(1,137);activate(f);payments(f);const p=await readPolicy(f.env);for(let i=0;i<4;i++)await capturePolicyEvent(f.env,{id:1,source:'message',signSelection:false},8000+i,'2026-11-0'+(i+1),p);
@@ -91,10 +91,10 @@ check('two actual delete/rejoin referral cycles expose the unchanged channel/GPT
 check('emergency maintenance never writes, calls Telegram or acknowledges webhook success',async f=>{
  const maintenance=(await import('../release/ASTRA_2_4_MAINTENANCE.js')).default,trap=new Proxy({},{get(){throw Error('Maintenance must not access DB');}}),http=globalThis.fetch;globalThis.fetch=async()=>{throw Error('Maintenance must not call Telegram');};try{for(const path of ['/telegram-webhook','/internal/payments/refund','/health']){const r=await maintenance.fetch(new Request('https://astra.test'+path,{method:'POST'}),{DB:trap});assert.equal(r.status,503);assert.equal(r.headers.get('Retry-After'),'30');if(path==='/health')assert.equal((await r.json()).ready,false);}await maintenance.scheduled({}, {DB:trap});}finally{globalThis.fetch=http;}
 });
-check('a local backup/restore preserves paid proofs, balances and owned texts; real D1 rehearsal remains separate',async f=>{
+check('a local backup/restore preserves paid proofs, balances and owned texts; real D1 rehearsal remains separate',async f=>morning(async()=>{
  const {DatabaseSync}=await import('node:sqlite'),{mkdtempSync,rmSync}=await import('node:fs'),{tmpdir}=await import('node:os'),{join}=await import('node:path');f.user(1,0);payments(f);const o=await order(f);await receiveStarPayment(f.env,1,proof(o));await f.hook(f.click(1));await click(f,'forecast:pay:2026-11-07');const ledger=f.db.prepare('SELECT * FROM astra_wallet_ledger ORDER BY idempotency_key').all(),owned=f.db.prepare('SELECT result_text FROM astra_forecast_unlocks').get();
  const dir=mkdtempSync(join(tmpdir(),'astra-restore-')),file=join(dir,'copy.sqlite');let copy;try{f.db.prepare('VACUUM INTO ?').run(file);copy=new DatabaseSync(file,{readOnly:true});assert.deepEqual(copy.prepare('SELECT * FROM astra_wallet_ledger ORDER BY idempotency_key').all(),ledger);assert.deepEqual(copy.prepare('SELECT result_text FROM astra_forecast_unlocks').get(),owned);assert.equal(copy.prepare('SELECT count(*) n FROM astra_payment_receipts').get().n,1);for(const row of copy.prepare(fs.readFileSync(new URL('../scripts/check_integrity_2_4.sql',import.meta.url),'utf8').split('PRAGMA')[0]).all())assert.equal(row.violations,0,row.check_name);assert.deepEqual(copy.prepare('PRAGMA foreign_key_check').all(),[]);}finally{copy?.close();rmSync(dir,{recursive:true,force:true});}integrity(f);
-});
+}));
 check('pre-checkout deadline includes a slow schema check and never reserves after the refusal',async f=>{
  f.user(1,0);payments(f);const o=await order(f),prepare=f.env.DB.prepare;f.env.DB.prepare=sql=>{const s=prepare(sql);if(sql.includes('FROM sqlite_master WHERE name IN')){const first=s.first;s.first=async()=>{const r=await first.call(s);await new Promise(resolve=>setTimeout(resolve,7000));return r;};}return s;};
  const start=performance.now(),r=await f.hook({update_id:7000,pre_checkout_query:{id:'FAKE_SLOW_SCHEMA',from:{id:1},currency:'XTR',total_amount:10,invoice_payload:o.payload}});assert.equal(r.status,200);assert.ok(performance.now()-start<9500);assert.equal(f.out.find(x=>x.method==='answerPreCheckoutQuery').body.ok,false);assert.equal(f.query('SELECT precheckout_id FROM astra_payment_orders').precheckout_id,null);assert.equal(f.balance(1),0);

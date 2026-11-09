@@ -1,3 +1,4 @@
+import {patchTask01} from './patch-task01.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -34,7 +35,7 @@ const schemaStart=source.indexOf('async function schemaReady(env)'),schemaEnd=so
 const previous=source.slice(schemaStart,schemaEnd);
 const names=[...previous.matchAll(/'([a-z][a-z_0-9]+)'/g)].map(m=>m[1]).filter(n=>n.startsWith('astra_')||n.startsWith('idx_')).map(n=>n==='astra_referral'?'astra_referral_policy':n);
 for(const m of read('migrations/0025_rewards_stars.sql').matchAll(/CREATE (?:TABLE|INDEX|TRIGGER) IF NOT EXISTS ([a-z_0-9]+)/g))names.push(m[1]);
-const manifest=[...new Set(names)];
+let manifest=[...new Set(names)];
 source=source.slice(0,schemaStart)+`async function schemaReady(env){
   if(!env.DB||!activationReady(env))return false;
   try{const r=await env.DB.prepare("SELECT count(*) AS n,(SELECT migration_done FROM astra_policy WHERE singleton=1) AS migration_done,(SELECT count(*) FROM sqlite_master WHERE type='trigger' AND name='astra_referral') AS old_referral FROM sqlite_master WHERE name IN (${manifest.map(n=>"'"+n+"'").join(',')})").first();
@@ -103,6 +104,7 @@ const extra={...Object.fromEntries(Object.entries(labels).map(([k,v])=>['reward:
 const bundle='// Generated unified Astra 2.4. Rewards and Stars OFF until approved.\n'+modules.map(p=>plain(read(p))).join('\n')+'\nObject.assign(HISTORY_LABELS,'+JSON.stringify(extra)+');\n';
 replace('export default {',bundle+'\nconst astraWorker = {');
 source+=`\nexport default {\n  fetch(request,env){return measureInvocation(env,'http',scoped=>astraWorker.fetch(request,scoped));},\n  scheduled(event,env){return measureInvocation(env,'cron',scoped=>astraWorker.scheduled(event,scoped));}\n};\n`;
+if(process.env.ASTRA_BUILD_BASELINE!=='1')({source,manifest}=patchTask01(source,manifest));
 fs.writeFileSync(path.join(root,'release/ASTRA_2_4_WORKER.js'),source);
 fs.writeFileSync(path.join(root,'data/payment-schema-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log(`Built release/ASTRA_2_4_WORKER.js (${Buffer.byteLength(source)} bytes); schema ${manifest.length}`);
