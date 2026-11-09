@@ -113,6 +113,6 @@ Node VM:20локальных запусков, median≈3,14ms/p95≈12,47ms ela
 
 ## PR и внешние действия
 
-Готовое описание Draft PR: `ASTRA_2_4_TASK_05_PR_BODY.md`; head=astra-2.4-prestaging-ux-patch, base=astra-2.4b-rewards-stars. Чтение GitHub CLI уже получило `Post https://api.github.com/graphql: Forbidden`; после push выполняется отдельная попытка создания, её фактический результат сообщается в итоговом ответе. При запрете сохраняются ветка/SHA/описание и ссылка сравнения, без запроса секретов или обхода доступа.
+Готовое описание Draft PR: `ASTRA_2_4_TASK_05_PR_BODY.md`; head=astra-2.4-prestaging-ux-patch, base=astra-2.4b-rewards-stars. Чтение GitHub CLI уже получило `Post https://api.github.com/graphql: Forbidden`; после успешного push создание через REST также отклонено: `Post https://api.github.com/repos/zdana0393-debug/astra-telegram-bot/pulls: Forbidden`. Draft PR не создан. Точные ошибки и ссылка создания с нужными head/base сохранены в `ASTRA_2_4_TASK_05_PR_STATUS.md`; секреты не запрашивались, обхода доступа не было.
 
 Никакого deploy, remote SQL, применения миграций, изменений работающего webhook/Cron/secrets/production, включения экономики/Stars, настоящих инвойсов/платежей или merge не было. Новый основной бот не запускался. Следующий шаг — ревью владельца и перечисленные отдельные решения, а не автоматическая установка.
