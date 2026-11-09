@@ -1,6 +1,6 @@
 import {createForecastGenerator,validateSelection,legacyHash,validDay,russianWords,ENGINE_VERSION,NUMBER_VERSION,SECTIONS} from '../engine.mjs';
 export const COMPACT_ENGINE_VERSION='forecast-1.0.0+compact.1';
-export const COMPACT_PRESENTATION_VERSION='compact-1.0.0';
+export const COMPACT_PRESENTATION_VERSION='compact-1.0.1';
 const sourceGroups=['units','sign_lenses','modality_lenses','themes','signs','numbers','runes','symbols','advice','modalities'];
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const labels={theme:'✨ Главное',relations:'💕 Отношения',work:'📚 Дела',finance:'💰 Финансы',mood:'🌿 Настроение',action:'🍀 Совет дня'};
@@ -8,12 +8,12 @@ export const sourceFingerprint=row=>legacyHash(JSON.stringify(row)); // Integrit
 function textReady(value){return typeof value==='string'&&value.trim()===value&&value.length>3&&!/[<>\r\n]/.test(value);}
 function checkTextIntent(text,directives){
  // Deliberately bounded lexical checks supplement declared semantic directives, never pretend to understand all Russian.
- if(directives.timing==='observe'&&/(действуйте немедленно|решите сейчас|совершите покупку|не откладывайте)/iu.test(text))throw Error('Editorial timing contradiction');
- if(directives.contact==='quiet'&&/(начните разговор|потребуйте ответа|добейтесь ответа|немедленно позвоните)/iu.test(text))throw Error('Editorial contact contradiction');
+ if(directives.timing==='observe'&&/(действуйте немедленно|решите сейчас|сделайте (?:это )?(?:немедленно|сейчас)|совершите покупку|не откладывайте)/iu.test(text))throw Error('Editorial timing contradiction');
+ if(directives.contact==='quiet'&&/(начните разговор|потребуйте ответа|добейтесь ответа|позвоните|напишите (?:ему|ей|собеседнику))/iu.test(text))throw Error('Editorial contact contradiction');
  if(/(гарантированно|точность\s*\d+\s*%|\d+\s*%\s*точност|сегодня\s+(?:луна|меркурий|венера|марс|сатурн|юпитер)\s+(?:входит|образует|переходит)|сегодня\s+(?:полнолуние|новолуние))/iu.test(text))throw Error('Unsupported astronomical or guaranteed claim');
 }
 export function validateCompactCatalog(base,editorial){
- if(editorial.presentation_version!==COMPACT_PRESENTATION_VERSION||editorial.selection_engine_version!==ENGINE_VERSION||editorial.source_catalog_version!==base.content_version||editorial.content_version!=='2026.11-compact-v1')throw Error('Editorial version mismatch');
+ if(editorial.presentation_version!==COMPACT_PRESENTATION_VERSION||editorial.selection_engine_version!==ENGINE_VERSION||editorial.source_catalog_version!==base.content_version||editorial.content_version!=='2026.11-compact-v2')throw Error('Editorial version mismatch');
  const source=new Map(sourceGroups.flatMap(g=>base[g]).map(row=>[row.id,row]));
  const required=[...base.units,...base.sign_lenses,...base.modality_lenses,...base.numbers];
  if(Object.keys(editorial.entries).length!==required.length)throw Error('Incomplete compact source coverage');
@@ -25,10 +25,11 @@ export function validateCompactCatalog(base,editorial){
    for(const key of group==='extended_themes'?['fork','exercise']:['text'])if(!textReady(edit[key]))throw Error('Empty expanded reading: '+row.id);checkTextIntent(edit.text||edit.exercise,{});
   }
  }
- for(const [key,fusion] of Object.entries(editorial.fusions||{})){
+ for(const [key,fusion] of Object.entries({...editorial.fusions,...editorial.action_compositions})){
   if(key!==fusion.sources.join('|')||fusion.sources.length!==2||!textReady(fusion.text)||!equal(fusion.source_fingerprints,fusion.sources.map(id=>sourceFingerprint(source.get(id)))))throw Error('Invalid editorial fusion');
-  const [unit,lens]=fusion.sources.map(id=>source.get(id));if(!base.units.includes(unit)||!base.sign_lenses.includes(lens)||unit.section!==lens.section)throw Error('Invalid fused source roles');checkTextIntent(fusion.text,lens.directives||{});
+  const [unit,lens]=fusion.sources.map(id=>source.get(id));if(!base.units.includes(unit)||!base.sign_lenses.includes(lens)||unit.section!==lens.section)throw Error('Invalid fused source roles');if(editorial.action_compositions?.[key]&&unit.section!=='action')throw Error('Advice composition requires action sources');checkTextIntent(fusion.text,lens.directives||{});
  }
+ for(const row of base.modality_lenses.filter(row=>row.section==='action')){const edit=editorial.entries[row.id],text=edit.advice_qualifier;if(!Array.isArray(edit.advice_echo_with)||edit.advice_echo_with.some(id=>!source.has(id)||source.get(id).section!=='action'))throw Error('Invalid advice echo reference');if(!textReady(text))throw Error('Missing source-bound advice qualifier');checkTextIntent(text,row.directives||{});}
  return source;
 }
 export function validateEditorialDocument(document,source,sign,theme,context,selectedIds){
@@ -56,11 +57,13 @@ export function createCompactForecastGenerator(base,editorial,{generate=createFo
   const ids=[...legacy.trace.units,...legacy.trace.sign_lenses,...legacy.trace.modality_lenses];validateSelection(ids.map(id=>{const row=source.get(id);if(!row)throw Error('Unknown selected source');return row;}),sign,theme,legacy.trace.directives);
   const sections=SECTIONS.map((section,index)=>{
    const unit=source.get(legacy.trace.units[index]),lens=source.get(legacy.trace.sign_lenses[index]),modal=legacy.trace.modality_lenses.map(id=>source.get(id)).find(row=>row.section===section);
-   const premise=edits.entries[unit.id],facet=edits.entries[lens.id],fusionKey=unit.id+'|'+lens.id,fusion=edits.fusions?.[fusionKey];let text=fusion?fusion.text:premise.text+' '+facet.text;
-   // Emit an independent modality thought; identical directive or lexical overlap remains a constraint, not filler.
+   const premise=edits.entries[unit.id],facet=edits.entries[lens.id],fusionKey=unit.id+'|'+lens.id,fusion=section==='action'?(edits.action_compositions?.[fusionKey]||edits.fusions?.[fusionKey]):edits.fusions?.[fusionKey];let text=fusion?fusion.text:premise.text+' '+facet.text;
+   // A selected action modality qualifies the same decision, never adds another task. Curated/lexical echoes stay constraints.
    const duplicatedDirective=modal&&Object.keys(modal.directives||{}).some(axis=>lens.directives?.[axis]===modal.directives[axis]);
-   const emit=Boolean(modal&&section!=='action'&&!duplicatedDirective&&distinctModifier(text,edits.entries[modal.id].text));if(emit)text+=' '+edits.entries[modal.id].text;
-   return{section,text,fusion:fusion?fusionKey:null,sources:[unit.id,lens.id,...(emit?[modal.id]:[])],semantic_keys:[premise.semantic_key,facet.semantic_key,...(emit?[edits.entries[modal.id].semantic_key]:[])],modality:modal?{source:modal.id,role:emit?'emitted':'compatibility-constraint',reason:emit?'independent-meaning':section==='action'?'single-practical-focus':duplicatedDirective?'directive-already-expressed':'semantic-echo'}:null};
+   const modifier=modal&&(section==='action'?edits.entries[modal.id].advice_qualifier:edits.entries[modal.id].text);
+   const semanticEcho=Boolean(modal&&section==='action'&&edits.entries[modal.id].advice_echo_with.some(id=>id===unit.id||id===lens.id));
+   const emit=Boolean(modal&&!semanticEcho&&(section==='action'||!duplicatedDirective)&&distinctModifier(text,modifier));if(emit)text=section==='action'?text.replace(/[.!?]$/,'')+'; '+modifier+'.':text+' '+modifier;
+   return{section,text,fusion:fusion&&edits.fusions?.[fusionKey]?fusionKey:null,advice_composition:section==='action'&&edits.action_compositions?.[fusionKey]?fusionKey:null,sources:[unit.id,lens.id,...(emit?[modal.id]:[])],semantic_keys:[premise.semantic_key,facet.semantic_key,...(emit?[edits.entries[modal.id].semantic_key]:[])],modality:modal?{source:modal.id,role:emit?'emitted':'compatibility-constraint',reason:emit?(section==='action'?'source-bound-step-qualifier':'independent-meaning'):semanticEcho?'source-meaning-already-expressed':duplicatedDirective?'directive-already-expressed':'semantic-echo'}:null};
   });
   const document={signLabel:sign.label,day,number:legacy.number,numberMeaning:edits.entries['number:'+legacy.number].text,sections};validateEditorialDocument(document,source,sign,theme,legacy.trace.directives,ids);
   const free_text=formatFreeForecast(document),fork=edits.extended_themes[theme.id],profile=edits.extended_profiles[signId],rune=source.get(legacy.trace.rune),symbol=source.get(legacy.trace.symbol),advice=source.get(legacy.trace.advice),number=source.get('number:'+legacy.number);

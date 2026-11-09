@@ -14234,8 +14234,8 @@ Object.assign(HISTORY_LABELS,{"tarot:v2":"Новый расклад на три 
 
 // TASK02: same symbolic selection, independently versioned editorial presentation.
 const compactCatalog={
-  "presentation_version": "compact-1.0.0",
-  "content_version": "2026.11-compact-v1",
+  "presentation_version": "compact-1.0.1",
+  "content_version": "2026.11-compact-v2",
   "selection_engine_version": "forecast-1.0.0",
   "source_catalog_version": "2026.11-v1",
   "entries": {
@@ -14247,7 +14247,7 @@ const compactCatalog={
       "semantic_key": "initiative:theme:fire"
     },
     "initiative.theme.earth.1": {
-      "text": "Начинанию нужна земная опора, способная пережить первый восторг.",
+      "text": "Новому замыслу нужна опора и после первого увлечения.",
       "kind": "sentence",
       "source_fingerprint": 3811450751,
       "directives": {},
@@ -14380,28 +14380,28 @@ const compactCatalog={
       "semantic_key": "initiative:mood:water"
     },
     "initiative.action.fire.1": {
-      "text": "Чего вы хотите создать, если не нужно никого побеждать?",
+      "text": "Какой замысел важен вам без соревнования?",
       "kind": "question",
       "source_fingerprint": 3250099506,
       "directives": {},
       "semantic_key": "initiative:action:fire"
     },
     "initiative.action.earth.1": {
-      "text": "Как намерение может обрести осязаемые очертания?",
+      "text": "Что поможет сделать новое намерение конкретным?",
       "kind": "question",
       "source_fingerprint": 3896373737,
       "directives": {},
       "semantic_key": "initiative:action:earth"
     },
     "initiative.action.air.1": {
-      "text": "Какой вопрос остаётся вашим среди чужих ответов?",
+      "text": "Что хотите выяснить вы сами?",
       "kind": "question",
       "source_fingerprint": 853122304,
       "directives": {},
       "semantic_key": "initiative:action:air"
     },
     "initiative.action.water.1": {
-      "text": "Какого участия просит чувство, если не ждать пророчества?",
+      "text": "Какого внимания просит это чувство?",
       "kind": "question",
       "source_fingerprint": 1465693638,
       "directives": {},
@@ -14548,28 +14548,28 @@ const compactCatalog={
       "semantic_key": "agreement:mood:water"
     },
     "agreement.action.fire.1": {
-      "text": "Остаётся ли в близости место двум самостоятельным желаниям?",
+      "text": "Есть ли место желаниям обоих?",
       "kind": "question",
       "source_fingerprint": 1666735406,
       "directives": {},
       "semantic_key": "agreement:action:fire"
     },
     "agreement.action.earth.1": {
-      "text": "Что вы бережёте вместе, не сводя к этому весь союз?",
+      "text": "Что важно вам обоим?",
       "kind": "question",
       "source_fingerprint": 2599992940,
       "directives": {},
       "semantic_key": "agreement:action:earth"
     },
     "agreement.action.air.1": {
-      "text": "Какое различие можно признать, не устраняя его?",
+      "text": "В чём именно расходятся ваши взгляды?",
       "kind": "question",
       "source_fingerprint": 2556517454,
       "directives": {},
       "semantic_key": "agreement:action:air"
     },
     "agreement.action.water.1": {
-      "text": "Где ваше чувство, а где предположение о чужом?",
+      "text": "Что чувствуете вы, а что приписываете другому?",
       "kind": "question",
       "source_fingerprint": 200783694,
       "directives": {},
@@ -14716,28 +14716,28 @@ const compactCatalog={
       "semantic_key": "review:mood:water"
     },
     "review.action.fire.1": {
-      "text": "Какое убеждение вы готовы рассмотреть без немедленной защиты?",
+      "text": "Что изменило бы ваше убеждение?",
       "kind": "question",
       "source_fingerprint": 1601475707,
       "directives": {},
       "semantic_key": "review:action:fire"
     },
     "review.action.earth.1": {
-      "text": "Продолжает ли привычное служить тому, ради чего его берегли?",
+      "text": "Нужно ли вам то, что привычно?",
       "kind": "question",
       "source_fingerprint": 596233661,
       "directives": {},
       "semantic_key": "review:action:earth"
     },
     "review.action.air.1": {
-      "text": "Что вы наблюдали, а что уже добавили к этому?",
+      "text": "Что известно, а что вы предположили?",
       "kind": "question",
       "source_fingerprint": 2804353025,
       "directives": {},
       "semantic_key": "review:action:air"
     },
     "review.action.water.1": {
-      "text": "Как назвать впечатление, не объявляя его предсказанием?",
+      "text": "Как назвать чувство, не предсказывая события?",
       "kind": "question",
       "source_fingerprint": 3869638377,
       "directives": {},
@@ -14884,28 +14884,28 @@ const compactCatalog={
       "semantic_key": "boundaries:mood:water"
     },
     "boundaries.action.fire.1": {
-      "text": "Где заканчивается ваше желание и начинается чужой предел?",
+      "text": "Где ваше желание, а где чужой предел?",
       "kind": "question",
       "source_fingerprint": 3186038569,
       "directives": {},
       "semantic_key": "boundaries:action:fire"
     },
     "boundaries.action.earth.1": {
-      "text": "Что действительно поддерживает вас, а что только давно привычно?",
+      "text": "Что помогает вам, а что отягощает?",
       "kind": "question",
       "source_fingerprint": 3503374195,
       "directives": {},
       "semantic_key": "boundaries:action:earth"
     },
     "boundaries.action.air.1": {
-      "text": "Обязательно ли продолжать спор после ясно названного ответа?",
+      "text": "Нужно ли объясняться после ясного ответа?",
       "kind": "question",
       "source_fingerprint": 351336378,
       "directives": {},
       "semantic_key": "boundaries:action:air"
     },
     "boundaries.action.water.1": {
-      "text": "Что движет участием: сочувствие, вина или свободное решение?",
+      "text": "Вы участвуете свободно или из вины?",
       "kind": "question",
       "source_fingerprint": 2621225326,
       "directives": {},
@@ -15052,28 +15052,28 @@ const compactCatalog={
       "semantic_key": "completion:mood:water"
     },
     "completion.action.fire.1": {
-      "text": "Может ли завершённое остаться без немедленного продолжения?",
+      "text": "Можно ли не продолжать уже завершённое?",
       "kind": "question",
       "source_fingerprint": 961734867,
       "directives": {},
       "semantic_key": "completion:action:fire"
     },
     "completion.action.earth.1": {
-      "text": "Что стоит сохранить, не забирая с собой каждую старую вещь?",
+      "text": "Что стоит сохранить после завершения?",
       "kind": "question",
       "source_fingerprint": 1722110259,
       "directives": {},
       "semantic_key": "completion:action:earth"
     },
     "completion.action.air.1": {
-      "text": "Какой итог уже ясен и какой вопрос ещё открыт?",
+      "text": "Что завершено, а что ещё неясно?",
       "kind": "question",
       "source_fingerprint": 1940412956,
       "directives": {},
       "semantic_key": "completion:action:air"
     },
     "completion.action.water.1": {
-      "text": "Может ли чувство сохраниться, изменив прежний способ присутствия?",
+      "text": "Можно ли беречь чувство без возвращения прошлого?",
       "kind": "question",
       "source_fingerprint": 2426951481,
       "directives": {},
@@ -15220,28 +15220,28 @@ const compactCatalog={
       "semantic_key": "revision:mood:water"
     },
     "revision.action.fire.1": {
-      "text": "Сохранилось ли первоначальное желание за привычным способом действовать?",
+      "text": "Желание прежнее или действует привычка?",
       "kind": "question",
       "source_fingerprint": 3898722973,
       "directives": {},
       "semantic_key": "revision:action:fire"
     },
     "revision.action.earth.1": {
-      "text": "Что важно сохранить, если привычный способ заботы изменится?",
+      "text": "Что сохранить, изменив способ заботы?",
       "kind": "question",
       "source_fingerprint": 1584207363,
       "directives": {},
       "semantic_key": "revision:action:earth"
     },
     "revision.action.air.1": {
-      "text": "Какая другая связь возможна между знакомыми обстоятельствами?",
+      "text": "Как иначе связаны знакомые обстоятельства?",
       "kind": "question",
       "source_fingerprint": 1453339524,
       "directives": {},
       "semantic_key": "revision:action:air"
     },
     "revision.action.water.1": {
-      "text": "Как назвать перемену чувства без обещания изменить всю жизнь?",
+      "text": "Как назвать перемену чувства без обещаний?",
       "kind": "question",
       "source_fingerprint": 2253151673,
       "directives": {},
@@ -15388,28 +15388,28 @@ const compactCatalog={
       "semantic_key": "exchange:mood:water"
     },
     "exchange.action.fire.1": {
-      "text": "Какое собственное желание пробудил в вас чужой пример?",
+      "text": "Что в чужом примере увлекло вас?",
       "kind": "question",
       "source_fingerprint": 1931384579,
       "directives": {},
       "semantic_key": "exchange:action:fire"
     },
     "exchange.action.earth.1": {
-      "text": "Что из полученного знания уже стало вашим опытом?",
+      "text": "Что из узнанного вы уже проверили на опыте?",
       "kind": "question",
       "source_fingerprint": 702510689,
       "directives": {},
       "semantic_key": "exchange:action:earth"
     },
     "exchange.action.air.1": {
-      "text": "Какое слово нужно уточнить, чтобы понять друг друга?",
+      "text": "Какое слово вы понимаете по-разному?",
       "kind": "question",
       "source_fingerprint": 3190846241,
       "directives": {},
       "semantic_key": "exchange:action:air"
     },
     "exchange.action.water.1": {
-      "text": "Чем чужой опыт откликнулся именно в вас?",
+      "text": "Что чужое переживание вызвало у вас?",
       "kind": "question",
       "source_fingerprint": 144223170,
       "directives": {},
@@ -15423,7 +15423,7 @@ const compactCatalog={
       "semantic_key": "steadiness:theme:fire"
     },
     "steadiness.theme.earth.1": {
-      "text": "Живая устойчивость отличается от тяжести привычного.",
+      "text": "Привычное не всегда полезно: иногда оно лишь прибавляет забот.",
       "kind": "sentence",
       "source_fingerprint": 1942549873,
       "directives": {},
@@ -15437,7 +15437,7 @@ const compactCatalog={
       "semantic_key": "steadiness:theme:air"
     },
     "steadiness.theme.water.1": {
-      "text": "Глубина привязанности не требует неизменности чувства.",
+      "text": "Меняющееся чувство не обязательно становится менее важным.",
       "kind": "sentence",
       "source_fingerprint": 2725288157,
       "directives": {},
@@ -15479,7 +15479,7 @@ const compactCatalog={
       "semantic_key": "steadiness:work:fire"
     },
     "steadiness.work.earth.1": {
-      "text": "Внимательное повторение помогает заметить перемену.",
+      "text": "Мастерство растёт, когда в привычном действии замечают новое.",
       "kind": "sentence",
       "source_fingerprint": 3944123095,
       "directives": {},
@@ -15549,35 +15549,35 @@ const compactCatalog={
       "semantic_key": "steadiness:mood:air"
     },
     "steadiness.mood.water.1": {
-      "text": "Бережность к чувству допускает изменение его выражения.",
+      "text": "Беречь чувство можно, даже если оно выражается иначе.",
       "kind": "sentence",
       "source_fingerprint": 2961277279,
       "directives": {},
       "semantic_key": "steadiness:mood:water"
     },
     "steadiness.action.fire.1": {
-      "text": "Что остаётся ценным без немедленной яркой отдачи?",
+      "text": "Что важно и без быстрой отдачи?",
       "kind": "question",
       "source_fingerprint": 221769375,
       "directives": {},
       "semantic_key": "steadiness:action:fire"
     },
     "steadiness.action.earth.1": {
-      "text": "Что поддерживает жизнь, а что только давно находится рядом?",
+      "text": "Что полезно, а что только привычно?",
       "kind": "question",
       "source_fingerprint": 3762522886,
       "directives": {},
       "semantic_key": "steadiness:action:earth"
     },
     "steadiness.action.air.1": {
-      "text": "На какое собственное основание вы опираетесь среди чужих голосов?",
+      "text": "Каково ваше мнение среди чужих?",
       "kind": "question",
       "source_fingerprint": 2836961158,
       "directives": {},
       "semantic_key": "steadiness:action:air"
     },
     "steadiness.action.water.1": {
-      "text": "Как звучит ваш ритм без сравнения с чужим?",
+      "text": "Какой темп подходит именно вам?",
       "kind": "question",
       "source_fingerprint": 2096467914,
       "directives": {},
@@ -15691,7 +15691,7 @@ const compactCatalog={
       "semantic_key": "ruler:aries:mood:3"
     },
     "aries.action.lens.1": {
-      "text": "Придайте первому импульсу ясную меру.",
+      "text": "Определите первый шаг своего замысла без попытки победить другого.",
       "kind": "sentence",
       "source_fingerprint": 3694113529,
       "directives": {
@@ -15700,7 +15700,7 @@ const compactCatalog={
       "semantic_key": "ruler:aries:action:1"
     },
     "aries.action.lens.2": {
-      "text": "Сначала различите желание и уязвлённую гордость.",
+      "text": "Перед решением отделите своё желание от задетой гордости.",
       "kind": "sentence",
       "source_fingerprint": 3837746068,
       "directives": {
@@ -15709,7 +15709,7 @@ const compactCatalog={
       "semantic_key": "ruler:aries:action:2"
     },
     "aries.action.lens.3": {
-      "text": "Узнайте волю, которой не нужен противник.",
+      "text": "Выберите, чего хотите сами, даже если никто не спорит.",
       "kind": "sentence",
       "source_fingerprint": 188410226,
       "directives": {},
@@ -15723,7 +15723,7 @@ const compactCatalog={
       "semantic_key": "ruler:taurus:theme:1"
     },
     "taurus.theme.lens.2": {
-      "text": "Постоянство должно питать, а не отягощать.",
+      "text": "Привычное стоит сохранять, пока оно помогает вам.",
       "kind": "sentence",
       "source_fingerprint": 1612196328,
       "directives": {},
@@ -15821,7 +15821,7 @@ const compactCatalog={
       "semantic_key": "ruler:taurus:mood:3"
     },
     "taurus.action.lens.1": {
-      "text": "Найдите чувственную опору без нового приобретения.",
+      "text": "Найдите опору в знакомых ощущениях, без новой покупки.",
       "kind": "sentence",
       "source_fingerprint": 3406749661,
       "directives": {
@@ -15830,7 +15830,7 @@ const compactCatalog={
       "semantic_key": "ruler:taurus:action:1"
     },
     "taurus.action.lens.2": {
-      "text": "Сначала выясните, что продолжает питать жизнь.",
+      "text": "Прежде чем сохранять привычное, проверьте, чем оно сейчас помогает.",
       "kind": "sentence",
       "source_fingerprint": 1239193328,
       "directives": {
@@ -15839,7 +15839,7 @@ const compactCatalog={
       "semantic_key": "ruler:taurus:action:2"
     },
     "taurus.action.lens.3": {
-      "text": "Различите заботу о ценном и удержание вещей.",
+      "text": "Различите нужную вам вещь и желание просто ею владеть.",
       "kind": "sentence",
       "source_fingerprint": 525656739,
       "directives": {},
@@ -15853,7 +15853,7 @@ const compactCatalog={
       "semantic_key": "ruler:gemini:theme:1"
     },
     "gemini.theme.lens.2": {
-      "text": "Несколько взглядов не требуют отказаться от своего.",
+      "text": "Можно понять чужой взгляд, не отказываясь от своего.",
       "kind": "sentence",
       "source_fingerprint": 1976196433,
       "directives": {},
@@ -15955,7 +15955,7 @@ const compactCatalog={
       "semantic_key": "ruler:gemini:mood:3"
     },
     "gemini.action.lens.1": {
-      "text": "Сформулируйте свой вопрос до чужого объяснения.",
+      "text": "Сформулируйте для себя вопрос до знакомства с чужим объяснением.",
       "kind": "sentence",
       "source_fingerprint": 656924510,
       "directives": {
@@ -15964,7 +15964,7 @@ const compactCatalog={
       "semantic_key": "ruler:gemini:action:1"
     },
     "gemini.action.lens.2": {
-      "text": "Сначала оставьте мысль без немедленного продолжения.",
+      "text": "Оставьте мысль без немедленного продолжения и нового собеседника.",
       "kind": "sentence",
       "source_fingerprint": 4043826046,
       "directives": {
@@ -15973,7 +15973,7 @@ const compactCatalog={
       "semantic_key": "ruler:gemini:action:2"
     },
     "gemini.action.lens.3": {
-      "text": "Отличите найденный смысл от удовольствия новизны.",
+      "text": "Проверьте, поняли ли вы что-то или лишь сменили взгляд.",
       "kind": "sentence",
       "source_fingerprint": 3089763498,
       "directives": {},
@@ -16089,7 +16089,7 @@ const compactCatalog={
       "semantic_key": "ruler:cancer:mood:3"
     },
     "cancer.action.lens.1": {
-      "text": "Назовите потребность в поддержке без проверки близости.",
+      "text": "Скажите, какая поддержка нужна вам, не проверяя чужую любовь.",
       "kind": "sentence",
       "source_fingerprint": 2674162457,
       "directives": {
@@ -16099,7 +16099,7 @@ const compactCatalog={
       "semantic_key": "ruler:cancer:action:1"
     },
     "cancer.action.lens.2": {
-      "text": "Сначала побудьте с воспоминанием без требований к настоящему.",
+      "text": "Не требуйте от настоящего повторить важное воспоминание.",
       "kind": "sentence",
       "source_fingerprint": 1630751234,
       "directives": {
@@ -16108,7 +16108,7 @@ const compactCatalog={
       "semantic_key": "ruler:cancer:action:2"
     },
     "cancer.action.lens.3": {
-      "text": "Выберите заботу, сохраняющую чужой голос.",
+      "text": "Прежде чем помогать, оставьте близкому право выбрать иначе.",
       "kind": "sentence",
       "source_fingerprint": 937909767,
       "directives": {},
@@ -16220,7 +16220,7 @@ const compactCatalog={
       "semantic_key": "ruler:leo:mood:3"
     },
     "leo.action.lens.1": {
-      "text": "Придайте замыслу собственную форму без требования признания.",
+      "text": "Сделайте по-своему, не требуя немедленного признания.",
       "kind": "sentence",
       "source_fingerprint": 592244849,
       "directives": {
@@ -16229,7 +16229,7 @@ const compactCatalog={
       "semantic_key": "ruler:leo:action:1"
     },
     "leo.action.lens.2": {
-      "text": "Сначала отпустите попытку контролировать весь отклик.",
+      "text": "Если дело завершено, не пытайтесь управлять каждой реакцией на него.",
       "kind": "sentence",
       "source_fingerprint": 2063169847,
       "directives": {
@@ -16238,7 +16238,7 @@ const compactCatalog={
       "semantic_key": "ruler:leo:action:2"
     },
     "leo.action.lens.3": {
-      "text": "Узнайте своё желание без зрителей.",
+      "text": "Выберите занятие, которое важно вам и без зрителей.",
       "kind": "sentence",
       "source_fingerprint": 1884213737,
       "directives": {},
@@ -16252,7 +16252,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:theme:1"
     },
     "virgo.theme.lens.2": {
-      "text": "Назначение важнее безупречности ради безупречности.",
+      "text": "Важнее сделать вещь полезной, чем безупречной.",
       "kind": "sentence",
       "source_fingerprint": 892375158,
       "directives": {},
@@ -16287,7 +16287,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:relations:3"
     },
     "virgo.work.lens.1": {
-      "text": "Устройство должно отвечать назначению.",
+      "text": "Важно понимать, как устроена вещь и для чего она нужна.",
       "kind": "sentence",
       "source_fingerprint": 3935455150,
       "directives": {},
@@ -16308,7 +16308,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:work:3"
     },
     "virgo.finance.lens.1": {
-      "text": "Польза определяется конкретной потребностью.",
+      "text": "Полезная покупка отвечает конкретной потребности.",
       "kind": "sentence",
       "source_fingerprint": 2254790866,
       "directives": {},
@@ -16329,7 +16329,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:finance:3"
     },
     "virgo.mood.lens.1": {
-      "text": "Переживание не обязано становиться бесконечным разбором.",
+      "text": "Чувство не обязательно разбирать по частям.",
       "kind": "sentence",
       "source_fingerprint": 3880462234,
       "directives": {},
@@ -16350,7 +16350,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:mood:3"
     },
     "virgo.action.lens.1": {
-      "text": "Уберите деталь, утратившую своё назначение.",
+      "text": "Уберите из важного дела одну деталь, которая уже не помогает.",
       "kind": "sentence",
       "source_fingerprint": 4224888282,
       "directives": {
@@ -16359,7 +16359,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:action:1"
     },
     "virgo.action.lens.2": {
-      "text": "Сначала оставьте наблюдение открытым, без окончательного вывода.",
+      "text": "Не делайте окончательного вывода, пока наблюдение остаётся неполным.",
       "kind": "sentence",
       "source_fingerprint": 3017035030,
       "directives": {
@@ -16368,7 +16368,7 @@ const compactCatalog={
       "semantic_key": "ruler:virgo:action:2"
     },
     "virgo.action.lens.3": {
-      "text": "Различите внимание и привычку всё исправлять.",
+      "text": "Перед исправлением проверьте, действительно ли оно необходимо.",
       "kind": "sentence",
       "source_fingerprint": 1370908077,
       "directives": {},
@@ -16482,7 +16482,7 @@ const compactCatalog={
       "semantic_key": "ruler:libra:mood:3"
     },
     "libra.action.lens.1": {
-      "text": "Назовите свою сторону до общего решения.",
+      "text": "Сначала сформулируйте своё желание до поиска общего решения.",
       "kind": "sentence",
       "source_fingerprint": 2290288396,
       "directives": {
@@ -16491,7 +16491,7 @@ const compactCatalog={
       "semantic_key": "ruler:libra:action:1"
     },
     "libra.action.lens.2": {
-      "text": "Сначала выдержите паузу без поспешной уступки.",
+      "text": "Возьмите паузу, если уступаете лишь ради видимого спокойствия.",
       "kind": "sentence",
       "source_fingerprint": 2335739042,
       "directives": {
@@ -16500,7 +16500,7 @@ const compactCatalog={
       "semantic_key": "ruler:libra:action:2"
     },
     "libra.action.lens.3": {
-      "text": "Сохраните в согласии два самостоятельных взгляда.",
+      "text": "Сохраните в решении место и своему желанию, и чужому.",
       "kind": "sentence",
       "source_fingerprint": 2908221345,
       "directives": {},
@@ -16614,7 +16614,7 @@ const compactCatalog={
       "semantic_key": "ruler:scorpio:mood:3"
     },
     "scorpio.action.lens.1": {
-      "text": "Назовите желание без скрытой проверки ответа.",
+      "text": "Скажите о желании прямо, не превращая ответ в проверку верности.",
       "kind": "sentence",
       "source_fingerprint": 2121618070,
       "directives": {
@@ -16624,7 +16624,7 @@ const compactCatalog={
       "semantic_key": "ruler:scorpio:action:1"
     },
     "scorpio.action.lens.2": {
-      "text": "Сначала выдержите неизвестность без обвинения другого.",
+      "text": "Если что-то неизвестно, не считайте это доказательством чужой ненадёжности.",
       "kind": "sentence",
       "source_fingerprint": 3096870710,
       "directives": {
@@ -16633,7 +16633,7 @@ const compactCatalog={
       "semantic_key": "ruler:scorpio:action:2"
     },
     "scorpio.action.lens.3": {
-      "text": "Отличите глубину связи от контроля её исхода.",
+      "text": "Проверьте, ищете ли вы близости или хотите управлять ответом.",
       "kind": "sentence",
       "source_fingerprint": 3979430949,
       "directives": {},
@@ -16747,7 +16747,7 @@ const compactCatalog={
       "semantic_key": "ruler:sagittarius:mood:3"
     },
     "sagittarius.action.lens.1": {
-      "text": "Сопоставьте любимую идею с меняющим её опытом.",
+      "text": "Проверьте любимую идею на опыте, который способен её изменить.",
       "kind": "sentence",
       "source_fingerprint": 3756290875,
       "directives": {
@@ -16756,7 +16756,7 @@ const compactCatalog={
       "semantic_key": "ruler:sagittarius:action:1"
     },
     "sagittarius.action.lens.2": {
-      "text": "Сначала побудьте с вопросом вне готовой картины.",
+      "text": "Оставьте вопрос открытым, если готовое объяснение пока не подходит.",
       "kind": "sentence",
       "source_fingerprint": 2900415353,
       "directives": {
@@ -16765,7 +16765,7 @@ const compactCatalog={
       "semantic_key": "ruler:sagittarius:action:2"
     },
     "sagittarius.action.lens.3": {
-      "text": "Расширьте взгляд через конкретное различие.",
+      "text": "Заметьте конкретную разницу, которую не объясняет привычный взгляд.",
       "kind": "sentence",
       "source_fingerprint": 2382088965,
       "directives": {},
@@ -16877,7 +16877,7 @@ const compactCatalog={
       "semantic_key": "ruler:capricorn:mood:3"
     },
     "capricorn.action.lens.1": {
-      "text": "Придайте обязательству ясную, выполнимую меру.",
+      "text": "Выберите обязательство, которое можете ясно сформулировать и выполнить.",
       "kind": "sentence",
       "source_fingerprint": 580604169,
       "directives": {
@@ -16886,7 +16886,7 @@ const compactCatalog={
       "semantic_key": "ruler:capricorn:action:1"
     },
     "capricorn.action.lens.2": {
-      "text": "Сначала выясните, кому принадлежит новое требование.",
+      "text": "Перед новой обязанностью проверьте, чьё это требование.",
       "kind": "sentence",
       "source_fingerprint": 3616288401,
       "directives": {
@@ -16895,7 +16895,7 @@ const compactCatalog={
       "semantic_key": "ruler:capricorn:action:2"
     },
     "capricorn.action.lens.3": {
-      "text": "Отличите свою ответственность от привычки терпеть лишнее.",
+      "text": "Отделите свою ответственность от нагрузки, которую привыкли терпеть.",
       "kind": "sentence",
       "source_fingerprint": 471322476,
       "directives": {},
@@ -17009,7 +17009,7 @@ const compactCatalog={
       "semantic_key": "ruler:aquarius:mood:3"
     },
     "aquarius.action.lens.1": {
-      "text": "Соотнесите вывод с его влиянием на других.",
+      "text": "Проверьте, что ваш вывод меняет для других людей.",
       "kind": "sentence",
       "source_fingerprint": 498995655,
       "directives": {
@@ -17018,7 +17018,7 @@ const compactCatalog={
       "semantic_key": "ruler:aquarius:action:1"
     },
     "aquarius.action.lens.2": {
-      "text": "Сначала оставьте принцип открытым неудобному наблюдению.",
+      "text": "Рассмотрите наблюдение, которое не вписывается в привычную позицию.",
       "kind": "sentence",
       "source_fingerprint": 3292095057,
       "directives": {
@@ -17027,7 +17027,7 @@ const compactCatalog={
       "semantic_key": "ruler:aquarius:action:2"
     },
     "aquarius.action.lens.3": {
-      "text": "Отличите самостоятельность от постоянного противостояния.",
+      "text": "Не соглашаться можно без обязанности спорить с каждым.",
       "kind": "sentence",
       "source_fingerprint": 3476180881,
       "directives": {},
@@ -17092,7 +17092,7 @@ const compactCatalog={
       "semantic_key": "ruler:pisces:work:2"
     },
     "pisces.work.lens.3": {
-      "text": "Богатству образов нужен различимый замысел.",
+      "text": "Среди многих образов важно не потерять сам замысел.",
       "kind": "sentence",
       "source_fingerprint": 3982863601,
       "directives": {},
@@ -17141,7 +17141,7 @@ const compactCatalog={
       "semantic_key": "ruler:pisces:mood:3"
     },
     "pisces.action.lens.1": {
-      "text": "Придайте внутреннему образу различимые очертания.",
+      "text": "Кратко опишите то, что представляете, без попытки объяснить всё.",
       "kind": "sentence",
       "source_fingerprint": 3465804525,
       "directives": {
@@ -17150,7 +17150,7 @@ const compactCatalog={
       "semantic_key": "ruler:pisces:action:1"
     },
     "pisces.action.lens.2": {
-      "text": "Сначала оставьте неизвестное без окончательного объяснения.",
+      "text": "Прислушайтесь к чувству, не объясняя им всё происходящее.",
       "kind": "sentence",
       "source_fingerprint": 2621039053,
       "directives": {
@@ -17159,7 +17159,7 @@ const compactCatalog={
       "semantic_key": "ruler:pisces:action:2"
     },
     "pisces.action.lens.3": {
-      "text": "Сохраните свой голос рядом с чужим чувством.",
+      "text": "Перед помощью другому проверьте, не забываете ли о себе.",
       "kind": "sentence",
       "source_fingerprint": 1820513708,
       "directives": {},
@@ -17289,7 +17289,9 @@ const compactCatalog={
       "directives": {
         "timing": "commit"
       },
-      "semantic_key": "modality:cardinal:action:1"
+      "semantic_key": "modality:cardinal:action:1",
+      "advice_qualifier": "меру первого шага выбираете вы",
+      "advice_echo_with": []
     },
     "cardinal.action.lens.2": {
       "text": "До обязательства выдержите паузу.",
@@ -17298,14 +17300,18 @@ const compactCatalog={
       "directives": {
         "timing": "observe"
       },
-      "semantic_key": "modality:cardinal:action:2"
+      "semantic_key": "modality:cardinal:action:2",
+      "advice_qualifier": "необратимое обязательство может подождать",
+      "advice_echo_with": []
     },
     "cardinal.action.lens.3": {
       "text": "Начало не отменяет неизвестности.",
       "kind": "modifier",
       "source_fingerprint": 3879099743,
       "directives": {},
-      "semantic_key": "modality:cardinal:action:3"
+      "semantic_key": "modality:cardinal:action:3",
+      "advice_qualifier": "знать весь исход заранее не требуется",
+      "advice_echo_with": []
     },
     "fixed.theme.lens.1": {
       "text": "Центр не требует полного контроля.",
@@ -17431,7 +17437,16 @@ const compactCatalog={
       "directives": {
         "timing": "commit"
       },
-      "semantic_key": "modality:fixed:action:1"
+      "semantic_key": "modality:fixed:action:1",
+      "advice_qualifier": "другие вправе выбрать иначе",
+      "advice_echo_with": [
+        "agreement.action.fire.1",
+        "aries.action.lens.1",
+        "scorpio.action.lens.1",
+        "agreement.action.water.1",
+        "boundaries.action.fire.1",
+        "scorpio.action.lens.3"
+      ]
     },
     "fixed.action.lens.2": {
       "text": "Сохраните паузу вместо беспредметной настойчивости.",
@@ -17440,14 +17455,29 @@ const compactCatalog={
       "directives": {
         "timing": "observe"
       },
-      "semantic_key": "modality:fixed:action:2"
+      "semantic_key": "modality:fixed:action:2",
+      "advice_qualifier": "пауза уместнее нажима без ясной цели",
+      "advice_echo_with": [
+        "libra.action.lens.2",
+        "boundaries.action.air.1",
+        "completion.action.fire.1",
+        "leo.action.lens.2"
+      ]
     },
     "fixed.action.lens.3": {
       "text": "Преданность не запрещает перемен.",
       "kind": "modifier",
       "source_fingerprint": 2211988160,
       "directives": {},
-      "semantic_key": "modality:fixed:action:3"
+      "semantic_key": "modality:fixed:action:3",
+      "advice_qualifier": "ценное можно сохранить, изменив привычный способ",
+      "advice_echo_with": [
+        "revision.action.earth.1",
+        "revision.action.fire.1",
+        "completion.action.earth.1",
+        "completion.action.water.1",
+        "steadiness.action.earth.1"
+      ]
     },
     "mutable.theme.lens.1": {
       "text": "Переходы сохраняют свои различия.",
@@ -17573,7 +17603,9 @@ const compactCatalog={
       "directives": {
         "timing": "commit"
       },
-      "semantic_key": "modality:mutable:action:1"
+      "semantic_key": "modality:mutable:action:1",
+      "advice_qualifier": "дальнейший путь можно оставить открытым",
+      "advice_echo_with": []
     },
     "mutable.action.lens.2": {
       "text": "Дайте неизвестному место до решения.",
@@ -17582,14 +17614,27 @@ const compactCatalog={
       "directives": {
         "timing": "observe"
       },
-      "semantic_key": "modality:mutable:action:2"
+      "semantic_key": "modality:mutable:action:2",
+      "advice_qualifier": "неизвестное пока можно оставить без решения",
+      "advice_echo_with": [
+        "virgo.action.lens.2",
+        "sagittarius.action.lens.2"
+      ]
     },
     "mutable.action.lens.3": {
       "text": "Найдите сохраняющееся среди перемен.",
       "kind": "modifier",
       "source_fingerprint": 897271893,
       "directives": {},
-      "semantic_key": "modality:mutable:action:3"
+      "semantic_key": "modality:mutable:action:3",
+      "advice_qualifier": "важное для вас может сохраниться при перемене",
+      "advice_echo_with": [
+        "revision.action.earth.1",
+        "revision.action.fire.1",
+        "steadiness.action.earth.1",
+        "completion.action.earth.1",
+        "completion.action.water.1"
+      ]
     },
     "number:1": {
       "text": "самостоятельная воля без превосходства",
@@ -18174,10 +18219,168 @@ const compactCatalog={
       "text": "Сострадание сохраняет близость, не требуя прожить чужую жизнь вместо другого.",
       "reason": "one-meaning-instead-of-echo"
     }
+  },
+  "action_compositions": {
+    "steadiness.action.earth.1|virgo.action.lens.1": {
+      "sources": [
+        "steadiness.action.earth.1",
+        "virgo.action.lens.1"
+      ],
+      "source_fingerprints": [
+        3762522886,
+        4224888282
+      ],
+      "text": "Уберите из привычного дела одну ненужную деталь, сохранив то, что вам действительно помогает.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "initiative.action.earth.1|taurus.action.lens.2": {
+      "sources": [
+        "initiative.action.earth.1",
+        "taurus.action.lens.2"
+      ],
+      "source_fingerprints": [
+        3896373737,
+        1239193328
+      ],
+      "text": "Сначала определите, что из привычного поможет новому замыслу, а что вы сохраняете лишь по привычке.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "agreement.action.air.1|gemini.action.lens.1": {
+      "sources": [
+        "agreement.action.air.1",
+        "gemini.action.lens.1"
+      ],
+      "source_fingerprints": [
+        2556517454,
+        656924510
+      ],
+      "text": "Сформулируйте для себя вопрос о разнице мнений, не требуя сразу прийти к согласию.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "steadiness.action.water.1|pisces.action.lens.1": {
+      "sources": [
+        "steadiness.action.water.1",
+        "pisces.action.lens.1"
+      ],
+      "source_fingerprints": [
+        2096467914,
+        3465804525
+      ],
+      "text": "Опишите, что вы представляете, в своём темпе и без необходимости объяснять всё сразу.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "initiative.action.fire.1|aries.action.lens.1": {
+      "sources": [
+        "initiative.action.fire.1",
+        "aries.action.lens.1"
+      ],
+      "source_fingerprints": [
+        3250099506,
+        3694113529
+      ],
+      "text": "Выберите первый шаг для своего замысла, который нужен вам не ради победы над кем-то.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "initiative.action.water.1|cancer.action.lens.3": {
+      "sources": [
+        "initiative.action.water.1",
+        "cancer.action.lens.3"
+      ],
+      "source_fingerprints": [
+        1465693638,
+        937909767
+      ],
+      "text": "Если хочется помочь, определите для себя, какое участие оставит близкому право выбрать самому.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "review.action.fire.1|leo.action.lens.3": {
+      "sources": [
+        "review.action.fire.1",
+        "leo.action.lens.3"
+      ],
+      "source_fingerprints": [
+        1601475707,
+        1884213737
+      ],
+      "text": "Проверьте одно своё убеждение без необходимости оправдывать его перед кем-то.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "completion.action.air.1|libra.action.lens.2": {
+      "sources": [
+        "completion.action.air.1",
+        "libra.action.lens.2"
+      ],
+      "source_fingerprints": [
+        1940412956,
+        2335739042
+      ],
+      "text": "Если итог уже ясен, оставьте неясный вопрос на паузе, не уступая только ради внешнего спокойствия.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "agreement.action.water.1|scorpio.action.lens.3": {
+      "sources": [
+        "agreement.action.water.1",
+        "scorpio.action.lens.3"
+      ],
+      "source_fingerprints": [
+        200783694,
+        3979430949
+      ],
+      "text": "Отделите своё чувство от догадки о чужом: близость не требует заранее распоряжаться чужим ответом.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "completion.action.fire.1|sagittarius.action.lens.2": {
+      "sources": [
+        "completion.action.fire.1",
+        "sagittarius.action.lens.2"
+      ],
+      "source_fingerprints": [
+        961734867,
+        2900415353
+      ],
+      "text": "Если замысел завершён, дайте себе паузу и не спешите объяснять оставшийся вопрос привычной схемой.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "boundaries.action.earth.1|capricorn.action.lens.2": {
+      "sources": [
+        "boundaries.action.earth.1",
+        "capricorn.action.lens.2"
+      ],
+      "source_fingerprints": [
+        3503374195,
+        3616288401
+      ],
+      "text": "Перед новой обязанностью проверьте, нужна ли эта нагрузка вам или вы привыкли принимать чужие требования.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "boundaries.action.air.1|aquarius.action.lens.2": {
+      "sources": [
+        "boundaries.action.air.1",
+        "aquarius.action.lens.2"
+      ],
+      "source_fingerprints": [
+        351336378,
+        3292095057
+      ],
+      "text": "Рассмотрите неудобное для вашей позиции наблюдение, не продолжая спор после уже данного ясного ответа.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "review.action.fire.1|sagittarius.action.lens.1": {
+      "sources": [
+        "review.action.fire.1",
+        "sagittarius.action.lens.1"
+      ],
+      "source_fingerprints": [
+        1601475707,
+        3756290875
+      ],
+      "text": "Сопоставьте важное убеждение с опытом, который мог бы заставить вас изменить его.",
+      "reason": "one-source-bound-decision-step"
+    }
   }
 };
 const COMPACT_ENGINE_VERSION='forecast-1.0.0+compact.1';
-const COMPACT_PRESENTATION_VERSION='compact-1.0.0';
+const COMPACT_PRESENTATION_VERSION='compact-1.0.1';
 const sourceGroups=['units','sign_lenses','modality_lenses','themes','signs','numbers','runes','symbols','advice','modalities'];
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const labels={theme:'✨ Главное',relations:'💕 Отношения',work:'📚 Дела',finance:'💰 Финансы',mood:'🌿 Настроение',action:'🍀 Совет дня'};
@@ -18185,12 +18388,12 @@ const sourceFingerprint=row=>legacyHash(JSON.stringify(row)); // Integrity pin, 
 function textReady(value){return typeof value==='string'&&value.trim()===value&&value.length>3&&!/[<>\r\n]/.test(value);}
 function checkTextIntent(text,directives){
  // Deliberately bounded lexical checks supplement declared semantic directives, never pretend to understand all Russian.
- if(directives.timing==='observe'&&/(действуйте немедленно|решите сейчас|совершите покупку|не откладывайте)/iu.test(text))throw Error('Editorial timing contradiction');
- if(directives.contact==='quiet'&&/(начните разговор|потребуйте ответа|добейтесь ответа|немедленно позвоните)/iu.test(text))throw Error('Editorial contact contradiction');
+ if(directives.timing==='observe'&&/(действуйте немедленно|решите сейчас|сделайте (?:это )?(?:немедленно|сейчас)|совершите покупку|не откладывайте)/iu.test(text))throw Error('Editorial timing contradiction');
+ if(directives.contact==='quiet'&&/(начните разговор|потребуйте ответа|добейтесь ответа|позвоните|напишите (?:ему|ей|собеседнику))/iu.test(text))throw Error('Editorial contact contradiction');
  if(/(гарантированно|точность\s*\d+\s*%|\d+\s*%\s*точност|сегодня\s+(?:луна|меркурий|венера|марс|сатурн|юпитер)\s+(?:входит|образует|переходит)|сегодня\s+(?:полнолуние|новолуние))/iu.test(text))throw Error('Unsupported astronomical or guaranteed claim');
 }
 function validateCompactCatalog(base,editorial){
- if(editorial.presentation_version!==COMPACT_PRESENTATION_VERSION||editorial.selection_engine_version!==ENGINE_VERSION||editorial.source_catalog_version!==base.content_version||editorial.content_version!=='2026.11-compact-v1')throw Error('Editorial version mismatch');
+ if(editorial.presentation_version!==COMPACT_PRESENTATION_VERSION||editorial.selection_engine_version!==ENGINE_VERSION||editorial.source_catalog_version!==base.content_version||editorial.content_version!=='2026.11-compact-v2')throw Error('Editorial version mismatch');
  const source=new Map(sourceGroups.flatMap(g=>base[g]).map(row=>[row.id,row]));
  const required=[...base.units,...base.sign_lenses,...base.modality_lenses,...base.numbers];
  if(Object.keys(editorial.entries).length!==required.length)throw Error('Incomplete compact source coverage');
@@ -18202,10 +18405,11 @@ function validateCompactCatalog(base,editorial){
    for(const key of group==='extended_themes'?['fork','exercise']:['text'])if(!textReady(edit[key]))throw Error('Empty expanded reading: '+row.id);checkTextIntent(edit.text||edit.exercise,{});
   }
  }
- for(const [key,fusion] of Object.entries(editorial.fusions||{})){
+ for(const [key,fusion] of Object.entries({...editorial.fusions,...editorial.action_compositions})){
   if(key!==fusion.sources.join('|')||fusion.sources.length!==2||!textReady(fusion.text)||!equal(fusion.source_fingerprints,fusion.sources.map(id=>sourceFingerprint(source.get(id)))))throw Error('Invalid editorial fusion');
-  const [unit,lens]=fusion.sources.map(id=>source.get(id));if(!base.units.includes(unit)||!base.sign_lenses.includes(lens)||unit.section!==lens.section)throw Error('Invalid fused source roles');checkTextIntent(fusion.text,lens.directives||{});
+  const [unit,lens]=fusion.sources.map(id=>source.get(id));if(!base.units.includes(unit)||!base.sign_lenses.includes(lens)||unit.section!==lens.section)throw Error('Invalid fused source roles');if(editorial.action_compositions?.[key]&&unit.section!=='action')throw Error('Advice composition requires action sources');checkTextIntent(fusion.text,lens.directives||{});
  }
+ for(const row of base.modality_lenses.filter(row=>row.section==='action')){const edit=editorial.entries[row.id],text=edit.advice_qualifier;if(!Array.isArray(edit.advice_echo_with)||edit.advice_echo_with.some(id=>!source.has(id)||source.get(id).section!=='action'))throw Error('Invalid advice echo reference');if(!textReady(text))throw Error('Missing source-bound advice qualifier');checkTextIntent(text,row.directives||{});}
  return source;
 }
 function validateEditorialDocument(document,source,sign,theme,context,selectedIds){
@@ -18233,11 +18437,13 @@ function createCompactForecastGenerator(base,editorial,{generate=createForecastG
   const ids=[...legacy.trace.units,...legacy.trace.sign_lenses,...legacy.trace.modality_lenses];validateSelection(ids.map(id=>{const row=source.get(id);if(!row)throw Error('Unknown selected source');return row;}),sign,theme,legacy.trace.directives);
   const sections=SECTIONS.map((section,index)=>{
    const unit=source.get(legacy.trace.units[index]),lens=source.get(legacy.trace.sign_lenses[index]),modal=legacy.trace.modality_lenses.map(id=>source.get(id)).find(row=>row.section===section);
-   const premise=edits.entries[unit.id],facet=edits.entries[lens.id],fusionKey=unit.id+'|'+lens.id,fusion=edits.fusions?.[fusionKey];let text=fusion?fusion.text:premise.text+' '+facet.text;
-   // Emit an independent modality thought; identical directive or lexical overlap remains a constraint, not filler.
+   const premise=edits.entries[unit.id],facet=edits.entries[lens.id],fusionKey=unit.id+'|'+lens.id,fusion=section==='action'?(edits.action_compositions?.[fusionKey]||edits.fusions?.[fusionKey]):edits.fusions?.[fusionKey];let text=fusion?fusion.text:premise.text+' '+facet.text;
+   // A selected action modality qualifies the same decision, never adds another task. Curated/lexical echoes stay constraints.
    const duplicatedDirective=modal&&Object.keys(modal.directives||{}).some(axis=>lens.directives?.[axis]===modal.directives[axis]);
-   const emit=Boolean(modal&&section!=='action'&&!duplicatedDirective&&distinctModifier(text,edits.entries[modal.id].text));if(emit)text+=' '+edits.entries[modal.id].text;
-   return{section,text,fusion:fusion?fusionKey:null,sources:[unit.id,lens.id,...(emit?[modal.id]:[])],semantic_keys:[premise.semantic_key,facet.semantic_key,...(emit?[edits.entries[modal.id].semantic_key]:[])],modality:modal?{source:modal.id,role:emit?'emitted':'compatibility-constraint',reason:emit?'independent-meaning':section==='action'?'single-practical-focus':duplicatedDirective?'directive-already-expressed':'semantic-echo'}:null};
+   const modifier=modal&&(section==='action'?edits.entries[modal.id].advice_qualifier:edits.entries[modal.id].text);
+   const semanticEcho=Boolean(modal&&section==='action'&&edits.entries[modal.id].advice_echo_with.some(id=>id===unit.id||id===lens.id));
+   const emit=Boolean(modal&&!semanticEcho&&(section==='action'||!duplicatedDirective)&&distinctModifier(text,modifier));if(emit)text=section==='action'?text.replace(/[.!?]$/,'')+'; '+modifier+'.':text+' '+modifier;
+   return{section,text,fusion:fusion&&edits.fusions?.[fusionKey]?fusionKey:null,advice_composition:section==='action'&&edits.action_compositions?.[fusionKey]?fusionKey:null,sources:[unit.id,lens.id,...(emit?[modal.id]:[])],semantic_keys:[premise.semantic_key,facet.semantic_key,...(emit?[edits.entries[modal.id].semantic_key]:[])],modality:modal?{source:modal.id,role:emit?'emitted':'compatibility-constraint',reason:emit?(section==='action'?'source-bound-step-qualifier':'independent-meaning'):semanticEcho?'source-meaning-already-expressed':duplicatedDirective?'directive-already-expressed':'semantic-echo'}:null};
   });
   const document={signLabel:sign.label,day,number:legacy.number,numberMeaning:edits.entries['number:'+legacy.number].text,sections};validateEditorialDocument(document,source,sign,theme,legacy.trace.directives,ids);
   const free_text=formatFreeForecast(document),fork=edits.extended_themes[theme.id],profile=edits.extended_profiles[signId],rune=source.get(legacy.trace.rune),symbol=source.get(legacy.trace.symbol),advice=source.get(legacy.trace.advice),number=source.get('number:'+legacy.number);
