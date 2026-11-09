@@ -4,7 +4,7 @@
     "data/forecast/catalog.v1.json": "89870b1e8f2d0e813964296ea8aea755f4ac391e2c2a88388e53b45f6e02adc2",
     "data/forecast/editorial.compact.v1.json": "1efd8cbe38c885f40a0adbd7fa68876867987cd6585931f4f54d399e490e7a2e",
     "data/payment-schema-manifest.json": "2dc6ede2caa4577307bc1b37838934e3cc9d01f12d58eeb14b64c3422b0692e9",
-    "docs/ASTRA_2_4_TASK_05_RELEASE_QA.md": "c5814fd6d04c1ae203b2419ef01614bf1019805d046b4d56317f133076b9ba9f",
+    "docs/ASTRA_2_4_TASK_05_RELEASE_QA.md": "0b9c2a2fd9ed562ddc681436c25b22890cd61c8d530ad124461264423dd930bf",
     "migrations/0021_wallet.sql": "db3b3f02c1f2a374415eff4d1622867962e9f03fd6816ac83e3a5c8dc41da798",
     "migrations/0022_shell.sql": "ad7203bf9431a9ca8aea178b030139948c562041783d893118de9221e58e5d70",
     "migrations/0022_steps/01_rewards.sql": "9f4fbc2a1cbf9206b9cd7b42f9fb6cfd5977de0fcdd088e5a17e5435ce64c9f6",
@@ -78,5 +78,6 @@
     "src/task01/bonus.mjs": "761f99b728d80fb9d4e7d90c3b4bd37003266e45f749a0f330202f3094c28ebb",
     "src/task01/payments.mjs": "22030af227f9c6742df61b181c6ae14b75f3ef29f8e7ad3ac2404a5b07b96d9d",
     "src/task01/ui.mjs": "80e77db417137f5b22052d19e8f66124ad5cd327e4ce93b442aaad2adb46895d"
-  }
+  },
+  "owner_document_revision": "6798c67; only owner-updated TASK05 hash refreshed, other protected hashes unchanged"
 }
