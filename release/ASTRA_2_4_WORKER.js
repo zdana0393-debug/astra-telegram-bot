@@ -9,7 +9,7 @@
  *
  * ВАЖНО: читать docs/ASTRA_2_4_STAGING_GUIDE.md. /activate отключён; webhook не менять.
  */
-const VERSION = 'ASTRA-2.4-candidate';
+const VERSION = 'ASTRA-2.4-task06-rc';
 const BOT_USERNAME = 'LaDa_Iskra_Opel_Astrabot';
 const ZODIAC = [
   ['aries','♈ Овен'], ['taurus','♉ Телец'], ['gemini','♊ Близнецы'],
@@ -251,7 +251,7 @@ const signKeyboard = {inline_keyboard:Array.from({length:6},(_,j)=>
   ZODIAC.slice(j*2,j*2+2).map(([id,name])=>({text:name, callback_data:`sign:${id}`})))};
 const tarotKeyboard = {inline_keyboard:[
   [{text:"Карта дня — бесплатно", callback_data:'tarot:day'}],
-  [{text:"Три карты — 3 ✨", callback_data:'tarot:three'}],
+  [{text:"Три карты — 5 ✨", callback_data:'tarot:three'}],
 ]};
 
 async function tg(env, method, args) {
@@ -278,7 +278,7 @@ const send = (env, id, text, opts={}) => {
 };
 const getUser = (env, id) => env.DB.prepare('SELECT * FROM astra_users WHERE telegram_id=?').bind(id).first();
 
-async function createUser(env, id, referral='') {
+async function pre26_createUser(env, id, referral='') {
   let u = await getUser(env, id);
   if (u) return u;
   let friend = null;
@@ -299,7 +299,7 @@ async function legacyWelcome(env,id,ref='') {
   if (u.zodiac) return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nПрогноз по солнечному знаку, Таро и сохранённые результаты — в главном меню.`,{reply_markup:keyboard});
   return send(env,id,"Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак для ежедневного прогноза. Дата и время рождения не требуются.\n\nНачальный баланс: 2 ✨. Прогноз с числом дня и карта дня доступны бесплатно.",{reply_markup:signKeyboard});
 }
-async function setZodiac(env,id,sign) {
+async function pre26_setZodiac(env,id,sign) {
   if (!zodiacName(sign)) return;
   const old = await getUser(env,id);
   if (!old) return welcome(env,id);
@@ -323,7 +323,7 @@ async function legacyBonus(env,id) {
   const u=await getUser(env,id);
   return send(env,id,r.meta.changes ? `Дневной бонус: +1 ✨. Баланс: ${u.balance} ✨.` : `Бонус на текущую московскую дату уже получен. Баланс: ${u.balance} ✨.`);
 }
-async function threeCards(env,id,key) {
+async function pre26_threeCards(env,id,key) {
   const requestKey=`tarot:${id}:${key}`;
   // Bind this menu durably before sending or creating a purchase. Otherwise a
   // crash after recovery delivery could charge this menu on the webhook retry.
@@ -464,12 +464,12 @@ const FAQ = [
   ]
 ];
 
-async function home(env,id) {
+async function pre04_home(env,id) {
   const u=await getUser(env,id);
   if (!u?.zodiac) return welcome(env,id);
   return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)} · ${u.balance} ✨\nДневная дата определяется по Europe/Moscow.\n\nВыберите раздел.`,{reply_markup:keyboard});
 }
-async function shellPage(env,id,page,q=null,updateId=null) {
+async function pre26_shellPage(env,id,page,q=null,updateId=null) {
   const u=await getUser(env,id);
   const branch=page.split(':')[0];
   const scoped=shellEnv(env,branch==='gift'||branch==='invite'||branch==='channel'?'dust':branch);
@@ -503,6 +503,8 @@ async function shellPage(env,id,page,q=null,updateId=null) {
   if(!u?.zodiac) return welcome(env,id);
   if(page==='forecast') return forecastMenu(env,id);
   if(page==='forecast:read') return sendFreeForecast(env,id,u.zodiac);
+  const datedForecast03=/^forecast:(offer|owned):(\d{4}-\d{2}-\d{2})$/.exec(page);
+  if(datedForecast03)return forecastExtended(env,id,u,datedForecast03[1]==='owned'?'repeat':'confirm',datedForecast03[2]);
   if(page==='forecast:future'||page==='forecast:extended') return forecastExtended(env,id,u,'confirm');
   if(page==='forecast:repeat') return forecastExtended(env,id,u,'repeat');
   const forecastPay=/^forecast:pay:(\d{4}-\d{2}-\d{2})$/.exec(page);
@@ -517,8 +519,8 @@ async function shellPage(env,id,page,q=null,updateId=null) {
   if(page==='channel') return channelMenu(scoped,id);
   if(page==='notifications') return screen(env,id,"Утренний прогноз",`Рассылка: ${u.notifications_enabled?'включена':'выключена'}. Дневной прогноз можно открыть вручную независимо от настройки.`,[[button("Изменить настройку",'notifications:toggle')]],'dossier');
   if(page==='notifications:toggle') return incoming(shellEnv(env,'notifications'),{from:{id},chat:{type:'private'},text:'🔔 Рассылка'},updateId);
-  if(page==='tarot') return screen(env,id,'🃏 Таро',"Трактовки 22 Старших арканов. В раскладе различаются позиции карт, прямое и перевёрнутое положение.\n\nКарта дня бесплатна; ситуационный расклад на три карты — 3 ✨. Сохранённый результат можно открыть повторно без оплаты.",[
-    [{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 3 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
+  if(page==='tarot') return screen(env,id,'🃏 Таро',"Трактовки 22 Старших арканов. В раскладе различаются позиции карт, прямое и перевёрнутое положение.\n\nКарта дня бесплатна; ситуационный расклад на три карты — 5 ✨. Сохранённый результат можно открыть повторно без оплаты.",[
+    [{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 5 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
   if(page==='buy') {
     const mid=q?.message?.message_id;
     if(!Number.isSafeInteger(mid) || mid<1) return screen(env,id,"Предложение недоступно","Откройте новое предложение в разделе «Таро». У этого сообщения нет действующего номера; списание не выполнено.",[],'tarot');
@@ -532,7 +534,7 @@ async function shellPage(env,id,page,q=null,updateId=null) {
   }
   return screen(env,id,"Раздел недоступен","Пункт отсутствует в текущем меню или сообщение устарело. Вернитесь в главное меню и выберите нужный раздел.",[]);
 }
-async function secretArchive(env,id) {
+async function pre26_secretArchive(env,id) {
   await createUser(env,id);
   const award=await env.DB.prepare(`INSERT INTO astra_shell_rewards(telegram_id,code) VALUES(?,'gpt6')
     ON CONFLICT(telegram_id,code) DO NOTHING`).bind(id).run();
@@ -541,10 +543,10 @@ async function secretArchive(env,id) {
     : "Отметка уже внесена. Повторный запрос не меняет баланс.",[]);
 }
 
-async function help(env,id) {
-  return screen(env,id,"Помощь","Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 3 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",[[button('FAQ','faq'),button('Об Астре','about')]]);
+async function pre04_help(env,id) {
+  return screen(env,id,"Помощь","Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 5 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",[[button('FAQ','faq'),button('Об Астре','about')]]);
 }
-async function incoming(env,m,updateId) {
+async function pre28_incoming(env,m,updateId) {
   if(m.chat?.type==='private'&&m.from&&await paymentCommand(env,m))return;
   if (m.chat?.type!=='private' || !m.from) return;
   const id=m.from.id;
@@ -556,20 +558,21 @@ async function incoming(env,m,updateId) {
   if (/^\/start(?:\s|$)/.test(text)) return welcome(env,id,text.split(/\s+/)[1]||'');
   if (text==='/privacy') return send(env,id,"Данные профиля\n\nВ D1 сохраняются Telegram ID, знак, баланс, связь с пригласившим, даты бонусов и рассылок, настройки, журнал начислений и списаний, оплаченные расклады и расширенные прогнозы, активные московские даты и тип обращения (сообщение или кнопка), отметка однократной награды и технические статусы доставки. Телефон, дата рождения и фотографии не собираются.\n\n/delete удаляет профиль и связанные записи, очищает ссылки на ваш ID у других участников. Номера обработанных обновлений без Telegram ID временно сохраняются для защиты от повторов. Уже начатую отправку нельзя отозвать; сообщения Telegram и резервные копии не удаляются этой командой. За обращение с данными отвечает владелец проекта.");
   if (text==='/delete') {
+    await syncBonusOwner26(env,id);
     await env.DB.prepare('DELETE FROM astra_users WHERE telegram_id=?').bind(id).run();
-    return send(env,id,"Профиль, обычный журнал, активность и материалы удалены. Оплаченные доказательства и незавершённые долги сохраняются по /privacy и /terms для поддержки/возвратов. Для новой регистрации используйте /start.",{reply_markup:{remove_keyboard:true}});
+    return send(env,id,DELETE_NOTICE04+' Доказательство утренней подписки и временные подтверждения удалены.',{reply_markup:{remove_keyboard:true}});
   }
   if (text==='/help'||text==='⚙️ Помощь') return help(env,id);
   if (text==='/stop') {
     await env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(id).run();
-    return send(env,id,"Утренняя рассылка отключена. Включить её можно в «Досье» → «Рассылка». Прогноз остаётся доступен вручную.");
+    return send(env,id,"Утренние уведомления выключены. Включить их можно в «Досье» → «Уведомления». Полный прогноз остаётся доступен вручную.");
   }
   const u=await getUser(env,id);
   if (!u?.zodiac) return welcome(env,id);
   if (text==='🔮 Гороскоп') return sendFreeForecast(env,id,u.zodiac);
   if (text==='🃏 Таро') return send(env,id,"Выберите формат чтения:",{reply_markup:tarotKeyboard});
   if (text==='🎁 Бонус дня') return bonus(env,id);
-  if (text==='✨ Баланс') return send(env,id,`Баланс: ${u.balance} ✨.\n\nНовый расклад на три карты: 3 ✨. Повторное чтение сохранённого результата бесплатно.`);
+  if (text==='✨ Баланс') return economyDust(env,id,u);
   if (text==='👥 Пригласить друга') return invite(env,id);
   if (text==='🌟 Канал') return channelMenu(env,id);
   if (text==='🔔 Рассылка') {
@@ -579,7 +582,7 @@ async function incoming(env,m,updateId) {
     if (!job) throw new Error('Profile no longer exists');
     const next=job.notification_target;
     await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(next,id).run();
-    return send(env,id,next?"Рассылка включена. Прогноз отправляется в утреннее московское окно; результат также можно открыть вручную.":"Рассылка отключена. Прогноз можно открыть в разделе «Прогноз дня».");
+    return send(env,id,next?"Ваш выбор сохранён. Автоматическая рассылка пока отключена. Полный прогноз доступен вручную; отменить выбор — /stop.":"Рассылка отключена. Прогноз можно открыть в разделе «Прогноз дня».");
   }
   return send(env,id,"Выберите раздел главного меню.",{reply_markup:keyboard});
 }
@@ -635,14 +638,9 @@ async function dispatch(env, update) {
   }
 }
 
-async function schemaReady(env){
-  if(!env.DB||!activationReady(env))return false;
-  try{const r=await env.DB.prepare("SELECT count(*) AS n,(SELECT migration_done FROM astra_policy WHERE singleton=1) AS migration_done,(SELECT count(*) FROM sqlite_master WHERE type='trigger' AND name='astra_referral') AS old_referral FROM sqlite_master WHERE name IN ('astra_users','astra_processed_updates','astra_operations','astra_wallet_ledger','astra_update_jobs','astra_broadcast_jobs','astra_tarot_requests','astra_shell_rewards','astra_forecast_daily','astra_forecast_unlocks','astra_activity_days','astra_register','astra_operation_guard','astra_operation_post','astra_referral_policy','astra_erase','astra_shell_reward_guard','astra_shell_reward_post','astra_shell_erase','astra_forecast_guard','astra_forecast_post','astra_forecast_erase','astra_forecast_daily_immutable','astra_forecast_unlock_immutable','astra_activity_guard','astra_activity_erase','idx_forecast_daily_day','idx_forecast_unlocks_day','idx_astra_ledger_history','astra_policy','astra_user_policy','astra_referral_contracts','astra_policy_events','idx_policy_events_owner','astra_policy_days','astra_reward_claims','idx_reward_claims_owner','astra_referral_payouts','astra_reward_guard','astra_reward_post','astra_policy_day_guard','astra_policy_day_post','astra_referral_payout_guard','astra_referral_payout_post','astra_reward_immutable','astra_policy_day_immutable','astra_payment_orders','idx_payment_orders_owner','astra_payment_tombstones','astra_payment_receipts','astra_payment_anomalies','astra_refund_requests','astra_external_refunds','astra_refund_accounts','astra_refund_settlements','astra_debt_repayments','astra_payment_receipt_guard','astra_payment_receipt_post','astra_payment_receipt_immutable','astra_payment_order_snapshot','astra_refund_notice_guard','astra_refund_notice_post','astra_refund_settlement_post','astra_positive_debt','astra_debt_repayment_guard','astra_debt_repayment_post','astra_refund_notice_immutable','astra_refund_settlement_immutable','astra_debt_repayment_immutable','astra_policy_date_guard','astra_policy_erase','astra_referrer_erasing','astra_payment_audit','astra_refund_request_audit','astra_payment_purge','astra_payment_purge_closed','astra_refund_account_erasing')").first();
-    return r?.n===77&&r.migration_done===1&&r.old_referral===0;
-  }catch{return false;}
-}
+async function schemaReady(env){if(!env.DB||!activationReady(env))return false;try{const r=await env.DB.prepare("SELECT count(*) n,(SELECT migration_done FROM astra_patch26 WHERE singleton=1) complete,(SELECT migration_done FROM astra_policy WHERE singleton=1) old_complete FROM sqlite_master WHERE name IN ('astra_users','astra_processed_updates','astra_operations','astra_wallet_ledger','astra_update_jobs','astra_broadcast_jobs','astra_tarot_requests','astra_shell_rewards','astra_forecast_daily','astra_forecast_unlocks','astra_activity_days','astra_operation_post','astra_erase','astra_shell_reward_guard','astra_shell_erase','astra_forecast_guard','astra_forecast_post','astra_forecast_erase','astra_forecast_daily_immutable','astra_forecast_unlock_immutable','astra_activity_guard','astra_activity_erase','idx_forecast_daily_day','idx_forecast_unlocks_day','idx_astra_ledger_history','astra_policy','astra_user_policy','astra_referral_contracts','astra_policy_events','idx_policy_events_owner','astra_policy_days','astra_reward_claims','idx_reward_claims_owner','astra_referral_payouts','astra_reward_guard','astra_referral_payout_guard','astra_referral_payout_post','astra_reward_immutable','astra_policy_day_immutable','astra_payment_orders','idx_payment_orders_owner','astra_payment_tombstones','astra_payment_receipts','astra_payment_anomalies','astra_refund_requests','astra_external_refunds','astra_refund_accounts','astra_refund_settlements','astra_debt_repayments','astra_payment_receipt_guard','astra_payment_receipt_post','astra_payment_receipt_immutable','astra_payment_order_snapshot','astra_refund_notice_guard','astra_refund_notice_post','astra_refund_settlement_post','astra_positive_debt','astra_debt_repayment_guard','astra_debt_repayment_post','astra_refund_notice_immutable','astra_refund_settlement_immutable','astra_debt_repayment_immutable','astra_policy_date_guard','astra_policy_erase','astra_referrer_erasing','astra_payment_audit','astra_refund_request_audit','astra_payment_purge','astra_payment_purge_closed','astra_refund_account_erasing','astra_patch26','astra_bonus_keys26','astra_bonus_profiles26','astra_bonus_aliases26','astra_bonus_fences26','idx_bonus_fences26_expiry','astra_bonus_awards26','idx_bonus_awards26_owner','astra_bonus_days26','astra_bonus_referrals26','astra_bonus_commands26','astra_bonus_award_guard26','astra_bonus_award_post26','astra_bonus_award_immutable26','astra_bonus_day_guard26','astra_bonus_day_post26','astra_bonus_day_immutable26','astra_bonus_command_guard26','astra_bonus_command_post26','astra_old_reward_disabled26','astra_old_day_disabled26','astra_old_shell_disabled26','astra_operation_guard26','astra_register26','astra_patch_policy_guard26','astra_bonus_referrer_erasing26','astra_bonus_erase26','astra_bonus_referral_immutable26','astra_tarot_offers26','astra_tarot_purchases26','idx_tarot_purchases26_owner','astra_tarot_guard26','astra_tarot_post26','astra_tarot_immutable26','astra_tarot_erase26','astra_payment_orders26','idx_payment_orders26_owner','astra_payment_receipts26','astra_payment_order_index26','astra_all_orders26','astra_all_receipts26','astra_orders_index_old26','astra_orders_index_new26','astra_orders_unindex_old26','astra_orders_unindex_new26','astra_orders_insert26','astra_orders_update26','astra_orders_delete26','astra_receipts_insert26','astra_payment_receipt_guard26','astra_payment_receipt_post26','astra_payment_receipt_immutable26','astra_payment_order_snapshot26','astra_payment_purge26','astra_payment_purge_closed26','astra_payment_erase26')").first();return r?.n===126&&r.complete===1&&r.old_complete===1;}catch{return false;}}
 
-async function health(env) {
+async function pre03_health(env) {
   const state={
     version:VERSION,
     db_binding:env.DB?'FOUND':'MISSING',
@@ -660,7 +658,9 @@ async function health(env) {
     state.policy_ready=(!env.ASTRA_ECONOMY_V2_START_DAY||env.ASTRA_ECONOMY_V2_START_DAY===p.start_day)&&!(p.enabled&&p.start_day&&dayMSK()>=p.start_day&&!POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED));
     state.stars_flag=POLICY_TRUE(env.STARS_SHOP_ENABLED);state.stars_configured=Boolean(p.payment_scope&&p.terms_version&&p.support&&p.retention_days);
   }catch{state.policy_ready=false;}
-  state.ready=state.schema_ready && state.policy_ready && state.db_query==='OK' && state.users_table==='FOUND' && state.secrets_ready;
+  try{const fence=await fenceContext26(env);state.bonus_fence_ready=fence.ok;state.bonus_fence_blocker=fence.blocker;state.bonus_fence_expired_pending=Boolean(fence.expired_pending);state.bonus_notice_ready=Boolean(fence.notice_ready);}catch{state.bonus_fence_ready=false;state.bonus_fence_blocker='BONUS_FENCE_SCHEMA_MISSING';}
+  state.free_content_ready=state.schema_ready&&state.db_query==='OK';
+  state.ready=state.bonus_fence_ready && state.schema_ready && state.policy_ready && state.db_query==='OK' && state.users_table==='FOUND' && state.secrets_ready;
   return new Response(JSON.stringify(state,null,2),{
     status:state.ready?200:503,
     headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'},
@@ -671,7 +671,7 @@ async function activate() {
   return new Response('Activation disabled in 2.1. Existing webhook is preserved; see release guide.',{status:410});
 }
 
-async function broadcast(env) {
+async function pre03_broadcast(env) {
   const now=new Date();
   // Даже при случайном расписании не шлём прогнозы вне утреннего окна UTC.
   if (now.getUTCHours()<6 || now.getUTCHours()>7) return;
@@ -13274,7 +13274,7 @@ async function getForecastDaily(env,sign,day,generate=generateForecast) {
   if(!validDay(day))throw Error('Invalid forecast day');
   const read=()=>env.DB.prepare('SELECT * FROM astra_forecast_daily WHERE sign=? AND day=? AND locale=\'ru\'').bind(sign,day).first();
   const old=await read();if(old)return old;
-  const f=generate(sign,day,'ru');
+  const f=generate===generateForecast?generateForecastForEnv(env,sign,day,'ru'):generate(sign,day,'ru');
   if(!f.free_text?.trim()||!f.extended_text?.trim()||f.sign!==sign||f.day!==day||f.locale!=='ru')throw Error('Incomplete forecast payload');
   const inserted=await env.DB.prepare(`INSERT INTO astra_forecast_daily(sign,day,locale,free_text,extended_text,number,engine_version,content_version,number_algorithm_version,source_tags)
     VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(sign,day,locale) DO NOTHING RETURNING *`)
@@ -13302,30 +13302,30 @@ function forecastChunks(text,limit=3800) {
 }
 
 // App integration: built in the same lexical scope as the preserved 2.3A Worker.
-async function sendForecastText(env,id,text,rows=[]) {
+async function pre03_sendForecastText(env,id,text,rows=[]) {
   for(const chunk of forecastChunks(text))await send(shellEnv(env,'forecast'),id,chunk,{reply_markup:{inline_keyboard:rows}});
 }
-async function sendFreeForecast(env,id,sign,day=dayMSK()) {
+async function pre03_sendFreeForecast(env,id,sign,day=dayMSK()) {
   if(!engineActive(env,day))return send(shellEnv(env,'forecast'),id,legacyForecast(sign,day));
   const f=await getForecastDaily(env,sign,day);
   return sendForecastText(env,id,f.free_text,[[button('Расширенный — 4 ✨','forecast:extended')]]);
 }
-async function forecastMenu(env,id) {
+async function pre04_forecastMenu(env,id) {
   return screen(env,id,'🌙 Прогноз дня','Общий прогноз по выбранному знаку: тема, отношения, дела, ресурсы, эмоциональный ритм, число дня и практический итог. Дата определяется по Europe/Moscow.',[
     [button('Открыть бесплатно','forecast:read')],[button('Расширенный — 4 ✨','forecast:extended')],
     [button('Повторить расширенный','forecast:repeat')],[button('🃏 Таро','tarot')]]);
 }
 async function forecastExtended(env,id,user,mode,requestedDay=null) {
   const today=dayMSK(),day=requestedDay||today;
-  if(!validDay(day))return screen(env,id,'Предложение недоступно','Дата предложения некорректна. Откройте раздел заново.',[],'forecast');
+  if(!validDay(day))return screen(env,id,'Предложение недоступно','Откройте новое предложение из раздела «Прогноз дня».',[],'forecast');
   const saved=await getForecastUnlock(env,id,day);
   if(saved)return sendForecastText(env,id,saved.result_text);
-  if(mode==='repeat')return screen(env,id,'Сохранённый прогноз','На текущую дату расширенный прогноз не приобретён. Бесплатная часть доступна независимо от баланса.',[],'forecast');
-  if(day!==today)return screen(env,id,'Предложение завершено','Московская дата изменилась. Это подтверждение не создаёт покупки за прошлый или будущий день; откройте новое предложение.',[],'forecast');
-  if(!engineActive(env,day))return screen(env,id,'Переход на новый движок',`Новый прогноз включается с ${env.ASTRA_FORECAST_START_DAY} по Москве. До этой даты доступна прежняя бесплатная редакция; расширенный пока не продаётся.`,[],'forecast');
-  if(mode==='confirm')return screen(env,id,'Расширенный прогноз — 4 ✨','В пакет входят разбор доминанты и развилки выбора, символ и цвет, дополнение к бесплатному числу, руна Старшего футарка и Совет Жирного. Одна покупка на московскую дату; повторное чтение бесплатно. Отмена ничего не списывает.',[[button('Подтвердить — 4 ✨',`forecast:pay:${day}`)]],'forecast');
+  if(mode==='repeat')return screen(env,id,'Сохранённый прогноз','За эту дату расширенный прогноз пока не куплен. Полный бесплатный прогноз доступен при любом балансе.',[],'forecast');
+  if(day!==today)return screen(env,id,'Предложение завершено','Московская дата изменилась. Списания нет. Откройте сегодняшнее предложение заново.',[],'forecast');
+  if(!engineActive(env,day))return screen(env,id,'Расширенный прогноз пока недоступен','Полный бесплатный прогноз можно читать как обычно.',[],'forecast');
+  if(mode==='confirm')return screen(env,id,'Расширенный прогноз — 4 ✨','Развилка выбора, символ и цвет, руна, дополнительная трактовка числа и Совет Жирного.\n\nСтоимость — 4 ✨ за эту московскую дату. Повторное чтение бесплатно. До подтверждения пыль не списывается.',[[button('Подтвердить — 4 ✨',`forecast:pay:${day}`)]],'forecast');
   const row=await purchaseForecast(env,id,user.zodiac,day);
-  if(!row)return screen(env,id,'Недостаточно пыли','Для нового дневного пакета требуется 4 ✨. Бесплатный прогноз остаётся доступен; баланс не изменён.',[],'forecast');
+  if(!row)return insufficient04(env,id,4,'forecast');
   return sendForecastText(env,id,row.result_text);
 }
 
@@ -13440,7 +13440,7 @@ async function legacyActivityScreen(env,id,parent){
   const a=await readActivity(env,id,dayMSK());
   return screen(env,id,'Активные дни',activitySummaryText(a),[[button('История операций',`${parent}:history`)]],parent);
 }
-async function ledgerScreen(env,id,u,parent,cursor=null){
+async function pre04_ledgerScreen(env,id,u,parent,cursor=null){
   const page=await readHistoryPage(env,id,cursor);
   if(page.expired)return screen(env,id,'История операций','Курсор недоступен или устарел. Откройте историю заново.',[[button('Открыть историю',`${parent}:history`)]],parent);
   const short=parent==='dossier'?'p':'d',rows=[];
@@ -13471,7 +13471,7 @@ function economyEvent(update){
     const page=data.startsWith('shell:')?data.slice(6):null;
     const faq=/^faq:([0-9]{1,2})(?::more)?$/.exec(page||'');
     const validSign=data.startsWith('sign:')&&Boolean(zodiacName(data.slice(5)));
-    const recognized=/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
+    const recognized=/^consent28:(?:stop|(?:grant|cancel):[a-f0-9]{32})$/.test(page||'')||/^notifications:(?:confirm|enable|disable)$/.test(page||'')||/^forecast:(?:offer|owned):\d{4}-\d{2}-\d{2}$/.test(page||'')||/^tarot26:[a-f0-9]{32}$/.test(page||'')||/^stars:(?:buy26:(?:10|25|50)|accept26:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
     return recognized?{id:from.id,source:'callback',signSelection:validSign}:null;
   }
   const text=String(m.text||'').trim();
@@ -13500,8 +13500,8 @@ async function measureInvocation(env,kind,work){
 
 const POLICY_VERSION='policy-v2';
 const POLICY_TRUE=value=>value===true||value==='true';
-async function readPolicy(env){return env.DB.prepare('SELECT * FROM astra_policy WHERE singleton=1').first();}
-async function policyClock(env,day=activityDay()){
+async function pre26_readPolicy(env){return env.DB.prepare('SELECT * FROM astra_policy WHERE singleton=1').first();}
+async function pre26_policyClock(env,day=activityDay()){
   if(!validDay(day))throw Error('Invalid policy day');
   let p=await readPolicy(env);if(!p)throw Error('Policy missing');
   if(env.ASTRA_ECONOMY_V2_START_DAY&&env.ASTRA_ECONOMY_V2_START_DAY!==p.start_day)throw Error('Policy date mismatch');
@@ -13510,12 +13510,12 @@ async function policyClock(env,day=activityDay()){
     await env.DB.prepare('UPDATE astra_policy SET activated=1 WHERE singleton=1 AND activated=0 AND start_day<=?').bind(day).run();p=await readPolicy(env);
   }return p;
 }
-async function armPolicy(env,startDay,today=activityDay()){
+async function pre26_armPolicy(env,startDay,today=activityDay()){
   if(!validDay(startDay)||startDay<=today)throw Error('Choose a future Moscow day');
   const p=await readPolicy(env);if(p.start_day&&p.start_day!==startDay)throw Error('Policy cutover already fixed');
   await env.DB.prepare('UPDATE astra_policy SET start_day=?,enabled=1 WHERE singleton=1 AND activated=0').bind(startDay).run();return readPolicy(env);
 }
-async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
+async function pre26_capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
   if(!event||!Number.isSafeInteger(updateId)||!validDay(day))return null;
   const enabled=p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED);
   const legacy=enabled?0:1;
@@ -13526,7 +13526,7 @@ async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
   if(!returnRow)return;
   return env.DB.prepare('SELECT * FROM astra_policy_events WHERE update_id=? AND telegram_id=?').bind(updateId,event.id).first();
 }
-async function settlePolicyEvents(env,owner){
+async function pre26_settlePolicyEvents(env,owner){
   const p=await readPolicy(env);if(!p?.activated||!p.enabled||!POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))return;
   await env.DB.prepare(`INSERT INTO astra_reward_claims(claim_id,telegram_id,generation,kind,day,amount,reference) SELECT 'reward:'||generation||':initial:once',telegram_id,generation,'initial',registered_day,12,'once' FROM astra_user_policy WHERE telegram_id=? AND mode='v2' AND NOT EXISTS(SELECT 1 FROM astra_reward_claims WHERE telegram_id=? AND kind='initial') ON CONFLICT(claim_id) DO NOTHING`).bind(owner,owner).run();
   const rows=await env.DB.prepare(`SELECT e.* FROM astra_policy_events e JOIN astra_users u ON u.telegram_id=e.telegram_id
@@ -13547,7 +13547,7 @@ async function policyClaim(env,owner,kind,day,amount,reference='once'){
     SELECT 'reward:'||generation||':'||?||':'||?,telegram_id,generation,?,?,?,? FROM astra_user_policy WHERE telegram_id=?
     ON CONFLICT(claim_id) DO NOTHING`).bind(kind,reference,kind,day,amount,reference,owner).run();
 }
-async function policySummary(env,owner,today=activityDay()){
+async function pre26_policySummary(env,owner,today=activityDay()){
   const yesterday=new Date(Date.parse(today+'T12:00:00Z')-86400000).toISOString().slice(0,10);
   const row=await env.DB.prepare(`SELECT (SELECT count(*) FROM astra_policy_days WHERE telegram_id=?) AS total,
     coalesce((SELECT streak FROM astra_policy_days WHERE telegram_id=? AND day IN (?,?) ORDER BY day DESC LIMIT 1),0) AS streak,
@@ -13556,7 +13556,7 @@ async function policySummary(env,owner,today=activityDay()){
   return row;
 }
 
-const STAR_PACKAGES=Object.freeze({10:{xtr:10,dust:100},25:{xtr:25,dust:270},50:{xtr:50,dust:570}});
+const STAR_PACKAGES=Object.freeze({10:{xtr:10,dust:40},25:{xtr:25,dust:110},50:{xtr:50,dust:240}});
 const paymentScope=env=>POLICY_TRUE(env.ASTRA_TELEGRAM_TEST_MODE)?'test':'production';
 async function chargeHash(charge){
   if(typeof charge!=='string'||charge.length<1||charge.length>512)throw Error('Invalid charge ID');
@@ -13584,8 +13584,8 @@ async function starsApi(env,method,args,timeout=4000){
   return body.result;
 }
 
-const readPaymentOrder=(env,payload)=>env.DB.prepare('SELECT * FROM astra_payment_orders WHERE payload=?').bind(payload).first();
-async function createStarOrder(env,owner,pack,requestKey,termsVersion){
+const pre26_readPaymentOrder=(env,payload)=>env.DB.prepare('SELECT * FROM astra_payment_orders WHERE payload=?').bind(payload).first();
+async function pre26_createStarOrder(env,owner,pack,requestKey,termsVersion){
   const p=await paymentEnvironment(env,{shop:true,probe:true}),price=STAR_PACKAGES[pack];
   if(!price||termsVersion!==p.terms_version||!Number.isSafeInteger(owner)||owner<=0||typeof requestKey!=='string'||requestKey.length>100)throw Error('Invalid purchase consent');
   const order=crypto.randomUUID(),payload='a24:'+order;
@@ -13595,7 +13595,7 @@ async function createStarOrder(env,owner,pack,requestKey,termsVersion){
   const saved=await env.DB.prepare('SELECT * FROM astra_payment_orders WHERE payer_id=? AND request_key=?').bind(owner,requestKey).first();
   if(!saved)throw Error('A registered profile is required');if(saved.package!==Number(pack)||saved.terms_version!==termsVersion||saved.scope!==paymentScope(env))throw Error('Purchase request snapshot conflict');return saved;
 }
-async function sendStarInvoice(env,order){
+async function pre26_sendStarInvoice(env,order){
   await paymentEnvironment(env,{shop:true,probe:true});
   if(order.scope!==paymentScope(env))throw Error('Wrong payment environment');
   const lease=crypto.randomUUID(),r=await env.DB.prepare(`UPDATE astra_payment_orders SET delivery='sending',invoice_lease=?,updated_at=CURRENT_TIMESTAMP
@@ -13607,7 +13607,7 @@ async function sendStarInvoice(env,order){
     return {sent:true};
   }catch(e){await env.DB.prepare("UPDATE astra_payment_orders SET delivery=?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?").bind(e.telegramCode?'failed':'unknown',order.order_id,lease).run();throw e;}
 }
-async function reservePrecheckout(env,q,{deadline=Infinity}={}){
+async function pre26_reservePrecheckout(env,q,{deadline=Infinity}={}){
   await paymentEnvironment(env,{shop:true});
   if(performance.now()>=deadline)return false;
   const o=await readPaymentOrder(env,q.invoice_payload);
@@ -13616,19 +13616,19 @@ async function reservePrecheckout(env,q,{deadline=Infinity}={}){
     WHERE order_id=? AND payer_id=? AND status IN ('created','invoiced','confirmed') AND (precheckout_id IS NULL OR precheckout_id=?)`).bind(q.id,o.order_id,q.from.id,q.id).run();
   return Boolean(r.meta.changes);
 }
-async function answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
+async function pre26_answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
   let timer,ok=false;const deadline=startedAt+6000;
   const validate=async()=>await ready()&&performance.now()<deadline?reservePrecheckout(env,q,{deadline}):false;
   try{ok=await Promise.race([validate(),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),Math.max(0,deadline-performance.now()));})]);}catch{ok=false;}finally{clearTimeout(timer);}
   await starsApi(env,'answerPreCheckoutQuery',{pre_checkout_query_id:q.id,ok,...(ok?{}:{error_message:'Предложение недоступно. Откройте магазин заново или обратитесь в /paysupport.'})},2500);
   return ok;
 }
-function validStarProof(proof){return proof&&proof.currency==='XTR'&&Number.isSafeInteger(proof.total_amount)&&proof.total_amount>0&&typeof proof.invoice_payload==='string'&&new TextEncoder().encode(proof.invoice_payload).length<=128&&typeof proof.telegram_payment_charge_id==='string'&&proof.telegram_payment_charge_id.length>0&&proof.telegram_payment_charge_id.length<=512;}
-async function savePaymentAnomaly(env,owner,proof,hash,reason){
+function pre26_validStarProof(proof){return proof&&proof.currency==='XTR'&&Number.isSafeInteger(proof.total_amount)&&proof.total_amount>0&&typeof proof.invoice_payload==='string'&&new TextEncoder().encode(proof.invoice_payload).length<=128&&typeof proof.telegram_payment_charge_id==='string'&&proof.telegram_payment_charge_id.length>0&&proof.telegram_payment_charge_id.length<=512;}
+async function pre26_savePaymentAnomaly(env,owner,proof,hash,reason){
   await env.DB.prepare(`INSERT INTO astra_payment_anomalies(charge_hash,charge_id,payer_id,payload,currency,xtr,scope,reason)
     VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(charge_hash) DO NOTHING`).bind(hash,proof.telegram_payment_charge_id,owner,String(proof.invoice_payload||'').slice(0,128),String(proof.currency||'').slice(0,8),Number.isSafeInteger(proof.total_amount)?proof.total_amount:0,paymentScope(env),reason).run();
 }
-async function receiveStarPayment(env,owner,proof){
+async function pre26_receiveStarPayment(env,owner,proof){
   if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed successful payment');
   const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
   const old=await env.DB.prepare('SELECT * FROM astra_payment_receipts WHERE charge_hash=? OR charge_id=?').bind(hash,proof.telegram_payment_charge_id).first();
@@ -13647,7 +13647,7 @@ async function receiveStarPayment(env,owner,proof){
   if(!receipt){await savePaymentAnomaly(env,owner,proof,hash,'concurrent_order_conflict');return {status:'needs_review',hash};}
   return {status:receipt.credited_dust>0?'credited':'needs_review',receipt,hash};
 }
-async function receiveStarRefund(env,owner,proof,source='message'){
+async function pre26_receiveStarRefund(env,owner,proof,source='message'){
   if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed refund');
   const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
   const receipt=await env.DB.prepare('SELECT * FROM astra_payment_receipts WHERE charge_hash=?').bind(hash).first();
@@ -13662,7 +13662,7 @@ async function receiveStarRefund(env,owner,proof,source='message'){
   if(settlement&&settlement.payer_id!==owner)throw Error('Refund owner mismatch');
   return settlement||{payer_id:owner,removed:0,debt_added:0,archived:true};
 }
-async function requestStarRefund(env,chargeId){
+async function pre26_requestStarRefund(env,chargeId){
   await paymentEnvironment(env,{probe:true});
   const hash=await chargeHash(chargeId);
   let proof=await env.DB.prepare(`SELECT r.*,o.payload AS invoice_payload,o.scope FROM astra_payment_receipts r JOIN astra_payment_orders o ON o.order_id=r.order_id WHERE r.charge_hash=?`).bind(hash).first();
@@ -13687,7 +13687,7 @@ async function requestStarRefund(env,chargeId){
     return {status:safeRetry?'requested':'needs_review'};
   }
 }
-async function reconcileStarPage(env,offset=0,recoverArchived=false){
+async function pre26_reconcileStarPage(env,offset=0,recoverArchived=false){
   await paymentEnvironment(env,{probe:true});if(!Number.isSafeInteger(offset)||offset<0)throw Error('Invalid offset');
   const page=await starsApi(env,'getStarTransactions',{offset,limit:5});
   if(!Array.isArray(page?.transactions))throw Error('Unknown Telegram transaction schema');
@@ -13709,7 +13709,7 @@ async function reconcileStarPage(env,offset=0,recoverArchived=false){
     else{await receiveStarRefund(env,partner.user.id,proof,'reconcile');result.refunds++;}
   }return result;
 }
-async function readStarHistory(env,owner,cursor=null){
+async function pre26_readStarHistory(env,owner,cursor=null){
   if(!Number.isSafeInteger(owner)||owner<=0)throw Error('Invalid payment history owner');
   let snapshot,boundary=null,direction='o';
   if(cursor){const c=decodeHistoryCursor(cursor);if(!c)return {expired:true};({snapshot,direction}=c);
@@ -13735,19 +13735,19 @@ async function configurePayments(env,b){
 }
 async function purgePaymentData(env,dryRun=true){
   const p=await readPolicy(env);if(!p.retention_days)throw Error('Retention not approved');
-  const rows=await env.DB.prepare(`SELECT o.payer_id FROM astra_payment_orders o GROUP BY o.payer_id HAVING
+  const rows=await env.DB.prepare(`SELECT o.payer_id FROM astra_all_orders26 o GROUP BY o.payer_id HAVING
     sum(CASE WHEN o.status NOT IN ('credited','refunded') OR o.updated_at>=datetime('now','-'||o.retention_days||' days') THEN 1 ELSE 0 END)=0
     AND NOT EXISTS(SELECT 1 FROM astra_refund_accounts a WHERE a.payer_id=o.payer_id AND (a.debt>0 OR a.updated_at>=datetime('now','-'||o.retention_days||' days')))
     AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies a WHERE a.payer_id=o.payer_id AND a.status='needs_review')
-    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_payment_receipts r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 10`).all();
-  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_payment_orders o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 10`).bind(p.retention_days).all();
+    AND NOT EXISTS(SELECT 1 FROM astra_refund_requests q JOIN astra_all_receipts26 r ON r.charge_hash=q.charge_hash WHERE r.payer_id=o.payer_id AND q.status<>'refunded') LIMIT 10`).all();
+  const closed=await env.DB.prepare(`SELECT a.payer_id FROM astra_refund_accounts a WHERE a.debt=0 AND a.updated_at<datetime('now','-'||?||' days') AND NOT EXISTS(SELECT 1 FROM astra_all_orders26 o WHERE o.payer_id=a.payer_id) AND NOT EXISTS(SELECT 1 FROM astra_payment_anomalies x WHERE x.payer_id=a.payer_id AND x.status='needs_review') LIMIT 10`).bind(p.retention_days).all();
   if(dryRun)return {dry_run:true,eligible:rows.results.length+closed.results.length};
   // Each deletion is a single statement with explicit FK-OFF cleanup trigger.
-  for(const o of rows.results)await env.DB.prepare('DELETE FROM astra_payment_orders WHERE payer_id=?').bind(o.payer_id).run();
+  for(const o of rows.results)await env.DB.prepare('DELETE FROM astra_all_orders26 WHERE payer_id=?').bind(o.payer_id).run();
   for(const a of closed.results)await env.DB.prepare('DELETE FROM astra_refund_accounts WHERE payer_id=?').bind(a.payer_id).run();
   await paymentAudit(env,'retention_purge');return {dry_run:false,deleted_payer_archives:rows.results.length,deleted_closed_accounts:closed.results.length};
 }
-async function paymentsAdmin(request,env){
+async function pre26_paymentsAdmin(request,env){
   const url=new URL(request.url);if(!url.pathname.startsWith('/internal/payments/')&&url.pathname!=='/internal/economy/policy')return null;
   if(request.method!=='POST'||!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!==`Bearer ${env.ASTRA_ADMIN_KEY}`)return new Response('Forbidden',{status:403});
   const b=await request.json();
@@ -13760,7 +13760,7 @@ async function paymentsAdmin(request,env){
     if(b.enabled)await paymentEnvironment(env);await env.DB.prepare('UPDATE astra_policy SET stars_enabled=? WHERE singleton=1').bind(b.enabled===true?1:0).run();await paymentAudit(env,b.enabled?'shop_enabled':'shop_disabled');return Response.json({enabled:b.enabled===true});
   }
   if(url.pathname==='/internal/payments/status'){
-    if(b.order_id){const row=await env.DB.prepare('SELECT o.order_id,o.payer_id,o.xtr,o.dust,o.status,r.charge_id,r.charge_hash,r.credited_dust FROM astra_payment_orders o LEFT JOIN astra_payment_receipts r ON r.order_id=o.order_id WHERE o.order_id=?').bind(b.order_id).first();return Response.json({order:row},{headers:{'Cache-Control':'no-store'}});}
+    if(b.order_id){const row=await env.DB.prepare('SELECT o.order_id,o.payer_id,o.xtr,o.dust,o.status,r.charge_id,r.charge_hash,r.credited_dust FROM astra_all_orders26 o LEFT JOIN astra_all_receipts26 r ON r.order_id=o.order_id WHERE o.order_id=?').bind(b.order_id).first();return Response.json({order:row},{headers:{'Cache-Control':'no-store'}});}
     if(typeof b.charge_prefix!=='string'||!/^[a-f0-9]{12,64}$/.test(b.charge_prefix))throw Error('Order or support reference required');const rows=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash>=? AND charge_hash<? LIMIT 5').bind(b.charge_prefix,b.charge_prefix+'g').all();return Response.json({cases:rows.results},{headers:{'Cache-Control':'no-store'}});
   }
   if(url.pathname==='/internal/payments/refund'){await paymentAudit(env,'operator_refund_requested');return Response.json(await requestStarRefund(env,b.charge_id));}
@@ -13774,26 +13774,26 @@ async function paymentsAdmin(request,env){
 }
 
 // Integration in the single Worker scope; the old A/B modules remain separate.
-async function policyWelcome(env,id,ref=''){
+async function pre26_policyWelcome(env,id,ref=''){
   const p=await readPolicy(env);if(!p.activated)return legacyWelcome(env,id,ref);
   const u=await createUser(env,id,ref);
   if(u.zodiac)return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nВыберите раздел.`,{reply_markup:keyboard});
   return send(env,id,`Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак. Баланс: ${u.balance} ✨. Новый профиль по policy-v2 получает 12 ✨ один раз${p.enabled?'':'; начисления сейчас приостановлены'}. Прогноз с числом дня и карта дня бесплатны.`,{reply_markup:signKeyboard});
 }
-async function bonus(env,id){
+async function pre26_bonus(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyBonus(env,id);
   const u=await getUser(env,id);return send(shellEnv(env,'dust'),id,`Бонус первого осмысленного входа: +3 ✨ автоматически один раз на московскую дату${p.enabled?'':'. Начисления приостановлены'}. Ручной +1 больше не действует.\nБаланс: ${u.balance} ✨. Состояние начислений доступно в истории.`);
 }
-async function invite(env,id){
+async function pre26_invite(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyInvite(env,id);
   return send(shellEnv(env,'dust'),id,`Приглашение\n\nНовым участникам после запуска policy-v2: 14 ✨ пригласившему и 4 ✨ приглашённому после выбора знака и двух разных активных московских дат. Если пригласивший удалён до выплаты, договор отменяется. Старые незавершённые приглашения сохраняют исходные +5 пригласившему. Повторной выплаты за уже оплаченный договор нет.\n\nhttps://t.me/${botUsername(env)}?start=ref_${id}`);
 }
-async function channelMenu(env,id){
+async function pre26_channelMenu(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyChannelMenu(env,id);
   const c=channelName(env);if(!c)return send(shellEnv(env,'dust'),id,'Канал пока не подключён. Бесплатные функции доступны без подписки.');
   return send(shellEnv(env,'dust'),id,`Канал ${c}\n\nПервая подтверждённая подписка: +8 ✨. Ранее полученные +5 не доплачиваются.`,{reply_markup:{inline_keyboard:[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]]}});
 }
-async function channelCheck(env,id){
+async function pre26_channelCheck(env,id){
   const p=await readPolicy(env);if(!p.activated)return legacyChannelCheck(env,id);
   if(!p.enabled||!POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))return send(shellEnv(env,'dust'),id,'Новые начисления приостановлены.');
   const c=channelName(env);if(!c)return channelMenu(env,id);
@@ -13803,23 +13803,23 @@ async function channelCheck(env,id){
   await policyClaim(env,id,'channel',dayMSK(),8);
   return send(shellEnv(env,'dust'),id,'Подписка проверена. Результат начисления +8 ✨ и возможное погашение долга отражены в истории.');
 }
-async function economyDust(env,id,u){
+async function pre04_economyDust(env,id,u){
   const p=await readPolicy(env),s=await policySummary(env,id);
-  const rates=p.activated?'Новый профиль: 12 ✨ один раз. Первый активный вход: +3 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +5; 30 разных активных дат: +12 один раз.\nНовые рефералы: +14/+4 после двух дат. Новый канал: +8 один раз; старые +5 закрывают право.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.';
-  return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\n\n${rates}\n${p.activated&&!p.enabled?'Начисления приостановлены.\n':''}Таро: 3 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.`,[
+  const rates=p.activated?'Новый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.\nНовые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.';
+  return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\n\n${rates}\n${p.activated&&!p.enabled?'Начисления приостановлены.\n':''}Таро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.`,[
     [button('История операций','dust:history'),button('Активные дни','dust:activity')],
     [button('Бонус дня','gift'),button('Пригласить участника','invite')],[button('Подписка на канал','channel')],
     [button('Магазин Stars','dust:shop'),button('Мои платежи','stars:history')],[button('Условия','stars:terms'),button('Поддержка','stars:support')]]);
 }
-async function economyDossier(env,id,u){
+async function pre04_economyDossier(env,id,u){
   const p=await readPolicy(env);if(!p.activated)return legacyEconomyDossier(env,id,u);
-  const s=await policySummary(env,id);return screen(env,id,'Экономическое досье',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\nДат policy-v2: ${s.total}\nТекущая серия policy-v2: ${s.streak} дн.\n\n+3 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +5; 30 разных дат +12 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.`,[[button('История операций','dossier:history'),button('Мои платежи','stars:history')]],'dossier');
+  const s=await policySummary(env,id);return screen(env,id,'Экономическое досье',`Баланс: ${u.balance} ✨\nДолг по возвратам: ${s.debt} ✨\nДат policy-v2: ${s.total}\nТекущая серия policy-v2: ${s.streak} дн.\n\n+2 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +4; 30 разных дат +6 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.`,[[button('История операций','dossier:history'),button('Мои платежи','stars:history')]],'dossier');
 }
-async function activityScreen(env,id,parent){
+async function pre04_activityScreen(env,id,parent){
   const p=await readPolicy(env);if(!p.activated)return legacyActivityScreen(env,id,parent);
-  const s=await policySummary(env,id);return screen(env,id,'Активные дни',`policy-v2: ${s.total} разных дат; текущая серия ${s.streak} дн.\nДаты отсчитываются с принятой политики, без восстановления прежних посещений. +3 за дату, +3 за первые 3 подряд, +5 за каждый 7-дневный цикл и +12 за 30 разных дат. Пропуск не уменьшает баланс.`,[[button('История операций',`${parent}:history`)]],parent);
+  const s=await policySummary(env,id);return screen(env,id,'Активные дни',`policy-v2: ${s.total} разных дат; текущая серия ${s.streak} дн.\nДаты отсчитываются с принятой политики, без восстановления прежних посещений. +2 за дату, +3 за первые 3 подряд, +4 за каждый 7-дневный цикл и +6 за 30 разных дат. Пропуск не уменьшает баланс.`,[[button('История операций',`${parent}:history`)]],parent);
 }
-async function policyBefore(env,update){
+async function pre26_policyBefore(env,update){
   const event=economyEvent(update),p=await policyClock(env);
   if(event&&p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED)){
     const existing=await env.DB.prepare('SELECT update_id FROM astra_policy_events WHERE update_id=?').bind(update.update_id).first();
@@ -13829,9 +13829,9 @@ async function policyBefore(env,update){
   if(event&&p.activated)await settlePolicyEvents(env,event.id);
   return event?{...event,policyActive:Boolean(p.activated&&p.enabled&&POLICY_TRUE(env.ASTRA_ECONOMY_V2_ENABLED))}:null;
 }
-async function policyAfter(env,event){if(event?.signSelection)await settlePolicyEvents(env,event.id);}
+async function pre26_policyAfter(env,event){if(event?.signSelection)await settlePolicyEvents(env,event.id);}
 
-async function policyFaq(env){
+async function pre26_policyFaq(env){
   const p=await readPolicy(env),items=FAQ.map(row=>[...row]);
   let shop=false;try{await paymentEnvironment(env,{shop:true});shop=true;}catch{}
   const rates=p.activated?'Новый профиль: 12 ✨ один раз; первый осмысленный вход за московскую дату: +3 автоматически. Первые три дня подряд: +3 один раз; каждый седьмой день серии: +5; 30 разных дат: +12 один раз. Новое приглашение: +14/+4 после выбора знака и двух активных дат; старый незавершённый договор: прежние +5. Канал: +8 один раз; прежние +5 исключают повтор.':'Начальный баланс: 2 ✨. Ручной бонус дня: +1. Приглашение после выбора знака: +5; первая подтверждённая подписка: +5. Новая политика ещё не вступила в силу.';
@@ -13845,23 +13845,23 @@ async function policyFaq(env){
   return items;
 }
 
-async function paymentTerms(env,id){
+async function pre04_paymentTerms(env,id){
   const p=await readPolicy(env);
   return screen(env,id,'Условия Stars',`Пыль — внутренний доступ к материалам, без вывода в деньги. Стоимость пакета фиксируется в заказе до счёта. Пыль начисляется только после подтверждённой оплаты Telegram.\n\nПри возврате уже выданные материалы не отзываются. Доступная пыль уменьшается на стоимость возвращённого пакета; недостаток становится явным долгом. Будущие начисления сначала погашают долг. Баланс не становится отрицательным.\n\nПоддержка: ${p.support||'владелец ещё не указал контакт; магазин недоступен'}.\nВерсия условий: ${p.terms_version||'не утверждена'}.\nОплаченные заказы, charge ID и ID плательщика нужны для возвратов/споров: ${p.retention_days||'не утверждено'} дней после закрытия всех платёжных дел и погашения долга. Неразрешённые случаи сохраняются до завершения. После удаления персональных доказательств остаётся необратимый hash charge ID с суммой пакета и признаком возврата, без ID плательщика без ограничения срока для запрета повторного начисления. /delete не стирает незавершённые платежи/долги.\n\nДо согласования условий, контакта, хранения и окружения магазин выключен.`,[[button('Поддержка','stars:support')]],'dust');
 }
-async function paymentSupport(env,id){
+async function pre04_paymentSupport(env,id){
   const p=await readPolicy(env);return screen(env,id,'Поддержка платежей',p.support?`Контакт владельца: ${p.support}\n\nУкажите номер заказа из «Мои платежи», сумму XTR и проблему. Не присылайте токен бота, webhook secret, данные других людей. Возврат рассматривается по /terms; долг не скрывается. При неопределённом исходе проводится сверка Telegram, а не повторное списание.`:'Контакт поддержки владельцем ещё не установлен. Магазин не может выставлять счета. Текущие материалы и история пыли остаются доступны.',[[button('Мои платежи','stars:history'),button('Условия','stars:terms')]],'dust');
 }
-async function paymentHistory(env,id,cursor=null){
+async function pre04_paymentHistory(env,id,cursor=null){
   const page=await readStarHistory(env,id,cursor);
   if(page.expired)return screen(env,id,'Мои платежи','Курсор устарел. Откройте историю заново.',[[button('Обновить','stars:history')]],'dust');
   const nav=[];if(page.newer)nav.push(button('‹ Новее','stars:history:'+page.newer));if(page.older)nav.push(button('Старее ›','stars:history:'+page.older));
   const rows=nav.length?[nav]:[];rows.push([button('Обновить','stars:history'),button('Поддержка','stars:support')]);
   return screen(env,id,'Мои платежи',page.rows.length?page.rows.map(o=>`${formatLedgerTime(o.created_at)}\nЗаказ ${o.order_id}\n${o.xtr} XTR → ${o.dust} ✨ · ${o.status}`).join('\n\n'):'Заказов пока нет.',rows,'dust');
 }
-async function starsShop(env,id){
+async function pre04_starsShop(env,id){
   try{await paymentEnvironment(env,{shop:true});}catch{return screen(env,id,'Магазин Stars','Магазин выключен или ещё не принят для этого окружения. Счета не выставляются. Доступные материалы и история работают независимо от магазина.',[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'dust');}
-  return screen(env,id,'Магазин Stars','Пакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');
+  return screen(env,id,'Магазин Stars','Пакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy26:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');
 }
 async function starsRoute(env,id,page,q){
   if(page==='stars:terms')return paymentTerms(env,id);
@@ -13870,16 +13870,16 @@ async function starsRoute(env,id,page,q){
   if(page.startsWith('stars:history:'))return paymentHistory(env,id,page.slice(14));
   if(page==='dust:shop')return starsShop(env,id);
   let p;try{p=await paymentEnvironment(env,{shop:true});}catch{return starsShop(env,id);}
-  const buy=/^stars:buy:(10|25|50)$/.exec(page);
-  if(buy){const token=(await chargeHash(p.terms_version)).slice(0,12),pack=STAR_PACKAGES[buy[1]];return screen(env,id,'Подтверждение покупки',`${pack.xtr} XTR за ${pack.dust} ✨.\nПрочитайте /terms версии ${p.terms_version}. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.`,[[button(`Принимаю условия · ${pack.xtr} XTR`,`stars:accept:${buy[1]}:${token}`)],[button('Условия','stars:terms')]],'dust');}
-  const consent=/^stars:accept:(10|25|50):([a-f0-9]{12})$/.exec(page);
-  if(!consent||consent[2]!== (await chargeHash(p.terms_version)).slice(0,12)||(!Number.isSafeInteger(q?.message?.message_id)||q.message.message_id<1))return screen(env,id,'Предложение устарело','Откройте магазин заново и прочитайте действующие условия.',[],'dust');
-  const key=`${q.message.message_id}:${consent[1]}:${consent[2]}`;
+  const buy=/^stars:buy26:(10|25|50)$/.exec(page);
+  if(buy){const token=(await chargeHash(p.terms_version)).slice(0,12),pack=STAR_PACKAGES[buy[1]];return screen(env,id,'Подтверждение покупки',`${pack.dust} ✨ за ${pack.xtr} XTR\n\nПыль нельзя обменять обратно на Stars или деньги. Обоснованные споры и обязательные возвраты рассматриваются по /terms.\n\nУсловия: ${p.terms_version}. Поддержка: ${supportText04(p)}\n\nНажимая «Принимаю условия», вы соглашаетесь с ними и переходите к счёту. Пыль появится после оплаты Telegram.`,[[button(`Принимаю условия · ${pack.xtr} XTR`,`stars:accept26:${buy[1]}:${token}`)],[button('Условия','stars:terms')]],'dust');}
+  const consent=/^stars:accept26:(10|25|50):([a-f0-9]{12})$/.exec(page);
+  if(!consent||consent[2]!== (await chargeHash(p.terms_version)).slice(0,12)||(!Number.isSafeInteger(q?.message?.message_id)||q.message.message_id<1))return screen(env,id,'Предложение обновилось','Откройте магазин заново, чтобы проверить пакет и условия до оплаты.',[],'dust');
+  const key=`stars-pack-v2:${q.message.message_id}:${consent[1]}:${consent[2]}`;
   const order=await createStarOrder(env,id,consent[1],key,p.terms_version);
-  try{await sendStarInvoice(env,order);return screen(env,id,'Заказ сохранён',`Номер: ${order.order_id}.\nПыль появится только после подтверждённой оплаты. Состояние доступно в «Мои платежи».`,[[button('Мои платежи','stars:history')]],'dust');}
-  catch{return screen(env,id,'Отправка счёта не подтверждена',`Заказ ${order.order_id} сохранён. Повторная автоматическая отправка отключена; проверьте сообщения и обратитесь в поддержку. Пыль за отправку счёта не начисляется.`,[[button('Мои платежи','stars:history'),button('Поддержка','stars:support')]],'dust');}
+  try{await sendStarInvoice(env,order);return screen(env,id,'Заказ сохранён',`Заказ: ${order.order_id}.\n\nПыль появится после подтверждённой оплаты Telegram. Сам счёт не означает оплату. Проверить заказ — «Мои платежи».`,[[button('Мои платежи','stars:history')]],'dust');}
+  catch{return screen(env,id,'Отправка счёта не подтверждена',`Заказ: ${order.order_id}.\n\nНе удалось подтвердить отправку счёта. Проверьте сообщения Telegram и «Мои платежи». Если счёта нет, обратитесь в поддержку; повторно платить за тот же заказ не нужно.`,[[button('Мои платежи','stars:history'),button('Поддержка','stars:support')]],'dust');}
 }
-async function paymentCommand(env,m){
+async function pre26_paymentCommand(env,m){
   const id=m.from.id,text=String(m.text||'').trim();
   if(text==='/terms'){await paymentTerms(env,id);return true;}
   if(text==='/paysupport'||text==='/support'){await paymentSupport(env,id);return true;}
@@ -13894,18 +13894,5082 @@ async function paymentUpdate(env,update){
   if(m.chat?.type!=='private'||!Number.isSafeInteger(m.chat.id)||m.chat.id<=0)throw Error('Private payment proof required');
   const owner=m.chat.id;
   if(m.successful_payment&&m.from?.id!==owner)throw Error('Payment sender mismatch');
-  if(m.refunded_payment){const r=await receiveStarRefund(env,owner,proof,'message');await send(shellEnv(env,'dust'),owner,`Возврат Telegram учтён. Списано доступной пыли: ${r.removed} ✨; добавлен долг: ${r.debt_added} ✨. Материалы не отозваны. Подробности: /paysupport.`);}
-  else{const r=await receiveStarPayment(env,owner,proof),rawOrder=await readPaymentOrder(env,proof.invoice_payload),o=rawOrder?.payer_id===owner?rawOrder:null,u=await getUser(env,owner);await send(shellEnv(env,'dust'),owner,`Платёж ${r.status==='needs_review'?'ожидает проверки поддержки':'сохранён'}${o?` · заказ ${o.order_id}`:''}.\nСостояние: ${o?.status||r.status}. Номер обращения: ${r.hash.slice(0,16)}.\n${u?`Доступный баланс: ${u.balance} ✨.`:'Профиль отсутствует; платёж не создаёт его автоматически.'}\nПовтор не начисляет пыль заново. /payments · /paysupport`);}
+  if(m.refunded_payment){const r=await receiveStarRefund(env,owner,proof,'message');await send(shellEnv(env,'dust'),owner,refundNotice04(r));}
+  else{const r=await receiveStarPayment(env,owner,proof),rawOrder=await readPaymentOrder(env,proof.invoice_payload),o=rawOrder?.payer_id===owner?rawOrder:null,u=await getUser(env,owner);await send(shellEnv(env,'dust'),owner,paymentNotice04(r,o,u));}
   return true;
 }
 
 Object.assign(HISTORY_LABELS,{"reward:v2:initial":"Новый профиль policy-v2","reward:v2:daily":"Активный день","reward:v2:first3":"Первые три дня подряд","reward:v2:weekly":"Семидневный цикл","reward:v2:thirty":"Тридцать разных дат","reward:v2:channel":"Новая подтверждённая подписка","reward:v2:referrer":"Реферальная награда за две даты","reward:v2:invitee":"Награда приглашённому за две даты","payment:stars":"Пакет пыли за Stars","refund:cash":"Возврат пакета: уменьшение пыли","refund:repayment":"Погашение долга по возврату"});
 
+
+// TASK01 only: economic version and transparent finite bonus rights.
+const TASK26_CONTEXT=Symbol('astra-task01');
+const BONUS_NOTICE26='bonus-fence-30d-v1';
+const bonusNow26=()=>Math.floor(Date.now()/1000);
+const task01Env=env=>({...env,[TASK26_CONTEXT]:{synced:new Set()}});
+const true26=value=>value===true||value==='true';
+async function readPolicy(env){return env.DB.prepare(`SELECT p.singleton,p.version,p.enabled,p.start_day,p.activated,p.migration_done,p.notice_approved,p.active_key_id,p.unsafe_until,
+ b.stars_enabled,b.payment_scope,b.support,b.terms_version,b.retention_days,b.verified_bot_id FROM astra_patch26 p JOIN astra_policy b USING(singleton) WHERE p.singleton=1`).first();}
+async function hmac26(key,domain,id){
+ if(!['owner','invitee','check','pair'].includes(domain))throw Error('Invalid HMAC domain');
+ const imported=typeof key==='string'?await crypto.subtle.importKey('raw',new TextEncoder().encode(key),{name:'HMAC',hash:'SHA-256'},false,['sign']):key;
+ return [...new Uint8Array(await crypto.subtle.sign('HMAC',imported,new TextEncoder().encode('astra:bonus-fence:v1:'+domain+':'+id)))].map(n=>n.toString(16).padStart(2,'0')).join('');
+}
+async function secrets26(env){
+ const id=env.ASTRA_BONUS_FENCE_KEY_ID||'v1',secret=env.ASTRA_BONUS_FENCE_KEY;
+ if(typeof secret!=='string'||new TextEncoder().encode(secret).length<32)throw Error('BONUS_FENCE_KEY_MISSING');
+ if(!/^[-a-zA-Z0-9_]{1,32}$/.test(id))throw Error('BONUS_FENCE_KEY_ID_INVALID');
+ let previous={};try{previous=env.ASTRA_BONUS_FENCE_PREVIOUS_KEYS?JSON.parse(env.ASTRA_BONUS_FENCE_PREVIOUS_KEYS):{};}catch{throw Error('BONUS_FENCE_KEY_RING_INVALID');}
+ if(!previous||Array.isArray(previous)||typeof previous!=='object'||Object.keys(previous).length>3)throw Error('BONUS_FENCE_KEY_RING_INVALID');
+ const values={...previous,[id]:secret},ring=[];for(const [keyId,value] of Object.entries(values)){
+  if(!/^[-a-zA-Z0-9_]{1,32}$/.test(keyId)||typeof value!=='string'||new TextEncoder().encode(value).length<32||value.length>512)throw Error('BONUS_FENCE_KEY_RING_INVALID');
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(value),{name:'HMAC',hash:'SHA-256'},false,['sign']);ring.push({id:keyId,key,check:await hmac26(key,'check','configuration')});
+ }return{id,ring};
+}
+async function fenceContext26(env){
+ const scoped=env[TASK26_CONTEXT];if(scoped?.promise)return scoped.promise;
+ const load=async()=>{const config=await readPolicy(env),now=bonusNow26();let parsed;try{parsed=await secrets26(env);}catch(e){return{ok:false,keys_ready:false,blocker:e.message,config,now};}
+ const rows=await env.DB.prepare(`SELECT k.*,EXISTS(SELECT 1 FROM astra_bonus_fences26 f WHERE f.key_id=k.key_id AND f.expires_at>?) AS live,EXISTS(SELECT 1 FROM astra_bonus_fences26 expired WHERE expired.expires_at<=?) AS expired_pending FROM astra_bonus_keys26 k`).bind(now,now).all();
+ for(const row of rows.results){const key=parsed.ring.find(k=>k.id===row.key_id);if((row.live||row.key_id===config.active_key_id)&&!key)return{...parsed,config,now,ok:false,keys_ready:false,blocker:'BONUS_FENCE_PREVIOUS_KEYS_REQUIRED'};if(key&&key.check!==row.check_hmac)return{...parsed,config,now,ok:false,keys_ready:false,blocker:'BONUS_FENCE_KEY_CHANGED'};}
+ if(parsed.ring.some(k=>k.id!==parsed.id&&!rows.results.some(r=>r.key_id===k.id)))return{...parsed,config,now,ok:false,keys_ready:false,blocker:'BONUS_FENCE_KEY_RING_INVALID'};
+ const registered=rows.results.some(r=>r.key_id===parsed.id&&r.check_hmac===parsed.ring.find(k=>k.id===parsed.id).check)&&config.active_key_id===parsed.id;
+ const expired=rows.results.some(r=>r.expired_pending);
+ const notice=config.notice_approved===1&&env.ASTRA_BONUS_FENCE_NOTICE_ACK==='APPROVED_BONUS_FENCE_30_DAYS';
+ return{...parsed,config,now,keys_ready:registered,notice_ready:notice,expired_pending:expired,ok:registered&&notice&&!expired&&config.unsafe_until<=now,blocker:!registered?'BONUS_FENCE_KEY_NOT_CONFIGURED':!notice?'BONUS_FENCE_NOTICE_NOT_APPROVED':expired?'BONUS_FENCE_PURGE_PENDING':config.unsafe_until>now?'BONUS_FENCE_SEED_QUARANTINE':null};};
+ const result=load();if(scoped)scoped.promise=result;return result;
+}
+function invalidate26(env){if(env[TASK26_CONTEXT]){env[TASK26_CONTEXT].promise=null;env[TASK26_CONTEXT].synced.clear();}}
+async function configureFence26(env){
+ const parsed=await secrets26(env),now=bonusNow26(),rows=await env.DB.prepare('SELECT k.*,EXISTS(SELECT 1 FROM astra_bonus_fences26 f WHERE f.key_id=k.key_id AND f.expires_at>?) live FROM astra_bonus_keys26 k').bind(now).all();
+ for(const r of rows.results){const candidate=parsed.ring.find(k=>k.id===r.key_id);if(r.live&&!candidate)throw Error('Active TTL key must remain in previous-key ring');if(candidate&&candidate.check!==r.check_hmac)throw Error('Existing key ID cannot change secret');}
+ const current=parsed.ring.find(k=>k.id===parsed.id);await env.DB.batch([
+  env.DB.prepare('INSERT INTO astra_bonus_keys26(key_id,check_hmac,added_at) VALUES(?,?,?) ON CONFLICT(key_id) DO NOTHING').bind(parsed.id,current.check,now),
+  env.DB.prepare('UPDATE astra_patch26 SET active_key_id=? WHERE singleton=1').bind(parsed.id)
+ ]);invalidate26(env);return{configured:true,key_id:parsed.id,live_previous_keys:rows.results.filter(r=>r.live&&r.key_id!==parsed.id).length};
+}
+async function approveFenceNotice26(env,version,ack){
+ if(version!==BONUS_NOTICE26||ack!=='APPROVED_BONUS_FENCE_30_DAYS'||env.ASTRA_BONUS_FENCE_NOTICE_ACK!==ack)throw Error('Approve the exact privacy notice and lawful basis first');
+ await env.DB.prepare('UPDATE astra_patch26 SET notice_approved=1 WHERE singleton=1').run();invalidate26(env);return{notice_approved:true,version};
+}
+async function purgeFences26(env){
+ const r=await env.DB.prepare('DELETE FROM astra_bonus_fences26 WHERE rowid IN(SELECT rowid FROM astra_bonus_fences26 WHERE expires_at<=? ORDER BY expires_at LIMIT 200)').bind(bonusNow26()).run();invalidate26(env);return{deleted:r.meta.changes,limit:200};
+}
+function observable26(row,owner){
+ const reason=row.reason;let purpose=null,domain='owner',id=owner,reference='once';
+ if(reason==='registration'&&row.delta===2)purpose='initial';
+ else if(reason==='easter:gpt6')purpose='gpt6';
+ else if(reason==='channel'||reason==='reward:v2:channel')purpose='channel';
+ else if(reason==='referral'||reason==='reward:v2:referrer'){if(!row.source_id)return null;purpose='inviter_referral';domain='invitee';id=row.source_id;}
+ else if(reason==='reward:v2:invitee'){purpose='invitee_welcome';domain='invitee';}
+ else if(['daily','reward:v2:daily','reward:v2:weekly'].includes(reason)){if(!validDay(row.day))return null;purpose=reason.endsWith('weekly')?'weekly':'daily';reference=row.day;}
+ else if(reason==='reward:v2:initial')purpose='initial';
+ else if(reason==='reward:v2:first3')purpose='first3';else if(reason==='reward:v2:thirty')purpose='thirty';
+ return purpose?{purpose,domain,id,reference}:null;
+}
+async function syncBonusOwner26(env,owner,context=null){
+ if(!Number.isSafeInteger(owner)||owner<=0)throw Error('Invalid bonus owner');const ctx=context||await fenceContext26(env);if(!ctx.ok)return false;
+ const scoped=env[TASK26_CONTEXT];if(scoped?.synced.has(owner))return true;
+ const profile=await env.DB.prepare('SELECT * FROM astra_bonus_profiles26 WHERE telegram_id=?').bind(owner).first();if(!profile)return false;
+ const writes=[];for(const k of ctx.ring){writes.push(env.DB.prepare(`INSERT INTO astra_bonus_aliases26(telegram_id,key_id,owner_hash,invitee_hash) VALUES(?,?,?,?) ON CONFLICT(telegram_id,key_id) DO UPDATE SET owner_hash=excluded.owner_hash,invitee_hash=excluded.invitee_hash`).bind(owner,k.id,await hmac26(k.key,'owner',owner),await hmac26(k.key,'invitee',owner)));}
+ let complete=Boolean(profile.seeded);
+ if(!complete){
+  const rows=await env.DB.prepare(`SELECT l.rowid AS cursor,l.reason,l.delta,unixepoch(l.created_at) AS awarded_at,coalesce(o.day,c.day) AS day,coalesce(o.source_id,r.invitee) AS source_id FROM astra_wallet_ledger l LEFT JOIN astra_operations o ON o.operation_id=l.operation_id LEFT JOIN astra_reward_claims c ON c.claim_id=l.idempotency_key LEFT JOIN astra_referral_contracts r ON r.generation=c.reference WHERE l.telegram_id=? AND l.rowid>? AND l.delta>0 AND l.reason<>'opening' AND l.reason NOT LIKE 'reward:v3:%' AND unixepoch(l.created_at)>? AND unixepoch(l.created_at)<=? ORDER BY l.rowid LIMIT 6`).bind(owner,profile.seed_cursor,ctx.now-2592000,ctx.now).all();
+  const batch=rows.results.slice(0,5);for(const row of batch){const right=observable26(row,owner);if(!right)continue;for(const k of ctx.ring)writes.push(env.DB.prepare(`INSERT INTO astra_bonus_fences26(key_id,subject_hash,purpose,reference,awarded_at,expires_at) VALUES(?,?,?,?,?,?) ON CONFLICT(key_id,subject_hash,purpose,reference) DO UPDATE SET awarded_at=excluded.awarded_at,expires_at=excluded.expires_at WHERE excluded.awarded_at>astra_bonus_fences26.awarded_at`).bind(k.id,await hmac26(k.key,right.domain,right.id),right.purpose,right.reference,row.awarded_at,row.awarded_at+2592000));}
+  complete=rows.results.length<=5;writes.push(env.DB.prepare('UPDATE astra_bonus_profiles26 SET seed_cursor=?,seeded=? WHERE telegram_id=?').bind(batch.at(-1)?.cursor||profile.seed_cursor,complete?1:0,owner));
+ }
+ await env.DB.batch(writes);if(complete)scoped?.synced.add(owner);return complete;
+}
+async function bonusCommand26(env,owner,kind,{day=activityDay(),channel=null}={}){
+ const ctx=await fenceContext26(env);if(!ctx.ok||!await syncBonusOwner26(env,owner,ctx))return false;
+ const p=ctx.config;if(kind==='initial'&&p.activated&&!true26(env.ASTRA_ECONOMY_V2_ENABLED))return false;if(['referral','channel'].includes(kind)&&p.activated&&(!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED)))return false;
+ let c=null;if(['referral','channel'].includes(kind)){c=await env.DB.prepare('SELECT inviter FROM astra_bonus_referrals26 WHERE invitee=?').bind(owner).first();if(kind==='referral'&&!c?.inviter)return false;if(c?.inviter&&!await syncBonusOwner26(env,c.inviter,ctx))return false;}
+ await env.DB.prepare('INSERT INTO astra_bonus_commands26(command_id,telegram_id,kind,day,awarded_at,verified_channel) VALUES(?,?,?,?,?,?)').bind(crypto.randomUUID(),owner,kind,day,bonusNow26(),channel).run();return true;
+}
+async function policyClock(env,day=activityDay()){
+ if(!validDay(day))throw Error('Invalid day');let p=await readPolicy(env);
+ if(env.ASTRA_ECONOMY_V2_START_DAY&&env.ASTRA_ECONOMY_V2_START_DAY!==p.start_day)throw Error('Policy date mismatch');
+ if(!p.activated&&p.start_day&&day>=p.start_day){await env.DB.prepare('UPDATE astra_patch26 SET activated=1 WHERE singleton=1 AND start_day<=?').bind(day).run();invalidate26(env);p=await readPolicy(env);}return p;
+}
+async function armPolicy(env,startDay,today=activityDay()){
+ if(!validDay(startDay)||startDay<=today)throw Error('Choose a future Moscow date');const ctx=await fenceContext26(env);if(!ctx.ok||!true26(env.ASTRA_ECONOMY_V2_ENABLED))throw Error('Bonus key,notice and runtime approval required');
+ if(await env.DB.prepare('SELECT telegram_id FROM astra_bonus_profiles26 WHERE seeded=0 LIMIT 1').first())throw Error('Finish observed-right bootstrap before arming');
+ const p=await readPolicy(env);if(p.start_day&&p.start_day!==startDay)throw Error('Policy date fixed');await env.DB.prepare('UPDATE astra_patch26 SET start_day=?,enabled=1 WHERE singleton=1 AND activated=0').bind(startDay).run();invalidate26(env);return readPolicy(env);
+}
+async function capturePolicyEvent(env,event,updateId,day,p,returnRow=true){
+ if(!event||!Number.isSafeInteger(updateId)||!validDay(day))return null;
+ await env.DB.prepare(`INSERT INTO astra_policy_events(update_id,telegram_id,day,source,legacy,processed) SELECT ?,u.telegram_id,?,?,0,0 FROM astra_users u WHERE u.telegram_id=? AND(u.zodiac IS NOT NULL OR ?=1) AND NOT EXISTS(SELECT 1 FROM astra_bonus_days26 d WHERE d.telegram_id=u.telegram_id AND d.day=?) ON CONFLICT(update_id) DO NOTHING`).bind(updateId,day,event.source,event.id,event.signSelection?1:0,day).run();
+ if(returnRow)return env.DB.prepare('SELECT * FROM astra_policy_events WHERE update_id=? AND telegram_id=?').bind(updateId,event.id).first();
+}
+async function settlePolicyEvents(env,owner){
+ const ctx=await fenceContext26(env);if(!ctx.ok||!await syncBonusOwner26(env,owner,ctx))return;
+ await bonusCommand26(env,owner,'initial');await bonusCommand26(env,owner,'referral');const p=await readPolicy(env);if(!p.activated||!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED))return;
+ const rows=await env.DB.prepare(`SELECT e.* FROM astra_policy_events e JOIN astra_users u ON u.telegram_id=e.telegram_id WHERE e.telegram_id=? AND e.legacy=0 AND e.processed=0 AND u.zodiac IS NOT NULL AND e.update_id IN(SELECT min(update_id) FROM astra_policy_events WHERE telegram_id=? AND legacy=0 AND processed=0 GROUP BY day) ORDER BY e.day,e.update_id LIMIT 3`).bind(owner,owner).all();
+ for(const e of rows.results){await recordActivity(env,owner,e.day,e.source);await env.DB.prepare(`INSERT INTO astra_bonus_days26(telegram_id,day,streak,event_id,awarded_at) SELECT ?,?,coalesce((SELECT streak FROM astra_bonus_days26 WHERE telegram_id=? AND day=date(?,'-1 day')),0)+1,?,? ON CONFLICT(telegram_id,day) DO NOTHING`).bind(owner,e.day,owner,e.day,e.update_id,bonusNow26()).run();if(!await env.DB.prepare('SELECT day FROM astra_bonus_days26 WHERE telegram_id=? AND day=?').bind(owner,e.day).first())throw Error('Bonus day not committed');await env.DB.prepare('UPDATE astra_policy_events SET processed=1 WHERE telegram_id=? AND day=? AND legacy=0').bind(owner,e.day).run();}
+ if(await env.DB.prepare('SELECT e.update_id FROM astra_policy_events e JOIN astra_users u ON u.telegram_id=e.telegram_id WHERE e.telegram_id=? AND e.legacy=0 AND e.processed=0 AND u.zodiac IS NOT NULL LIMIT 1').bind(owner).first())throw Error('Bonus backlog; retry committed batch');
+}
+async function policySummary(env,owner,today=activityDay()){
+ const yesterday=new Date(Date.parse(today+'T12:00:00Z')-86400000).toISOString().slice(0,10);return env.DB.prepare(`SELECT(SELECT count(*) FROM astra_bonus_days26 WHERE telegram_id=?) total,coalesce((SELECT streak FROM astra_bonus_days26 WHERE telegram_id=? AND day IN(?,?) ORDER BY day DESC LIMIT 1),0) streak,coalesce((SELECT debt FROM astra_refund_accounts WHERE payer_id=?),0) debt`).bind(owner,owner,today,yesterday,owner).first();
+}
+async function policyBefore(env,update){
+ try{await purgeFences26(env);}catch{console.error('Bonus fence cleanup unavailable');}
+ const event=economyEvent(update),p=await policyClock(env),ctx=await fenceContext26(env),active=Boolean(p.activated&&p.enabled&&true26(env.ASTRA_ECONOMY_V2_ENABLED)&&ctx.ok);
+ if(event&&ctx.ok&&await syncBonusOwner26(env,event.id,ctx)){if(active){const previous=await env.DB.prepare('SELECT update_id FROM astra_policy_events WHERE update_id=? UNION ALL SELECT update_id FROM astra_update_jobs WHERE update_id=? LIMIT 1').bind(update.update_id,update.update_id).first();if(!previous)await capturePolicyEvent(env,event,update.update_id,activityDay(),p,false);}await settlePolicyEvents(env,event.id);}
+ return event?{...event,policyActive:active}:null;
+}
+async function policyAfter(env,event){if(event?.signSelection&&!env[TASK26_CONTEXT]?.signSettled?.has(event.id))await settlePolicyEvents(env,event.id);}
+
+const STARS_PACKAGES26=Object.freeze({10:{xtr:10,dust:40},25:{xtr:25,dust:110},50:{xtr:50,dust:240}});
+const readPaymentOrder=(env,payload)=>env.DB.prepare('SELECT * FROM astra_all_orders26 WHERE payload=?').bind(payload).first();
+async function createStarOrder(env,owner,pack,requestKey,termsVersion){
+  const p=await paymentEnvironment(env,{shop:true,probe:true}),price=STARS_PACKAGES26[pack];
+  if(!price||termsVersion!==p.terms_version||!Number.isSafeInteger(owner)||owner<=0||typeof requestKey!=='string'||requestKey.length>100)throw Error('Invalid purchase consent');
+  const order=crypto.randomUUID(),payload='a24:'+order;
+  await env.DB.prepare(`INSERT INTO astra_all_orders26(order_id,payload,owner_id,payer_id,request_key,package,xtr,dust,price_version,scope,terms_version,retention_days,created_at)
+    SELECT ?,?,?,?,?,?,?,?,'stars-pack-v2',?,?,?,? WHERE EXISTS(SELECT 1 FROM astra_users WHERE telegram_id=?)
+    `).bind(order,payload,owner,owner,requestKey,Number(pack),price.xtr,price.dust,paymentScope(env),p.terms_version,p.retention_days,new Date().toISOString().slice(0,19).replace('T',' '),owner).run();
+  const saved=await env.DB.prepare('SELECT * FROM astra_all_orders26 WHERE payer_id=? AND request_key=?').bind(owner,requestKey).first();
+  if(!saved)throw Error('A registered profile is required');if(saved.package!==Number(pack)||saved.terms_version!==termsVersion||saved.scope!==paymentScope(env))throw Error('Purchase request snapshot conflict');return saved;
+}
+async function sendStarInvoice(env,order){
+  await paymentEnvironment(env,{shop:true,probe:true});
+  if(order.scope!==paymentScope(env))throw Error('Wrong payment environment');
+  const lease=crypto.randomUUID(),r=await env.DB.prepare(`UPDATE astra_all_orders26 SET delivery='sending',invoice_lease=?,updated_at=CURRENT_TIMESTAMP
+    WHERE order_id=? AND payer_id=? AND status='created' AND delivery='pending' RETURNING order_id`).bind(lease,order.order_id,order.payer_id).first();
+  if(!r)return {sent:false,status:order.status};
+  try{
+    await starsApi(env,'sendInvoice',{chat_id:order.payer_id,title:'Звёздная пыль Астры',description:`${order.dust} ✨. Условия: ${order.terms_version}.`,payload:order.payload,currency:'XTR',prices:[{label:`${order.dust} ✨`,amount:order.xtr}],provider_token:'',start_parameter:'stars'});
+    await env.DB.prepare(`UPDATE astra_all_orders26 SET status=CASE WHEN status='created' THEN 'invoiced' ELSE status END,delivery='sent',updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?`).bind(order.order_id,lease).run();
+    return {sent:true};
+  }catch(e){await env.DB.prepare("UPDATE astra_all_orders26 SET delivery=?,updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND invoice_lease=?").bind(e.telegramCode?'failed':'unknown',order.order_id,lease).run();throw e;}
+}
+async function reservePrecheckout(env,q,{deadline=Infinity}={}){
+  await paymentEnvironment(env,{shop:true});
+  if(performance.now()>=deadline)return false;
+  const o=await readPaymentOrder(env,q.invoice_payload);
+  if(performance.now()>=deadline||!o||Date.now()-Date.parse(o.created_at.replace(' ','T')+'Z')>86400000||o.payer_id!==q.from?.id||o.owner_id!==q.from.id||o.scope!==paymentScope(env)||q.currency!=='XTR'||q.total_amount!==o.xtr||!['created','invoiced','confirmed'].includes(o.status))return false;
+  const r=await env.DB.prepare(`UPDATE astra_all_orders26 SET precheckout_id=?,status='confirmed',updated_at=CURRENT_TIMESTAMP
+    WHERE order_id=? AND payer_id=? AND status IN ('created','invoiced','confirmed') AND (precheckout_id IS NULL OR precheckout_id=?) RETURNING order_id`).bind(q.id,o.order_id,q.from.id,q.id).first();
+  return Boolean(r);
+}
+async function answerStarPrecheckout(env,q,{ready=async()=>true,startedAt=performance.now()}={}){
+  let timer,ok=false;const deadline=startedAt+6000;
+  const validate=async()=>await ready()&&performance.now()<deadline?reservePrecheckout(env,q,{deadline}):false;
+  try{ok=await Promise.race([validate(),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),Math.max(0,deadline-performance.now()));})]);}catch{ok=false;}finally{clearTimeout(timer);}
+  await starsApi(env,'answerPreCheckoutQuery',{pre_checkout_query_id:q.id,ok,...(ok?{}:{error_message:'Предложение недоступно. Откройте магазин заново или обратитесь в /paysupport.'})},2500);
+  return ok;
+}
+function validStarProof(proof){return proof&&proof.currency==='XTR'&&Number.isSafeInteger(proof.total_amount)&&proof.total_amount>0&&typeof proof.invoice_payload==='string'&&new TextEncoder().encode(proof.invoice_payload).length<=128&&typeof proof.telegram_payment_charge_id==='string'&&proof.telegram_payment_charge_id.length>0&&proof.telegram_payment_charge_id.length<=512;}
+async function savePaymentAnomaly(env,owner,proof,hash,reason){
+  await env.DB.prepare(`INSERT INTO astra_payment_anomalies(charge_hash,charge_id,payer_id,payload,currency,xtr,scope,reason)
+    VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(charge_hash) DO NOTHING`).bind(hash,proof.telegram_payment_charge_id,owner,String(proof.invoice_payload||'').slice(0,128),String(proof.currency||'').slice(0,8),Number.isSafeInteger(proof.total_amount)?proof.total_amount:0,paymentScope(env),reason).run();
+}
+async function receiveStarPayment(env,owner,proof){
+  if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed successful payment');
+  const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
+  const old=await env.DB.prepare('SELECT * FROM astra_all_receipts26 WHERE charge_hash=? OR charge_id=?').bind(hash,proof.telegram_payment_charge_id).first();
+  if(old){if(old.payer_id!==owner||old.order_id!==o?.order_id||old.xtr!==proof.total_amount||old.currency!==proof.currency){await savePaymentAnomaly(env,owner,proof,hash,'charge_identity_conflict');return {status:'needs_review',hash};}return {status:'recorded',receipt:old,hash};}
+  if(await env.DB.prepare('SELECT charge_hash FROM astra_payment_tombstones WHERE charge_hash=?').bind(hash).first())return {status:'archived',hash};
+  if(!o||o.payer_id!==owner||o.scope!==paymentScope(env)||o.xtr!==proof.total_amount||proof.currency!=='XTR'){
+    await savePaymentAnomaly(env,owner,proof,hash,'order_snapshot_mismatch');return {status:'needs_review',hash};
+  }
+  if(await env.DB.prepare('SELECT charge_id FROM astra_all_receipts26 WHERE order_id=?').bind(o.order_id).first()){
+    await savePaymentAnomaly(env,owner,proof,hash,'second_charge_for_order');return {status:'needs_review',hash};
+  }
+  await env.DB.prepare(`INSERT INTO astra_all_receipts26(charge_id,charge_hash,order_id,payer_id,currency,xtr,dust,kind,credited_dust)
+    SELECT ?,?,?,?,'XTR',o.xtr,o.dust,'paid',CASE WHEN o.owner_id=? AND EXISTS(SELECT 1 FROM astra_users WHERE telegram_id=?) AND NOT EXISTS(SELECT 1 FROM astra_external_refunds WHERE charge_hash=?) THEN o.dust ELSE 0 END
+    FROM astra_all_orders26 o WHERE o.order_id=? `).bind(proof.telegram_payment_charge_id,hash,o.order_id,owner,owner,owner,hash,o.order_id).run();
+  const receipt=await env.DB.prepare('SELECT * FROM astra_all_receipts26 WHERE charge_hash=?').bind(hash).first();
+  if(!receipt){await savePaymentAnomaly(env,owner,proof,hash,'concurrent_order_conflict');return {status:'needs_review',hash};}
+  return {status:receipt.credited_dust>0?'credited':'needs_review',receipt,hash};
+}
+async function receiveStarRefund(env,owner,proof,source='message'){
+  if(!Number.isSafeInteger(owner)||owner<=0||!validStarProof(proof))throw Error('Malformed refund');
+  const hash=await chargeHash(proof.telegram_payment_charge_id),o=await readPaymentOrder(env,proof.invoice_payload);
+  const receipt=await env.DB.prepare('SELECT * FROM astra_all_receipts26 WHERE charge_hash=?').bind(hash).first();
+  if(receipt&&(receipt.payer_id!==owner||receipt.order_id!==o?.order_id||receipt.xtr!==proof.total_amount))throw Error('Refund identity mismatch');
+  const tomb=await env.DB.prepare('SELECT * FROM astra_payment_tombstones WHERE charge_hash=?').bind(hash).first();
+  if(o&&o.scope!==paymentScope(env))throw Error('Refund environment mismatch');
+  if(tomb&&(tomb.scope!==paymentScope(env)||tomb.xtr!==proof.total_amount))throw Error('Archived refund snapshot mismatch');
+  if(tomb?.refunded&&!receipt)return {payer_id:owner,removed:0,debt_added:0,archived:true};
+  if(!receipt&&!tomb&&(!o||o.payer_id!==owner||o.xtr!==proof.total_amount||o.scope!==paymentScope(env)))await savePaymentAnomaly(env,owner,proof,hash,'unmatched_refund');
+  await env.DB.prepare(`INSERT INTO astra_external_refunds(charge_hash,charge_id,order_id,payer_id,currency,xtr,source) VALUES(?,?,?,?,?,?,?) ON CONFLICT(charge_hash) DO NOTHING`).bind(hash,proof.telegram_payment_charge_id,o?.payer_id===owner&&o.xtr===proof.total_amount?o.order_id:null,owner,proof.currency,proof.total_amount,source).run();
+  const settlement=await env.DB.prepare('SELECT * FROM astra_refund_settlements WHERE charge_hash=?').bind(hash).first();
+  if(settlement&&settlement.payer_id!==owner)throw Error('Refund owner mismatch');
+  return settlement||{payer_id:owner,removed:0,debt_added:0,archived:true};
+}
+async function requestStarRefund(env,chargeId){
+  await paymentEnvironment(env,{probe:true});
+  const hash=await chargeHash(chargeId);
+  let proof=await env.DB.prepare(`SELECT r.*,o.payload AS invoice_payload,o.scope FROM astra_all_receipts26 r JOIN astra_all_orders26 o ON o.order_id=r.order_id WHERE r.charge_hash=?`).bind(hash).first();
+  if(!proof){const a=await env.DB.prepare('SELECT * FROM astra_payment_anomalies WHERE charge_hash=? AND reason<>?').bind(hash,'unmatched_refund').first();if(a)proof={...a,invoice_payload:a.payload};}
+  const archived=await env.DB.prepare('SELECT * FROM astra_payment_tombstones WHERE charge_hash=?').bind(hash).first();
+  if(archived&&proof&&(archived.xtr!==proof.xtr||archived.scope!==proof.scope))throw Error('Archived payment snapshot mismatch');
+  if(!proof||proof.scope!==paymentScope(env)||proof.currency!=='XTR'||proof.xtr<=0)throw Error('Known charge proof required');
+  if(await env.DB.prepare('SELECT charge_hash FROM astra_external_refunds WHERE charge_hash=?').bind(hash).first())return {status:'refunded'};
+  await env.DB.prepare('INSERT INTO astra_refund_requests(charge_hash) VALUES(?) ON CONFLICT(charge_hash) DO NOTHING').bind(hash).run();
+  const lease=crypto.randomUUID(),now=Date.now();
+  const claim=await env.DB.prepare(`UPDATE astra_refund_requests SET status='in_progress',lease=?,lease_until=?,attempts=attempts+1,updated_at=CURRENT_TIMESTAMP WHERE charge_hash=? AND status='requested' AND lease_until<=?`).bind(lease,now+60000,hash,now).run();
+  if(!claim.meta.changes)return {status:(await env.DB.prepare('SELECT status FROM astra_refund_requests WHERE charge_hash=?').bind(hash).first()).status};
+  await env.DB.prepare("UPDATE astra_all_orders26 SET status='refund_in_progress',updated_at=CURRENT_TIMESTAMP WHERE order_id=? AND status<>'refunded'").bind(proof.order_id||'').run();
+  try{
+    const ok=await starsApi(env,'refundStarPayment',{user_id:proof.payer_id,telegram_payment_charge_id:chargeId});
+    if(ok!==true)throw Error('Refund outcome unknown');
+    const settlement=await receiveStarRefund(env,proof.payer_id,{currency:proof.currency,total_amount:proof.xtr,invoice_payload:proof.invoice_payload,telegram_payment_charge_id:chargeId},'api');
+    return {status:'refunded',settlement};
+  }catch(e){
+    const safeRetry=e.telegramCode===429;
+    await env.DB.prepare(`UPDATE astra_refund_requests SET status=?,last_error=?,lease_until=?,updated_at=CURRENT_TIMESTAMP WHERE charge_hash=? AND lease=? AND status<>'refunded'`).bind(safeRetry?'requested':'needs_review',safeRetry?'rate_limited':'reconcile_before_retry',safeRetry?Date.now()+Math.max(1,e.retryAfter||60)*1000:0,hash,lease).run();
+    return {status:safeRetry?'requested':'needs_review'};
+  }
+}
+async function reconcileStarPage(env,offset=0,recoverArchived=false){
+  await paymentEnvironment(env,{probe:true});if(!Number.isSafeInteger(offset)||offset<0)throw Error('Invalid offset');
+  const page=await starsApi(env,'getStarTransactions',{offset,limit:5});
+  if(!Array.isArray(page?.transactions))throw Error('Unknown Telegram transaction schema');
+  // Bound D1/API work per HTTP request; caller advances manually with overlap.
+  const transactions=page.transactions.slice(0,5);
+  const result={scanned:transactions.length,credited_or_recorded:0,refunds:0,needs_review:0,next_offset:offset+transactions.length};
+  for(const t of transactions){
+    if(typeof t.id!=='string'||!Number.isSafeInteger(t.amount))continue;
+    const incoming=t.source?.type==='user'&&t.source.transaction_type==='invoice_payment';
+    const outgoing=t.receiver?.type==='user'&&t.receiver.transaction_type==='invoice_payment';
+    const partner=incoming?t.source:outgoing?t.receiver:null;if(!partner||!Number.isSafeInteger(partner.user?.id))continue;
+    if(t.amount<=0||(t.nanostar_amount!=null&&t.nanostar_amount!==0)){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:0,invoice_payload:partner.invoice_payload||''},await chargeHash(t.id),'unsupported_transaction_amount');result.needs_review++;continue;}
+    let payload=partner.invoice_payload;
+    if(!payload){const r=await env.DB.prepare('SELECT o.payload FROM astra_all_receipts26 r JOIN astra_all_orders26 o ON o.order_id=r.order_id WHERE r.charge_id=? AND r.payer_id=?').bind(t.id,partner.user.id).first();payload=r?.payload;}
+    if(!payload&&outgoing&&await env.DB.prepare('SELECT charge_hash FROM astra_payment_tombstones WHERE charge_hash=?').bind(await chargeHash(t.id)).first())payload='';
+    if(payload==null){await savePaymentAnomaly(env,partner.user.id,{telegram_payment_charge_id:t.id,currency:'XTR',total_amount:Math.abs(t.amount),invoice_payload:''},await chargeHash(t.id),'transaction_payload_missing');result.needs_review++;continue;}
+    const proof={currency:'XTR',total_amount:Math.abs(t.amount),invoice_payload:payload,telegram_payment_charge_id:t.id};
+    if(incoming){const saved=await receiveStarPayment(env,partner.user.id,proof);if(saved.status==='archived'&&recoverArchived)await savePaymentAnomaly(env,partner.user.id,proof,saved.hash,'archived_recovery_verified');saved.status==='needs_review'?result.needs_review++:result.credited_or_recorded++;}
+    else{await receiveStarRefund(env,partner.user.id,proof,'reconcile');result.refunds++;}
+  }return result;
+}
+async function readStarHistory(env,owner,cursor=null){
+  if(!Number.isSafeInteger(owner)||owner<=0)throw Error('Invalid payment history owner');
+  let snapshot,boundary=null,direction='o';
+  if(cursor){const c=decodeHistoryCursor(cursor);if(!c)return {expired:true};({snapshot,direction}=c);
+    const r=await env.DB.prepare('SELECT rowid AS mark,created_at,order_id FROM astra_all_orders26 WHERE payer_id=? AND rowid IN (?,?)').bind(owner,snapshot,c.anchor).all();
+    boundary=r.results.find(r=>r.mark===c.anchor);if(!boundary||!r.results.some(r=>r.mark===snapshot))return {expired:true};
+  }else snapshot=(await env.DB.prepare('SELECT rowid AS mark FROM astra_all_orders26 WHERE payer_id=? ORDER BY rowid DESC LIMIT 1').bind(owner).first())?.mark;
+  if(!snapshot)return {rows:[],older:null,newer:null};const newer=direction==='n',clause=boundary?` AND (created_at,order_id) ${newer?'>':'<'} (?,?)`:'';
+  const r=await env.DB.prepare(`SELECT rowid AS mark,order_id,xtr,dust,status,created_at FROM astra_all_orders26 WHERE payer_id=? AND rowid<=?${clause} ORDER BY created_at ${newer?'ASC':'DESC'},order_id ${newer?'ASC':'DESC'} LIMIT 13`).bind(owner,snapshot,...(boundary?[boundary.created_at,boundary.order_id]:[])).all();
+  let rows=r.results.slice(0,12);if(newer)rows.reverse();if(!rows.length)return {expired:true};
+  return {rows,older:(!newer?r.results.length>12:Boolean(boundary))?encodeHistoryCursor('o',snapshot,rows.at(-1).mark):null,newer:(newer?r.results.length>12:Boolean(boundary))?encodeHistoryCursor('n',snapshot,rows[0].mark):null};
+}
+
+async function createUser(env,id,referral=''){
+ let u=await getUser(env,id);if(!u){let friend=null;if(/^ref_[0-9]{1,17}$/.test(referral)){const candidate=Number(referral.slice(4)),inviter=Number.isSafeInteger(candidate)&&candidate!==id?await getUser(env,candidate):null;if(inviter?.zodiac)friend=candidate;}
+ await env.DB.prepare('INSERT OR IGNORE INTO astra_users(telegram_id,referrer_id,created_at,notifications_enabled) VALUES(?,?,?,0)').bind(id,friend,new Date().toISOString().slice(0,19).replace('T',' ')).run();}
+ await syncBonusOwner26(env,id);await bonusCommand26(env,id,'initial');return getUser(env,id);
+}
+async function pre04_policyWelcome(env,id,ref=''){
+ const u=await createUser(env,id,ref);if(u.zodiac)return send(env,id,`Астра · кабинет интерпретаций\n${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\n\nВыберите раздел.`,{reply_markup:keyboard});
+ return send(env,id,`Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак. Баланс: ${u.balance} ✨. Бесплатный прогноз и число дня доступны независимо от бонусов. Условия защиты наград и удаления — /privacy.`,{reply_markup:signKeyboard});
+}
+async function setZodiac(env,id,sign){
+ if(!zodiacName(sign))return;const u=await getUser(env,id);if(!u)return welcome(env,id);await syncBonusOwner26(env,id);await env.DB.prepare('UPDATE astra_users SET zodiac=? WHERE telegram_id=? AND zodiac IS NULL').bind(sign,id).run();await settlePolicyEvents(env,id);if(env[TASK26_CONTEXT]){env[TASK26_CONTEXT].signSettled??=new Set();env[TASK26_CONTEXT].signSettled.add(id);}const current=await getUser(env,id);
+ await send(env,id,`Ваш знак: ${zodiacName(current.zodiac)}\nБаланс: ${current.balance} ✨\n\nНиже — полный бесплатный прогноз. Остальные разделы — в меню.`,{reply_markup:keyboard});await sendFreeForecast(env,id,current.zodiac);
+}
+async function secretArchive(env,id){
+ await createUser(env,id);const before=await env.DB.prepare("SELECT award_id FROM astra_bonus_awards26 WHERE telegram_id=? AND kind='gpt6'").bind(id).first();await bonusCommand26(env,id,'gpt6');const paid=await env.DB.prepare("SELECT award_id FROM astra_bonus_awards26 WHERE telegram_id=? AND kind='gpt6'").bind(id).first();return screen(env,id,'Запись № 06',!before&&paid?'Последовательность распознана. Начислено: +5 ✨.':'Повторного начисления нет. Награда могла быть получена раньше либо начисления временно недоступны.',[]);
+}
+async function pre04_bonus(env,id){const p=await readPolicy(env);if(!p.activated)await bonusCommand26(env,id,'legacy_daily');const u=await getUser(env,id);return send(shellEnv(env,'dust'),id,`Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.\nБаланс: ${u.balance} ✨.`);}
+async function pre04_invite(env,id){return send(shellEnv(env,'dust'),id,`Приглашение\n\nПосле включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.\n\nhttps://t.me/${botUsername(env)}?start=ref_${id}`);}
+async function pre04_channelMenu(env,id){const c=channelName(env);if(!c)return send(shellEnv(env,'dust'),id,'Канал пока не подключён.');const p=await readPolicy(env);return send(shellEnv(env,'dust'),id,`Канал ${c}\n\nПодтверждённая подписка: ${p.activated?15:5} ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.`,{reply_markup:{inline_keyboard:[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]]}});}
+async function channelCheck(env,id){
+ const ctx=await fenceContext26(env),p=await readPolicy(env),c=channelName(env);if(!ctx.ok||(p.activated&&(!p.enabled||!true26(env.ASTRA_ECONOMY_V2_ENABLED))))return send(shellEnv(env,'dust'),id,'Бонусные начисления сейчас недоступны. Бесплатные материалы можно читать как обычно.');if(!c)return channelMenu(env,id);
+ const u=await getUser(env,id);if(u.channel_rewarded)return send(shellEnv(env,'dust'),id,'Бонус за эту подписку уже получен. Повторного начисления нет.');
+ let member;try{const me=await tg(env,'getMe',{});if(!Number.isSafeInteger(me?.id))throw Error('Bot identity unavailable');const admin=await tg(env,'getChatMember',{chat_id:c,user_id:me.id});if(!['administrator','creator'].includes(admin?.status))throw Error('Bot admin rights required');member=await tg(env,'getChatMember',{chat_id:c,user_id:id});}catch{return send(shellEnv(env,'dust'),id,'Не удалось проверить подписку. Попробуйте позже — нового начисления нет.');}
+ if(!['member','administrator','creator'].includes(member?.status)&&!(member?.status==='restricted'&&member.is_member===true))return send(shellEnv(env,'dust'),id,'Подписка пока не подтверждена. Откройте канал, подпишитесь и попробуйте снова.');
+ await bonusCommand26(env,id,'channel',{channel:c});return send(shellEnv(env,'dust'),id,'Подписка подтверждена. Результат начисления можно посмотреть в истории пыли. Уже полученный бонус повторно не выдаётся.');
+}
+async function threeCards(env,id,key){
+ const requestKey=`tarot:${id}:${key}`,old=await env.DB.prepare(`SELECT o.operation_id,o.result FROM astra_tarot_requests r JOIN astra_operations o ON o.operation_id=r.operation_id WHERE r.request_key=? AND r.telegram_id=? AND o.reason='tarot'`).bind(requestKey,id).first();if(old){await send(shellEnv(env,'tarot'),id,old.result,{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(old.operation_id,id).run();return;}
+ const undelivered=await env.DB.prepare("SELECT operation_id,result FROM astra_operations WHERE telegram_id=? AND reason='tarot' AND delivery<>'sent' ORDER BY created_at,operation_id LIMIT 1").bind(id).first();if(undelivered){await send(shellEnv(env,'tarot'),id,undelivered.result,{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});await env.DB.prepare("UPDATE astra_operations SET delivery='sent' WHERE operation_id=? AND telegram_id=?").bind(undelivered.operation_id,id).run();return;}
+ const candidate=crypto.randomUUID().replaceAll('-','');await env.DB.prepare(`INSERT INTO astra_tarot_offers26(offer_id,telegram_id,generation,request_key) SELECT ?,telegram_id,generation,? FROM astra_user_policy WHERE telegram_id=? ON CONFLICT(telegram_id,generation,request_key) DO NOTHING`).bind(candidate,requestKey,id).run();
+ const offer=await env.DB.prepare('SELECT offer_id FROM astra_tarot_offers26 WHERE telegram_id=? AND request_key=?').bind(id,requestKey).first();if(!offer)throw Error('Profile no longer exists');return screen(env,id,'Подтверждение расклада','Три разных Старших аркана: ситуация, препятствие и рекомендация.\n\nНовый расклад — 5 ✨. Результат сохранится для бесплатного повторного чтения.',[[button('Подтвердить — 5 ✨','tarot26:'+offer.offer_id)]],'tarot');
+}
+async function payTarot26(env,id,offerId){
+ await env.DB.prepare(`INSERT INTO astra_tarot_purchases26(offer_id,telegram_id,price,result) SELECT offer_id,telegram_id,5,? FROM astra_tarot_offers26 WHERE offer_id=? AND telegram_id=? ON CONFLICT(offer_id) DO NOTHING`).bind(threeCardSpread(),offerId,id).run();
+ const op=await env.DB.prepare('SELECT * FROM astra_tarot_purchases26 WHERE offer_id=? AND telegram_id=?').bind(offerId,id).first();if(!op)return insufficient04(env,id,5,'tarot');
+ const lease=crypto.randomUUID(),now=Date.now();const claimed=await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sending',lease=?,lease_until=? WHERE offer_id=? AND telegram_id=? AND (delivery<>'sending' OR lease_until<?)").bind(lease,now+30000,offerId,id,now).run();if(!claimed.meta.changes)throw Error('Saved reading delivery in progress');
+ try{await send(shellEnv(env,'tarot'),id,op.result,{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});await env.DB.prepare("UPDATE astra_tarot_purchases26 SET delivery='sent' WHERE offer_id=? AND lease=?").bind(offerId,lease).run();}catch(e){await env.DB.prepare('UPDATE astra_tarot_purchases26 SET delivery=? WHERE offer_id=? AND lease=?').bind(e.telegramCode>=400&&e.telegramCode<500?'rejected':e.telegramCode>=500?'retry':'unknown',offerId,lease).run();throw Error('Saved reading delivery failed');}
+}
+async function pre04_shellPage(env,id,page,q=null,updateId=null){
+ const buy=/^tarot26:([a-f0-9]{32})$/.exec(page);if(buy)return payTarot26(env,id,buy[1]);
+ if(page==='buy')return threeCards(env,id,String(q?.message?.message_id||updateId||''));
+ const oldPay=/^pay:([1-9][0-9]{0,15})$/.exec(page);if(oldPay)return threeCards(env,id,oldPay[1]);
+ if(page==='tarot:last'){const row=await env.DB.prepare(`SELECT result FROM(SELECT result,created_at,rowid AS mark,1 AS version FROM astra_operations WHERE telegram_id=? AND reason='tarot' UNION ALL SELECT result,created_at,rowid,2 FROM astra_tarot_purchases26 WHERE telegram_id=?) ORDER BY created_at DESC,version DESC,mark DESC LIMIT 1`).bind(id,id).first();return send(shellEnv(env,'tarot'),id,row?.result||'Сохранённых раскладов пока нет. Новый расклад — 5 ✨, после подтверждения.',{reply_markup:{inline_keyboard:[[button('Прогноз дня — бесплатно','forecast:read')]]}});}
+ return pre26_shellPage(env,id,page,q,updateId);
+}
+const FENCE_PRIVACY26='Для защиты от повторного получения бонусов мы отдельно сохраняем HMAC-псевдоним аккаунта и минимальные полученные права на 30 дней после фактического начисления. Это персональные псевдонимизированные данные, не анонимизация. Попытки регистрации не продлевают срок. /delete не стирает эти права до истечения срока; просроченные записи удаляются ограниченной фоновой очисткой. Права не содержат исходный Telegram ID, имя, вопросы или тексты и не восстанавливают удалённый профиль.';
+async function pre04_paymentCommand(env,m){
+ if(String(m.text||'').trim()==='/privacy'){const p=await readPolicy(env);await send(shellEnv(env,'rules'),m.from.id,`Данные профиля\n\nЗнак, баланс, Telegram ID, активные даты, журнал, результаты и реферальные связи хранятся для работы сервиса; /delete удаляет эти обычные данные.\n\n${FENCE_PRIVACY26}\n\nОплаченные доказательства, ID плательщика и долг сохраняются отдельно по /terms (${p.retention_days||'срок ещё не утверждён'} дней после закрытия дел и погашения долга). Поддержка: ${p.support||'не настроена'}. Сообщения Telegram и backup управляются отдельно. Публичная активация бонусов требует утверждённого уведомления и правового основания владельца.`);return true;}
+ return pre26_paymentCommand(env,m);
+}
+async function pre04_policyFaq(env){const items=await pre26_policyFaq(env),p=await readPolicy(env);items[4][2]=`Баланс и история учитывают фактические начисления и списания. Новый расклад Таро — 5 ✨; ранее оплаченный результат за 3 ✨ сохраняется и читается бесплатно. Расширенный прогноз — 4 ✨.\n\n${p.activated?'Новый профиль +5; активная дата +2; первые3подряд +3; каждый7-й +4;30разных +6. Новый реферал +10/+3 после выбора знака; канал +15 самому и +5 исходному пригласившему при подтверждённой связи.':'До переключения сохраняются прежние номинальные бонусы; фактическая выплата зависит от права и настройки защиты.'}\n\n${FENCE_PRIVACY26}`;items[5][2]=items[5][2].replace('Новый расклад на три карты стоит 3 ✨','Новый расклад на три карты стоит 5 ✨');items[6][2]+='\n\n'+FENCE_PRIVACY26;items[10][1]='Магазин подготовлен: 10 XTR → 40 ✨; 25 → 110; 50 → 240. Включение требует отдельного решения.';items[10][2]=items[10][2].replace('10 XTR → 100 ✨; 25 → 270; 50 → 570.','10 XTR → 40 ✨; 25 → 110; 50 → 240.');return items;}
+
+async function paymentsAdmin(request,env){
+ const url=new URL(request.url);if(url.pathname!=='/internal/economy/policy'&&url.pathname!=='/internal/economy/fence')return pre26_paymentsAdmin(request,env);
+ if(request.method!=='POST'||!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!=='Bearer '+env.ASTRA_ADMIN_KEY)return new Response('Forbidden',{status:403});
+ const b=await request.json();
+ if(url.pathname==='/internal/economy/fence'){
+  if(b.action==='configure_key')return Response.json(await configureFence26(env));
+  if(b.action==='approve_notice')return Response.json(await approveFenceNotice26(env,b.version,b.acknowledgement));
+  if(b.action==='purge')return Response.json(await purgeFences26(env));
+  if(b.action==='bootstrap'){
+   const ctx=await fenceContext26(env);if(!ctx.ok)throw Error('Fence configuration unavailable');
+   const row=await env.DB.prepare('SELECT telegram_id FROM astra_bonus_profiles26 WHERE seeded=0 ORDER BY telegram_id LIMIT 1').first();if(row)await syncBonusOwner26(env,row.telegram_id,ctx);
+   return Response.json({processed_profile:Boolean(row),remaining:(await env.DB.prepare('SELECT count(*) n FROM astra_bonus_profiles26 WHERE seeded=0').first()).n});
+  }
+  if(b.action==='status'){const ctx=await fenceContext26(env);return Response.json({keys_ready:ctx.keys_ready,notice_ready:Boolean(ctx.notice_ready),blocker:ctx.blocker,bootstrap_pending:(await env.DB.prepare('SELECT count(*) n FROM astra_bonus_profiles26 WHERE seeded=0').first()).n},{headers:{'Cache-Control':'no-store'}});}
+ }
+ if(b.action==='arm'){const p=await armPolicy(env,b.start_day);return Response.json({start_day:p.start_day,enabled:Boolean(p.enabled)});}
+ if(b.action==='stop'||b.action==='resume'){
+  if(b.action==='resume'){if(!(await fenceContext26(env)).ok||!true26(env.ASTRA_ECONOMY_V2_ENABLED)||!(await readPolicy(env)).start_day)throw Error('Approved key,notice,date and runtime flag required');}
+  await env.DB.prepare('UPDATE astra_patch26 SET enabled=? WHERE singleton=1').bind(b.action==='resume'?1:0).run();invalidate26(env);return Response.json({ok:true});
+ }return new Response('Not found',{status:404});
+}
+
+Object.assign(HISTORY_LABELS,{"tarot:v2":"Новый расклад на три карты (5 ✨)","reward:v3:initial":"Новый профиль","reward:v3:legacy_initial":"Начальный баланс прежних правил","reward:v3:daily":"Активный день","reward:v3:legacy_daily":"Ручной бонус прежних правил","reward:v3:first3":"Первые три дня подряд","reward:v3:weekly":"Семидневный цикл","reward:v3:thirty":"Тридцать разных дат","reward:v3:gpt6":"Секретный архив","reward:v3:channel":"Подтверждённая подписка","reward:v3:legacy_channel":"Подписка прежних правил","reward:v3:referrer":"Приглашённый завершил регистрацию","reward:v3:legacy_referrer":"Старый реферальный договор","reward:v3:invitee":"Награда приглашённому","reward:v3:inviter_channel":"Подписка приглашённого на канал"});
+
+
+// TASK02: same symbolic selection, independently versioned editorial presentation.
+const compactCatalog={
+  "presentation_version": "compact-1.0.1",
+  "content_version": "2026.11-compact-v2",
+  "selection_engine_version": "forecast-1.0.0",
+  "source_catalog_version": "2026.11-v1",
+  "entries": {
+    "initiative.theme.fire.1": {
+      "text": "Огненный порыв стоит отличить от желания победить.",
+      "kind": "sentence",
+      "source_fingerprint": 1592714589,
+      "directives": {},
+      "semantic_key": "initiative:theme:fire"
+    },
+    "initiative.theme.earth.1": {
+      "text": "Новому замыслу нужна опора и после первого увлечения.",
+      "kind": "sentence",
+      "source_fingerprint": 3811450751,
+      "directives": {},
+      "semantic_key": "initiative:theme:earth"
+    },
+    "initiative.theme.air.1": {
+      "text": "Новая мысль рождается на пересечении взглядов, ещё не став убеждением.",
+      "kind": "sentence",
+      "source_fingerprint": 3157458188,
+      "directives": {},
+      "semantic_key": "initiative:theme:air"
+    },
+    "initiative.theme.water.1": {
+      "text": "Сильный отклик может открыть чувство, но не доказывает взаимности.",
+      "kind": "sentence",
+      "source_fingerprint": 2738567026,
+      "directives": {},
+      "semantic_key": "initiative:theme:water"
+    },
+    "initiative.relations.fire.1": {
+      "text": "Влечение не даёт власти над чужим ответом.",
+      "kind": "sentence",
+      "source_fingerprint": 994953068,
+      "directives": {},
+      "semantic_key": "initiative:relations:fire"
+    },
+    "initiative.relations.earth.1": {
+      "text": "Присутствие говорит о намерении точнее обещаний вечной близости.",
+      "kind": "sentence",
+      "source_fingerprint": 1025393183,
+      "directives": {},
+      "semantic_key": "initiative:relations:earth"
+    },
+    "initiative.relations.air.1": {
+      "text": "Вопрос оставляет собеседнику больше свободы, чем готовое мнение.",
+      "kind": "sentence",
+      "source_fingerprint": 2550321649,
+      "directives": {},
+      "semantic_key": "initiative:relations:air"
+    },
+    "initiative.relations.water.1": {
+      "text": "Нынешняя привязанность может отозваться памятью о прежней.",
+      "kind": "sentence",
+      "source_fingerprint": 3452406269,
+      "directives": {},
+      "semantic_key": "initiative:relations:water"
+    },
+    "initiative.work.fire.1": {
+      "text": "Замысел оживает благодаря интересу, а не состязанию.",
+      "kind": "sentence",
+      "source_fingerprint": 204982510,
+      "directives": {},
+      "semantic_key": "initiative:work:fire"
+    },
+    "initiative.work.earth.1": {
+      "text": "Началу поможет материал, пригодный для повседневного применения.",
+      "kind": "sentence",
+      "source_fingerprint": 840647664,
+      "directives": {},
+      "semantic_key": "initiative:work:earth"
+    },
+    "initiative.work.air.1": {
+      "text": "Ценна связь идей, а не блеск формулировки.",
+      "kind": "sentence",
+      "source_fingerprint": 4193201498,
+      "directives": {},
+      "semantic_key": "initiative:work:air"
+    },
+    "initiative.work.water.1": {
+      "text": "Воображаемому образу нужны очертания, прежде чем его оценят другие.",
+      "kind": "sentence",
+      "source_fingerprint": 3543406137,
+      "directives": {},
+      "semantic_key": "initiative:work:water"
+    },
+    "initiative.finance.fire.1": {
+      "text": "Покупка не доказывает ни силу, ни свободу.",
+      "kind": "sentence",
+      "source_fingerprint": 1705167292,
+      "directives": {},
+      "semantic_key": "initiative:finance:fire"
+    },
+    "initiative.finance.earth.1": {
+      "text": "Первое увлечение не должно поглощать накопленную опору.",
+      "kind": "sentence",
+      "source_fingerprint": 2138859016,
+      "directives": {},
+      "semantic_key": "initiative:finance:earth"
+    },
+    "initiative.finance.air.1": {
+      "text": "Привлекательное объяснение ещё не делает предложение ценным.",
+      "kind": "sentence",
+      "source_fingerprint": 2866958947,
+      "directives": {},
+      "semantic_key": "initiative:finance:air"
+    },
+    "initiative.finance.water.1": {
+      "text": "Сочувствие не обязывает поддерживать другого деньгами.",
+      "kind": "sentence",
+      "source_fingerprint": 902125186,
+      "directives": {},
+      "semantic_key": "initiative:finance:water"
+    },
+    "initiative.mood.fire.1": {
+      "text": "Внутренний жар без направления легко становится раздражением.",
+      "kind": "sentence",
+      "source_fingerprint": 3985311055,
+      "directives": {},
+      "semantic_key": "initiative:mood:fire"
+    },
+    "initiative.mood.earth.1": {
+      "text": "Знакомая опора помогает освоиться в новом.",
+      "kind": "sentence",
+      "source_fingerprint": 820773656,
+      "directives": {},
+      "semantic_key": "initiative:mood:earth"
+    },
+    "initiative.mood.air.1": {
+      "text": "Среди возможностей важно заметить впечатление, изменившее ваш взгляд.",
+      "kind": "sentence",
+      "source_fingerprint": 3873380972,
+      "directives": {},
+      "semantic_key": "initiative:mood:air"
+    },
+    "initiative.mood.water.1": {
+      "text": "Предчувствие значимо, но не обязано оказаться судьбой.",
+      "kind": "sentence",
+      "source_fingerprint": 318770903,
+      "directives": {},
+      "semantic_key": "initiative:mood:water"
+    },
+    "initiative.action.fire.1": {
+      "text": "Какой замысел важен вам без соревнования?",
+      "kind": "question",
+      "source_fingerprint": 3250099506,
+      "directives": {},
+      "semantic_key": "initiative:action:fire"
+    },
+    "initiative.action.earth.1": {
+      "text": "Что поможет сделать новое намерение конкретным?",
+      "kind": "question",
+      "source_fingerprint": 3896373737,
+      "directives": {},
+      "semantic_key": "initiative:action:earth"
+    },
+    "initiative.action.air.1": {
+      "text": "Что хотите выяснить вы сами?",
+      "kind": "question",
+      "source_fingerprint": 853122304,
+      "directives": {},
+      "semantic_key": "initiative:action:air"
+    },
+    "initiative.action.water.1": {
+      "text": "Какого внимания просит это чувство?",
+      "kind": "question",
+      "source_fingerprint": 1465693638,
+      "directives": {},
+      "semantic_key": "initiative:action:water"
+    },
+    "agreement.theme.fire.1": {
+      "text": "Чужая самостоятельность не уменьшает силу вашего желания.",
+      "kind": "sentence",
+      "source_fingerprint": 1901751058,
+      "directives": {},
+      "semantic_key": "agreement:theme:fire"
+    },
+    "agreement.theme.earth.1": {
+      "text": "Устойчивый союз держится на ценности для обоих.",
+      "kind": "sentence",
+      "source_fingerprint": 39137495,
+      "directives": {},
+      "semantic_key": "agreement:theme:earth"
+    },
+    "agreement.theme.air.1": {
+      "text": "Созвучие взглядов не требует полного совпадения.",
+      "kind": "sentence",
+      "source_fingerprint": 2441732016,
+      "directives": {},
+      "semantic_key": "agreement:theme:air"
+    },
+    "agreement.theme.water.1": {
+      "text": "Близость становится глубже, когда чувства остаются различимыми.",
+      "kind": "sentence",
+      "source_fingerprint": 2874724844,
+      "directives": {},
+      "semantic_key": "agreement:theme:water"
+    },
+    "agreement.relations.fire.1": {
+      "text": "Взаимность сохраняет достоинство и желание обоих.",
+      "kind": "sentence",
+      "source_fingerprint": 301918602,
+      "directives": {},
+      "semantic_key": "agreement:relations:fire"
+    },
+    "agreement.relations.earth.1": {
+      "text": "Привычный жест нежности нуждается во внимании.",
+      "kind": "sentence",
+      "source_fingerprint": 92906529,
+      "directives": {},
+      "semantic_key": "agreement:relations:earth"
+    },
+    "agreement.relations.air.1": {
+      "text": "Быть услышанным не значит получить немедленное согласие.",
+      "kind": "sentence",
+      "source_fingerprint": 438204703,
+      "directives": {},
+      "semantic_key": "agreement:relations:air"
+    },
+    "agreement.relations.water.1": {
+      "text": "Сопереживать можно, не проживая чужую жизнь вместо другого.",
+      "kind": "sentence",
+      "source_fingerprint": 305708231,
+      "directives": {},
+      "semantic_key": "agreement:relations:water"
+    },
+    "agreement.work.fire.1": {
+      "text": "Совместное творчество требует признания чужого авторства.",
+      "kind": "sentence",
+      "source_fingerprint": 1005943420,
+      "directives": {},
+      "semantic_key": "agreement:work:fire"
+    },
+    "agreement.work.earth.1": {
+      "text": "Разные умения могут питать одно дело.",
+      "kind": "sentence",
+      "source_fingerprint": 2473924121,
+      "directives": {},
+      "semantic_key": "agreement:work:earth"
+    },
+    "agreement.work.air.1": {
+      "text": "Расхождение понятий ещё не означает личной вражды.",
+      "kind": "sentence",
+      "source_fingerprint": 2579872166,
+      "directives": {},
+      "semantic_key": "agreement:work:air"
+    },
+    "agreement.work.water.1": {
+      "text": "Интуиция общего настроя не заменяет ясности слов.",
+      "kind": "sentence",
+      "source_fingerprint": 4129357250,
+      "directives": {},
+      "semantic_key": "agreement:work:water"
+    },
+    "agreement.finance.fire.1": {
+      "text": "Дорогой подарок не устанавливает равенства чувств.",
+      "kind": "sentence",
+      "source_fingerprint": 2053820109,
+      "directives": {},
+      "semantic_key": "agreement:finance:fire"
+    },
+    "agreement.finance.earth.1": {
+      "text": "Общее владение не заменяет согласия о пользовании.",
+      "kind": "sentence",
+      "source_fingerprint": 2696421600,
+      "directives": {},
+      "semantic_key": "agreement:finance:earth"
+    },
+    "agreement.finance.air.1": {
+      "text": "У дара могут быть неоговорённые ожидания.",
+      "kind": "sentence",
+      "source_fingerprint": 166271615,
+      "directives": {},
+      "semantic_key": "agreement:finance:air"
+    },
+    "agreement.finance.water.1": {
+      "text": "Деньги не должны становиться единственной мерой близости.",
+      "kind": "sentence",
+      "source_fingerprint": 1251038810,
+      "directives": {},
+      "semantic_key": "agreement:finance:water"
+    },
+    "agreement.mood.fire.1": {
+      "text": "Отсутствие восторга ещё не означает непризнания.",
+      "kind": "sentence",
+      "source_fingerprint": 2101193318,
+      "directives": {},
+      "semantic_key": "agreement:mood:fire"
+    },
+    "agreement.mood.earth.1": {
+      "text": "Надёжная связь не обещает полного отсутствия перемен.",
+      "kind": "sentence",
+      "source_fingerprint": 2650944378,
+      "directives": {},
+      "semantic_key": "agreement:mood:earth"
+    },
+    "agreement.mood.air.1": {
+      "text": "Незавершённый разговор не делает встречу напрасной.",
+      "kind": "sentence",
+      "source_fingerprint": 48526411,
+      "directives": {},
+      "semantic_key": "agreement:mood:air"
+    },
+    "agreement.mood.water.1": {
+      "text": "Чужое настроение не обязано оставаться вашим весь день.",
+      "kind": "sentence",
+      "source_fingerprint": 3854282064,
+      "directives": {},
+      "semantic_key": "agreement:mood:water"
+    },
+    "agreement.action.fire.1": {
+      "text": "Есть ли место желаниям обоих?",
+      "kind": "question",
+      "source_fingerprint": 1666735406,
+      "directives": {},
+      "semantic_key": "agreement:action:fire"
+    },
+    "agreement.action.earth.1": {
+      "text": "Что важно вам обоим?",
+      "kind": "question",
+      "source_fingerprint": 2599992940,
+      "directives": {},
+      "semantic_key": "agreement:action:earth"
+    },
+    "agreement.action.air.1": {
+      "text": "В чём именно расходятся ваши взгляды?",
+      "kind": "question",
+      "source_fingerprint": 2556517454,
+      "directives": {},
+      "semantic_key": "agreement:action:air"
+    },
+    "agreement.action.water.1": {
+      "text": "Что чувствуете вы, а что приписываете другому?",
+      "kind": "question",
+      "source_fingerprint": 200783694,
+      "directives": {},
+      "semantic_key": "agreement:action:water"
+    },
+    "review.theme.fire.1": {
+      "text": "Яркость желания не доказывает правоту внутреннего образа.",
+      "kind": "sentence",
+      "source_fingerprint": 4113654000,
+      "directives": {},
+      "semantic_key": "review:theme:fire"
+    },
+    "review.theme.earth.1": {
+      "text": "Привычная опора может уже не отвечать потребности.",
+      "kind": "sentence",
+      "source_fingerprint": 669513359,
+      "directives": {},
+      "semantic_key": "review:theme:earth"
+    },
+    "review.theme.air.1": {
+      "text": "Стройное объяснение ещё не означает знания всех оснований.",
+      "kind": "sentence",
+      "source_fingerprint": 796790053,
+      "directives": {},
+      "semantic_key": "review:theme:air"
+    },
+    "review.theme.water.1": {
+      "text": "Узнаваемое чувство не подтверждает внешнего события.",
+      "kind": "sentence",
+      "source_fingerprint": 706358337,
+      "directives": {},
+      "semantic_key": "review:theme:water"
+    },
+    "review.relations.fire.1": {
+      "text": "Чужой отказ может быть границей, а не вызовом.",
+      "kind": "sentence",
+      "source_fingerprint": 3399852963,
+      "directives": {},
+      "semantic_key": "review:relations:fire"
+    },
+    "review.relations.earth.1": {
+      "text": "Нынешний ответ близкого вправе отличаться от прежнего.",
+      "kind": "sentence",
+      "source_fingerprint": 1205238140,
+      "directives": {},
+      "semantic_key": "review:relations:earth"
+    },
+    "review.relations.air.1": {
+      "text": "Произнесённое стоит отличить от того, что вы достроили.",
+      "kind": "sentence",
+      "source_fingerprint": 1246119179,
+      "directives": {},
+      "semantic_key": "review:relations:air"
+    },
+    "review.relations.water.1": {
+      "text": "За знакомой интонацией может слышаться давняя утрата.",
+      "kind": "sentence",
+      "source_fingerprint": 2803843228,
+      "directives": {},
+      "semantic_key": "review:relations:water"
+    },
+    "review.work.fire.1": {
+      "text": "Слабая сторона идеи не отменяет её ценности.",
+      "kind": "sentence",
+      "source_fingerprint": 360165450,
+      "directives": {},
+      "semantic_key": "review:work:fire"
+    },
+    "review.work.earth.1": {
+      "text": "Привычный порядок может утратить своё назначение.",
+      "kind": "sentence",
+      "source_fingerprint": 3088805346,
+      "directives": {},
+      "semantic_key": "review:work:earth"
+    },
+    "review.work.air.1": {
+      "text": "В основе очевидной картины может скрываться допущение.",
+      "kind": "sentence",
+      "source_fingerprint": 2998867372,
+      "directives": {},
+      "semantic_key": "review:work:air"
+    },
+    "review.work.water.1": {
+      "text": "Воображение иногда добавляет связи, которых нет в материале.",
+      "kind": "sentence",
+      "source_fingerprint": 3433254765,
+      "directives": {},
+      "semantic_key": "review:work:water"
+    },
+    "review.finance.fire.1": {
+      "text": "Статус приобретения не равен его действительной пользе.",
+      "kind": "sentence",
+      "source_fingerprint": 1159066783,
+      "directives": {},
+      "semantic_key": "review:finance:fire"
+    },
+    "review.finance.earth.1": {
+      "text": "Обладание может требовать больше заботы, чем давать поддержки.",
+      "kind": "sentence",
+      "source_fingerprint": 1483598619,
+      "directives": {},
+      "semantic_key": "review:finance:earth"
+    },
+    "review.finance.air.1": {
+      "text": "Красивое обещание не заменяет ясных условий.",
+      "kind": "sentence",
+      "source_fingerprint": 2591881907,
+      "directives": {},
+      "semantic_key": "review:finance:air"
+    },
+    "review.finance.water.1": {
+      "text": "Родство чувств ещё не гарантирует надёжности обмена.",
+      "kind": "sentence",
+      "source_fingerprint": 418935818,
+      "directives": {},
+      "semantic_key": "review:finance:water"
+    },
+    "review.mood.fire.1": {
+      "text": "Уверенность стоит проверить неудобным наблюдением.",
+      "kind": "sentence",
+      "source_fingerprint": 1430954963,
+      "directives": {},
+      "semantic_key": "review:mood:fire"
+    },
+    "review.mood.earth.1": {
+      "text": "Телесное удобство — опора, но не единственный довод.",
+      "kind": "sentence",
+      "source_fingerprint": 3915132290,
+      "directives": {},
+      "semantic_key": "review:mood:earth"
+    },
+    "review.mood.air.1": {
+      "text": "Название чувства не исчерпывает самого переживания.",
+      "kind": "sentence",
+      "source_fingerprint": 3958952874,
+      "directives": {},
+      "semantic_key": "review:mood:air"
+    },
+    "review.mood.water.1": {
+      "text": "Тревога может просить внимания, не предсказывая беды.",
+      "kind": "sentence",
+      "source_fingerprint": 73031616,
+      "directives": {},
+      "semantic_key": "review:mood:water"
+    },
+    "review.action.fire.1": {
+      "text": "Что изменило бы ваше убеждение?",
+      "kind": "question",
+      "source_fingerprint": 1601475707,
+      "directives": {},
+      "semantic_key": "review:action:fire"
+    },
+    "review.action.earth.1": {
+      "text": "Нужно ли вам то, что привычно?",
+      "kind": "question",
+      "source_fingerprint": 596233661,
+      "directives": {},
+      "semantic_key": "review:action:earth"
+    },
+    "review.action.air.1": {
+      "text": "Что известно, а что вы предположили?",
+      "kind": "question",
+      "source_fingerprint": 2804353025,
+      "directives": {},
+      "semantic_key": "review:action:air"
+    },
+    "review.action.water.1": {
+      "text": "Как назвать чувство, не предсказывая события?",
+      "kind": "question",
+      "source_fingerprint": 3869638377,
+      "directives": {},
+      "semantic_key": "review:action:water"
+    },
+    "boundaries.theme.fire.1": {
+      "text": "Граница помогает огненной воле сохранить направление.",
+      "kind": "sentence",
+      "source_fingerprint": 1953275537,
+      "directives": {},
+      "semantic_key": "boundaries:theme:fire"
+    },
+    "boundaries.theme.earth.1": {
+      "text": "Устойчивая опора отличается от стены вокруг привычки.",
+      "kind": "sentence",
+      "source_fingerprint": 4197914778,
+      "directives": {},
+      "semantic_key": "boundaries:theme:earth"
+    },
+    "boundaries.theme.air.1": {
+      "text": "Право на своё суждение совместимо с открытостью.",
+      "kind": "sentence",
+      "source_fingerprint": 1210095790,
+      "directives": {},
+      "semantic_key": "boundaries:theme:air"
+    },
+    "boundaries.theme.water.1": {
+      "text": "Чувству нужен берег, иначе сочувствие захватывает всё.",
+      "kind": "sentence",
+      "source_fingerprint": 3618967922,
+      "directives": {},
+      "semantic_key": "boundaries:theme:water"
+    },
+    "boundaries.relations.fire.1": {
+      "text": "Прямота не даёт права вторгаться в чужие пределы.",
+      "kind": "sentence",
+      "source_fingerprint": 186509140,
+      "directives": {},
+      "semantic_key": "boundaries:relations:fire"
+    },
+    "boundaries.relations.earth.1": {
+      "text": "Забота о близком не означает владения им.",
+      "kind": "sentence",
+      "source_fingerprint": 918467677,
+      "directives": {},
+      "semantic_key": "boundaries:relations:earth"
+    },
+    "boundaries.relations.air.1": {
+      "text": "Обмен мыслями не обязывает отчитываться обо всём.",
+      "kind": "sentence",
+      "source_fingerprint": 443030640,
+      "directives": {},
+      "semantic_key": "boundaries:relations:air"
+    },
+    "boundaries.relations.water.1": {
+      "text": "Чуткость не назначает вас хранителем чужих решений.",
+      "kind": "sentence",
+      "source_fingerprint": 3549124488,
+      "directives": {},
+      "semantic_key": "boundaries:relations:water"
+    },
+    "boundaries.work.fire.1": {
+      "text": "Собственный почин не обязывает разрешать чужую неуверенность.",
+      "kind": "sentence",
+      "source_fingerprint": 1298513441,
+      "directives": {},
+      "semantic_key": "boundaries:work:fire"
+    },
+    "boundaries.work.earth.1": {
+      "text": "У дела есть предел заботы, за которым начинается истощение.",
+      "kind": "sentence",
+      "source_fingerprint": 1473890647,
+      "directives": {},
+      "semantic_key": "boundaries:work:earth"
+    },
+    "boundaries.work.air.1": {
+      "text": "Общий замысел допускает разные толкования.",
+      "kind": "sentence",
+      "source_fingerprint": 3515948608,
+      "directives": {},
+      "semantic_key": "boundaries:work:air"
+    },
+    "boundaries.work.water.1": {
+      "text": "Вовлечённость не должна растворять различие своего и общего.",
+      "kind": "sentence",
+      "source_fingerprint": 973854319,
+      "directives": {},
+      "semantic_key": "boundaries:work:water"
+    },
+    "boundaries.finance.fire.1": {
+      "text": "Свободная щедрость сохраняет право остановиться.",
+      "kind": "sentence",
+      "source_fingerprint": 4086642113,
+      "directives": {},
+      "semantic_key": "boundaries:finance:fire"
+    },
+    "boundaries.finance.earth.1": {
+      "text": "Общие вещи не отменяют личной меры участия.",
+      "kind": "sentence",
+      "source_fingerprint": 401882077,
+      "directives": {},
+      "semantic_key": "boundaries:finance:earth"
+    },
+    "boundaries.finance.air.1": {
+      "text": "Денежное участие нуждается в границах раньше чужих ожиданий.",
+      "kind": "sentence",
+      "source_fingerprint": 1968684601,
+      "directives": {},
+      "semantic_key": "boundaries:finance:air"
+    },
+    "boundaries.finance.water.1": {
+      "text": "Страх потерять близость не должен распоряжаться средствами.",
+      "kind": "sentence",
+      "source_fingerprint": 1653349711,
+      "directives": {},
+      "semantic_key": "boundaries:finance:water"
+    },
+    "boundaries.mood.fire.1": {
+      "text": "Не каждый внешний зов требует внутреннего отклика.",
+      "kind": "sentence",
+      "source_fingerprint": 1606773408,
+      "directives": {},
+      "semantic_key": "boundaries:mood:fire"
+    },
+    "boundaries.mood.earth.1": {
+      "text": "Забота о себе допускает простоту вместо безупречности.",
+      "kind": "sentence",
+      "source_fingerprint": 1814806701,
+      "directives": {},
+      "semantic_key": "boundaries:mood:earth"
+    },
+    "boundaries.mood.air.1": {
+      "text": "Несогласие другого не лишает мысль свободы.",
+      "kind": "sentence",
+      "source_fingerprint": 1926247413,
+      "directives": {},
+      "semantic_key": "boundaries:mood:air"
+    },
+    "boundaries.mood.water.1": {
+      "text": "Чужую боль можно услышать, не оставаясь в ней.",
+      "kind": "sentence",
+      "source_fingerprint": 2180540438,
+      "directives": {},
+      "semantic_key": "boundaries:mood:water"
+    },
+    "boundaries.action.fire.1": {
+      "text": "Где ваше желание, а где чужой предел?",
+      "kind": "question",
+      "source_fingerprint": 3186038569,
+      "directives": {},
+      "semantic_key": "boundaries:action:fire"
+    },
+    "boundaries.action.earth.1": {
+      "text": "Что помогает вам, а что отягощает?",
+      "kind": "question",
+      "source_fingerprint": 3503374195,
+      "directives": {},
+      "semantic_key": "boundaries:action:earth"
+    },
+    "boundaries.action.air.1": {
+      "text": "Нужно ли объясняться после ясного ответа?",
+      "kind": "question",
+      "source_fingerprint": 351336378,
+      "directives": {},
+      "semantic_key": "boundaries:action:air"
+    },
+    "boundaries.action.water.1": {
+      "text": "Вы участвуете свободно или из вины?",
+      "kind": "question",
+      "source_fingerprint": 2621225326,
+      "directives": {},
+      "semantic_key": "boundaries:action:water"
+    },
+    "completion.theme.fire.1": {
+      "text": "Завершение освобождает волю от исчерпанного занятия.",
+      "kind": "sentence",
+      "source_fingerprint": 3305717785,
+      "directives": {},
+      "semantic_key": "completion:theme:fire"
+    },
+    "completion.theme.earth.1": {
+      "text": "Оболочку не всегда стоит хранить ради прежней ценности.",
+      "kind": "sentence",
+      "source_fingerprint": 3619454488,
+      "directives": {},
+      "semantic_key": "completion:theme:earth"
+    },
+    "completion.theme.air.1": {
+      "text": "Итог может оставаться ясным при незакрытом вопросе.",
+      "kind": "sentence",
+      "source_fingerprint": 2535720758,
+      "directives": {},
+      "semantic_key": "completion:theme:air"
+    },
+    "completion.theme.water.1": {
+      "text": "Память способна сохранить смысл без прежней близости.",
+      "kind": "sentence",
+      "source_fingerprint": 4033560002,
+      "directives": {},
+      "semantic_key": "completion:theme:water"
+    },
+    "completion.relations.fire.1": {
+      "text": "Спор иногда продолжается лишь ради последнего слова.",
+      "kind": "sentence",
+      "source_fingerprint": 905000522,
+      "directives": {},
+      "semantic_key": "completion:relations:fire"
+    },
+    "completion.relations.earth.1": {
+      "text": "Конец привычного ритуала не обесценивает совместный опыт.",
+      "kind": "sentence",
+      "source_fingerprint": 1189325252,
+      "directives": {},
+      "semantic_key": "completion:relations:earth"
+    },
+    "completion.relations.air.1": {
+      "text": "Завершённый разговор допускает разные выводы.",
+      "kind": "sentence",
+      "source_fingerprint": 3934406567,
+      "directives": {},
+      "semantic_key": "completion:relations:air"
+    },
+    "completion.relations.water.1": {
+      "text": "Благодарность за близость не обязывает возвращаться к прежнему.",
+      "kind": "sentence",
+      "source_fingerprint": 4220667768,
+      "directives": {},
+      "semantic_key": "completion:relations:water"
+    },
+    "completion.work.fire.1": {
+      "text": "Законченное творение получает собственную жизнь.",
+      "kind": "sentence",
+      "source_fingerprint": 3938818392,
+      "directives": {},
+      "semantic_key": "completion:work:fire"
+    },
+    "completion.work.earth.1": {
+      "text": "Предел исправлений тоже принадлежит мастерству.",
+      "kind": "sentence",
+      "source_fingerprint": 4121409205,
+      "directives": {},
+      "semantic_key": "completion:work:earth"
+    },
+    "completion.work.air.1": {
+      "text": "Оставшийся вопрос можно отделить от найденного результата.",
+      "kind": "sentence",
+      "source_fingerprint": 1399369836,
+      "directives": {},
+      "semantic_key": "completion:work:air"
+    },
+    "completion.work.water.1": {
+      "text": "Воплощение не обязано полностью совпасть с внутренним образом.",
+      "kind": "sentence",
+      "source_fingerprint": 1769097636,
+      "directives": {},
+      "semantic_key": "completion:work:water"
+    },
+    "completion.finance.fire.1": {
+      "text": "Новое желание не требует обесценивать прежнее приобретение.",
+      "kind": "sentence",
+      "source_fingerprint": 4149933901,
+      "directives": {},
+      "semantic_key": "completion:finance:fire"
+    },
+    "completion.finance.earth.1": {
+      "text": "Прежние затраты не обязывают продолжать ненужный расход.",
+      "kind": "sentence",
+      "source_fingerprint": 2643059997,
+      "directives": {},
+      "semantic_key": "completion:finance:earth"
+    },
+    "completion.finance.air.1": {
+      "text": "В расчёте важно различать исполненное и обещанное.",
+      "kind": "sentence",
+      "source_fingerprint": 2020812179,
+      "directives": {},
+      "semantic_key": "completion:finance:air"
+    },
+    "completion.finance.water.1": {
+      "text": "Память о прошлом не требует хранить каждый предмет.",
+      "kind": "sentence",
+      "source_fingerprint": 2046524568,
+      "directives": {},
+      "semantic_key": "completion:finance:water"
+    },
+    "completion.mood.fire.1": {
+      "text": "Тишина после усилия не означает угасания желания.",
+      "kind": "sentence",
+      "source_fingerprint": 3149878657,
+      "directives": {},
+      "semantic_key": "completion:mood:fire"
+    },
+    "completion.mood.earth.1": {
+      "text": "Жест завершения отличает покой от ожидания новой обязанности.",
+      "kind": "sentence",
+      "source_fingerprint": 2879803745,
+      "directives": {},
+      "semantic_key": "completion:mood:earth"
+    },
+    "completion.mood.air.1": {
+      "text": "Открытый вопрос отличается от мысленного повторения законченного разговора.",
+      "kind": "sentence",
+      "source_fingerprint": 4043410533,
+      "directives": {},
+      "semantic_key": "completion:mood:air"
+    },
+    "completion.mood.water.1": {
+      "text": "Печаль и облегчение могут присутствовать вместе.",
+      "kind": "sentence",
+      "source_fingerprint": 1247552416,
+      "directives": {},
+      "semantic_key": "completion:mood:water"
+    },
+    "completion.action.fire.1": {
+      "text": "Можно ли не продолжать уже завершённое?",
+      "kind": "question",
+      "source_fingerprint": 961734867,
+      "directives": {},
+      "semantic_key": "completion:action:fire"
+    },
+    "completion.action.earth.1": {
+      "text": "Что стоит сохранить после завершения?",
+      "kind": "question",
+      "source_fingerprint": 1722110259,
+      "directives": {},
+      "semantic_key": "completion:action:earth"
+    },
+    "completion.action.air.1": {
+      "text": "Что завершено, а что ещё неясно?",
+      "kind": "question",
+      "source_fingerprint": 1940412956,
+      "directives": {},
+      "semantic_key": "completion:action:air"
+    },
+    "completion.action.water.1": {
+      "text": "Можно ли беречь чувство без возвращения прошлого?",
+      "kind": "question",
+      "source_fingerprint": 2426951481,
+      "directives": {},
+      "semantic_key": "completion:action:water"
+    },
+    "revision.theme.fire.1": {
+      "text": "Желание может сохранить силу в иной форме.",
+      "kind": "sentence",
+      "source_fingerprint": 67740331,
+      "directives": {},
+      "semantic_key": "revision:theme:fire"
+    },
+    "revision.theme.earth.1": {
+      "text": "Привычку можно изменить, сохранив то, ради чего она нужна.",
+      "kind": "sentence",
+      "source_fingerprint": 1913701634,
+      "directives": {},
+      "semantic_key": "revision:theme:earth"
+    },
+    "revision.theme.air.1": {
+      "text": "Другое объяснение не обязывает отвергать весь прежний опыт.",
+      "kind": "sentence",
+      "source_fingerprint": 2906510728,
+      "directives": {},
+      "semantic_key": "revision:theme:air"
+    },
+    "revision.theme.water.1": {
+      "text": "Чувство может измениться, сохранив глубину.",
+      "kind": "sentence",
+      "source_fingerprint": 3799366567,
+      "directives": {},
+      "semantic_key": "revision:theme:water"
+    },
+    "revision.relations.fire.1": {
+      "text": "Близкому можно дать выйти из прежде отведённой роли.",
+      "kind": "sentence",
+      "source_fingerprint": 2630631503,
+      "directives": {},
+      "semantic_key": "revision:relations:fire"
+    },
+    "revision.relations.earth.1": {
+      "text": "Изменившийся ритуал не обязательно означает, что заботы стало меньше.",
+      "kind": "sentence",
+      "source_fingerprint": 583089423,
+      "directives": {},
+      "semantic_key": "revision:relations:earth"
+    },
+    "revision.relations.air.1": {
+      "text": "Новое описание отношений может выявить незамеченную потребность.",
+      "kind": "sentence",
+      "source_fingerprint": 4242713727,
+      "directives": {},
+      "semantic_key": "revision:relations:air"
+    },
+    "revision.relations.water.1": {
+      "text": "Перемену интонации не стоит превращать в обвинение.",
+      "kind": "sentence",
+      "source_fingerprint": 2068679758,
+      "directives": {},
+      "semantic_key": "revision:relations:water"
+    },
+    "revision.work.fire.1": {
+      "text": "Замысел допускает другой способ воплощения.",
+      "kind": "sentence",
+      "source_fingerprint": 2525837186,
+      "directives": {},
+      "semantic_key": "revision:work:fire"
+    },
+    "revision.work.earth.1": {
+      "text": "Проверьте, помогает ли привычный способ тому, ради чего вы работаете.",
+      "kind": "sentence",
+      "source_fingerprint": 1041753617,
+      "directives": {},
+      "semantic_key": "revision:work:earth"
+    },
+    "revision.work.air.1": {
+      "text": "Новая связь понятий способна уточнить прежнюю идею.",
+      "kind": "sentence",
+      "source_fingerprint": 2485369447,
+      "directives": {},
+      "semantic_key": "revision:work:air"
+    },
+    "revision.work.water.1": {
+      "text": "Образ может измениться, не теряя внутреннего смысла.",
+      "kind": "sentence",
+      "source_fingerprint": 2253642721,
+      "directives": {},
+      "semantic_key": "revision:work:water"
+    },
+    "revision.finance.fire.1": {
+      "text": "Обновление не требует покупки нового символа свободы.",
+      "kind": "sentence",
+      "source_fingerprint": 4194196879,
+      "directives": {},
+      "semantic_key": "revision:finance:fire"
+    },
+    "revision.finance.earth.1": {
+      "text": "Иной способ использовать имеющееся бывает полезнее новой покупки.",
+      "kind": "sentence",
+      "source_fingerprint": 1095002163,
+      "directives": {},
+      "semantic_key": "revision:finance:earth"
+    },
+    "revision.finance.air.1": {
+      "text": "Новое название предложения ещё не означает новых денежных условий.",
+      "kind": "sentence",
+      "source_fingerprint": 3011467514,
+      "directives": {},
+      "semantic_key": "revision:finance:air"
+    },
+    "revision.finance.water.1": {
+      "text": "Покупка не возвращает ушедшее чувство.",
+      "kind": "sentence",
+      "source_fingerprint": 1379281965,
+      "directives": {},
+      "semantic_key": "revision:finance:water"
+    },
+    "revision.mood.fire.1": {
+      "text": "Пауза воодушевления не опровергает выбранного направления.",
+      "kind": "sentence",
+      "source_fingerprint": 406578186,
+      "directives": {},
+      "semantic_key": "revision:mood:fire"
+    },
+    "revision.mood.earth.1": {
+      "text": "Новому опыту не обязательно сразу казаться надёжным.",
+      "kind": "sentence",
+      "source_fingerprint": 1470112183,
+      "directives": {},
+      "semantic_key": "revision:mood:earth"
+    },
+    "revision.mood.air.1": {
+      "text": "Иное описание полезно, если приближает к переживанию.",
+      "kind": "sentence",
+      "source_fingerprint": 813285304,
+      "directives": {},
+      "semantic_key": "revision:mood:air"
+    },
+    "revision.mood.water.1": {
+      "text": "Желание перемен может сосуществовать с прежней привязанностью.",
+      "kind": "sentence",
+      "source_fingerprint": 3486851388,
+      "directives": {},
+      "semantic_key": "revision:mood:water"
+    },
+    "revision.action.fire.1": {
+      "text": "Желание прежнее или действует привычка?",
+      "kind": "question",
+      "source_fingerprint": 3898722973,
+      "directives": {},
+      "semantic_key": "revision:action:fire"
+    },
+    "revision.action.earth.1": {
+      "text": "Что сохранить, изменив способ заботы?",
+      "kind": "question",
+      "source_fingerprint": 1584207363,
+      "directives": {},
+      "semantic_key": "revision:action:earth"
+    },
+    "revision.action.air.1": {
+      "text": "Как иначе связаны знакомые обстоятельства?",
+      "kind": "question",
+      "source_fingerprint": 1453339524,
+      "directives": {},
+      "semantic_key": "revision:action:air"
+    },
+    "revision.action.water.1": {
+      "text": "Как назвать перемену чувства без обещаний?",
+      "kind": "question",
+      "source_fingerprint": 2253151673,
+      "directives": {},
+      "semantic_key": "revision:action:water"
+    },
+    "exchange.theme.fire.1": {
+      "text": "Чужой пример способен пробудить собственную искру.",
+      "kind": "sentence",
+      "source_fingerprint": 3652804840,
+      "directives": {},
+      "semantic_key": "exchange:theme:fire"
+    },
+    "exchange.theme.earth.1": {
+      "text": "Усвоенный опыт нуждается в собственной осязаемой форме.",
+      "kind": "sentence",
+      "source_fingerprint": 1285780997,
+      "directives": {},
+      "semantic_key": "exchange:theme:earth"
+    },
+    "exchange.theme.air.1": {
+      "text": "Разные языки опыта могут прояснять друг друга.",
+      "kind": "sentence",
+      "source_fingerprint": 3470213422,
+      "directives": {},
+      "semantic_key": "exchange:theme:air"
+    },
+    "exchange.theme.water.1": {
+      "text": "Созвучие впечатлений не отменяет различия судеб.",
+      "kind": "sentence",
+      "source_fingerprint": 2335744069,
+      "directives": {},
+      "semantic_key": "exchange:theme:water"
+    },
+    "exchange.relations.fire.1": {
+      "text": "Встреча не должна становиться только вашим самораскрытием.",
+      "kind": "sentence",
+      "source_fingerprint": 1456372468,
+      "directives": {},
+      "semantic_key": "exchange:relations:fire"
+    },
+    "exchange.relations.earth.1": {
+      "text": "Не всякий значимый обмен требует немедленного ответа.",
+      "kind": "sentence",
+      "source_fingerprint": 3749131283,
+      "directives": {},
+      "semantic_key": "exchange:relations:earth"
+    },
+    "exchange.relations.air.1": {
+      "text": "Вопрос помогает встретиться, если не служит скрытой победе.",
+      "kind": "sentence",
+      "source_fingerprint": 3832209030,
+      "directives": {},
+      "semantic_key": "exchange:relations:air"
+    },
+    "exchange.relations.water.1": {
+      "text": "Интонация другого нуждается в уточнении, а не угадывании.",
+      "kind": "sentence",
+      "source_fingerprint": 1572780500,
+      "directives": {},
+      "semantic_key": "exchange:relations:water"
+    },
+    "exchange.work.fire.1": {
+      "text": "Пример наставника не отменяет собственного почерка.",
+      "kind": "sentence",
+      "source_fingerprint": 1279991986,
+      "directives": {},
+      "semantic_key": "exchange:work:fire"
+    },
+    "exchange.work.earth.1": {
+      "text": "Назначение движения отличает ремесло от слепого повторения.",
+      "kind": "sentence",
+      "source_fingerprint": 1992918799,
+      "directives": {},
+      "semantic_key": "exchange:work:earth"
+    },
+    "exchange.work.air.1": {
+      "text": "Знакомый термин ещё не означает понимания опыта.",
+      "kind": "sentence",
+      "source_fingerprint": 1340979502,
+      "directives": {},
+      "semantic_key": "exchange:work:air"
+    },
+    "exchange.work.water.1": {
+      "text": "Вдохновляющий образ стоит отличить от заимствованного настроения.",
+      "kind": "sentence",
+      "source_fingerprint": 2748718552,
+      "directives": {},
+      "semantic_key": "exchange:work:water"
+    },
+    "exchange.finance.fire.1": {
+      "text": "Принадлежность к кругу не доказывает ценности предложения.",
+      "kind": "sentence",
+      "source_fingerprint": 2709776545,
+      "directives": {},
+      "semantic_key": "exchange:finance:fire"
+    },
+    "exchange.finance.earth.1": {
+      "text": "Редкое название вещи не заменяет её пользы.",
+      "kind": "sentence",
+      "source_fingerprint": 1588961692,
+      "directives": {},
+      "semantic_key": "exchange:finance:earth"
+    },
+    "exchange.finance.air.1": {
+      "text": "Убедительный рассказ о выгоде не заменяет знания того, за что вы платите.",
+      "kind": "sentence",
+      "source_fingerprint": 3977875645,
+      "directives": {},
+      "semantic_key": "exchange:finance:air"
+    },
+    "exchange.finance.water.1": {
+      "text": "Общий вкус ещё не делает обмен надёжным.",
+      "kind": "sentence",
+      "source_fingerprint": 2815606119,
+      "directives": {},
+      "semantic_key": "exchange:finance:water"
+    },
+    "exchange.mood.fire.1": {
+      "text": "После яркой встречи важно различить своё желание.",
+      "kind": "sentence",
+      "source_fingerprint": 3841381001,
+      "directives": {},
+      "semantic_key": "exchange:mood:fire"
+    },
+    "exchange.mood.earth.1": {
+      "text": "Впечатлению нужно место в повседневном опыте.",
+      "kind": "sentence",
+      "source_fingerprint": 2796369714,
+      "directives": {},
+      "semantic_key": "exchange:mood:earth"
+    },
+    "exchange.mood.air.1": {
+      "text": "Мысль нуждается в паузах между новыми ракурсами.",
+      "kind": "sentence",
+      "source_fingerprint": 1209023264,
+      "directives": {},
+      "semantic_key": "exchange:mood:air"
+    },
+    "exchange.mood.water.1": {
+      "text": "Чужая интонация может задержаться после разговора.",
+      "kind": "sentence",
+      "source_fingerprint": 2918616210,
+      "directives": {},
+      "semantic_key": "exchange:mood:water"
+    },
+    "exchange.action.fire.1": {
+      "text": "Что в чужом примере увлекло вас?",
+      "kind": "question",
+      "source_fingerprint": 1931384579,
+      "directives": {},
+      "semantic_key": "exchange:action:fire"
+    },
+    "exchange.action.earth.1": {
+      "text": "Что из узнанного вы уже проверили на опыте?",
+      "kind": "question",
+      "source_fingerprint": 702510689,
+      "directives": {},
+      "semantic_key": "exchange:action:earth"
+    },
+    "exchange.action.air.1": {
+      "text": "Какое слово вы понимаете по-разному?",
+      "kind": "question",
+      "source_fingerprint": 3190846241,
+      "directives": {},
+      "semantic_key": "exchange:action:air"
+    },
+    "exchange.action.water.1": {
+      "text": "Что чужое переживание вызвало у вас?",
+      "kind": "question",
+      "source_fingerprint": 144223170,
+      "directives": {},
+      "semantic_key": "exchange:action:water"
+    },
+    "steadiness.theme.fire.1": {
+      "text": "Огненный центр допускает покой без утраты желания.",
+      "kind": "sentence",
+      "source_fingerprint": 3942334150,
+      "directives": {},
+      "semantic_key": "steadiness:theme:fire"
+    },
+    "steadiness.theme.earth.1": {
+      "text": "Привычное не всегда полезно: иногда оно лишь прибавляет забот.",
+      "kind": "sentence",
+      "source_fingerprint": 1942549873,
+      "directives": {},
+      "semantic_key": "steadiness:theme:earth"
+    },
+    "steadiness.theme.air.1": {
+      "text": "Верность принципу допускает новые слова.",
+      "kind": "sentence",
+      "source_fingerprint": 2567824775,
+      "directives": {},
+      "semantic_key": "steadiness:theme:air"
+    },
+    "steadiness.theme.water.1": {
+      "text": "Меняющееся чувство не обязательно становится менее важным.",
+      "kind": "sentence",
+      "source_fingerprint": 2725288157,
+      "directives": {},
+      "semantic_key": "steadiness:theme:water"
+    },
+    "steadiness.relations.fire.1": {
+      "text": "Тёплая связь не нуждается в непрерывном восхищении.",
+      "kind": "sentence",
+      "source_fingerprint": 988962229,
+      "directives": {},
+      "semantic_key": "steadiness:relations:fire"
+    },
+    "steadiness.relations.earth.1": {
+      "text": "Привычный жест становится заботой благодаря вниманию.",
+      "kind": "sentence",
+      "source_fingerprint": 640452381,
+      "directives": {},
+      "semantic_key": "steadiness:relations:earth"
+    },
+    "steadiness.relations.air.1": {
+      "text": "Пауза не разрушает связь, пока не скрывает уклонение.",
+      "kind": "sentence",
+      "source_fingerprint": 190864809,
+      "directives": {},
+      "semantic_key": "steadiness:relations:air"
+    },
+    "steadiness.relations.water.1": {
+      "text": "Верность не требует одинакового настроения при каждой встрече.",
+      "kind": "sentence",
+      "source_fingerprint": 2774152553,
+      "directives": {},
+      "semantic_key": "steadiness:relations:water"
+    },
+    "steadiness.work.fire.1": {
+      "text": "Преданность замыслу переживает смену вдохновения.",
+      "kind": "sentence",
+      "source_fingerprint": 1261178955,
+      "directives": {},
+      "semantic_key": "steadiness:work:fire"
+    },
+    "steadiness.work.earth.1": {
+      "text": "Мастерство растёт, когда в привычном действии замечают новое.",
+      "kind": "sentence",
+      "source_fingerprint": 3944123095,
+      "directives": {},
+      "semantic_key": "steadiness:work:earth"
+    },
+    "steadiness.work.air.1": {
+      "text": "Принцип полезен, пока не запрещает замечать новое.",
+      "kind": "sentence",
+      "source_fingerprint": 3812181913,
+      "directives": {},
+      "semantic_key": "steadiness:work:air"
+    },
+    "steadiness.work.water.1": {
+      "text": "Смысл замысла может жить без первоначального восторга.",
+      "kind": "sentence",
+      "source_fingerprint": 610244767,
+      "directives": {},
+      "semantic_key": "steadiness:work:water"
+    },
+    "steadiness.finance.fire.1": {
+      "text": "Желание свободы не обязано каждый раз становиться расходом.",
+      "kind": "sentence",
+      "source_fingerprint": 2664756656,
+      "directives": {},
+      "semantic_key": "steadiness:finance:fire"
+    },
+    "steadiness.finance.earth.1": {
+      "text": "Запас должен служить жизни, а не запрещать необходимое.",
+      "kind": "sentence",
+      "source_fingerprint": 2855759991,
+      "directives": {},
+      "semantic_key": "steadiness:finance:earth"
+    },
+    "steadiness.finance.air.1": {
+      "text": "Повторённое обещание выгоды не становится знанием будущего.",
+      "kind": "sentence",
+      "source_fingerprint": 887170371,
+      "directives": {},
+      "semantic_key": "steadiness:finance:air"
+    },
+    "steadiness.finance.water.1": {
+      "text": "Вещами невозможно устранить всю внутреннюю неопределённость.",
+      "kind": "sentence",
+      "source_fingerprint": 1419369889,
+      "directives": {},
+      "semantic_key": "steadiness:finance:water"
+    },
+    "steadiness.mood.fire.1": {
+      "text": "Ровное пламя не менее действительно, чем вспышка.",
+      "kind": "sentence",
+      "source_fingerprint": 1400246789,
+      "directives": {},
+      "semantic_key": "steadiness:mood:fire"
+    },
+    "steadiness.mood.earth.1": {
+      "text": "Небольшая перемена совместима с надёжным укладом.",
+      "kind": "sentence",
+      "source_fingerprint": 3670055899,
+      "directives": {},
+      "semantic_key": "steadiness:mood:earth"
+    },
+    "steadiness.mood.air.1": {
+      "text": "Собственный опыт помогает вернуться из множества объяснений.",
+      "kind": "sentence",
+      "source_fingerprint": 2804892416,
+      "directives": {},
+      "semantic_key": "steadiness:mood:air"
+    },
+    "steadiness.mood.water.1": {
+      "text": "Беречь чувство можно, даже если оно выражается иначе.",
+      "kind": "sentence",
+      "source_fingerprint": 2961277279,
+      "directives": {},
+      "semantic_key": "steadiness:mood:water"
+    },
+    "steadiness.action.fire.1": {
+      "text": "Что важно и без быстрой отдачи?",
+      "kind": "question",
+      "source_fingerprint": 221769375,
+      "directives": {},
+      "semantic_key": "steadiness:action:fire"
+    },
+    "steadiness.action.earth.1": {
+      "text": "Что полезно, а что только привычно?",
+      "kind": "question",
+      "source_fingerprint": 3762522886,
+      "directives": {},
+      "semantic_key": "steadiness:action:earth"
+    },
+    "steadiness.action.air.1": {
+      "text": "Каково ваше мнение среди чужих?",
+      "kind": "question",
+      "source_fingerprint": 2836961158,
+      "directives": {},
+      "semantic_key": "steadiness:action:air"
+    },
+    "steadiness.action.water.1": {
+      "text": "Какой темп подходит именно вам?",
+      "kind": "question",
+      "source_fingerprint": 2096467914,
+      "directives": {},
+      "semantic_key": "steadiness:action:water"
+    },
+    "aries.theme.lens.1": {
+      "text": "Марс здесь — образ самостоятельной воли.",
+      "kind": "sentence",
+      "source_fingerprint": 2272055524,
+      "directives": {},
+      "semantic_key": "ruler:aries:theme:1"
+    },
+    "aries.theme.lens.2": {
+      "text": "Право начать не равно праву победить.",
+      "kind": "sentence",
+      "source_fingerprint": 3041957718,
+      "directives": {},
+      "semantic_key": "ruler:aries:theme:2"
+    },
+    "aries.theme.lens.3": {
+      "text": "Важнее направление силы, чем её напор.",
+      "kind": "sentence",
+      "source_fingerprint": 3923986521,
+      "directives": {},
+      "semantic_key": "ruler:aries:theme:3"
+    },
+    "aries.relations.lens.1": {
+      "text": "Прямое приглашение оставляет другому право отказаться.",
+      "kind": "sentence",
+      "source_fingerprint": 2774472233,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "ruler:aries:relations:1"
+    },
+    "aries.relations.lens.2": {
+      "text": "Прямота требует бережности к чужой уязвимости.",
+      "kind": "sentence",
+      "source_fingerprint": 1969366507,
+      "directives": {},
+      "semantic_key": "ruler:aries:relations:2"
+    },
+    "aries.relations.lens.3": {
+      "text": "Пылкость не распоряжается чужим ответом.",
+      "kind": "sentence",
+      "source_fingerprint": 98698808,
+      "directives": {},
+      "semantic_key": "ruler:aries:relations:3"
+    },
+    "aries.work.lens.1": {
+      "text": "Собственный почин ценнее борьбы ради борьбы.",
+      "kind": "sentence",
+      "source_fingerprint": 934751277,
+      "directives": {},
+      "semantic_key": "ruler:aries:work:1"
+    },
+    "aries.work.lens.2": {
+      "text": "Авторство включает ответственность за замысел.",
+      "kind": "sentence",
+      "source_fingerprint": 2242151333,
+      "directives": {},
+      "semantic_key": "ruler:aries:work:2"
+    },
+    "aries.work.lens.3": {
+      "text": "Сопротивление материала не обязательно личный вызов.",
+      "kind": "sentence",
+      "source_fingerprint": 1192722002,
+      "directives": {},
+      "semantic_key": "ruler:aries:work:3"
+    },
+    "aries.finance.lens.1": {
+      "text": "Расход легко принять за доказательство силы.",
+      "kind": "sentence",
+      "source_fingerprint": 123226259,
+      "directives": {},
+      "semantic_key": "ruler:aries:finance:1"
+    },
+    "aries.finance.lens.2": {
+      "text": "Желание стоит отличить от соперничества.",
+      "kind": "sentence",
+      "source_fingerprint": 1855745310,
+      "directives": {},
+      "semantic_key": "ruler:aries:finance:2"
+    },
+    "aries.finance.lens.3": {
+      "text": "Независимость нуждается в сохранённой опоре.",
+      "kind": "sentence",
+      "source_fingerprint": 1607310077,
+      "directives": {},
+      "semantic_key": "ruler:aries:finance:3"
+    },
+    "aries.mood.lens.1": {
+      "text": "Волнение не всегда означает внешнего противника.",
+      "kind": "sentence",
+      "source_fingerprint": 3510585822,
+      "directives": {},
+      "semantic_key": "ruler:aries:mood:1"
+    },
+    "aries.mood.lens.2": {
+      "text": "За нетерпением может скрываться неназванное желание.",
+      "kind": "sentence",
+      "source_fingerprint": 2248972418,
+      "directives": {},
+      "semantic_key": "ruler:aries:mood:2"
+    },
+    "aries.mood.lens.3": {
+      "text": "Внутренней силе не обязательна победа.",
+      "kind": "sentence",
+      "source_fingerprint": 2659228381,
+      "directives": {},
+      "semantic_key": "ruler:aries:mood:3"
+    },
+    "aries.action.lens.1": {
+      "text": "Определите первый шаг своего замысла без попытки победить другого.",
+      "kind": "sentence",
+      "source_fingerprint": 3694113529,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:aries:action:1"
+    },
+    "aries.action.lens.2": {
+      "text": "Перед решением отделите своё желание от задетой гордости.",
+      "kind": "sentence",
+      "source_fingerprint": 3837746068,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:aries:action:2"
+    },
+    "aries.action.lens.3": {
+      "text": "Выберите, чего хотите сами, даже если никто не спорит.",
+      "kind": "sentence",
+      "source_fingerprint": 188410226,
+      "directives": {},
+      "semantic_key": "ruler:aries:action:3"
+    },
+    "taurus.theme.lens.1": {
+      "text": "Венера связывает ценность с полнотой ощущений.",
+      "kind": "sentence",
+      "source_fingerprint": 320108930,
+      "directives": {},
+      "semantic_key": "ruler:taurus:theme:1"
+    },
+    "taurus.theme.lens.2": {
+      "text": "Привычное стоит сохранять, пока оно помогает вам.",
+      "kind": "sentence",
+      "source_fingerprint": 1612196328,
+      "directives": {},
+      "semantic_key": "ruler:taurus:theme:2"
+    },
+    "taurus.theme.lens.3": {
+      "text": "Достаточность отличается от бесконечного накопления.",
+      "kind": "sentence",
+      "source_fingerprint": 2197075547,
+      "directives": {},
+      "semantic_key": "ruler:taurus:theme:3"
+    },
+    "taurus.relations.lens.1": {
+      "text": "Нежность нуждается в присутствии, а не владении.",
+      "kind": "sentence",
+      "source_fingerprint": 693664052,
+      "directives": {},
+      "semantic_key": "ruler:taurus:relations:1"
+    },
+    "taurus.relations.lens.2": {
+      "text": "Бережность начинается с уважения телесных границ.",
+      "kind": "sentence",
+      "source_fingerprint": 2701790228,
+      "directives": {},
+      "semantic_key": "ruler:taurus:relations:2"
+    },
+    "taurus.relations.lens.3": {
+      "text": "Привязанность допускает изменение привычного ритуала.",
+      "kind": "sentence",
+      "source_fingerprint": 2588730839,
+      "directives": {},
+      "semantic_key": "ruler:taurus:relations:3"
+    },
+    "taurus.work.lens.1": {
+      "text": "Качество воплощения важнее количества сделанного.",
+      "kind": "sentence",
+      "source_fingerprint": 910080184,
+      "directives": {},
+      "semantic_key": "ruler:taurus:work:1"
+    },
+    "taurus.work.lens.2": {
+      "text": "Мастерство требует внимания к свойствам материала.",
+      "kind": "sentence",
+      "source_fingerprint": 1384417822,
+      "directives": {},
+      "semantic_key": "ruler:taurus:work:2"
+    },
+    "taurus.work.lens.3": {
+      "text": "Результат не должен заслонять радость созидания.",
+      "kind": "sentence",
+      "source_fingerprint": 3609065217,
+      "directives": {},
+      "semantic_key": "ruler:taurus:work:3"
+    },
+    "taurus.finance.lens.1": {
+      "text": "Покупка не всегда приносит желаемое спокойствие.",
+      "kind": "sentence",
+      "source_fingerprint": 2650201484,
+      "directives": {},
+      "semantic_key": "ruler:taurus:finance:1"
+    },
+    "taurus.finance.lens.2": {
+      "text": "Достаток нужен для жизни, не только сохранения.",
+      "kind": "sentence",
+      "source_fingerprint": 1846445411,
+      "directives": {},
+      "semantic_key": "ruler:taurus:finance:2"
+    },
+    "taurus.finance.lens.3": {
+      "text": "Привлекательность вещи ещё не делает её необходимой.",
+      "kind": "sentence",
+      "source_fingerprint": 508005567,
+      "directives": {},
+      "semantic_key": "ruler:taurus:finance:3"
+    },
+    "taurus.mood.lens.1": {
+      "text": "Простые ощущения возвращают к настоящему.",
+      "kind": "sentence",
+      "source_fingerprint": 418320456,
+      "directives": {},
+      "semantic_key": "ruler:taurus:mood:1"
+    },
+    "taurus.mood.lens.2": {
+      "text": "Привычное чувство иногда удерживает страх перемен.",
+      "kind": "sentence",
+      "source_fingerprint": 710586646,
+      "directives": {},
+      "semantic_key": "ruler:taurus:mood:2"
+    },
+    "taurus.mood.lens.3": {
+      "text": "Удовлетворённость не требует неподвижного мира.",
+      "kind": "sentence",
+      "source_fingerprint": 131762712,
+      "directives": {},
+      "semantic_key": "ruler:taurus:mood:3"
+    },
+    "taurus.action.lens.1": {
+      "text": "Найдите опору в знакомых ощущениях, без новой покупки.",
+      "kind": "sentence",
+      "source_fingerprint": 3406749661,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:taurus:action:1"
+    },
+    "taurus.action.lens.2": {
+      "text": "Прежде чем сохранять привычное, проверьте, чем оно сейчас помогает.",
+      "kind": "sentence",
+      "source_fingerprint": 1239193328,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:taurus:action:2"
+    },
+    "taurus.action.lens.3": {
+      "text": "Различите нужную вам вещь и желание просто ею владеть.",
+      "kind": "sentence",
+      "source_fingerprint": 525656739,
+      "directives": {},
+      "semantic_key": "ruler:taurus:action:3"
+    },
+    "gemini.theme.lens.1": {
+      "text": "Меркурий связывает подвижность мысли с точностью значений.",
+      "kind": "sentence",
+      "source_fingerprint": 214984324,
+      "directives": {},
+      "semantic_key": "ruler:gemini:theme:1"
+    },
+    "gemini.theme.lens.2": {
+      "text": "Можно понять чужой взгляд, не отказываясь от своего.",
+      "kind": "sentence",
+      "source_fingerprint": 1976196433,
+      "directives": {},
+      "semantic_key": "ruler:gemini:theme:2"
+    },
+    "gemini.theme.lens.3": {
+      "text": "Знак стоит отличать от его толкования.",
+      "kind": "sentence",
+      "source_fingerprint": 417245286,
+      "directives": {},
+      "semantic_key": "ruler:gemini:theme:3"
+    },
+    "gemini.relations.lens.1": {
+      "text": "Начальный вопрос оставляет другому право удивить.",
+      "kind": "sentence",
+      "source_fingerprint": 2844902548,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "ruler:gemini:relations:1"
+    },
+    "gemini.relations.lens.2": {
+      "text": "Незнакомый ответ заслуживает внимательного слуха.",
+      "kind": "sentence",
+      "source_fingerprint": 1387027737,
+      "directives": {},
+      "semantic_key": "ruler:gemini:relations:2"
+    },
+    "gemini.relations.lens.3": {
+      "text": "Пауза не отменяет интереса к собеседнику.",
+      "kind": "sentence",
+      "source_fingerprint": 371981448,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "ruler:gemini:relations:3"
+    },
+    "gemini.work.lens.1": {
+      "text": "Сведения нуждаются в понимании их происхождения.",
+      "kind": "sentence",
+      "source_fingerprint": 1842418101,
+      "directives": {},
+      "semantic_key": "ruler:gemini:work:1"
+    },
+    "gemini.work.lens.2": {
+      "text": "Знание начинается с содержания, не названия.",
+      "kind": "sentence",
+      "source_fingerprint": 745379481,
+      "directives": {},
+      "semantic_key": "ruler:gemini:work:2"
+    },
+    "gemini.work.lens.3": {
+      "text": "Связь можно исследовать без поспешного объяснения.",
+      "kind": "sentence",
+      "source_fingerprint": 416454315,
+      "directives": {},
+      "semantic_key": "ruler:gemini:work:3"
+    },
+    "gemini.finance.lens.1": {
+      "text": "Убедительный рассказ не заменяет условий обмена.",
+      "kind": "sentence",
+      "source_fingerprint": 1990332572,
+      "directives": {},
+      "semantic_key": "ruler:gemini:finance:1"
+    },
+    "gemini.finance.lens.2": {
+      "text": "Любопытство не обязывает оплачивать каждую возможность.",
+      "kind": "sentence",
+      "source_fingerprint": 1147196836,
+      "directives": {},
+      "semantic_key": "ruler:gemini:finance:2"
+    },
+    "gemini.finance.lens.3": {
+      "text": "Сведения стоит отличить от предположений.",
+      "kind": "sentence",
+      "source_fingerprint": 618993303,
+      "directives": {},
+      "semantic_key": "ruler:gemini:finance:3"
+    },
+    "gemini.mood.lens.1": {
+      "text": "Множество мыслей не всегда означает глубину.",
+      "kind": "sentence",
+      "source_fingerprint": 727067937,
+      "directives": {},
+      "semantic_key": "ruler:gemini:mood:1"
+    },
+    "gemini.mood.lens.2": {
+      "text": "Меняющееся впечатление можно пока не называть.",
+      "kind": "sentence",
+      "source_fingerprint": 1689914906,
+      "directives": {},
+      "semantic_key": "ruler:gemini:mood:2"
+    },
+    "gemini.mood.lens.3": {
+      "text": "Тишина совместима с любознательностью.",
+      "kind": "sentence",
+      "source_fingerprint": 3022606012,
+      "directives": {},
+      "semantic_key": "ruler:gemini:mood:3"
+    },
+    "gemini.action.lens.1": {
+      "text": "Сформулируйте для себя вопрос до знакомства с чужим объяснением.",
+      "kind": "sentence",
+      "source_fingerprint": 656924510,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:gemini:action:1"
+    },
+    "gemini.action.lens.2": {
+      "text": "Оставьте мысль без немедленного продолжения и нового собеседника.",
+      "kind": "sentence",
+      "source_fingerprint": 4043826046,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:gemini:action:2"
+    },
+    "gemini.action.lens.3": {
+      "text": "Проверьте, поняли ли вы что-то или лишь сменили взгляд.",
+      "kind": "sentence",
+      "source_fingerprint": 3089763498,
+      "directives": {},
+      "semantic_key": "ruler:gemini:action:3"
+    },
+    "cancer.theme.lens.1": {
+      "text": "Луна здесь символизирует память и принадлежность.",
+      "kind": "sentence",
+      "source_fingerprint": 3237432650,
+      "directives": {},
+      "semantic_key": "ruler:cancer:theme:1"
+    },
+    "cancer.theme.lens.2": {
+      "text": "Забота не должна удерживать прошлое неподвижным.",
+      "kind": "sentence",
+      "source_fingerprint": 2368382505,
+      "directives": {},
+      "semantic_key": "ruler:cancer:theme:2"
+    },
+    "cancer.theme.lens.3": {
+      "text": "Лунный архетип говорит о восприимчивости.",
+      "kind": "sentence",
+      "source_fingerprint": 1024243843,
+      "directives": {},
+      "semantic_key": "ruler:cancer:theme:3"
+    },
+    "cancer.relations.lens.1": {
+      "text": "Прямо названная потребность бережнее взаимного угадывания.",
+      "kind": "sentence",
+      "source_fingerprint": 3913554812,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "ruler:cancer:relations:1"
+    },
+    "cancer.relations.lens.2": {
+      "text": "Тишина близкого не обязательно означает отдаление.",
+      "kind": "sentence",
+      "source_fingerprint": 889281918,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "ruler:cancer:relations:2"
+    },
+    "cancer.relations.lens.3": {
+      "text": "В близости можно чувствовать по-разному.",
+      "kind": "sentence",
+      "source_fingerprint": 2991437609,
+      "directives": {},
+      "semantic_key": "ruler:cancer:relations:3"
+    },
+    "cancer.work.lens.1": {
+      "text": "Память помогает сохранять цельность замысла.",
+      "kind": "sentence",
+      "source_fingerprint": 1008527681,
+      "directives": {},
+      "semantic_key": "ruler:cancer:work:1"
+    },
+    "cancer.work.lens.2": {
+      "text": "Забота не требует вечной защиты первоначального образа.",
+      "kind": "sentence",
+      "source_fingerprint": 1235174165,
+      "directives": {},
+      "semantic_key": "ruler:cancer:work:2"
+    },
+    "cancer.work.lens.3": {
+      "text": "Ценность труда связана с поддержкой живого.",
+      "kind": "sentence",
+      "source_fingerprint": 1590470090,
+      "directives": {},
+      "semantic_key": "ruler:cancer:work:3"
+    },
+    "cancer.finance.lens.1": {
+      "text": "Запас не устраняет всю внутреннюю тревогу.",
+      "kind": "sentence",
+      "source_fingerprint": 1796443195,
+      "directives": {},
+      "semantic_key": "ruler:cancer:finance:1"
+    },
+    "cancer.finance.lens.2": {
+      "text": "Вещь не возвращает утраченную близость.",
+      "kind": "sentence",
+      "source_fingerprint": 1846865599,
+      "directives": {},
+      "semantic_key": "ruler:cancer:finance:2"
+    },
+    "cancer.finance.lens.3": {
+      "text": "Необходимое для дома отличается от дорогого памяти.",
+      "kind": "sentence",
+      "source_fingerprint": 823783390,
+      "directives": {},
+      "semantic_key": "ruler:cancer:finance:3"
+    },
+    "cancer.mood.lens.1": {
+      "text": "Ожившее воспоминание не всегда относится к настоящему.",
+      "kind": "sentence",
+      "source_fingerprint": 983313479,
+      "directives": {},
+      "semantic_key": "ruler:cancer:mood:1"
+    },
+    "cancer.mood.lens.2": {
+      "text": "Сегодняшняя потребность отличается от давнего страха утраты.",
+      "kind": "sentence",
+      "source_fingerprint": 2696310807,
+      "directives": {},
+      "semantic_key": "ruler:cancer:mood:2"
+    },
+    "cancer.mood.lens.3": {
+      "text": "Уют способен поддержать, не запрещая перемены.",
+      "kind": "sentence",
+      "source_fingerprint": 547926347,
+      "directives": {},
+      "semantic_key": "ruler:cancer:mood:3"
+    },
+    "cancer.action.lens.1": {
+      "text": "Скажите, какая поддержка нужна вам, не проверяя чужую любовь.",
+      "kind": "sentence",
+      "source_fingerprint": 2674162457,
+      "directives": {
+        "timing": "commit",
+        "contact": "open"
+      },
+      "semantic_key": "ruler:cancer:action:1"
+    },
+    "cancer.action.lens.2": {
+      "text": "Не требуйте от настоящего повторить важное воспоминание.",
+      "kind": "sentence",
+      "source_fingerprint": 1630751234,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:cancer:action:2"
+    },
+    "cancer.action.lens.3": {
+      "text": "Прежде чем помогать, оставьте близкому право выбрать иначе.",
+      "kind": "sentence",
+      "source_fingerprint": 937909767,
+      "directives": {},
+      "semantic_key": "ruler:cancer:action:3"
+    },
+    "leo.theme.lens.1": {
+      "text": "Солнце здесь символизирует цельность самовыражения.",
+      "kind": "sentence",
+      "source_fingerprint": 1873837534,
+      "directives": {},
+      "semantic_key": "ruler:leo:theme:1"
+    },
+    "leo.theme.lens.2": {
+      "text": "Творить можно без непрерывного признания.",
+      "kind": "sentence",
+      "source_fingerprint": 3721489301,
+      "directives": {},
+      "semantic_key": "ruler:leo:theme:2"
+    },
+    "leo.theme.lens.3": {
+      "text": "Не всему положено вращаться вокруг вас.",
+      "kind": "sentence",
+      "source_fingerprint": 1057592407,
+      "directives": {},
+      "semantic_key": "ruler:leo:theme:3"
+    },
+    "leo.relations.lens.1": {
+      "text": "Щедрость не назначает благодарность обязательной.",
+      "kind": "sentence",
+      "source_fingerprint": 844644556,
+      "directives": {},
+      "semantic_key": "ruler:leo:relations:1"
+    },
+    "leo.relations.lens.2": {
+      "text": "Другой человек — самостоятельный источник тепла.",
+      "kind": "sentence",
+      "source_fingerprint": 3351902864,
+      "directives": {},
+      "semantic_key": "ruler:leo:relations:2"
+    },
+    "leo.relations.lens.3": {
+      "text": "Тепло не измеряется силой ответного восторга.",
+      "kind": "sentence",
+      "source_fingerprint": 1095763100,
+      "directives": {},
+      "semantic_key": "ruler:leo:relations:3"
+    },
+    "leo.work.lens.1": {
+      "text": "Творение способно отделиться от автора.",
+      "kind": "sentence",
+      "source_fingerprint": 2733204395,
+      "directives": {},
+      "semantic_key": "ruler:leo:work:1"
+    },
+    "leo.work.lens.2": {
+      "text": "Личный почерк ценнее доказательств исключительности.",
+      "kind": "sentence",
+      "source_fingerprint": 597263005,
+      "directives": {},
+      "semantic_key": "ruler:leo:work:2"
+    },
+    "leo.work.lens.3": {
+      "text": "Чужое участие не отменяет вашего замысла.",
+      "kind": "sentence",
+      "source_fingerprint": 2553076437,
+      "directives": {},
+      "semantic_key": "ruler:leo:work:3"
+    },
+    "leo.finance.lens.1": {
+      "text": "Представительность не определяет подлинной ценности.",
+      "kind": "sentence",
+      "source_fingerprint": 3719754368,
+      "directives": {},
+      "semantic_key": "ruler:leo:finance:1"
+    },
+    "leo.finance.lens.2": {
+      "text": "Дар свободен без требования особого отношения.",
+      "kind": "sentence",
+      "source_fingerprint": 1993105884,
+      "directives": {},
+      "semantic_key": "ruler:leo:finance:2"
+    },
+    "leo.finance.lens.3": {
+      "text": "Радость обладания отличается от желания впечатлить.",
+      "kind": "sentence",
+      "source_fingerprint": 18745453,
+      "directives": {},
+      "semantic_key": "ruler:leo:finance:3"
+    },
+    "leo.mood.lens.1": {
+      "text": "Внутренний центр сохраняется без внешнего внимания.",
+      "kind": "sentence",
+      "source_fingerprint": 615682705,
+      "directives": {},
+      "semantic_key": "ruler:leo:mood:1"
+    },
+    "leo.mood.lens.2": {
+      "text": "Спокойствие не делает присутствие менее значимым.",
+      "kind": "sentence",
+      "source_fingerprint": 2633373589,
+      "directives": {},
+      "semantic_key": "ruler:leo:mood:2"
+    },
+    "leo.mood.lens.3": {
+      "text": "Творческая радость не нуждается в удостоверении исключительности.",
+      "kind": "sentence",
+      "source_fingerprint": 1624257596,
+      "directives": {},
+      "semantic_key": "ruler:leo:mood:3"
+    },
+    "leo.action.lens.1": {
+      "text": "Сделайте по-своему, не требуя немедленного признания.",
+      "kind": "sentence",
+      "source_fingerprint": 592244849,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:leo:action:1"
+    },
+    "leo.action.lens.2": {
+      "text": "Если дело завершено, не пытайтесь управлять каждой реакцией на него.",
+      "kind": "sentence",
+      "source_fingerprint": 2063169847,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:leo:action:2"
+    },
+    "leo.action.lens.3": {
+      "text": "Выберите занятие, которое важно вам и без зрителей.",
+      "kind": "sentence",
+      "source_fingerprint": 1884213737,
+      "directives": {},
+      "semantic_key": "ruler:leo:action:3"
+    },
+    "virgo.theme.lens.1": {
+      "text": "Меркурий помогает различить существенное и лишнее.",
+      "kind": "sentence",
+      "source_fingerprint": 2078618907,
+      "directives": {},
+      "semantic_key": "ruler:virgo:theme:1"
+    },
+    "virgo.theme.lens.2": {
+      "text": "Важнее сделать вещь полезной, чем безупречной.",
+      "kind": "sentence",
+      "source_fingerprint": 892375158,
+      "directives": {},
+      "semantic_key": "ruler:virgo:theme:2"
+    },
+    "virgo.theme.lens.3": {
+      "text": "Внимательность отличается от бесконечного исправления.",
+      "kind": "sentence",
+      "source_fingerprint": 4251540919,
+      "directives": {},
+      "semantic_key": "ruler:virgo:theme:3"
+    },
+    "virgo.relations.lens.1": {
+      "text": "Названная потребность полезнее оценки партнёра.",
+      "kind": "sentence",
+      "source_fingerprint": 3926811782,
+      "directives": {},
+      "semantic_key": "ruler:virgo:relations:1"
+    },
+    "virgo.relations.lens.2": {
+      "text": "Забота допускает чужое несовершенство.",
+      "kind": "sentence",
+      "source_fingerprint": 88605263,
+      "directives": {},
+      "semantic_key": "ruler:virgo:relations:2"
+    },
+    "virgo.relations.lens.3": {
+      "text": "Точное слово бережнее перечня недостатков.",
+      "kind": "sentence",
+      "source_fingerprint": 1729196086,
+      "directives": {},
+      "semantic_key": "ruler:virgo:relations:3"
+    },
+    "virgo.work.lens.1": {
+      "text": "Важно понимать, как устроена вещь и для чего она нужна.",
+      "kind": "sentence",
+      "source_fingerprint": 3935455150,
+      "directives": {},
+      "semantic_key": "ruler:virgo:work:1"
+    },
+    "virgo.work.lens.2": {
+      "text": "Точность освобождает от лишнего, не множит преграды.",
+      "kind": "sentence",
+      "source_fingerprint": 2711091888,
+      "directives": {},
+      "semantic_key": "ruler:virgo:work:2"
+    },
+    "virgo.work.lens.3": {
+      "text": "Исправление полезно без попытки исключить любую случайность.",
+      "kind": "sentence",
+      "source_fingerprint": 416628533,
+      "directives": {},
+      "semantic_key": "ruler:virgo:work:3"
+    },
+    "virgo.finance.lens.1": {
+      "text": "Полезная покупка отвечает конкретной потребности.",
+      "kind": "sentence",
+      "source_fingerprint": 2254790866,
+      "directives": {},
+      "semantic_key": "ruler:virgo:finance:1"
+    },
+    "virgo.finance.lens.2": {
+      "text": "Ценное не обязано поддаваться полному контролю.",
+      "kind": "sentence",
+      "source_fingerprint": 1969601853,
+      "directives": {},
+      "semantic_key": "ruler:virgo:finance:2"
+    },
+    "virgo.finance.lens.3": {
+      "text": "Экономия не требует отказа от удовольствия.",
+      "kind": "sentence",
+      "source_fingerprint": 3290870126,
+      "directives": {},
+      "semantic_key": "ruler:virgo:finance:3"
+    },
+    "virgo.mood.lens.1": {
+      "text": "Чувство не обязательно разбирать по частям.",
+      "kind": "sentence",
+      "source_fingerprint": 3880462234,
+      "directives": {},
+      "semantic_key": "ruler:virgo:mood:1"
+    },
+    "virgo.mood.lens.2": {
+      "text": "Не каждому чувству нужно немедленное название.",
+      "kind": "sentence",
+      "source_fingerprint": 3167709231,
+      "directives": {},
+      "semantic_key": "ruler:virgo:mood:2"
+    },
+    "virgo.mood.lens.3": {
+      "text": "Небольшая неупорядоченность не угрожает цельности.",
+      "kind": "sentence",
+      "source_fingerprint": 960418228,
+      "directives": {},
+      "semantic_key": "ruler:virgo:mood:3"
+    },
+    "virgo.action.lens.1": {
+      "text": "Уберите из важного дела одну деталь, которая уже не помогает.",
+      "kind": "sentence",
+      "source_fingerprint": 4224888282,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:virgo:action:1"
+    },
+    "virgo.action.lens.2": {
+      "text": "Не делайте окончательного вывода, пока наблюдение остаётся неполным.",
+      "kind": "sentence",
+      "source_fingerprint": 3017035030,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:virgo:action:2"
+    },
+    "virgo.action.lens.3": {
+      "text": "Перед исправлением проверьте, действительно ли оно необходимо.",
+      "kind": "sentence",
+      "source_fingerprint": 1370908077,
+      "directives": {},
+      "semantic_key": "ruler:virgo:action:3"
+    },
+    "libra.theme.lens.1": {
+      "text": "Венера ищет соразмерность двух самостоятельных желаний.",
+      "kind": "sentence",
+      "source_fingerprint": 3710614940,
+      "directives": {},
+      "semantic_key": "ruler:libra:theme:1"
+    },
+    "libra.theme.lens.2": {
+      "text": "Согласие по существу важнее внешнего спокойствия.",
+      "kind": "sentence",
+      "source_fingerprint": 2354140612,
+      "directives": {},
+      "semantic_key": "ruler:libra:theme:2"
+    },
+    "libra.theme.lens.3": {
+      "text": "Мера не требует устранить все различия.",
+      "kind": "sentence",
+      "source_fingerprint": 2337555104,
+      "directives": {},
+      "semantic_key": "ruler:libra:theme:3"
+    },
+    "libra.relations.lens.1": {
+      "text": "Предложите взаимность, сохраняющую голос каждого.",
+      "kind": "sentence",
+      "source_fingerprint": 2902408434,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "ruler:libra:relations:1"
+    },
+    "libra.relations.lens.2": {
+      "text": "Своё желание важно признать до общей договорённости.",
+      "kind": "sentence",
+      "source_fingerprint": 1561622655,
+      "directives": {},
+      "semantic_key": "ruler:libra:relations:2"
+    },
+    "libra.relations.lens.3": {
+      "text": "Разногласие не обязательно разрушает красоту связи.",
+      "kind": "sentence",
+      "source_fingerprint": 2466852270,
+      "directives": {},
+      "semantic_key": "ruler:libra:relations:3"
+    },
+    "libra.work.lens.1": {
+      "text": "Важны отношения частей, не только каждая отдельно.",
+      "kind": "sentence",
+      "source_fingerprint": 776758276,
+      "directives": {},
+      "semantic_key": "ruler:libra:work:1"
+    },
+    "libra.work.lens.2": {
+      "text": "Замыслу нужна форма, понятная другому.",
+      "kind": "sentence",
+      "source_fingerprint": 3216275583,
+      "directives": {},
+      "semantic_key": "ruler:libra:work:2"
+    },
+    "libra.work.lens.3": {
+      "text": "Согласование отличается от зависимости от одобрения.",
+      "kind": "sentence",
+      "source_fingerprint": 4258997765,
+      "directives": {},
+      "semantic_key": "ruler:libra:work:3"
+    },
+    "libra.finance.lens.1": {
+      "text": "Равный обмен не всегда означает одинаковую цену.",
+      "kind": "sentence",
+      "source_fingerprint": 2151479404,
+      "directives": {},
+      "semantic_key": "ruler:libra:finance:1"
+    },
+    "libra.finance.lens.2": {
+      "text": "У материального жеста могут быть скрытые ожидания.",
+      "kind": "sentence",
+      "source_fingerprint": 3712491378,
+      "directives": {},
+      "semantic_key": "ruler:libra:finance:2"
+    },
+    "libra.finance.lens.3": {
+      "text": "Участие требует согласия, не красивой симметрии.",
+      "kind": "sentence",
+      "source_fingerprint": 4200337581,
+      "directives": {},
+      "semantic_key": "ruler:libra:finance:3"
+    },
+    "libra.mood.lens.1": {
+      "text": "Равновесие допускает небольшое напряжение.",
+      "kind": "sentence",
+      "source_fingerprint": 3708186571,
+      "directives": {},
+      "semantic_key": "ruler:libra:mood:1"
+    },
+    "libra.mood.lens.2": {
+      "text": "Чужое несогласие не отменяет внутренней меры.",
+      "kind": "sentence",
+      "source_fingerprint": 987613081,
+      "directives": {},
+      "semantic_key": "ruler:libra:mood:2"
+    },
+    "libra.mood.lens.3": {
+      "text": "Признанное различие надёжнее украшенного молчания.",
+      "kind": "sentence",
+      "source_fingerprint": 30711043,
+      "directives": {},
+      "semantic_key": "ruler:libra:mood:3"
+    },
+    "libra.action.lens.1": {
+      "text": "Сначала сформулируйте своё желание до поиска общего решения.",
+      "kind": "sentence",
+      "source_fingerprint": 2290288396,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:libra:action:1"
+    },
+    "libra.action.lens.2": {
+      "text": "Возьмите паузу, если уступаете лишь ради видимого спокойствия.",
+      "kind": "sentence",
+      "source_fingerprint": 2335739042,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:libra:action:2"
+    },
+    "libra.action.lens.3": {
+      "text": "Сохраните в решении место и своему желанию, и чужому.",
+      "kind": "sentence",
+      "source_fingerprint": 2908221345,
+      "directives": {},
+      "semantic_key": "ruler:libra:action:3"
+    },
+    "scorpio.theme.lens.1": {
+      "text": "Традиционный Марс обращает силу к глубине привязанности.",
+      "kind": "sentence",
+      "source_fingerprint": 2674959235,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:theme:1"
+    },
+    "scorpio.theme.lens.2": {
+      "text": "Вовлечённость отличается от потребности всё контролировать.",
+      "kind": "sentence",
+      "source_fingerprint": 682325568,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:theme:2"
+    },
+    "scorpio.theme.lens.3": {
+      "text": "Подозрение не даёт знания чужих намерений.",
+      "kind": "sentence",
+      "source_fingerprint": 564989938,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:theme:3"
+    },
+    "scorpio.relations.lens.1": {
+      "text": "Доверие отличается от испытания на верность.",
+      "kind": "sentence",
+      "source_fingerprint": 4280384924,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:relations:1"
+    },
+    "scorpio.relations.lens.2": {
+      "text": "Близость допускает недоступное другим внутреннее пространство.",
+      "kind": "sentence",
+      "source_fingerprint": 700527158,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "ruler:scorpio:relations:2"
+    },
+    "scorpio.relations.lens.3": {
+      "text": "Сильная связь не устраняет возможность утраты.",
+      "kind": "sentence",
+      "source_fingerprint": 25011119,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:relations:3"
+    },
+    "scorpio.work.lens.1": {
+      "text": "Сосредоточенность помогает увидеть скрытое противоречие.",
+      "kind": "sentence",
+      "source_fingerprint": 4250750080,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:work:1"
+    },
+    "scorpio.work.lens.2": {
+      "text": "Исследование должно допускать собственное завершение.",
+      "kind": "sentence",
+      "source_fingerprint": 2368042293,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:work:2"
+    },
+    "scorpio.work.lens.3": {
+      "text": "Трудная тема не обязательно требует борьбы.",
+      "kind": "sentence",
+      "source_fingerprint": 3131820471,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:work:3"
+    },
+    "scorpio.finance.lens.1": {
+      "text": "Общие средства могут незаметно давать власть.",
+      "kind": "sentence",
+      "source_fingerprint": 3566876849,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:finance:1"
+    },
+    "scorpio.finance.lens.2": {
+      "text": "Собственность не должна проверять глубину привязанности.",
+      "kind": "sentence",
+      "source_fingerprint": 705773498,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:finance:2"
+    },
+    "scorpio.finance.lens.3": {
+      "text": "Защищённость отличается от устранения всякой зависимости.",
+      "kind": "sentence",
+      "source_fingerprint": 2643506000,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:finance:3"
+    },
+    "scorpio.mood.lens.1": {
+      "text": "Сила чувства не делает толкование единственно верным.",
+      "kind": "sentence",
+      "source_fingerprint": 345285959,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:mood:1"
+    },
+    "scorpio.mood.lens.2": {
+      "text": "Переживанию не обязательно немедленно найти причину.",
+      "kind": "sentence",
+      "source_fingerprint": 990624516,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:mood:2"
+    },
+    "scorpio.mood.lens.3": {
+      "text": "Уязвимость не требует защитного наступления.",
+      "kind": "sentence",
+      "source_fingerprint": 2467767728,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:mood:3"
+    },
+    "scorpio.action.lens.1": {
+      "text": "Скажите о желании прямо, не превращая ответ в проверку верности.",
+      "kind": "sentence",
+      "source_fingerprint": 2121618070,
+      "directives": {
+        "timing": "commit",
+        "contact": "open"
+      },
+      "semantic_key": "ruler:scorpio:action:1"
+    },
+    "scorpio.action.lens.2": {
+      "text": "Если что-то неизвестно, не считайте это доказательством чужой ненадёжности.",
+      "kind": "sentence",
+      "source_fingerprint": 3096870710,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:scorpio:action:2"
+    },
+    "scorpio.action.lens.3": {
+      "text": "Проверьте, ищете ли вы близости или хотите управлять ответом.",
+      "kind": "sentence",
+      "source_fingerprint": 3979430949,
+      "directives": {},
+      "semantic_key": "ruler:scorpio:action:3"
+    },
+    "sagittarius.theme.lens.1": {
+      "text": "Юпитер связывает широту взгляда с поиском смысла.",
+      "kind": "sentence",
+      "source_fingerprint": 1558009668,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:theme:1"
+    },
+    "sagittarius.theme.lens.2": {
+      "text": "Большая идея не обязана объяснять всё.",
+      "kind": "sentence",
+      "source_fingerprint": 3231990425,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:theme:2"
+    },
+    "sagittarius.theme.lens.3": {
+      "text": "Новому опыту нужно место вне готовых убеждений.",
+      "kind": "sentence",
+      "source_fingerprint": 3316738488,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:theme:3"
+    },
+    "sagittarius.relations.lens.1": {
+      "text": "Поделитесь вопросом без требования разделить весь взгляд.",
+      "kind": "sentence",
+      "source_fingerprint": 1715985325,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "ruler:sagittarius:relations:1"
+    },
+    "sagittarius.relations.lens.2": {
+      "text": "Интерес к человеку важнее обращения в свою веру.",
+      "kind": "sentence",
+      "source_fingerprint": 328145742,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:relations:2"
+    },
+    "sagittarius.relations.lens.3": {
+      "text": "Чужая осторожность не обязательно означает закрытость.",
+      "kind": "sentence",
+      "source_fingerprint": 3114355596,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:relations:3"
+    },
+    "sagittarius.work.lens.1": {
+      "text": "Живой опыт проверяет глубину замысла.",
+      "kind": "sentence",
+      "source_fingerprint": 1048567607,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:work:1"
+    },
+    "sagittarius.work.lens.2": {
+      "text": "Общая перспектива не отменяет различий.",
+      "kind": "sentence",
+      "source_fingerprint": 700359060,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:work:2"
+    },
+    "sagittarius.work.lens.3": {
+      "text": "Уточнение убеждения не мешает поиску смысла.",
+      "kind": "sentence",
+      "source_fingerprint": 3927535075,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:work:3"
+    },
+    "sagittarius.finance.lens.1": {
+      "text": "Символика Юпитера не обещает прибыли.",
+      "kind": "sentence",
+      "source_fingerprint": 737446054,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:finance:1"
+    },
+    "sagittarius.finance.lens.2": {
+      "text": "Широкий замысел нуждается в мере имеющегося.",
+      "kind": "sentence",
+      "source_fingerprint": 31900563,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:finance:2"
+    },
+    "sagittarius.finance.lens.3": {
+      "text": "Опыт отличается от покупки образа свободы.",
+      "kind": "sentence",
+      "source_fingerprint": 840198584,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:finance:3"
+    },
+    "sagittarius.mood.lens.1": {
+      "text": "Сомнение способно сделать взгляд шире.",
+      "kind": "sentence",
+      "source_fingerprint": 1995725982,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:mood:1"
+    },
+    "sagittarius.mood.lens.2": {
+      "text": "Дальний горизонт не обесценивает нынешнего места.",
+      "kind": "sentence",
+      "source_fingerprint": 4241218563,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:mood:2"
+    },
+    "sagittarius.mood.lens.3": {
+      "text": "Новый смысл не отменяет противоречивого чувства.",
+      "kind": "sentence",
+      "source_fingerprint": 401423649,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:mood:3"
+    },
+    "sagittarius.action.lens.1": {
+      "text": "Проверьте любимую идею на опыте, который способен её изменить.",
+      "kind": "sentence",
+      "source_fingerprint": 3756290875,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:sagittarius:action:1"
+    },
+    "sagittarius.action.lens.2": {
+      "text": "Оставьте вопрос открытым, если готовое объяснение пока не подходит.",
+      "kind": "sentence",
+      "source_fingerprint": 2900415353,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:sagittarius:action:2"
+    },
+    "sagittarius.action.lens.3": {
+      "text": "Заметьте конкретную разницу, которую не объясняет привычный взгляд.",
+      "kind": "sentence",
+      "source_fingerprint": 2382088965,
+      "directives": {},
+      "semantic_key": "ruler:sagittarius:action:3"
+    },
+    "capricorn.theme.lens.1": {
+      "text": "Сатурн связывает ответственность со временем и пределом.",
+      "kind": "sentence",
+      "source_fingerprint": 3553305037,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:theme:1"
+    },
+    "capricorn.theme.lens.2": {
+      "text": "Внутренний закон не требует вечного доказательства достоинства.",
+      "kind": "sentence",
+      "source_fingerprint": 3064726387,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:theme:2"
+    },
+    "capricorn.theme.lens.3": {
+      "text": "Опора не измеряется добровольно принятой тяжестью.",
+      "kind": "sentence",
+      "source_fingerprint": 137960837,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:theme:3"
+    },
+    "capricorn.relations.lens.1": {
+      "text": "Надёжность отличается от бесконечной проверки верности.",
+      "kind": "sentence",
+      "source_fingerprint": 3307349857,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:relations:1"
+    },
+    "capricorn.relations.lens.2": {
+      "text": "Близость не обязана постоянно доказывать полезность.",
+      "kind": "sentence",
+      "source_fingerprint": 3375156226,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:relations:2"
+    },
+    "capricorn.relations.lens.3": {
+      "text": "Меру обязательства можно пересмотреть.",
+      "kind": "sentence",
+      "source_fingerprint": 489399190,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:relations:3"
+    },
+    "capricorn.work.lens.1": {
+      "text": "Мастерство уважает время созревания.",
+      "kind": "sentence",
+      "source_fingerprint": 3630921612,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:work:1"
+    },
+    "capricorn.work.lens.2": {
+      "text": "Дальний замысел не делает каждый день испытанием.",
+      "kind": "sentence",
+      "source_fingerprint": 1353385048,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:work:2"
+    },
+    "capricorn.work.lens.3": {
+      "text": "Признать предел — тоже ответственность.",
+      "kind": "sentence",
+      "source_fingerprint": 65190737,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:work:3"
+    },
+    "capricorn.finance.lens.1": {
+      "text": "Опора отличается от тяжести обязательств.",
+      "kind": "sentence",
+      "source_fingerprint": 1482490914,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:finance:1"
+    },
+    "capricorn.finance.lens.2": {
+      "text": "Устойчивость допускает радость вне новых достижений.",
+      "kind": "sentence",
+      "source_fingerprint": 3685230078,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:finance:2"
+    },
+    "capricorn.finance.lens.3": {
+      "text": "Сохранённое должно продолжать питать жизнь.",
+      "kind": "sentence",
+      "source_fingerprint": 1451884181,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:finance:3"
+    },
+    "capricorn.mood.lens.1": {
+      "text": "Сдержанность не отменяет права чувства быть услышанным.",
+      "kind": "sentence",
+      "source_fingerprint": 930341615,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:mood:1"
+    },
+    "capricorn.mood.lens.2": {
+      "text": "Усталость не доказывает слабости.",
+      "kind": "sentence",
+      "source_fingerprint": 2476568810,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:mood:2"
+    },
+    "capricorn.mood.lens.3": {
+      "text": "Покою не требуется оправдание подвигом.",
+      "kind": "sentence",
+      "source_fingerprint": 956633256,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:mood:3"
+    },
+    "capricorn.action.lens.1": {
+      "text": "Выберите обязательство, которое можете ясно сформулировать и выполнить.",
+      "kind": "sentence",
+      "source_fingerprint": 580604169,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:capricorn:action:1"
+    },
+    "capricorn.action.lens.2": {
+      "text": "Перед новой обязанностью проверьте, чьё это требование.",
+      "kind": "sentence",
+      "source_fingerprint": 3616288401,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:capricorn:action:2"
+    },
+    "capricorn.action.lens.3": {
+      "text": "Отделите свою ответственность от нагрузки, которую привыкли терпеть.",
+      "kind": "sentence",
+      "source_fingerprint": 471322476,
+      "directives": {},
+      "semantic_key": "ruler:capricorn:action:3"
+    },
+    "aquarius.theme.lens.1": {
+      "text": "Традиционный Сатурн связывает самостоятельность с общим устройством.",
+      "kind": "sentence",
+      "source_fingerprint": 1256677778,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:theme:1"
+    },
+    "aquarius.theme.lens.2": {
+      "text": "Принцип важнее образа собственной независимости.",
+      "kind": "sentence",
+      "source_fingerprint": 2644668133,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:theme:2"
+    },
+    "aquarius.theme.lens.3": {
+      "text": "Дистанция помогает видеть связи, но не отменяет участия.",
+      "kind": "sentence",
+      "source_fingerprint": 4183735740,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:theme:3"
+    },
+    "aquarius.relations.lens.1": {
+      "text": "В близкой связи сохраняется право отличаться.",
+      "kind": "sentence",
+      "source_fingerprint": 3204337317,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:relations:1"
+    },
+    "aquarius.relations.lens.2": {
+      "text": "Отдельный человек не сводится к общему правилу.",
+      "kind": "sentence",
+      "source_fingerprint": 4242144398,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:relations:2"
+    },
+    "aquarius.relations.lens.3": {
+      "text": "Дистанция может беречь связь без отчуждения.",
+      "kind": "sentence",
+      "source_fingerprint": 4000388334,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "ruler:aquarius:relations:3"
+    },
+    "aquarius.work.lens.1": {
+      "text": "Важнее основание системы, чем необычность.",
+      "kind": "sentence",
+      "source_fingerprint": 3000644884,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:work:1"
+    },
+    "aquarius.work.lens.2": {
+      "text": "Частный замысел связан с более широким порядком.",
+      "kind": "sentence",
+      "source_fingerprint": 1894801227,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:work:2"
+    },
+    "aquarius.work.lens.3": {
+      "text": "Своя идея тоже допускает уточнение.",
+      "kind": "sentence",
+      "source_fingerprint": 3030044122,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:work:3"
+    },
+    "aquarius.finance.lens.1": {
+      "text": "Исключительность предложения не доказывает его ценности.",
+      "kind": "sentence",
+      "source_fingerprint": 2024717774,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:finance:1"
+    },
+    "aquarius.finance.lens.2": {
+      "text": "Общая идея не отменяет личной ответственности.",
+      "kind": "sentence",
+      "source_fingerprint": 3858720498,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:finance:2"
+    },
+    "aquarius.finance.lens.3": {
+      "text": "Новое название может скрывать прежнее обещание.",
+      "kind": "sentence",
+      "source_fingerprint": 2050726009,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:finance:3"
+    },
+    "aquarius.mood.lens.1": {
+      "text": "Ясность не требует отказаться от сильного чувства.",
+      "kind": "sentence",
+      "source_fingerprint": 1335093420,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:mood:1"
+    },
+    "aquarius.mood.lens.2": {
+      "text": "Переживанию не обязательно искать общий закон.",
+      "kind": "sentence",
+      "source_fingerprint": 3484136533,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:mood:2"
+    },
+    "aquarius.mood.lens.3": {
+      "text": "Свобода допускает связь без совпадения взглядов.",
+      "kind": "sentence",
+      "source_fingerprint": 336054716,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:mood:3"
+    },
+    "aquarius.action.lens.1": {
+      "text": "Проверьте, что ваш вывод меняет для других людей.",
+      "kind": "sentence",
+      "source_fingerprint": 498995655,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:aquarius:action:1"
+    },
+    "aquarius.action.lens.2": {
+      "text": "Рассмотрите наблюдение, которое не вписывается в привычную позицию.",
+      "kind": "sentence",
+      "source_fingerprint": 3292095057,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:aquarius:action:2"
+    },
+    "aquarius.action.lens.3": {
+      "text": "Не соглашаться можно без обязанности спорить с каждым.",
+      "kind": "sentence",
+      "source_fingerprint": 3476180881,
+      "directives": {},
+      "semantic_key": "ruler:aquarius:action:3"
+    },
+    "pisces.theme.lens.1": {
+      "text": "Традиционный Юпитер связывает восприимчивость с внутренним смыслом.",
+      "kind": "sentence",
+      "source_fingerprint": 521859609,
+      "directives": {},
+      "semantic_key": "ruler:pisces:theme:1"
+    },
+    "pisces.theme.lens.2": {
+      "text": "Глубокий отклик не требует растворять свой голос.",
+      "kind": "sentence",
+      "source_fingerprint": 2503802172,
+      "directives": {},
+      "semantic_key": "ruler:pisces:theme:2"
+    },
+    "pisces.theme.lens.3": {
+      "text": "Неизвестное не обязано давать удобное объяснение.",
+      "kind": "sentence",
+      "source_fingerprint": 3049131099,
+      "directives": {},
+      "semantic_key": "ruler:pisces:theme:3"
+    },
+    "pisces.relations.lens.1": {
+      "text": "Сострадание не требует жить вместо другого.",
+      "kind": "sentence",
+      "source_fingerprint": 69050067,
+      "directives": {},
+      "semantic_key": "ruler:pisces:relations:1"
+    },
+    "pisces.relations.lens.2": {
+      "text": "Чуткость сохраняется вместе с правом на дистанцию.",
+      "kind": "sentence",
+      "source_fingerprint": 649303667,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "ruler:pisces:relations:2"
+    },
+    "pisces.relations.lens.3": {
+      "text": "Отклик не доказывает полного знания другого.",
+      "kind": "sentence",
+      "source_fingerprint": 2308856896,
+      "directives": {},
+      "semantic_key": "ruler:pisces:relations:3"
+    },
+    "pisces.work.lens.1": {
+      "text": "Воображение ищет цельный образ за деталями.",
+      "kind": "sentence",
+      "source_fingerprint": 3652667873,
+      "directives": {},
+      "semantic_key": "ruler:pisces:work:1"
+    },
+    "pisces.work.lens.2": {
+      "text": "Впечатление может обрести форму, сохранив многозначность.",
+      "kind": "sentence",
+      "source_fingerprint": 1282985109,
+      "directives": {},
+      "semantic_key": "ruler:pisces:work:2"
+    },
+    "pisces.work.lens.3": {
+      "text": "Среди многих образов важно не потерять сам замысел.",
+      "kind": "sentence",
+      "source_fingerprint": 3982863601,
+      "directives": {},
+      "semantic_key": "ruler:pisces:work:3"
+    },
+    "pisces.finance.lens.1": {
+      "text": "Доверие не обещает материальной защищённости.",
+      "kind": "sentence",
+      "source_fingerprint": 3853709914,
+      "directives": {},
+      "semantic_key": "ruler:pisces:finance:1"
+    },
+    "pisces.finance.lens.2": {
+      "text": "Дар отличается от страха утратить связь.",
+      "kind": "sentence",
+      "source_fingerprint": 806125144,
+      "directives": {},
+      "semantic_key": "ruler:pisces:finance:2"
+    },
+    "pisces.finance.lens.3": {
+      "text": "Вещь не обязана возвращать желаемое чувство.",
+      "kind": "sentence",
+      "source_fingerprint": 2905528799,
+      "directives": {},
+      "semantic_key": "ruler:pisces:finance:3"
+    },
+    "pisces.mood.lens.1": {
+      "text": "Своё чувство стоит отличить от усвоенного извне.",
+      "kind": "sentence",
+      "source_fingerprint": 286983766,
+      "directives": {},
+      "semantic_key": "ruler:pisces:mood:1"
+    },
+    "pisces.mood.lens.2": {
+      "text": "Значимый образ не обязательно предвещает событие.",
+      "kind": "sentence",
+      "source_fingerprint": 4092230252,
+      "directives": {},
+      "semantic_key": "ruler:pisces:mood:2"
+    },
+    "pisces.mood.lens.3": {
+      "text": "Впечатлению не обязательно назначать высший смысл.",
+      "kind": "sentence",
+      "source_fingerprint": 2654529929,
+      "directives": {},
+      "semantic_key": "ruler:pisces:mood:3"
+    },
+    "pisces.action.lens.1": {
+      "text": "Кратко опишите то, что представляете, без попытки объяснить всё.",
+      "kind": "sentence",
+      "source_fingerprint": 3465804525,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "ruler:pisces:action:1"
+    },
+    "pisces.action.lens.2": {
+      "text": "Прислушайтесь к чувству, не объясняя им всё происходящее.",
+      "kind": "sentence",
+      "source_fingerprint": 2621039053,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "ruler:pisces:action:2"
+    },
+    "pisces.action.lens.3": {
+      "text": "Перед помощью другому проверьте, не забываете ли о себе.",
+      "kind": "sentence",
+      "source_fingerprint": 1820513708,
+      "directives": {},
+      "semantic_key": "ruler:pisces:action:3"
+    },
+    "cardinal.theme.lens.1": {
+      "text": "Путь не требует господства.",
+      "kind": "modifier",
+      "source_fingerprint": 2198020826,
+      "directives": {},
+      "semantic_key": "modality:cardinal:theme:1"
+    },
+    "cardinal.theme.lens.2": {
+      "text": "Началу можно дать созреть.",
+      "kind": "modifier",
+      "source_fingerprint": 626454910,
+      "directives": {},
+      "semantic_key": "modality:cardinal:theme:2"
+    },
+    "cardinal.theme.lens.3": {
+      "text": "Направление важнее напора.",
+      "kind": "modifier",
+      "source_fingerprint": 644330673,
+      "directives": {},
+      "semantic_key": "modality:cardinal:theme:3"
+    },
+    "cardinal.relations.lens.1": {
+      "text": "Желание можно назвать прямо.",
+      "kind": "modifier",
+      "source_fingerprint": 2230110962,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "modality:cardinal:relations:1"
+    },
+    "cardinal.relations.lens.2": {
+      "text": "Пауза оставляет другому свободу.",
+      "kind": "modifier",
+      "source_fingerprint": 9907369,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "modality:cardinal:relations:2"
+    },
+    "cardinal.relations.lens.3": {
+      "text": "Первый шаг не решает исхода.",
+      "kind": "modifier",
+      "source_fingerprint": 14122688,
+      "directives": {},
+      "semantic_key": "modality:cardinal:relations:3"
+    },
+    "cardinal.work.lens.1": {
+      "text": "Почину нужен определённый предмет.",
+      "kind": "modifier",
+      "source_fingerprint": 3352822161,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:cardinal:work:1"
+    },
+    "cardinal.work.lens.2": {
+      "text": "Замыслу можно дать созреть.",
+      "kind": "modifier",
+      "source_fingerprint": 1488285478,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:cardinal:work:2"
+    },
+    "cardinal.work.lens.3": {
+      "text": "Не всё нужно предъявлять сразу.",
+      "kind": "modifier",
+      "source_fingerprint": 2329183248,
+      "directives": {},
+      "semantic_key": "modality:cardinal:work:3"
+    },
+    "cardinal.finance.lens.1": {
+      "text": "Начало не требует самоистощения.",
+      "kind": "modifier",
+      "source_fingerprint": 751400485,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:cardinal:finance:1"
+    },
+    "cardinal.finance.lens.2": {
+      "text": "До обещания оставьте время подумать.",
+      "kind": "modifier",
+      "source_fingerprint": 3112286108,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:cardinal:finance:2"
+    },
+    "cardinal.finance.lens.3": {
+      "text": "Расходу можно определить предел.",
+      "kind": "modifier",
+      "source_fingerprint": 2122203586,
+      "directives": {},
+      "semantic_key": "modality:cardinal:finance:3"
+    },
+    "cardinal.mood.lens.1": {
+      "text": "Импульс допускает доброжелательное внимание.",
+      "kind": "modifier",
+      "source_fingerprint": 1931816070,
+      "directives": {},
+      "semantic_key": "modality:cardinal:mood:1"
+    },
+    "cardinal.mood.lens.2": {
+      "text": "Чувству можно дать проявиться.",
+      "kind": "modifier",
+      "source_fingerprint": 2833808789,
+      "directives": {},
+      "semantic_key": "modality:cardinal:mood:2"
+    },
+    "cardinal.mood.lens.3": {
+      "text": "Раннее чувство допускает неизвестность.",
+      "kind": "modifier",
+      "source_fingerprint": 2448364819,
+      "directives": {},
+      "semantic_key": "modality:cardinal:mood:3"
+    },
+    "cardinal.action.lens.1": {
+      "text": "Действию нужна собственная мера.",
+      "kind": "modifier",
+      "source_fingerprint": 2992595110,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:cardinal:action:1",
+      "advice_qualifier": "меру первого шага выбираете вы",
+      "advice_echo_with": []
+    },
+    "cardinal.action.lens.2": {
+      "text": "До обязательства выдержите паузу.",
+      "kind": "modifier",
+      "source_fingerprint": 254366069,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:cardinal:action:2",
+      "advice_qualifier": "необратимое обязательство может подождать",
+      "advice_echo_with": []
+    },
+    "cardinal.action.lens.3": {
+      "text": "Начало не отменяет неизвестности.",
+      "kind": "modifier",
+      "source_fingerprint": 3879099743,
+      "directives": {},
+      "semantic_key": "modality:cardinal:action:3",
+      "advice_qualifier": "знать весь исход заранее не требуется",
+      "advice_echo_with": []
+    },
+    "fixed.theme.lens.1": {
+      "text": "Центр не требует полного контроля.",
+      "kind": "modifier",
+      "source_fingerprint": 3417638911,
+      "directives": {},
+      "semantic_key": "modality:fixed:theme:1"
+    },
+    "fixed.theme.lens.2": {
+      "text": "Постоянство допускает изменение формы.",
+      "kind": "modifier",
+      "source_fingerprint": 1986059128,
+      "directives": {},
+      "semantic_key": "modality:fixed:theme:2"
+    },
+    "fixed.theme.lens.3": {
+      "text": "Опора должна питать движение.",
+      "kind": "modifier",
+      "source_fingerprint": 1534988401,
+      "directives": {},
+      "semantic_key": "modality:fixed:theme:3"
+    },
+    "fixed.relations.lens.1": {
+      "text": "Ясное участие оживляет привычное.",
+      "kind": "modifier",
+      "source_fingerprint": 2118806742,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "modality:fixed:relations:1"
+    },
+    "fixed.relations.lens.2": {
+      "text": "Тишина не проверяет верность.",
+      "kind": "modifier",
+      "source_fingerprint": 2783085344,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "modality:fixed:relations:2"
+    },
+    "fixed.relations.lens.3": {
+      "text": "Верность допускает иное выражение.",
+      "kind": "modifier",
+      "source_fingerprint": 2200270339,
+      "directives": {},
+      "semantic_key": "modality:fixed:relations:3"
+    },
+    "fixed.work.lens.1": {
+      "text": "Существенная линия важнее исключительности.",
+      "kind": "modifier",
+      "source_fingerprint": 3441662252,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:fixed:work:1"
+    },
+    "fixed.work.lens.2": {
+      "text": "Результат допускает отпускание контроля.",
+      "kind": "modifier",
+      "source_fingerprint": 4048216864,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:fixed:work:2"
+    },
+    "fixed.work.lens.3": {
+      "text": "Внимание к переменам углубляет мастерство.",
+      "kind": "modifier",
+      "source_fingerprint": 539891006,
+      "directives": {},
+      "semantic_key": "modality:fixed:work:3"
+    },
+    "fixed.finance.lens.1": {
+      "text": "Опора шире одного приобретения.",
+      "kind": "modifier",
+      "source_fingerprint": 1700403566,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:fixed:finance:1"
+    },
+    "fixed.finance.lens.2": {
+      "text": "До вложения различите ценность и привычку.",
+      "kind": "modifier",
+      "source_fingerprint": 3019514816,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:fixed:finance:2"
+    },
+    "fixed.finance.lens.3": {
+      "text": "Ценность допускает изменение формы.",
+      "kind": "modifier",
+      "source_fingerprint": 4293842999,
+      "directives": {},
+      "semantic_key": "modality:fixed:finance:3"
+    },
+    "fixed.mood.lens.1": {
+      "text": "Настроение меняется, центр остаётся.",
+      "kind": "modifier",
+      "source_fingerprint": 3239466658,
+      "directives": {},
+      "semantic_key": "modality:fixed:mood:1"
+    },
+    "fixed.mood.lens.2": {
+      "text": "Чувству не обязательно доказывать силу.",
+      "kind": "modifier",
+      "source_fingerprint": 414227314,
+      "directives": {},
+      "semantic_key": "modality:fixed:mood:2"
+    },
+    "fixed.mood.lens.3": {
+      "text": "Ровность не означает одинаковой интенсивности.",
+      "kind": "modifier",
+      "source_fingerprint": 925080710,
+      "directives": {},
+      "semantic_key": "modality:fixed:mood:3"
+    },
+    "fixed.action.lens.1": {
+      "text": "Подтвердите ценное без принуждения.",
+      "kind": "modifier",
+      "source_fingerprint": 3306029281,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:fixed:action:1",
+      "advice_qualifier": "другие вправе выбрать иначе",
+      "advice_echo_with": [
+        "agreement.action.fire.1",
+        "aries.action.lens.1",
+        "scorpio.action.lens.1",
+        "agreement.action.water.1",
+        "boundaries.action.fire.1",
+        "scorpio.action.lens.3"
+      ]
+    },
+    "fixed.action.lens.2": {
+      "text": "Сохраните паузу вместо беспредметной настойчивости.",
+      "kind": "modifier",
+      "source_fingerprint": 2941999363,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:fixed:action:2",
+      "advice_qualifier": "пауза уместнее нажима без ясной цели",
+      "advice_echo_with": [
+        "libra.action.lens.2",
+        "boundaries.action.air.1",
+        "completion.action.fire.1",
+        "leo.action.lens.2"
+      ]
+    },
+    "fixed.action.lens.3": {
+      "text": "Преданность не запрещает перемен.",
+      "kind": "modifier",
+      "source_fingerprint": 2211988160,
+      "directives": {},
+      "semantic_key": "modality:fixed:action:3",
+      "advice_qualifier": "ценное можно сохранить, изменив привычный способ",
+      "advice_echo_with": [
+        "revision.action.earth.1",
+        "revision.action.fire.1",
+        "completion.action.earth.1",
+        "completion.action.water.1",
+        "steadiness.action.earth.1"
+      ]
+    },
+    "mutable.theme.lens.1": {
+      "text": "Переходы сохраняют свои различия.",
+      "kind": "modifier",
+      "source_fingerprint": 2089261088,
+      "directives": {},
+      "semantic_key": "modality:mutable:theme:1"
+    },
+    "mutable.theme.lens.2": {
+      "text": "Изменение допускает незавершённое понимание.",
+      "kind": "modifier",
+      "source_fingerprint": 665758806,
+      "directives": {},
+      "semantic_key": "modality:mutable:theme:2"
+    },
+    "mutable.theme.lens.3": {
+      "text": "Гибкости нужен собственный берег.",
+      "kind": "modifier",
+      "source_fingerprint": 2064284176,
+      "directives": {},
+      "semantic_key": "modality:mutable:theme:3"
+    },
+    "mutable.relations.lens.1": {
+      "text": "Иной взгляд допускает несогласие.",
+      "kind": "modifier",
+      "source_fingerprint": 3597026441,
+      "directives": {
+        "contact": "open"
+      },
+      "semantic_key": "modality:mutable:relations:1"
+    },
+    "mutable.relations.lens.2": {
+      "text": "Разговор может дождаться ясного отклика.",
+      "kind": "modifier",
+      "source_fingerprint": 1031790423,
+      "directives": {
+        "contact": "quiet"
+      },
+      "semantic_key": "modality:mutable:relations:2"
+    },
+    "mutable.relations.lens.3": {
+      "text": "Существенное допускает разное выражение.",
+      "kind": "modifier",
+      "source_fingerprint": 4032276986,
+      "directives": {},
+      "semantic_key": "modality:mutable:relations:3"
+    },
+    "mutable.work.lens.1": {
+      "text": "Новая связь позволяет изменить способ.",
+      "kind": "modifier",
+      "source_fingerprint": 1578548427,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:mutable:work:1"
+    },
+    "mutable.work.lens.2": {
+      "text": "Сначала наблюдение, затем объяснение.",
+      "kind": "modifier",
+      "source_fingerprint": 1314973520,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:mutable:work:2"
+    },
+    "mutable.work.lens.3": {
+      "text": "Многозначность не отменяет предмета.",
+      "kind": "modifier",
+      "source_fingerprint": 40105178,
+      "directives": {},
+      "semantic_key": "modality:mutable:work:3"
+    },
+    "mutable.finance.lens.1": {
+      "text": "Исследование не равно согласию платить.",
+      "kind": "modifier",
+      "source_fingerprint": 4176453930,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:mutable:finance:1"
+    },
+    "mutable.finance.lens.2": {
+      "text": "Обещание может подождать ясного основания.",
+      "kind": "modifier",
+      "source_fingerprint": 2935528292,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:mutable:finance:2"
+    },
+    "mutable.finance.lens.3": {
+      "text": "Не каждое предложение требует участия.",
+      "kind": "modifier",
+      "source_fingerprint": 584907585,
+      "directives": {},
+      "semantic_key": "modality:mutable:finance:3"
+    },
+    "mutable.mood.lens.1": {
+      "text": "Оттенок чувства может меняться.",
+      "kind": "modifier",
+      "source_fingerprint": 973731626,
+      "directives": {},
+      "semantic_key": "modality:mutable:mood:1"
+    },
+    "mutable.mood.lens.2": {
+      "text": "Не закрепляйте ещё меняющееся.",
+      "kind": "modifier",
+      "source_fingerprint": 340617603,
+      "directives": {},
+      "semantic_key": "modality:mutable:mood:2"
+    },
+    "mutable.mood.lens.3": {
+      "text": "Чуткость допускает собственный ритм.",
+      "kind": "modifier",
+      "source_fingerprint": 2928929579,
+      "directives": {},
+      "semantic_key": "modality:mutable:mood:3"
+    },
+    "mutable.action.lens.1": {
+      "text": "Обозначьте переход, сохраняя открытый путь.",
+      "kind": "modifier",
+      "source_fingerprint": 2120175314,
+      "directives": {
+        "timing": "commit"
+      },
+      "semantic_key": "modality:mutable:action:1",
+      "advice_qualifier": "дальнейший путь можно оставить открытым",
+      "advice_echo_with": []
+    },
+    "mutable.action.lens.2": {
+      "text": "Дайте неизвестному место до решения.",
+      "kind": "modifier",
+      "source_fingerprint": 3902205081,
+      "directives": {
+        "timing": "observe"
+      },
+      "semantic_key": "modality:mutable:action:2",
+      "advice_qualifier": "неизвестное пока можно оставить без решения",
+      "advice_echo_with": [
+        "virgo.action.lens.2",
+        "sagittarius.action.lens.2"
+      ]
+    },
+    "mutable.action.lens.3": {
+      "text": "Найдите сохраняющееся среди перемен.",
+      "kind": "modifier",
+      "source_fingerprint": 897271893,
+      "directives": {},
+      "semantic_key": "modality:mutable:action:3",
+      "advice_qualifier": "важное для вас может сохраниться при перемене",
+      "advice_echo_with": [
+        "revision.action.earth.1",
+        "revision.action.fire.1",
+        "steadiness.action.earth.1",
+        "completion.action.earth.1",
+        "completion.action.water.1"
+      ]
+    },
+    "number:1": {
+      "text": "самостоятельная воля без превосходства",
+      "kind": "number",
+      "source_fingerprint": 2241651449,
+      "directives": {},
+      "semantic_key": "number:1"
+    },
+    "number:2": {
+      "text": "взаимность двух самостоятельных голосов",
+      "kind": "number",
+      "source_fingerprint": 990674106,
+      "directives": {},
+      "semantic_key": "number:2"
+    },
+    "number:3": {
+      "text": "выражение, рождающее собственную форму",
+      "kind": "number",
+      "source_fingerprint": 2716608359,
+      "directives": {},
+      "semantic_key": "number:3"
+    },
+    "number:4": {
+      "text": "основание, поддерживающее живое",
+      "kind": "number",
+      "source_fingerprint": 559811850,
+      "directives": {},
+      "semantic_key": "number:4"
+    },
+    "number:5": {
+      "text": "переход к прожитому опыту",
+      "kind": "number",
+      "source_fingerprint": 2508444259,
+      "directives": {},
+      "semantic_key": "number:5"
+    },
+    "number:6": {
+      "text": "забота, сохраняющая меру",
+      "kind": "number",
+      "source_fingerprint": 239297341,
+      "directives": {},
+      "semantic_key": "number:6"
+    },
+    "number:7": {
+      "text": "углубление без изоляции",
+      "kind": "number",
+      "source_fingerprint": 2589899548,
+      "directives": {},
+      "semantic_key": "number:7"
+    },
+    "number:8": {
+      "text": "ответственность за применение силы",
+      "kind": "number",
+      "source_fingerprint": 986992419,
+      "directives": {},
+      "semantic_key": "number:8"
+    },
+    "number:9": {
+      "text": "завершение с сохранением смысла",
+      "kind": "number",
+      "source_fingerprint": 2272840393,
+      "directives": {},
+      "semantic_key": "number:9"
+    }
+  },
+  "extended_themes": {
+    "initiative": {
+      "source": "initiative",
+      "fork": "Собственный почин или ответ на чужой вызов?",
+      "exercise": "Мысленно уберите чужое одобрение и сопротивление. Что останется желанным? Назовите ответ, который готовы принять, даже если он не подтвердит вашей силы.",
+      "directives": {},
+      "source_fingerprint": 3698718430
+    },
+    "agreement": {
+      "source": "agreement",
+      "fork": "Взаимность или спокойствие ценой незаметной уступки?",
+      "exercise": "Представьте, что каждый может назвать своё условие без угрозы для связи. Какое ваше условие пока отсутствует? Молчание не стоит автоматически считать согласием.",
+      "directives": {},
+      "source_fingerprint": 2943981667
+    },
+    "review": {
+      "source": "review",
+      "fork": "Наблюдение или объяснение, которое приятно считать верным?",
+      "exercise": "Отделите известное от догадки и назовите факт, способный изменить вывод. Если такого факта нет, возможно, вы защищаете убеждение, а не проверяете его.",
+      "directives": {},
+      "source_fingerprint": 1599856988
+    },
+    "boundaries": {
+      "source": "boundaries",
+      "fork": "Защита своей жизни или ограждение привычного страха?",
+      "exercise": "Представьте, что обозначенный предел соблюдён. Остаётся ли внутри место для действительной встречи? Граница, после которой всё равно нечем дышать, нуждается в уточнении.",
+      "directives": {},
+      "source_fingerprint": 4079836383
+    },
+    "completion": {
+      "source": "completion",
+      "fork": "Сохранение смысла или удержание того, что уже исчерпано?",
+      "exercise": "Мысленно отделите ценность полученного опыта от обязанности повторять его. Что останется с вами без прежнего ритуала? Завершение не обязывает обесценивать прожитое.",
+      "directives": {},
+      "source_fingerprint": 924465840
+    },
+    "revision": {
+      "source": "revision",
+      "fork": "Другой способ беречь ценное или перемена ради новой вспышки?",
+      "exercise": "Назовите то, что хотите сохранить, и привычный способ этого добиться. Можно ли изменить второе без потери первого? Новизна сама по себе ещё не ответ.",
+      "directives": {},
+      "source_fingerprint": 368079905
+    },
+    "exchange": {
+      "source": "exchange",
+      "fork": "Усвоенный смысл или заимствованная уверенность?",
+      "exercise": "Проверьте, что сможете понять иначе после встречи с чужим опытом. Если остаётся только убедительная интонация, вопрос ещё открыт. Знакомство с объяснением не равно усвоению.",
+      "directives": {},
+      "source_fingerprint": 1456900773
+    },
+    "steadiness": {
+      "source": "steadiness",
+      "fork": "Верность основанию или запрет на изменение его формы?",
+      "exercise": "Представьте обычный день без особого вдохновения. Что продолжает питать выбранное? Отличите достаточную опору от требования сохранять прежнюю интенсивность любой ценой.",
+      "directives": {},
+      "source_fingerprint": 2157050131
+    }
+  },
+  "extended_profiles": {
+    "aries": {
+      "text": "Ваша решимость теряет свободу, когда любое сомнение становится вызовом. Проверьте, нужен ли выбранному желанию соперник.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:aries",
+      "source_fingerprint": 28103582
+    },
+    "taurus": {
+      "text": "Телесная память помогает узнать ценное. Но сохранение привычной вещи и сохранение удовольствия от жизни — разные задачи.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:taurus",
+      "source_fingerprint": 2648969501
+    },
+    "gemini": {
+      "text": "Осведомлённость не равна обладанию, а перемена цены — перемене ценности. Оставьте место чувству, которое ещё не стало остроумным объяснением.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:gemini",
+      "source_fingerprint": 2326662311
+    },
+    "cancer": {
+      "text": "Воспоминание может придать вещи значение близости. Стоит различить нынешнюю потребность в опоре и желание вернуть прежнее чувство.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:cancer",
+      "source_fingerprint": 4077509630
+    },
+    "leo": {
+      "text": "Творческий центр не исчезает без зрителей. Представительный жест может выражать радость, но не обязан покупать для вас особое место.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:leo",
+      "source_fingerprint": 3224925441
+    },
+    "virgo": {
+      "text": "Ясность полезна, пока отвечает реальной потребности. Различите необходимую заботу и попытку заранее исключить всякое несовершенство.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:virgo",
+      "source_fingerprint": 2828420936
+    },
+    "libra": {
+      "text": "Внешне равный вклад не всегда означает взаимное согласие. Важен принятый обоими смысл участия, а не только красота соотношения.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:libra",
+      "source_fingerprint": 1335149002
+    },
+    "scorpio": {
+      "text": "Владение общим ресурсом способно незаметно дать власть. Защищённость не обязательно требует располагать каждым решением другого человека.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:scorpio",
+      "source_fingerprint": 535025617
+    },
+    "sagittarius": {
+      "text": "Широкий замысел питается смыслом, а не величиной обещанного. Различите щедрость взгляда и привычку жертвовать настоящим ради величия будущего.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:sagittarius",
+      "source_fingerprint": 3738249728
+    },
+    "capricorn": {
+      "text": "Сохранённая опора должна питать жизнь. Тяжесть обязательства не доказывает его ценности, а отдых не обязывает оправдываться новым достижением.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:capricorn",
+      "source_fingerprint": 2600898739
+    },
+    "aquarius": {
+      "text": "Самостоятельность мысли не зависит от необычности предложения. Соотнесите привлекательную общую идею с собственной ответственностью за участие.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:aquarius",
+      "source_fingerprint": 1800465412
+    },
+    "pisces": {
+      "text": "Сострадание нуждается в берегах: стирать различие своих и чужих средств не обязательно. Внутренний отклик может быть правдивым чувством без внешнего доказательства.",
+      "fields": [
+        "profiles.finance",
+        "profiles.mood"
+      ],
+      "directives": {},
+      "source": "sign:pisces",
+      "source_fingerprint": 905473802
+    }
+  },
+  "extended_runes": {
+    "rune:1": {
+      "source": "rune:1",
+      "text": "Имущество сохраняет смысл, пока поддерживает жизнь и участвует в ней.",
+      "directives": {},
+      "source_fingerprint": 2425555812
+    },
+    "rune:2": {
+      "source": "rune:2",
+      "text": "Телесная сила не нуждается в непрерывной демонстрации.",
+      "directives": {},
+      "source_fingerprint": 1428733324
+    },
+    "rune:3": {
+      "source": "rune:3",
+      "text": "Сильный ответ нуждается в мере; название не делает опасное безопасным.",
+      "directives": {},
+      "source_fingerprint": 2217526185
+    },
+    "rune:4": {
+      "source": "rune:4",
+      "text": "Услышанный смысл углубляет речь, но не даёт права на безошибочность.",
+      "directives": {},
+      "source_fingerprint": 3178675433
+    },
+    "rune:5": {
+      "source": "rune:5",
+      "text": "Свой путь соотносит направление с живым ритмом идущего.",
+      "directives": {},
+      "source_fingerprint": 3739887938
+    },
+    "rune:6": {
+      "source": "rune:6",
+      "text": "Факел в современных школах показывает и форму, и предел освещённого.",
+      "directives": {},
+      "source_fingerprint": 540655253
+    },
+    "rune:7": {
+      "source": "rune:7",
+      "text": "Дар сохраняет взаимность, пока за ним не скрыт неназванный долг.",
+      "directives": {},
+      "source_fingerprint": 3168330334
+    },
+    "rune:8": {
+      "source": "rune:8",
+      "text": "Радость принадлежности допускает различия, не превращая их в угрозу.",
+      "directives": {},
+      "source_fingerprint": 3850368451
+    },
+    "rune:9": {
+      "source": "rune:9",
+      "text": "Образ хрупкости опор предлагает размышление, а не предсказывает бедствие.",
+      "directives": {},
+      "source_fingerprint": 2812630845
+    },
+    "rune:10": {
+      "source": "rune:10",
+      "text": "Нужда помогает отличить необходимое от желаемого, не возвышая страдание.",
+      "directives": {},
+      "source_fingerprint": 2774467835
+    },
+    "rune:11": {
+      "source": "rune:11",
+      "text": "Пауза может хранить ясность или страх перемен: различие существенно.",
+      "directives": {},
+      "source_fingerprint": 2000364308
+    },
+    "rune:12": {
+      "source": "rune:12",
+      "text": "Созревание требует времени; урожай здесь не обещание награды на дату.",
+      "directives": {},
+      "source_fingerprint": 769031320
+    },
+    "rune:13": {
+      "source": "rune:13",
+      "text": "Стойкость сохраняет основание, не отрицая уязвимости.",
+      "directives": {},
+      "source_fingerprint": 2764200163
+    },
+    "rune:14": {
+      "source": "rune:14",
+      "text": "Неполное знание допускает внимание, а не обязанность угадать исход.",
+      "directives": {},
+      "source_fingerprint": 1245205567
+    },
+    "rune:15": {
+      "source": "rune:15",
+      "text": "Защита сохраняет смысл, пока внутри остаётся место для жизни.",
+      "directives": {},
+      "source_fingerprint": 1472869564
+    },
+    "rune:16": {
+      "source": "rune:16",
+      "text": "Ясность своего взгляда не делает его единственным источником истины.",
+      "directives": {},
+      "source_fingerprint": 1802587330
+    },
+    "rune:17": {
+      "source": "rune:17",
+      "text": "Достоинство связывает принятое слово с ответственностью, а не с победой.",
+      "directives": {},
+      "source_fingerprint": 3327681892
+    },
+    "rune:18": {
+      "source": "rune:18",
+      "text": "Забота поддерживает рост, не требуя вечной зависимости от заботящегося.",
+      "directives": {},
+      "source_fingerprint": 1575318128
+    },
+    "rune:19": {
+      "source": "rune:19",
+      "text": "Совместное движение сохраняет доверие, пока другой не превращён в средство.",
+      "directives": {},
+      "source_fingerprint": 2397543367
+    },
+    "rune:20": {
+      "source": "rune:20",
+      "text": "Достоинство допускает связь с общим миром без отказа от собственного суждения.",
+      "directives": {},
+      "source_fingerprint": 2565024851
+    },
+    "rune:21": {
+      "source": "rune:21",
+      "text": "Глубокий отклик не заменяет различения чувства и внешнего события.",
+      "directives": {},
+      "source_fingerprint": 371632202
+    },
+    "rune:22": {
+      "source": "rune:22",
+      "text": "Созревающая возможность не обязана немедленно обещать результат.",
+      "directives": {},
+      "source_fingerprint": 2376885432
+    },
+    "rune:23": {
+      "source": "rune:23",
+      "text": "Прояснившийся взгляд допускает новое отношение к прежнему без отрицания прошлого.",
+      "directives": {},
+      "source_fingerprint": 234241963
+    },
+    "rune:24": {
+      "source": "rune:24",
+      "text": "Наследуемая опора оставляет право выбрать продолжение собственного пути.",
+      "directives": {},
+      "source_fingerprint": 1436254440
+    }
+  },
+  "fusions": {
+    "agreement.relations.earth.1|taurus.relations.lens.1": {
+      "sources": [
+        "agreement.relations.earth.1",
+        "taurus.relations.lens.1"
+      ],
+      "source_fingerprints": [
+        92906529,
+        693664052
+      ],
+      "text": "Привычный жест нежности остаётся заботой, пока в нём есть внимание, а не притязание на близкого.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "completion.work.earth.1|capricorn.work.lens.3": {
+      "sources": [
+        "completion.work.earth.1",
+        "capricorn.work.lens.3"
+      ],
+      "source_fingerprints": [
+        4121409205,
+        65190737
+      ],
+      "text": "Ответственность включает умение остановить исправления, когда результат уже способен жить самостоятельно.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "steadiness.finance.water.1|cancer.finance.lens.1": {
+      "sources": [
+        "steadiness.finance.water.1",
+        "cancer.finance.lens.1"
+      ],
+      "source_fingerprints": [
+        1419369889,
+        1796443195
+      ],
+      "text": "Материальный запас поддерживает безопасность, но не устраняет всякую возможность тревоги.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "initiative.relations.fire.1|aries.relations.lens.3": {
+      "sources": [
+        "initiative.relations.fire.1",
+        "aries.relations.lens.3"
+      ],
+      "source_fingerprints": [
+        994953068,
+        98698808
+      ],
+      "text": "Даже сильное влечение оставляет другому право отвечать по-своему.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "initiative.finance.fire.1|sagittarius.finance.lens.3": {
+      "sources": [
+        "initiative.finance.fire.1",
+        "sagittarius.finance.lens.3"
+      ],
+      "source_fingerprints": [
+        1705167292,
+        840198584
+      ],
+      "text": "Покупка образа свободы не заменит опыта, который вы действительно прожили.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "revision.finance.water.1|pisces.finance.lens.3": {
+      "sources": [
+        "revision.finance.water.1",
+        "pisces.finance.lens.3"
+      ],
+      "source_fingerprints": [
+        1379281965,
+        2905528799
+      ],
+      "text": "Новая вещь может быть ценной сама по себе, но не обязана возвращать ушедшее чувство.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "review.finance.air.1|gemini.finance.lens.1": {
+      "sources": [
+        "review.finance.air.1",
+        "gemini.finance.lens.1"
+      ],
+      "source_fingerprints": [
+        2591881907,
+        1990332572
+      ],
+      "text": "Убедительность рассказа о выгоде стоит проверять условиями обмена, а не впечатлением от рассказчика.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "boundaries.mood.fire.1|leo.mood.lens.1": {
+      "sources": [
+        "boundaries.mood.fire.1",
+        "leo.mood.lens.1"
+      ],
+      "source_fingerprints": [
+        1606773408,
+        615682705
+      ],
+      "text": "Не каждый зов требует отклика: внутренний центр остаётся вашим и без чужого внимания.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "initiative.mood.water.1|pisces.mood.lens.2": {
+      "sources": [
+        "initiative.mood.water.1",
+        "pisces.mood.lens.2"
+      ],
+      "source_fingerprints": [
+        318770903,
+        4092230252
+      ],
+      "text": "Важное предчувствие можно принять как переживание, не назначая ему роль предвестника события.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "agreement.theme.air.1|gemini.theme.lens.2": {
+      "sources": [
+        "agreement.theme.air.1",
+        "gemini.theme.lens.2"
+      ],
+      "source_fingerprints": [
+        2441732016,
+        1976196433
+      ],
+      "text": "Созвучие с чужими взглядами возможно без отказа от своего: видеть несколько сторон не значит становиться каждой.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "boundaries.work.fire.1|aries.work.lens.1": {
+      "sources": [
+        "boundaries.work.fire.1",
+        "aries.work.lens.1"
+      ],
+      "source_fingerprints": [
+        1298513441,
+        934751277
+      ],
+      "text": "Собственный почин не обязывает превращать чужую неуверенность в личную борьбу.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "revision.finance.fire.1|sagittarius.finance.lens.3": {
+      "sources": [
+        "revision.finance.fire.1",
+        "sagittarius.finance.lens.3"
+      ],
+      "source_fingerprints": [
+        4194196879,
+        840198584
+      ],
+      "text": "Перемена может дать опыт, не требуя покупать новый знак своей будущей свободы.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "steadiness.theme.water.1|scorpio.theme.lens.1": {
+      "sources": [
+        "steadiness.theme.water.1",
+        "scorpio.theme.lens.1"
+      ],
+      "source_fingerprints": [
+        2725288157,
+        2674959235
+      ],
+      "text": "Марсианская глубина привязанности допускает перемену чувства без утраты значимости связи.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "completion.relations.earth.1|taurus.relations.lens.3": {
+      "sources": [
+        "completion.relations.earth.1",
+        "taurus.relations.lens.3"
+      ],
+      "source_fingerprints": [
+        1189325252,
+        2588730839
+      ],
+      "text": "Значение совместного опыта сохраняется, даже если привычный ритуал близости завершён или меняется.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "initiative.work.water.1|pisces.work.lens.1": {
+      "sources": [
+        "initiative.work.water.1",
+        "pisces.work.lens.1"
+      ],
+      "source_fingerprints": [
+        3543406137,
+        3652667873
+      ],
+      "text": "Цельному внутреннему образу нужны очертания, чтобы его можно было воплотить и показать.",
+      "reason": "one-meaning-instead-of-echo"
+    },
+    "agreement.relations.water.1|pisces.relations.lens.1": {
+      "sources": [
+        "agreement.relations.water.1",
+        "pisces.relations.lens.1"
+      ],
+      "source_fingerprints": [
+        305708231,
+        69050067
+      ],
+      "text": "Сострадание сохраняет близость, не требуя прожить чужую жизнь вместо другого.",
+      "reason": "one-meaning-instead-of-echo"
+    }
+  },
+  "action_compositions": {
+    "steadiness.action.earth.1|virgo.action.lens.1": {
+      "sources": [
+        "steadiness.action.earth.1",
+        "virgo.action.lens.1"
+      ],
+      "source_fingerprints": [
+        3762522886,
+        4224888282
+      ],
+      "text": "Уберите из привычного дела одну ненужную деталь, сохранив то, что вам действительно помогает.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "initiative.action.earth.1|taurus.action.lens.2": {
+      "sources": [
+        "initiative.action.earth.1",
+        "taurus.action.lens.2"
+      ],
+      "source_fingerprints": [
+        3896373737,
+        1239193328
+      ],
+      "text": "Сначала определите, что из привычного поможет новому замыслу, а что вы сохраняете лишь по привычке.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "agreement.action.air.1|gemini.action.lens.1": {
+      "sources": [
+        "agreement.action.air.1",
+        "gemini.action.lens.1"
+      ],
+      "source_fingerprints": [
+        2556517454,
+        656924510
+      ],
+      "text": "Сформулируйте для себя вопрос о разнице мнений, не требуя сразу прийти к согласию.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "steadiness.action.water.1|pisces.action.lens.1": {
+      "sources": [
+        "steadiness.action.water.1",
+        "pisces.action.lens.1"
+      ],
+      "source_fingerprints": [
+        2096467914,
+        3465804525
+      ],
+      "text": "Опишите, что вы представляете, в своём темпе и без необходимости объяснять всё сразу.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "initiative.action.fire.1|aries.action.lens.1": {
+      "sources": [
+        "initiative.action.fire.1",
+        "aries.action.lens.1"
+      ],
+      "source_fingerprints": [
+        3250099506,
+        3694113529
+      ],
+      "text": "Выберите первый шаг для своего замысла, который нужен вам не ради победы над кем-то.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "initiative.action.water.1|cancer.action.lens.3": {
+      "sources": [
+        "initiative.action.water.1",
+        "cancer.action.lens.3"
+      ],
+      "source_fingerprints": [
+        1465693638,
+        937909767
+      ],
+      "text": "Если хочется помочь, определите для себя, какое участие оставит близкому право выбрать самому.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "review.action.fire.1|leo.action.lens.3": {
+      "sources": [
+        "review.action.fire.1",
+        "leo.action.lens.3"
+      ],
+      "source_fingerprints": [
+        1601475707,
+        1884213737
+      ],
+      "text": "Проверьте одно своё убеждение без необходимости оправдывать его перед кем-то.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "completion.action.air.1|libra.action.lens.2": {
+      "sources": [
+        "completion.action.air.1",
+        "libra.action.lens.2"
+      ],
+      "source_fingerprints": [
+        1940412956,
+        2335739042
+      ],
+      "text": "Если итог уже ясен, оставьте неясный вопрос на паузе, не уступая только ради внешнего спокойствия.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "agreement.action.water.1|scorpio.action.lens.3": {
+      "sources": [
+        "agreement.action.water.1",
+        "scorpio.action.lens.3"
+      ],
+      "source_fingerprints": [
+        200783694,
+        3979430949
+      ],
+      "text": "Отделите своё чувство от догадки о чужом: близость не требует заранее распоряжаться чужим ответом.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "completion.action.fire.1|sagittarius.action.lens.2": {
+      "sources": [
+        "completion.action.fire.1",
+        "sagittarius.action.lens.2"
+      ],
+      "source_fingerprints": [
+        961734867,
+        2900415353
+      ],
+      "text": "Если замысел завершён, дайте себе паузу и не спешите объяснять оставшийся вопрос привычной схемой.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "boundaries.action.earth.1|capricorn.action.lens.2": {
+      "sources": [
+        "boundaries.action.earth.1",
+        "capricorn.action.lens.2"
+      ],
+      "source_fingerprints": [
+        3503374195,
+        3616288401
+      ],
+      "text": "Перед новой обязанностью проверьте, нужна ли эта нагрузка вам или вы привыкли принимать чужие требования.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "boundaries.action.air.1|aquarius.action.lens.2": {
+      "sources": [
+        "boundaries.action.air.1",
+        "aquarius.action.lens.2"
+      ],
+      "source_fingerprints": [
+        351336378,
+        3292095057
+      ],
+      "text": "Рассмотрите неудобное для вашей позиции наблюдение, не продолжая спор после уже данного ясного ответа.",
+      "reason": "one-source-bound-decision-step"
+    },
+    "review.action.fire.1|sagittarius.action.lens.1": {
+      "sources": [
+        "review.action.fire.1",
+        "sagittarius.action.lens.1"
+      ],
+      "source_fingerprints": [
+        1601475707,
+        3756290875
+      ],
+      "text": "Сопоставьте важное убеждение с опытом, который мог бы заставить вас изменить его.",
+      "reason": "one-source-bound-decision-step"
+    }
+  }
+};
+const COMPACT_ENGINE_VERSION='forecast-1.0.0+compact.1';
+const COMPACT_PRESENTATION_VERSION='compact-1.0.1';
+const sourceGroups=['units','sign_lenses','modality_lenses','themes','signs','numbers','runes','symbols','advice','modalities'];
+const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const labels={theme:'✨ Главное',relations:'💕 Отношения',work:'📚 Дела',finance:'💰 Финансы',mood:'🌿 Настроение',action:'🍀 Совет дня'};
+const sourceFingerprint=row=>legacyHash(JSON.stringify(row)); // Integrity pin, not a cryptographic authentication claim.
+function textReady(value){return typeof value==='string'&&value.trim()===value&&value.length>3&&!/[<>\r\n]/.test(value);}
+function checkTextIntent(text,directives){
+ // Deliberately bounded lexical checks supplement declared semantic directives, never pretend to understand all Russian.
+ if(directives.timing==='observe'&&/(действуйте немедленно|решите сейчас|сделайте (?:это )?(?:немедленно|сейчас)|совершите покупку|не откладывайте)/iu.test(text))throw Error('Editorial timing contradiction');
+ if(directives.contact==='quiet'&&/(начните разговор|потребуйте ответа|добейтесь ответа|позвоните|напишите (?:ему|ей|собеседнику))/iu.test(text))throw Error('Editorial contact contradiction');
+ if(/(гарантированно|точность\s*\d+\s*%|\d+\s*%\s*точност|сегодня\s+(?:луна|меркурий|венера|марс|сатурн|юпитер)\s+(?:входит|образует|переходит)|сегодня\s+(?:полнолуние|новолуние))/iu.test(text))throw Error('Unsupported astronomical or guaranteed claim');
+}
+function validateCompactCatalog(base,editorial){
+ if(editorial.presentation_version!==COMPACT_PRESENTATION_VERSION||editorial.selection_engine_version!==ENGINE_VERSION||editorial.source_catalog_version!==base.content_version||editorial.content_version!=='2026.11-compact-v2')throw Error('Editorial version mismatch');
+ const source=new Map(sourceGroups.flatMap(g=>base[g]).map(row=>[row.id,row]));
+ const required=[...base.units,...base.sign_lenses,...base.modality_lenses,...base.numbers];
+ if(Object.keys(editorial.entries).length!==required.length)throw Error('Incomplete compact source coverage');
+ for(const row of required){const edit=editorial.entries[row.id];if(!edit||!textReady(edit.text)||edit.source_fingerprint!==sourceFingerprint(row)||edit.semantic_key!==(row.semantic_key||row.id)||!equal(edit.directives,row.directives||{}))throw Error('Compact source drift: '+row.id);const question=base.units.includes(row)&&row.section==='action';if(question&&(edit.kind!=='question'||!edit.text.endsWith('?')))throw Error('Missing thematic question');checkTextIntent(edit.text,edit.directives);}
+ for(const [group,rows] of [['extended_themes',base.themes],['extended_profiles',base.signs],['extended_runes',base.runes]]){
+  if(Object.keys(editorial[group]).length!==rows.length)throw Error('Incomplete expanded source coverage');
+  for(const row of rows){const id=group==='extended_profiles'?row.sign_id:row.id,edit=editorial[group][id];if(!edit||edit.source!==row.id||edit.source_fingerprint!==sourceFingerprint(row)||!equal(edit.directives,{}))throw Error('Expanded source drift: '+row.id);
+   if(group==='extended_profiles'&&!equal(edit.fields,['profiles.finance','profiles.mood']))throw Error('Unknown profile fields');
+   for(const key of group==='extended_themes'?['fork','exercise']:['text'])if(!textReady(edit[key]))throw Error('Empty expanded reading: '+row.id);checkTextIntent(edit.text||edit.exercise,{});
+  }
+ }
+ for(const [key,fusion] of Object.entries({...editorial.fusions,...editorial.action_compositions})){
+  if(key!==fusion.sources.join('|')||fusion.sources.length!==2||!textReady(fusion.text)||!equal(fusion.source_fingerprints,fusion.sources.map(id=>sourceFingerprint(source.get(id)))))throw Error('Invalid editorial fusion');
+  const [unit,lens]=fusion.sources.map(id=>source.get(id));if(!base.units.includes(unit)||!base.sign_lenses.includes(lens)||unit.section!==lens.section)throw Error('Invalid fused source roles');if(editorial.action_compositions?.[key]&&unit.section!=='action')throw Error('Advice composition requires action sources');checkTextIntent(fusion.text,lens.directives||{});
+ }
+ for(const row of base.modality_lenses.filter(row=>row.section==='action')){const edit=editorial.entries[row.id],text=edit.advice_qualifier;if(!Array.isArray(edit.advice_echo_with)||edit.advice_echo_with.some(id=>!source.has(id)||source.get(id).section!=='action'))throw Error('Invalid advice echo reference');if(!textReady(text))throw Error('Missing source-bound advice qualifier');checkTextIntent(text,row.directives||{});}
+ return source;
+}
+function validateEditorialDocument(document,source,sign,theme,context,selectedIds){
+ if(!Array.isArray(selectedIds))throw Error('Selected source set required');
+ if(!equal(document.sections.map(row=>row.section),SECTIONS))throw Error('Incomplete editorial sections');
+ const used=[];for(const row of document.sections){if(!textReady(row.text)||row.sources.length<2)throw Error('Missing editorial meaning');for(const id of row.sources){const origin=source.get(id);if(!origin||origin.section!==row.section||!selectedIds.includes(id))throw Error('Unattributed editorial assertion');used.push(origin);}if(new Set(row.sources).size!==row.sources.length||row.sources.filter(id=>source.get(id).sign_id===sign.sign_id).length!==1||row.sources.filter(id=>source.get(id).theme===theme.id).length!==1)throw Error('Wrong editorial source roles');checkTextIntent(row.text,context);}
+ validateSelection(used,sign,theme,context);
+ if(new Set(document.sections.map(row=>row.text)).size!==6)throw Error('Duplicated editorial section');
+ return document;
+}
+function formatFreeForecast(document){
+ if(!validDay(document.day)||!Number.isInteger(document.number)||document.number<1||document.number>9||!textReady(document.numberMeaning))throw Error('Invalid free forecast document');
+ const [year,month,day]=document.day.split('-');
+ const text=`🌙 ГОРОСКОП · ${day}.${month}.${year}\n${document.signLabel}\n\n`+document.sections.map(row=>`${labels[row.section]}: ${row.text}`).join('\n\n')+`\n\n🔢 Число дня: ${document.number} — ${document.numberMeaning}.\n\nСимволическая интерпретация солнечного знака.`;
+ if(text.length>4096)throw Error('Compact Telegram length exceeded');return text;
+}
+const stems=text=>new Set((text.toLowerCase().match(/[а-яё]{4,}/gu)||[]).map(w=>w.slice(0,5)));
+function distinctModifier(text,modifier){const a=stems(text),b=stems(modifier);return [...b].filter(x=>a.has(x)).length/Math.max(1,b.size)<.4;}
+function createCompactForecastGenerator(base,editorial,{generate=createForecastGenerator(base)}={}){
+ const edits=structuredClone(editorial),source=validateCompactCatalog(base,edits);
+ return function generateCompactForecast(signId,day,locale='ru'){
+  // The same legacy generator consumes the same seed, ordinal and RNG calls, including expanded references.
+  const legacy=generate(signId,day,locale),selection=JSON.parse(legacy.source_tags),sign=source.get('sign:'+signId),theme=source.get(legacy.trace.theme);
+  if(legacy.engine_version!==ENGINE_VERSION||legacy.content_version!==edits.source_catalog_version||legacy.number_algorithm_version!==NUMBER_VERSION||legacy.number!==legacyHash(signId+day)%9+1)throw Error('Unexpected selection engine');
+  const ids=[...legacy.trace.units,...legacy.trace.sign_lenses,...legacy.trace.modality_lenses];validateSelection(ids.map(id=>{const row=source.get(id);if(!row)throw Error('Unknown selected source');return row;}),sign,theme,legacy.trace.directives);
+  const sections=SECTIONS.map((section,index)=>{
+   const unit=source.get(legacy.trace.units[index]),lens=source.get(legacy.trace.sign_lenses[index]),modal=legacy.trace.modality_lenses.map(id=>source.get(id)).find(row=>row.section===section);
+   const premise=edits.entries[unit.id],facet=edits.entries[lens.id],fusionKey=unit.id+'|'+lens.id,fusion=section==='action'?(edits.action_compositions?.[fusionKey]||edits.fusions?.[fusionKey]):edits.fusions?.[fusionKey];let text=fusion?fusion.text:premise.text+' '+facet.text;
+   // A selected action modality qualifies the same decision, never adds another task. Curated/lexical echoes stay constraints.
+   const duplicatedDirective=modal&&Object.keys(modal.directives||{}).some(axis=>lens.directives?.[axis]===modal.directives[axis]);
+   const modifier=modal&&(section==='action'?edits.entries[modal.id].advice_qualifier:edits.entries[modal.id].text);
+   const semanticEcho=Boolean(modal&&section==='action'&&edits.entries[modal.id].advice_echo_with.some(id=>id===unit.id||id===lens.id));
+   const emit=Boolean(modal&&!semanticEcho&&(section==='action'||!duplicatedDirective)&&distinctModifier(text,modifier));if(emit)text=section==='action'?text.replace(/[.!?]$/,'')+'; '+modifier+'.':text+' '+modifier;
+   return{section,text,fusion:fusion&&edits.fusions?.[fusionKey]?fusionKey:null,advice_composition:section==='action'&&edits.action_compositions?.[fusionKey]?fusionKey:null,sources:[unit.id,lens.id,...(emit?[modal.id]:[])],semantic_keys:[premise.semantic_key,facet.semantic_key,...(emit?[edits.entries[modal.id].semantic_key]:[])],modality:modal?{source:modal.id,role:emit?'emitted':'compatibility-constraint',reason:emit?(section==='action'?'source-bound-step-qualifier':'independent-meaning'):semanticEcho?'source-meaning-already-expressed':duplicatedDirective?'directive-already-expressed':'semantic-echo'}:null};
+  });
+  const document={signLabel:sign.label,day,number:legacy.number,numberMeaning:edits.entries['number:'+legacy.number].text,sections};validateEditorialDocument(document,source,sign,theme,legacy.trace.directives,ids);
+  const free_text=formatFreeForecast(document),fork=edits.extended_themes[theme.id],profile=edits.extended_profiles[signId],rune=source.get(legacy.trace.rune),symbol=source.get(legacy.trace.symbol),advice=source.get(legacy.trace.advice),number=source.get('number:'+legacy.number);
+  if(!rune.allowed_themes.includes(theme.id)||!symbol.allowed_themes.includes(theme.id)||!advice.allowed_themes.includes(theme.id))throw Error('Expanded source incompatibility');
+  const extended_text=`🌒 РАСШИРЕННЫЙ ПРОГНОЗ · ${day.split('-').reverse().join('.')}\n${sign.label}\n\n`+
+   `Развилка · ${theme.label}\n${fork.fork}\n\nКак применить\n${fork.exercise}\n\nВаш акцент\n${profile.text}\n\n`+
+   `Символ и цвет\n${symbol.name} · ${symbol.color}. ${symbol.question}\nАвторская палитра для размышления, не небесное соответствие.\n\n`+
+   `Руна · ${rune.glyph} ${rune.name}\nИсторическое/реконструированное значение имени: ${rune.historical}.\nСовременное символическое чтение: ${edits.extended_runes[rune.id].text}\n\n`+
+   `Глубже о числе ${number.value}\n${number.extended}\n\nСовет Жирного\n${advice.body}`;
+  if(extended_text.length>4096)throw Error('Expanded Telegram length exceeded');checkTextIntent(extended_text,legacy.trace.directives);
+  const editorialTrace={presentation_version:edits.presentation_version,selection_engine_version:ENGINE_VERSION,source_catalog_version:base.content_version,sections:sections.map(({text,...meta})=>meta),number:{source:number.id},extended:{fork:{source:theme.id,fields:['extended','question']},application:{source:theme.id,fields:['extended','question']},profile:{source:profile.source,fields:profile.fields},symbol:{source:symbol.id,fields:['name','color','question','tradition']},rune:{source:rune.id,fields:['glyph','name','historical','body']},number:{source:number.id,fields:['extended']},advice:{source:advice.id,fields:['body']}}};
+  return{...legacy,free_text,extended_text,words:russianWords(free_text),engine_version:COMPACT_ENGINE_VERSION,content_version:edits.content_version,source_tags:JSON.stringify({...selection,editorial:editorialTrace}),trace:{...legacy.trace,editorial:editorialTrace},document};
+ };
+}
+
+let configuredCompactGenerator;
+function compactStartDay(env){
+ const start=env.ASTRA_FORECAST_COMPACT_START_DAY;if(start===undefined||start===null||start==='')return null;
+ if(!validDay(start))throw Error('Invalid compact forecast start day');return start;
+}
+function generateForecastForEnv(env,sign,day,locale='ru'){
+ const start=compactStartDay(env);if(!start||day<start)return generateForecast(sign,day,locale);
+ configuredCompactGenerator??=createCompactForecastGenerator(catalog,compactCatalog,{generate:generateForecast});
+ return configuredCompactGenerator(sign,day,locale);
+}
+
+
+// TASK03 broadcast delivery only. No symbolic or monetary rules changed.
+const BROADCAST_SCHEMA03=['astra_broadcast_runtime03','astra_broadcast_outbox03','idx_broadcast_outbox03_due','idx_broadcast_jobs_day03','astra_broadcast_guard03','astra_broadcast_legacy_guard03','astra_broadcast_marker03','astra_broadcast_update_guard03','astra_broadcast_sync03','astra_broadcast_purge03','astra_broadcast_erase03'];
+const BROADCAST_MAX03=8,BROADCAST_ATTEMPTS03=3,BROADCAST_LEASE03=90;
+const epoch03=()=>Math.floor(Date.now()/1000);
+function morning03(now=new Date()){return now.getUTCHours()>=6&&now.getUTCHours()<8;}
+async function broadcastSchema03(env){
+ if(!env.DB)return null;try{return await env.DB.prepare(`SELECT count(*) n,(SELECT migration_done FROM astra_broadcast_runtime03 WHERE singleton=1) complete,(SELECT cooldown_until FROM astra_broadcast_runtime03 WHERE singleton=1) cooldown_until FROM sqlite_master WHERE name IN (${BROADCAST_SCHEMA03.map(n=>"'"+n+"'").join(',')})`).first();}catch{return null;}
+}
+const broadcastSchemaReady03=row=>row?.n===BROADCAST_SCHEMA03.length&&row.complete===1;
+// Reserve two outside D1 operations: the unchanged fence purge and base schema check.
+function budget03(env,stats){
+ const consume=n=>{if(stats.statements+stats.http+n>48)throw Error('BROADCAST_BUDGET');stats.statements+=n;stats.d1_calls++;};
+ const raw=new WeakMap(),wrap=s=>{const w={bind(...args){return wrap(s.bind(...args));}};raw.set(w,s);for(const m of ['first','all','run'])w[m]=async(...args)=>{consume(1);return s[m](...args);};return w;};
+ return{...env,DB:{prepare(sql){return wrap(env.DB.prepare(sql));},async batch(ss){consume(ss.length);return env.DB.batch(ss.map(s=>raw.get(s)||s));}}};
+}
+async function pre05_broadcastSend03(env,id,text,rows){
+ const test=env.ASTRA_TELEGRAM_TEST_MODE===true||env.ASTRA_TELEGRAM_TEST_MODE==='true';let response,body;
+ try{response=await fetch(`https://api.telegram.org/bot${env.ASTRA_BOT_TOKEN}/${test?'test/':''}sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:id,text,...(rows.length?{reply_markup:{inline_keyboard:rows}}:{})}),signal:AbortSignal.timeout(3500)});body=await response.json();}catch{throw Error('Broadcast outcome unknown');}
+ if(response.ok&&body?.ok===true&&body.result!=null)return body.result;
+ if(body?.ok===false&&Number.isInteger(body.error_code)){const e=Error('Broadcast rejected');e.telegramCode=body.error_code;e.retryAfter=body.parameters?.retry_after;throw e;}
+ throw Error('Broadcast outcome unknown');
+}
+function forecastCta03(day,owned){return[[{text:owned?'Открыть купленное':'Подробнее — 4 ✨',callback_data:'shell:forecast:'+(owned?'owned:':'offer:')+day}]];}
+async function finish03(env,user,day,token,state,parts,reason,code=null,next=0){
+ return env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=?,parts_sent=?,last_reason=?,last_code=?,not_before=?,updated_at=CURRENT_TIMESTAMP WHERE telegram_id=? AND day=? AND token=? AND state='sending'`).bind(state,parts,reason,code,next,user.telegram_id,day,token).run();
+}
+async function pre05_runBroadcast03(original,{load=(env,sign,day)=>getForecastDaily(env,sign,day,(s,d,l)=>generateForecastForEnv(env,s,d,l)),sendMessage=broadcastSend03}={}){
+ const stats={event:'astra_broadcast03',reason:null,candidates:0,claimed:0,sent:0,retry:0,blocked:0,unknown:0,failed:0,cancelled:0,skipped:0,d1_calls:0,statements:0,http:0};
+ const env=budget03(original,stats),run=crypto.randomUUID();let locked=false;
+ const canWork=n=>stats.statements+stats.http+n+1<=48; // include release statement
+ try{
+  if(!env.ASTRA_BOT_TOKEN){stats.reason='token_missing';return stats;}if(!morning03()){stats.reason='outside_window';return stats;}
+  if(!broadcastSchemaReady03(await broadcastSchema03(env))){stats.reason='broadcast_schema_unavailable';return stats;}
+  const day=activityDay(),now=epoch03();
+  const lock=await env.DB.prepare(`UPDATE astra_broadcast_runtime03 SET lease=?,lease_until=? WHERE singleton=1 AND migration_done=1 AND lease_until<=? AND cooldown_until<=? RETURNING singleton`).bind(run,now+BROADCAST_LEASE03,now,now).first();
+  if(!lock){stats.reason='busy_or_cooldown';return stats;}locked=true;
+  await env.DB.batch([
+   env.DB.prepare(`DELETE FROM astra_broadcast_jobs WHERE rowid IN(SELECT rowid FROM astra_broadcast_jobs WHERE day<date(?,'-14 days') ORDER BY day LIMIT 100)`).bind(day),
+   env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=CASE WHEN state='sending' THEN 'unknown' ELSE 'expired' END,last_reason=CASE WHEN state='sending' THEN 'interrupted_delivery' ELSE 'day_expired' END,updated_at=CURRENT_TIMESTAMP WHERE rowid IN(SELECT rowid FROM astra_broadcast_outbox03 WHERE(state='sending' AND last_try_at<?) OR(state='retry' AND day<?) LIMIT 100)`).bind(now-BROADCAST_LEASE03,day),
+   env.DB.prepare("DELETE FROM astra_processed_updates WHERE rowid IN(SELECT rowid FROM astra_processed_updates WHERE received_at<datetime('now','-14 days') LIMIT 100)"),
+   env.DB.prepare("DELETE FROM astra_update_jobs WHERE rowid IN(SELECT rowid FROM astra_update_jobs WHERE received_at<datetime('now','-14 days') AND status='done' LIMIT 100)")
+  ]);
+  const batch=await env.DB.prepare(`SELECT u.telegram_id,u.zodiac,p.generation,f.free_text FROM astra_users u JOIN astra_user_policy p USING(telegram_id)
+   LEFT JOIN astra_broadcast_outbox03 q ON q.telegram_id=u.telegram_id AND q.day=?
+   LEFT JOIN astra_broadcast_jobs b ON b.telegram_id=u.telegram_id AND b.day=?
+   LEFT JOIN astra_forecast_daily f ON f.sign=u.zodiac AND f.day=? AND f.locale='ru'
+   WHERE u.notifications_enabled=1 AND u.zodiac IN('aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces') AND(u.last_broadcast_day IS NULL OR u.last_broadcast_day<>?)
+   AND((q.telegram_id IS NULL AND b.telegram_id IS NULL) OR(q.state='retry' AND q.attempts<3 AND q.not_before<=? AND q.generation=p.generation AND q.sign=u.zodiac))
+   ORDER BY CASE WHEN q.telegram_id IS NULL THEN 0 ELSE 1 END,u.telegram_id LIMIT 8`).bind(day,day,day,day,now).all();
+  stats.candidates=batch.results.length;
+  for(const user of batch.results){
+   if(!canWork(user.free_text?3:4)){stats.reason='budget_yield';break;}
+   let text=user.free_text;if(!text){try{text=(await load(env,user.zodiac,day)).free_text;}catch{stats.reason='forecast_unavailable';break;}}
+   let chunks;try{chunks=forecastChunks(text);if(chunks.length>2)throw Error('Too many chunks');}catch{chunks=[];}
+   if(!canWork(2*chunks.length+2)){stats.reason='budget_yield';break;}if(!morning03()||activityDay()!==day){stats.reason='window_ended';break;}
+   const token=crypto.randomUUID(),stamp=epoch03();
+   const claim=await env.DB.prepare(`INSERT INTO astra_broadcast_outbox03(telegram_id,day,generation,sign,state,attempts,token,last_try_at)
+    SELECT u.telegram_id,?,p.generation,u.zodiac,'sending',1,?,? FROM astra_users u JOIN astra_user_policy p USING(telegram_id)
+    WHERE u.telegram_id=? AND p.generation=? AND u.zodiac=? AND u.notifications_enabled=1 AND(u.last_broadcast_day IS NULL OR u.last_broadcast_day<>?)
+    AND EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND lease=? AND lease_until>? AND cooldown_until<=?)
+    ON CONFLICT(telegram_id,day) DO UPDATE SET state='sending',attempts=astra_broadcast_outbox03.attempts+1,token=excluded.token,last_try_at=excluded.last_try_at,updated_at=CURRENT_TIMESTAMP
+    WHERE astra_broadcast_outbox03.state='retry' AND astra_broadcast_outbox03.attempts<3 AND astra_broadcast_outbox03.not_before<=? AND astra_broadcast_outbox03.generation=excluded.generation AND astra_broadcast_outbox03.sign=excluded.sign
+    RETURNING attempts,EXISTS(SELECT 1 FROM astra_forecast_unlocks f WHERE f.telegram_id=astra_broadcast_outbox03.telegram_id AND f.day=astra_broadcast_outbox03.day) AS owned`).bind(day,token,stamp,user.telegram_id,user.generation,user.zodiac,day,run,stamp,stamp,stamp).first();
+   if(!claim){stats.skipped++;continue;}stats.claimed++;if(!morning03()||activityDay()!==day){await finish03(env,user,day,token,'expired',0,'window_ended_before_send');stats.reason='window_ended';break;}if(!chunks.length){await finish03(env,user,day,token,'failed',0,'cached_content_invalid');stats.failed++;continue;}let parts=0;
+   try{
+    for(let i=0;i<chunks.length;i++){
+     if(i>0){const still=await env.DB.prepare(`SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_broadcast_runtime03 r ON r.singleton=1 WHERE u.telegram_id=? AND u.notifications_enabled=1 AND u.zodiac=? AND p.generation=? AND r.lease=? AND r.lease_until>? AND r.cooldown_until<=?`).bind(user.telegram_id,user.zodiac,user.generation,run,epoch03(),epoch03()).first();if(!still||!morning03()||activityDay()!==day){await finish03(env,user,day,token,'cancelled',parts,'stopped_between_chunks');stats.cancelled++;break;}}
+     stats.http++;await sendMessage(env,user.telegram_id,chunks[i],i===chunks.length-1?forecastCta03(day,Boolean(claim.owned)):[]);parts++;
+    }
+    if(parts===chunks.length){await finish03(env,user,day,token,'sent',parts,'accepted_by_telegram');stats.sent++;}
+   }catch(error){
+    const code=error.telegramCode;
+    if(code===429){const wait=Number.isSafeInteger(error.retryAfter)&&error.retryAfter>0?error.retryAfter:60,next=epoch03()+wait,state=parts?'unknown':claim.attempts<3?'retry':'failed';
+     await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET cooldown_until=max(cooldown_until,?) WHERE singleton=1').bind(next).run();
+     await finish03(env,user,day,token,state,parts,parts?'partial_rate_limit':state==='retry'?'telegram_429':'retry_exhausted',429,next);stats[state==='retry'?'retry':state==='unknown'?'unknown':'failed']++;stats.reason='telegram_cooldown';break;
+    }
+    const state=code===403?'blocked':parts?'unknown':Number.isInteger(code)&&code>=400&&code<500?'failed':'unknown';
+    await finish03(env,user,day,token,state,parts,code?'telegram_'+code:'network_or_unconfirmed',code||null);stats[state]++;
+   }
+  }
+  stats.reason??=stats.candidates?'batch_complete':'no_due_recipients';return stats;
+ }catch{stats.reason='storage_or_budget_failure';return stats;}
+ finally{if(locked)try{await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=NULL,lease_until=0 WHERE singleton=1 AND lease=?').bind(run).run();}catch{stats.reason='storage_finalize_unavailable';}console.log(JSON.stringify(stats));}
+}
+
+// Existing navigation and confirmation/read paths; no forecast text or price rewrite.
+async function sendForecastText(env,id,text,rows=[]){
+ const chunks=forecastChunks(text);for(let i=0;i<chunks.length;i++){
+  if(i===chunks.length-1)await send(shellEnv(env,'forecast'),id,chunks[i],{reply_markup:{inline_keyboard:rows}});
+  else await tg(env,'sendMessage',{chat_id:id,text:chunks[i]});
+ }
+}
+async function sendFreeForecast(env,id,sign,day=dayMSK()){
+ if(!engineActive(env,day))return send(shellEnv(env,'forecast'),id,legacyForecast(sign,day));
+ const f=await getForecastDaily(env,sign,day),owned=await getForecastUnlock(env,id,day);
+ return sendForecastText(env,id,f.free_text,forecastCta03(day,Boolean(owned)));
+}
+async function pre05_broadcast(env){
+ if(!engineActive(env,dayMSK())){console.log(JSON.stringify({event:'astra_broadcast03',reason:'forecast_not_active'}));return;}
+ try{compactStartDay(env);}catch{console.log(JSON.stringify({event:'astra_broadcast03',reason:'forecast_config_invalid'}));return;}
+ return runBroadcast03(env);
+}
+async function pre05_health(env){
+ const response=await pre03_health(env),state=await response.json(),schema=await broadcastSchema03(env);let config=true;try{compactStartDay(env);}catch{config=false;}
+ state.broadcast_schema_ready=broadcastSchemaReady03(schema);state.broadcast_ready=state.broadcast_schema_ready&&Boolean(env.ASTRA_BOT_TOKEN)&&engineActive(env,dayMSK())&&config;
+ state.broadcast_blocker=!state.broadcast_schema_ready?'broadcast_schema_unavailable':!env.ASTRA_BOT_TOKEN?'token_missing':!config?'forecast_config_invalid':!engineActive(env,dayMSK())?'forecast_not_active':null;
+ state.broadcast_window_utc='06:00–07:59';state.broadcast_window_open=morning03();state.broadcast_batch_limit=8;state.broadcast_cooldown_until=schema?.cooldown_until||0;
+ state.ready=state.ready&&state.broadcast_ready;return Response.json(state,{status:state.ready?200:503,headers:{'Cache-Control':'no-store'}});
+}
+
+
+// TASK04 presentation adapters. Immutable texts and financial services are preserved.
+// Pure presentation. No balance, entitlement, delivery, selection or consent writes.
+const PRIVACY_BONUS04='После удаления профиля до 30 дней с момента получения бонуса сохраняются HMAC-псевдонимы аккаунта и связанных приглашений, а также отметки о полученных бонусах. Это персональные псевдонимизированные данные, не анонимизация. Они нужны, чтобы удаление и новая регистрация не давали тот же бонус снова. Имя, вопросы и тексты в этих отметках не хранятся. Повторная регистрация срок не продлевает; истёкшие отметки удаляются фоновой очисткой.';
+const DELETE_NOTICE04='Профиль, настройки, история пыли, активные дни и сохранённые расклады и прогнозы удалены.\n\nБонусные отметки HMAC остаются до 30 дней с момента получения бонуса; повторная регистрация срок не продлевает. Платёжные записи и непогашенные обязательства сохраняются отдельно для поддержки и разбора споров — /privacy и /terms.\n\nСообщения в Telegram и резервные копии эта команда не удаляет. Создать новый профиль: /start.';
+function rewardText04(active){return active?'Новый профиль: +5 ✨.\nПервый вход за день: +2 ✨ автоматически.\nПервые 3 дня подряд: +3 ✨ один раз.\nКаждый 7-й день серии: +4 ✨.\n30 разных дней: +6 ✨ один раз.':'Новый профиль: +2 ✨.\nБонус дня: +1 ✨ по кнопке.';}
+const debtText04=debt=>debt>0?`\n\nПосле возврата платежа осталось возместить ${debt} ✨. Новые начисления сначала уменьшают эту сумму. Подробнее — /terms; помощь — /paysupport.`:'';
+const PAYMENT_LABELS04=Object.freeze({created:'Счёт подготовлен',invoiced:'Ожидает оплаты',confirmed:'Оплата ещё не подтверждена',credited:'Оплачен · пыль начислена',refund_requested:'Обращение о возврате принято',refund_in_progress:'Возврат обрабатывается',refunded:'Возврат учтён',needs_review:'Требуется проверка поддержки'});
+const paymentLabel04=status=>PAYMENT_LABELS04[status]||'Уточните состояние в поддержке';
+function supportText04(p){return p.support&&supportValid(p.support)?p.support.replace(/^mailto:/,''):'Контакт поддержки ещё не указан. Покупки Stars пока недоступны.';}
+function retentionText04(p){return p.retention_days?`Для новых заказов: ${p.retention_days} дней после завершения платёжных вопросов и погашения задолженности. Прежние заказы сохраняют срок, принятый при покупке.`:'Срок хранения новых платёжных записей ещё не утверждён; магазин закрыт.';}
+function paymentNotice04(r,o,u){
+ const review=r.status==='needs_review'||o?.status==='needs_review',archived=r.status==='archived',refunded=o?.status==='refunded';
+ const title=review?'Платёж требует проверки':archived?'Платёж уже учтён':refunded?'Возврат уже учтён':'Оплата подтверждена';
+ const detail=review?'Пока не удалось подтвердить начисление. Обратитесь в /paysupport.':archived?'Подробности прежней операции уточнит поддержка.':refunded?'Повторное уведомление не меняет баланс.':`Пакет ${o?.dust??r.receipt?.dust??''} ✨ учтён. Повторно оплачивать его не нужно.`;
+ return `${title}\n\n${detail}${o?'\nЗаказ: '+o.order_id:''}\nНомер обращения: ${r.hash.slice(0,16)}.\n${u?'Баланс: '+u.balance+' ✨.':'Профиль удалён; платёж сам по себе его не восстанавливает.'}\n\n/payments — покупки · /paysupport — помощь`;
+}
+function refundNotice04(r){if(r.archived)return 'Сообщение Telegram о возврате сохранено. Подробности платежа можно уточнить в /paysupport. Сохранённые материалы не отозваны.';return 'Возврат Telegram учтён.'+(r.removed>0?`\nПо этому возврату списано ${r.removed} ✨.`:'')+(r.debt_added>0?`\nОсталось возместить ${r.debt_added} ✨ из будущих начислений.`:'')+'\nСохранённые материалы не отозваны.\nВопросы — /paysupport.';}
+
+const FAQ_LABELS04=['Прогноз по знаку','Перечитать купленное','Колода Таро','Границы трактовки','Пыль и бонусы','Что бесплатно','Данные и удаление','Будущие разделы','Редакция и авторство','Сведения о рождении','Покупки Stars'];
+
+const HISTORY_UI_LABELS04={opening:'Баланс на начало учёта','reward:v3:legacy_referrer':'Приглашение по прежним условиям','easter:gpt6':'Запись № 06','reward:v3:gpt6':'Запись № 06'};
+
+// Screen adapters only. All monetary commands and immutable content use existing services.
+async function rewardState04(env){const p=await readPolicy(env),ctx=await fenceContext26(env);return{p,active:Boolean(p.activated),available:Boolean(ctx.ok&&(!p.activated||(p.enabled&&true26(env.ASTRA_ECONOMY_V2_ENABLED))))};}
+const rewardPause04=s=>s.available?'':'Начисления за посещения, приглашения и канал сейчас недоступны. Бесплатные материалы можно читать как обычно.\n\n';
+async function shopAvailable04(env){try{await paymentEnvironment(env,{shop:true});return true;}catch{return false;}}
+const supportRows04=p=>supportValid(p.support)&&p.support.startsWith('https://t.me/')?[[{text:'Написать в поддержку',url:p.support}]]:[];
+async function home(env,id){const u=await getUser(env,id);if(!u?.zodiac)return welcome(env,id);return send(env,id,`Астра\n${zodiacName(u.zodiac)} · ${u.balance} ✨\n\nВыберите, к чему обратиться сегодня.`,{reply_markup:keyboard});}
+async function policyWelcome(env,id,ref=''){const u=await createUser(env,id,ref);if(u.zodiac)return send(env,id,`Астра\n${zodiacName(u.zodiac)} · ${u.balance} ✨\n\nВаши материалы и настройки — в меню.`,{reply_markup:keyboard});return send(env,id,`Добро пожаловать в Астру\n\nАстрология, Таро и язык чисел — для внимательного взгляда на себя.\n\nВыберите солнечный знак. Полный прогноз и число дня бесплатны.\nБаланс: ${u.balance} ✨.\n${u.notifications_enabled?'Утренние уведомления включены по прежней настройке профиля. После выбора знака проверьте подписку в «Досье».':'Утренние уведомления выключены; включить их можно позже в «Досье».'}\n\nО данных и бонусах после удаления профиля — /privacy.`,{reply_markup:signKeyboard});}
+async function help(env,id){return screen(env,id,'Помощь','Полный прогноз и число дня — бесплатно. Карта дня тоже бесплатна. Расклад на три карты — 5 ✨; расширенный прогноз — 4 ✨. Цена всегда видна до подтверждения, купленное можно перечитать бесплатно.\n\n/start — главное меню\n/stop — выключить утренние уведомления\n/privacy — данные и удаление\n/delete — удалить профиль и материалы\n/terms — условия покупок\n/payments — мои платежи\n/paysupport — помощь с оплатой\n\nПыль и бонусы — в «Звёздной пыли». О методах Астры — в справке.',[[button('Справка','faq'),button('Об Астре','about')]]);}
+async function forecastMenu(env,id){const day=dayMSK(),saved=await getForecastUnlock(env,id,day),available=engineActive(env,day);return screen(env,id,'🌙 Прогноз дня','Тема дня, отношения, дела, финансы, настроение и совет — в полном бесплатном прогнозе. Число дня тоже входит в него.'+(available||saved?'\n\nРасширенный материал добавляет развилку выбора, символ, цвет и руну. Купленное за эту дату можно перечитать бесплатно.':'\n\nРасширенный материал пока недоступен.'),[[button('Открыть бесплатно','forecast:read')],...(available||saved?[forecastCta03(day,Boolean(saved))[0]]:[]),[{text:'Карта дня — бесплатно',callback_data:'tarot:day'}]]);}
+async function bonus(env,id){const p=await readPolicy(env);if(!p.activated)await bonusCommand26(env,id,'legacy_daily');const u=await getUser(env,id),s=await rewardState04(env);return screen(env,id,'Бонус дня',rewardPause04(s)+(s.available?(s.active?'За первый вход сегодня начисляется +2 ✨ автоматически. Повторное открытие не даёт второй бонус.\nПервые 3 дня подряд: +3 ✨ один раз; каждый 7-й: +4 ✨; 30 разных дней: +6 ✨ один раз.':'Бонус дня — +1 ✨ по этой кнопке, один раз за московскую дату. Уже полученный бонус повторно не начисляется.'):`Фактические начисления можно проверить в истории.`)+`\n\nБаланс: ${u.balance} ✨. Пропуск дня не уменьшает накопленную пыль.`,[[button('История пыли','dust:history'),button('Активные дни','dust:activity')]],'dust');}
+async function invite(env,id){const s=await rewardState04(env);return screen(env,id,'Пригласить друга',rewardPause04(s)+(s.available?(s.active?'За нового друга после регистрации и выбора знака: вам +10 ✨, другу +3 ✨.'+(channelName(env)?' Если он впервые подтвердит подписку на канал, вам ещё +5 ✨.':''):'За нового друга после регистрации и выбора знака: вам +5 ✨.'):'Ссылкой можно поделиться; награды сейчас не обещаются.')+'\n\nПовторный вход существующего участника не считается новым приглашением. Ранее оформленные приглашения сохраняют свои условия.\n\nВаша ссылка:\nhttps://t.me/'+botUsername(env)+'?start=ref_'+id,[[button('История пыли','dust:history')]],'dust');}
+async function channelMenu(env,id){const c=channelName(env);if(!c)return screen(env,id,'Канал Астры','Канал пока не подключён. Прогноз и другие бесплатные материалы доступны без подписки.',[],'dust');const s=await rewardState04(env),u=await getUser(env,id);return screen(env,id,'Канал Астры',`${c}\n\n`+rewardPause04(s)+(u?.channel_rewarded?'Бонус за подписку уже получен. Повторного начисления нет.':s.available?`Первая подтверждённая подписка: +${s.active?15:5} ✨.`:'Проверка с начислением сейчас недоступна.')+(s.available&&s.active&&!u?.channel_rewarded?' Если вы пришли по приглашению, пригласивший получит ещё +5 ✨.':'')+'\n\nПодпишитесь, затем нажмите «Проверить подписку». Ранее полученный бонус не выдаётся повторно. Бесплатные материалы не требуют подписки.',[[{text:'Открыть канал',url:`https://t.me/${c.slice(1)}`}],[{text:'Проверить подписку',callback_data:'channel:check'}]],'dust');}
+async function economyDust(env,id,u){const s=await rewardState04(env),summary=await policySummary(env,id),shop=await shopAvailable04(env);return screen(env,id,'✨ Звёздная пыль',`Баланс: ${u.balance} ✨\n\nПыль открывает дополнительные материалы.\nТаро на три карты — 5 ✨. Расширенный прогноз — 4 ✨. Повторное чтение купленного бесплатно.\n\n`+rewardPause04(s)+(s.available?rewardText04(s.active):'Начисления и расходы видны в истории.')+'\n\nПолный прогноз, число дня и карта дня бесплатны.'+debtText04(summary.debt),[[button('История пыли','dust:history'),button('Активные дни','dust:activity')],[button(s.active?'Бонусы за посещения':'Бонус дня','gift'),button('Пригласить друга','invite')],[button('Канал Астры','channel')],...(shop?[[button('Магазин Stars','dust:shop')]]:[]),[button('Мои платежи','stars:history'),button('Помощь с оплатой','stars:support')],[button('Условия','stars:terms')]]);}
+async function economyDossier(env,id,u){const s=await rewardState04(env),summary=s.active?await policySummary(env,id):await readActivity(env,id,dayMSK());return screen(env,id,'Пыль и активность',`Баланс: ${u.balance} ✨\nАктивных дней: ${summary.total}\nТекущая серия: ${summary.streak} дн.\n\n`+rewardPause04(s)+(s.active&&s.available?'За первый вход в день: +2 ✨. Первая серия из 3 дней: +3 ✨; каждый 7-й день серии: +4 ✨; 30 разных дней: +6 ✨.':'Пропуск прерывает серию, но сохраняет накопленную пыль.')+'\n\nИстория показывает каждое начисление и списание.'+debtText04(summary.debt),[[button('История пыли','dossier:history'),button('Активные дни','dossier:activity')]],'dossier');}
+async function activityScreen(env,id,parent){const s=await rewardState04(env),a=s.active?await policySummary(env,id):await readActivity(env,id,dayMSK());return screen(env,id,'Активные дни',`Всего учтено: ${a.total}\nТекущая серия: ${a.streak} дн.\n\nДень считается по Москве. Пропуск прерывает серию, но не уменьшает пыль. Утренние сообщения Астры не считаются вашим посещением.\n\n`+(s.active?rewardPause04(s)+(s.available?'За день +2 ✨; первые 3 дня подряд +3 ✨ один раз; каждый 7-й +4 ✨; 30 разных дней +6 ✨ один раз.':'Начисления можно проверить в истории.'):(s.available?'Серии пока не приносят дополнительных бонусов. Бонус дня +1 ✨ открывается отдельно.':'Бонусные начисления сейчас недоступны.'))+' Дни до начала учёта не восстанавливаются.',[[button('История пыли',`${parent}:history`)]],parent);}
+async function insufficient04(env,id,price,parent){const u=await getUser(env,id);if(!u||u.balance>=price)return screen(env,id,'Предложение недоступно','Не удалось открыть это предложение. Нового списания нет. Откройте нужный раздел заново.',[],parent);const s=await rewardState04(env),shop=await shopAvailable04(env);let ways=s.available?(s.active?'За первый вход в день можно получить +2 ✨ и награды за серии. За нового друга — +10 ✨ после выбора им знака.':'Бонус дня: +1 ✨. За нового друга после выбора знака: +5 ✨.'):'Бонусные начисления сейчас недоступны.';if(s.available&&s.active&&channelName(env))ways+=' За подтверждённую подписку друга на канал — ещё +5 ✨.';if(s.available&&!u.channel_rewarded&&channelName(env))ways+=` Первая подтверждённая подписка на канал: +${s.active?15:5} ✨.`;return screen(env,id,'Немного не хватает',`Нужно: ${price} ✨. У вас: ${u.balance} ✨.\nНе хватает: ${price-u.balance} ✨. Списания нет.\n\n${ways}\n\nПолный прогноз и карта дня доступны бесплатно.`,[[button('Получить пыль','dust'),button('Прогноз — бесплатно','forecast:read')],...(shop?[[button('Магазин Stars','dust:shop')]]:[])],parent);}
+async function paymentTerms(env,id){const p=await readPolicy(env);return screen(env,id,'Условия покупок','Пакеты Stars: 10 XTR → 40 ✨; 25 XTR → 110 ✨; 50 XTR → 240 ✨. Доступность магазина показана в его разделе.\n\nЦена и количество пыли видны до счёта. Начисление происходит только после подтверждённой оплаты Telegram. Скрытых подписок нет.\n\nПыль нельзя обменять обратно на Stars или деньги. Ошибки оплаты и обоснованные споры рассматривает поддержка; обязательные и исключительные возвраты сохраняются. При возврате купленный пакет вычитается из пыли. Если его уже потратили, остаток возмещается будущими начислениями; открытые материалы не отзываются.\n\nПоддержка: '+supportText04(p)+'\nУсловия: '+(p.terms_version||'ещё не утверждены')+'.\n\nПлатёжные записи сохраняются для помощи и разбора споров. '+retentionText04(p)+' Незавершённые вопросы хранятся до решения. После удаления персональных платёжных данных остаётся контрольный отпечаток платежа с суммой и отметкой возврата без ID плательщика, бессрочно, чтобы не начислить тот же платёж повторно.\n\n/delete удаляет обычный профиль и материалы; условия бонусных отметок — /privacy.',[[button('Поддержка','stars:support')]],'dust');}
+async function paymentSupport(env,id){const p=await readPolicy(env);return screen(env,id,'Помощь с оплатой',supportText04(p)+(supportValid(p.support)?'\n\nУкажите номер заказа из «Мои платежи», сумму Stars и опишите, что произошло. Если номер не сохранился, сообщите дату оплаты. Пароли и секретные ключи не нужны.\n\nМы проверим оплату, начисление или возврат. Повторно платить за тот же заказ не нужно.':'\n\nСохранённые материалы и история пыли доступны. Контакт появится здесь после настройки владельцем.'),supportRows04(p).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');}
+async function paymentHistory(env,id,cursor=null){const page=await readStarHistory(env,id,cursor);if(page.expired)return screen(env,id,'Мои платежи','Не удалось открыть эту страницу. Обновите историю.',[[button('Обновить','stars:history')]],'dust');const nav=[];if(page.newer)nav.push(button('‹ Новее','stars:history:'+page.newer));if(page.older)nav.push(button('Старее ›','stars:history:'+page.older));return screen(env,id,'Мои платежи',page.rows.length?page.rows.map(o=>`${formatLedgerTime(o.created_at)}\nЗаказ ${o.order_id}\n${o.xtr} XTR → ${o.dust} ✨\n${paymentLabel04(o.status)}`).join('\n\n'):'Покупок пока нет. Счёт сам по себе не списывает Stars.',[...(nav.length?[nav]:[]),[button('Обновить','stars:history'),button('Поддержка','stars:support')]],'dust');}
+async function starsShop(env,id){if(!await shopAvailable04(env))return screen(env,id,'Магазин Stars','Магазин пока закрыт. Покупки недоступны; сохранённые материалы и история работают как обычно.',[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'dust');return screen(env,id,'Магазин Stars','Одноразовые пакеты звёздной пыли. Выберите пакет — затем увидите цену и условия до оплаты. Обратного обмена пыли на Stars или деньги нет.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy26:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');}
+async function privacy04(env,id){const p=await readPolicy(env);return screen(env,id,'Ваши данные','Астра хранит Telegram ID, знак, настройки, баланс, историю пыли, активные дни, приглашения и сохранённые материалы. Телефон, дату рождения и фотографии мы не запрашиваем.\n\n/delete удаляет обычный профиль, его историю и материалы.\n\n'+PRIVACY_BONUS04+'\n\nДля добровольной утренней подписки отдельно сохраняются версия условий, время подтверждения, номера подтверждающего обновления и сообщения, статус отзыва. Это персональные данные, не бонусные HMAC. Отзыв — /stop; при /delete доказательство и временное подтверждение удаляются вместе с профилем. Временная кнопка действует 15 минут.\n\nПлатёжные записи, включая ID плательщика, и непогашенные обязательства хранятся отдельно для поддержки и разбора споров. '+retentionText04(p)+' Подробнее об остаточном контрольном отпечатке платежа — /terms.\n\nСообщения Telegram и резервные копии управляются отдельно; уже начатую отправку нельзя отозвать.\nПоддержка: '+supportText04(p),[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'rules');}
+async function paymentCommand(env,m){if(String(m.text||'').trim()==='/privacy'){await privacy04(env,m.from.id);return true;}return pre04_paymentCommand(env,m);}
+async function ledgerScreen(env,id,u,parent,cursor=null){const page=await readHistoryPage(env,id,cursor);if(page.expired)return screen(env,id,'История пыли','Эта страница больше недоступна. Откройте историю заново.',[[button('Обновить историю',`${parent}:history`)]],parent);const short=parent==='dossier'?'p':'d',paging=[];if(page.newer)paging.push(button('‹ Новее',`history:${short}:${page.newer}`));if(page.older)paging.push(button('Старее ›',`history:${short}:${page.older}`));const rows=[...(paging.length?[paging]:[]),[button('Обновить историю',`${parent}:history`)]],body=`История пыли\nБаланс: ${u.balance} ✨\nВремя — московское.\n\n`+(page.rows.length?page.rows.map(historyRecordText).join('\n\n'):'Начислений и списаний пока нет.')+'\n\nНовые операции появятся после обновления. Минус означает расход пыли.';const chunks=economyChunks(body);for(let i=0;i<chunks.length;i++){if(i===chunks.length-1)await send(shellEnv(env,parent),id,chunks[i],{reply_markup:{inline_keyboard:rows}});else await tg(env,'sendMessage',{chat_id:id,text:chunks[i]});}}
+async function policyFaq(env){const s=await rewardState04(env),shop=await shopAvailable04(env);return[
+ ['Как составляется прогноз?','Тема дня связывает отношения, дела, настроение и совет.','Астра соединяет символику солнечного знака, стихии, модальности и традиционного управителя с выбранной темой дня. Это интерпретация, а не вычисление реальных транзитов или положения Луны.\n\nДля одного знака и московской даты сохраняется один текст. Число дня от 1 до 9 определяется знаком и датой; оно всегда бесплатно. Обновление Астры не меняет уже сохранённый прогноз.'],
+ ['Можно ли перечитать купленное?','Да, сохранённый материал открывается без новой оплаты.','Расклад на три карты и расширенный прогноз сохраняются после покупки. Повторное открытие возвращает тот же текст без нового списания. Расширенный покупается за конкретную московскую дату.\n\nПри сбое доставки откройте материал снова. Telegram иногда может повторить сообщение, но повтор сообщения не означает новую покупку. После удаления профиля обычные сохранённые материалы удаляются.'],
+ ['Какая колода используется?','22 Старших аркана, прямые и перевёрнутые положения.','В раскладе три разные карты рассматриваются как ситуация, препятствие и рекомендация. Позиция меняет контекст чтения аркана. Перевёрнутая карта не обязательно означает буквальное отрицание прямой: это может быть ограничение, избыток или внутреннее проявление темы. Младшие арканы пока не входят в колоду.'],
+ ['Насколько буквальны трактовки?','Это символический взгляд на вопрос, а не обещание события.','Астрология, Таро и числовые соответствия помогают рассмотреть ситуацию с другой стороны. Они не заменяют факты и профессиональную помощь в вопросах здоровья, права или финансов. Оплата открывает дополнительный материал и не делает предсказание достовернее.'],
+ ['Как получить и потратить пыль?','Начисления и расходы видны в истории.','Расклад на три карты — 5 ✨; расширенный прогноз — 4 ✨. Купленное можно перечитать бесплатно.\n\n'+rewardPause04(s)+(s.available?rewardText04(s.active)+(s.active?'\nНовый друг: вам +10 ✨, ему +3 ✨ после выбора знака. Канал: +15 ✨ подписавшемуся, ещё +5 ✨ его пригласившему при подтверждённой связи.':'\nНовый друг после выбора знака: +5 ✨. Первая подтверждённая подписка на канал: +5 ✨.'):'Сейчас новые бонусы не обещаются; уже накопленная пыль сохраняется.')+'\n\nПовторные обращения не дают тот же бонус снова. Правила бонусных отметок после удаления — /privacy. Пыль нельзя передать другому профилю или обменять обратно на Stars или деньги.'],
+ ['Что бесплатно?','Полный прогноз с числом дня, карта дня и повторное чтение купленного.','Бесплатный прогноз включает тему дня, отношения, дела, финансы, настроение и совет. Для чтения не нужны пыль или подписка на канал. Карта дня также бесплатна.\n\nРасширенный прогноз за 4 ✨ добавляет развилку выбора, символ и цвет, руну и дополнительные соответствия. Обычный расклад Таро на три карты стоит 5 ✨. Любая новая покупка требует подтверждения цены.'],
+ ['Что остаётся после удаления?','Обычные данные удаляются; для бонусов и платежей есть отдельные сроки.','/delete удаляет профиль, настройки, историю пыли, активность и сохранённые материалы.\n\n'+PRIVACY_BONUS04+'\n\nПлатёжные записи и нерешённые обязательства хранятся отдельно для помощи и разбора споров — /terms и /privacy. Сообщения в Telegram и резервные копии управляются отдельно.'],
+ ['Что ещё готовится?','Символический портрет, совместимость, натальная карта и коллекции.','Эти разделы пока не предоставляют платных услуг. Сроки открытия не объявлены, пыль за ожидание не списывается. Для натальной карты и лунных сведений нужен отдельный проверенный астрономический расчёт; сейчас Астра его не выполняет.'],
+ ['Как работают редакция и инженерное направление?','Редакция отвечает за трактовки; инженерное направление — за работу сервиса.','Редакционное направление определяет язык, структуру и символические соответствия. Инженерное — обработку обращений, сохранение материалов и точный учёт пыли.\n\nАстру создаёт один человек с помощью ИИ. Имена в редакционной структуре — псевдонимы направлений работы, а не реальный штат независимых специалистов.'],
+ ['Нужны ли сведения о рождении?','Для доступного прогноза достаточно солнечного знака.','Время и место рождения сейчас не запрашиваются. Астра не рассчитывает натальные дома, Асцендент, реальные транзиты или фазы Луны. Такие расчёты потребовали бы отдельного метода и проверенных исходных данных.'],
+ ['Доступны ли покупки Stars?',shop?'Да, пакеты открываются через «Звёздную пыль».':'Магазин пока закрыт.',shop?'Пакеты: 10 XTR → 40 ✨, 25 XTR → 110 ✨, 50 XTR → 240 ✨. Цена и условия видны до счёта. Начисление происходит после подтверждённой оплаты Telegram. Обратного обмена пыли нет; помощь и разбор обоснованных споров доступны через /paysupport.':'Счета сейчас не выставляются. Бесплатные материалы, пыль и история работают независимо от магазина. Условия — /terms, помощь с прежними платежами — /paysupport.']
+ ];}
+async function notificationsSet04(env,id,next,updateId){
+ // Same existing per-update target and write, with an explicit desired state instead of a new toggle.
+ await env.DB.prepare(`UPDATE astra_update_jobs SET notification_target=coalesce(notification_target,?) WHERE update_id=?`).bind(next,updateId).run();
+ const job=await env.DB.prepare('SELECT notification_target FROM astra_update_jobs WHERE update_id=?').bind(updateId).first();if(!job)throw Error('Profile no longer exists');
+ await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(job.notification_target,id).run();
+ return screen(env,id,'Утренний прогноз',job.notification_target?'Ваш выбор сохранён. Автоматическая рассылка пока отключена до завершения проверки согласия. Полный бесплатный прогноз можно открыть вручную. Отменить выбор — здесь или командой /stop.':'Уведомления выключены. Полный прогноз всегда можно открыть вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
+}
+async function pre28_shellPage(env,id,page,q=null,updateId=null){
+ const pages=new Set(['about','manifest','trust','trust:forecast','trust:tarot','trust:future','team','rules','self','dossier','notifications','notifications:confirm','notifications:enable','notifications:disable','tarot','faq']);
+ if(!pages.has(page))return pre04_shellPage(env,id,page,q,updateId);
+ const u=await getUser(env,id);
+ if(page==='about')return screen(env,id,'🏛 Об Астре','Астрология, Старшие арканы и язык чисел. Здесь — методы, редакция и правила работы Астры.',[[button('Об Астре','manifest'),button('Методы','trust')],[button('Редакция','team'),button('Справка','faq')],[button('Правила и данные','rules')]]);
+ if(page==='manifest')return screen(env,id,'Астра','Кабинет символических интерпретаций. Солнечный знак задаёт контекст прогноза, аркан и его позиция — контекст расклада.\n\nМы предпочитаем точную формулировку торжественному выводу. На торжественность отдельный тариф не предусмотрен.',[],'about');
+ if(page==='trust')return screen(env,id,'Методы Астры','У каждого метода — своя область и свои границы.',[[button('Прогноз','trust:forecast'),button('Таро','trust:tarot')],[button('Пыль и бонусы','trust:dust')],[button('Будущие разделы','trust:future')]],'about');
+ if(page==='trust:forecast'||page==='trust:tarot'||page==='trust:future'){const faq=await policyFaq(env),item=faq[page==='trust:forecast'?0:page==='trust:tarot'?2:7];return screen(env,id,item[0],item[2],[],'trust');}
+ if(page==='team')return screen(env,id,'Редакция Астры','Gideon Vale и Percival North — астрологическое направление.\nThalia Wren — корпус Таро.\n6th Registry — числовые соответствия.\nElias Voss — инженерное направление.\nM. Ejaculatum — сравнительная эзотерика.\n\nЭти редакционные имена обозначают роли внутри проекта. Об устройстве работы и реальном авторстве — в справке.',[[button('Об авторстве','faq:8:more')]],'about');
+ if(page==='rules')return screen(env,id,'Правила и данные','Астра предлагает символические интерпретации, а не гарантии событий. В вопросах здоровья, права и финансов нужны проверяемые данные и профильная помощь.\n\nНовая покупка требует подтверждения цены. Купленное можно перечитать бесплатно; скрытых подписок нет.\n\n/privacy — данные и бонусные отметки\n/terms — условия Stars и споры\n/delete — удалить профиль, его историю и сохранённые материалы',[[button('Мои данные','privacy'),button('Условия','stars:terms')]],'about');
+ if(page==='faq'){const faq=await policyFaq(env);return screen(env,id,'Справка',faq.map((f,i)=>`${i+1}. ${f[0]}\n${f[1]}`).join('\n\n'),faq.map((f,i)=>[button(FAQ_LABELS04[i],`faq:${i}:more`)]),'about');}
+ if(!u?.zodiac)return welcome(env,id);
+ if(page==='self')return screen(env,id,'🪞 Познай себя',`${zodiacName(u.zodiac)}\n\nСолнечный знак — отправная точка вашего дневного прогноза.\n\nСимволический портрет и совместимость ещё готовятся. Сейчас они не продаются и не требуют дополнительных данных.`,[[button('Мой прогноз — бесплатно','forecast:read')]]);
+ if(page==='dossier')return screen(env,id,'🗂 Досье',`${zodiacName(u.zodiac)}\nБаланс: ${u.balance} ✨\nУтренние уведомления: ${u.notifications_enabled?'включены по настройке профиля':'выключены'}\n\nМатериалы и настройки — под рукой.`,[[button('Пыль и активность','dossier:economy'),button('История пыли','dossier:history')],[button('Уведомления','notifications')],[button('Последний расклад','tarot:last')],[button('Мои данные','privacy')]]);
+ if(page==='tarot')return screen(env,id,'🃏 Таро','Карта дня — один аркан для размышления. Расклад на три карты рассматривает ситуацию, препятствие и возможный шаг.\n\nИспользуются 22 Старших аркана с прямыми и перевёрнутыми положениями. Купленный расклад можно перечитать бесплатно.',[[{text:'Карта дня — бесплатно',callback_data:'tarot:day'}],[button('Три карты — 5 ✨','buy')],[button('Последний расклад — бесплатно','tarot:last')]]);
+ if(page==='notifications')return screen(env,id,'Утренний прогноз','Автоматическая рассылка пока отключена. Полный прогноз доступен вручную.\n\n'+(u.notifications_enabled?'По настройке профиля уведомления включены. Если настройка появилась автоматически, это не подтверждение вашего согласия. Нажмите «Подтвердить подписку», если хотите получать прогноз.':'Уведомления выключены. Можно включить полный бесплатный прогноз с числом дня каждое утро.')+'\n\nВремя — с 09:00 до 11:00 по Москве. Прогноз можно читать вручную при любой настройке.',[[button(u.notifications_enabled?'Подтвердить подписку':'Включить уведомления',u.notifications_enabled?'notifications:confirm':'notifications:enable')],...(u.notifications_enabled?[[button('Отключить уведомления','notifications:disable')]]:[])],'dossier');
+ return notificationsSet04(env,id,page==='notifications:disable'?0:1,updateId);
+}
+
+Object.assign(HISTORY_LABELS,HISTORY_UI_LABELS04);
+
+
+// TASK05 release gates: approved manual-only candidate; broadcast remains STOP-SHIP.
+// STOP-SHIP: no approved durable consent registry exists. This has no runtime bypass.
+const BROADCAST_BLOCKER05='CONSENT_REGISTRY_NOT_APPROVED';
+async function runBroadcast03(env={}){
+ const stats={event:'astra_broadcast05',reason:BROADCAST_BLOCKER05,claimed:0,sent:0,http:0,d1_calls:0,statements:0};let locked=false;const token=crypto.randomUUID(),now=epoch03(),day=activityDay();
+ try{
+  // Preserve bounded non-delivery maintenance; no candidate query, cache generation or send.
+  if(!env.DB||!morning03())return stats;
+  stats.d1_calls++;stats.statements++;if(!broadcastSchemaReady03(await broadcastSchema03(env))){stats.maintenance='schema_unavailable';return stats;}
+  stats.d1_calls++;stats.statements++;locked=Boolean(await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=?,lease_until=? WHERE singleton=1 AND migration_done=1 AND lease_until<=? RETURNING singleton').bind(token,now+90,now).first());
+  if(!locked){stats.maintenance='busy';return stats;}
+  stats.d1_calls++;stats.statements+=4;await env.DB.batch([
+   env.DB.prepare(`DELETE FROM astra_broadcast_jobs WHERE rowid IN(SELECT rowid FROM astra_broadcast_jobs WHERE day<date(?,'-14 days') ORDER BY day LIMIT 100)`).bind(day),
+   env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=CASE WHEN state='sending' THEN 'unknown' ELSE 'expired' END,last_reason=CASE WHEN state='sending' THEN 'interrupted_delivery' ELSE 'day_expired' END,updated_at=CURRENT_TIMESTAMP WHERE rowid IN(SELECT rowid FROM astra_broadcast_outbox03 WHERE(state='sending' AND last_try_at<?) OR(state='retry' AND day<?) LIMIT 100)`).bind(now-90,day),
+   env.DB.prepare("DELETE FROM astra_processed_updates WHERE rowid IN(SELECT rowid FROM astra_processed_updates WHERE received_at<datetime('now','-14 days') LIMIT 100)"),
+   env.DB.prepare("DELETE FROM astra_update_jobs WHERE rowid IN(SELECT rowid FROM astra_update_jobs WHERE received_at<datetime('now','-14 days') AND status='done' LIMIT 100)")
+  ]);stats.maintenance='bounded_cleanup';return stats;
+ }catch{stats.maintenance='storage_unavailable';return stats;}
+ finally{if(locked)try{stats.d1_calls++;stats.statements++;await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=NULL,lease_until=0 WHERE singleton=1 AND lease=?').bind(token).run();}catch{stats.maintenance='release_unavailable';}console.log(JSON.stringify(stats));}
+}
+async function pre28_broadcast(env){return runBroadcast03(env);}
+async function broadcastSend03(){throw Error(BROADCAST_BLOCKER05);}
+async function pre28_health(env){
+ const response=await pre05_health(env),state=await response.json();let config=true;try{compactStartDay(env);}catch{config=false;}
+ state.manual_content_ready=Boolean(state.free_content_ready&&state.secrets_ready&&state.policy_ready&&config);
+ state.broadcast_prerequisite_blocker=state.broadcast_blocker;state.broadcast_ready=false;state.broadcast_blocker=BROADCAST_BLOCKER05;
+ state.broadcast_consent_implemented=false;state.broadcast_delivery_allowed=false;state.public_ready=false;
+ state.release_scope='STAGING_MANUAL_ONLY';state.ready=false;
+ return Response.json(state,{status:503,headers:{'Cache-Control':'no-store'}});
+}
+
+
+// TASK06 consent28; no automatic backfill, default delivery OFF.
+const manifest28=[
+  {
+    "name": "astra_consent_complete28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_complete28 BEFORE UPDATE OF migration_done ON astra_consent_runtime28 WHEN NEW.migration_done=1 BEGIN\n SELECT CASE WHEN (WITH expected(name,type,sql) AS (VALUES ('astra_consent_erase28','trigger','CREATE TRIGGER astra_consent_erase28 BEFORE DELETE ON astra_users BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id;\n DELETE FROM astra_notification_consent28 WHERE telegram_id=OLD.telegram_id;\nEND'),('astra_consent_insert28','trigger','CREATE TRIGGER astra_consent_insert28 BEFORE INSERT ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation) THEN RAISE(ABORT,''Consent profile missing'') END;\n SELECT CASE WHEN NEW.revision<>0 OR NEW.consent_at IS NOT NULL OR NEW.revoked_at IS NOT NULL THEN RAISE(ABORT,''Consent starts pending'') END;\nEND'),('astra_consent_off28','trigger','CREATE TRIGGER astra_consent_off28 AFTER UPDATE OF notifications_enabled ON astra_users WHEN NEW.notifications_enabled=0 BEGIN\n UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),pending_hash=NULL, pending_revision=NULL, pending_version=NULL, pending_created_at=NULL, pending_expires_at=NULL, pending_message_id=NULL\n WHERE telegram_id=NEW.telegram_id AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL);\nEND'),('astra_consent_runtime28','table','CREATE TABLE astra_consent_runtime28 (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1), version TEXT NOT NULL CHECK(version=''consent28-v1''),\n migration_done INTEGER NOT NULL DEFAULT 0 CHECK(migration_done IN(0,1)),\n delivery_quarantined INTEGER NOT NULL DEFAULT 1 CHECK(delivery_quarantined IN(0,1))\n)'),('astra_consent_sync28','trigger','CREATE TRIGGER astra_consent_sync28 AFTER UPDATE ON astra_notification_consent28 WHEN NEW.revision<>OLD.revision BEGIN\n UPDATE astra_users SET notifications_enabled=CASE WHEN NEW.consent_at IS NOT NULL AND NEW.revoked_at IS NULL THEN 1 ELSE 0 END WHERE telegram_id=NEW.telegram_id AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=NEW.telegram_id AND p.generation=NEW.generation);\n UPDATE astra_broadcast_outbox03 SET state=''cancelled'',last_reason=''consent_revision_changed'' WHERE telegram_id=NEW.telegram_id AND generation=NEW.generation AND state IN(''sending'',''retry'');\nEND'),('astra_consent_update28','trigger','CREATE TRIGGER astra_consent_update28 BEFORE UPDATE ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NEW.telegram_id<>OLD.telegram_id OR NEW.generation<>OLD.generation THEN RAISE(ABORT,''Consent identity immutable'') END;\n SELECT CASE WHEN NOT coalesce((\n (NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id AND NEW.revoked_at IS OLD.revoked_at AND NEW.revision IS OLD.revision) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NOT NULL AND NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NULL AND NEW.consent_version=''daily-forecast-v1'' AND NEW.source=''explicit_private_button'' AND NEW.consent_at=unixepoch()\n AND OLD.pending_hash IS NOT NULL AND OLD.pending_revision=OLD.revision AND OLD.pending_version=NEW.consent_version AND OLD.pending_expires_at>unixepoch() AND OLD.pending_message_id=NEW.grant_message_id\n AND EXISTS(SELECT 1 FROM astra_update_jobs j WHERE j.update_id=NEW.grant_update_id AND j.telegram_id=NEW.telegram_id AND j.status=''working'')\n AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation))\n ),0) THEN RAISE(ABORT,''Invalid consent transition'') END;\nEND'),('astra_delivery_capture_insert28','trigger','CREATE TRIGGER astra_delivery_capture_insert28 AFTER INSERT ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND'),('astra_delivery_capture_update28','trigger','CREATE TRIGGER astra_delivery_capture_update28 AFTER UPDATE ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND'),('astra_delivery_consent28','table','CREATE TABLE astra_delivery_consent28 (\n telegram_id INTEGER NOT NULL REFERENCES astra_users(telegram_id) ON DELETE CASCADE,day TEXT NOT NULL,\n generation TEXT NOT NULL,revision INTEGER NOT NULL,consent_version TEXT NOT NULL CHECK(consent_version=''daily-forecast-v1''),\n PRIMARY KEY(telegram_id,day),FOREIGN KEY(telegram_id,day) REFERENCES astra_broadcast_outbox03(telegram_id,day) ON DELETE CASCADE\n)'),('astra_delivery_erase28','trigger','CREATE TRIGGER astra_delivery_erase28 AFTER DELETE ON astra_broadcast_outbox03 BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id AND day=OLD.day;\nEND'),('astra_delivery_guard_insert28','trigger','CREATE TRIGGER astra_delivery_guard_insert28 BEFORE INSERT ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version=''daily-forecast-v1'' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version=''consent28-v1'' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND'),('astra_delivery_guard_update28','trigger','CREATE TRIGGER astra_delivery_guard_update28 BEFORE UPDATE ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version=''daily-forecast-v1'' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version=''consent28-v1'' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND'),('astra_notification_consent28','table','CREATE TABLE astra_notification_consent28 (\n telegram_id INTEGER PRIMARY KEY REFERENCES astra_users(telegram_id) ON DELETE CASCADE,\n generation TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0 CHECK(revision>=0),\n consent_version TEXT, consent_at INTEGER, source TEXT, grant_update_id INTEGER, grant_message_id INTEGER, revoked_at INTEGER,\n pending_hash TEXT, pending_revision INTEGER, pending_version TEXT, pending_created_at INTEGER, pending_expires_at INTEGER, pending_message_id INTEGER,\n CHECK((consent_version IS NULL AND consent_at IS NULL AND source IS NULL AND grant_update_id IS NULL AND grant_message_id IS NULL) OR\n (consent_version IS NOT NULL AND consent_at IS NOT NULL AND source IS NOT NULL AND grant_update_id IS NOT NULL AND grant_message_id IS NOT NULL AND consent_version=''daily-forecast-v1'' AND consent_at>0 AND source=''explicit_private_button'' AND grant_update_id>=0 AND grant_message_id>0)),\n CHECK((pending_hash IS NULL AND pending_revision IS NULL AND pending_version IS NULL AND pending_created_at IS NULL AND pending_expires_at IS NULL AND pending_message_id IS NULL) OR\n (pending_hash IS NOT NULL AND pending_revision IS NOT NULL AND pending_version IS NOT NULL AND pending_created_at IS NOT NULL AND pending_expires_at IS NOT NULL AND length(pending_hash)=64 AND pending_hash NOT GLOB ''*[^a-f0-9]*'' AND pending_revision=revision AND pending_version=''daily-forecast-v1'' AND pending_created_at>0 AND pending_expires_at=pending_created_at+900 AND (pending_message_id IS NULL OR pending_message_id>0)))\n)'),('idx_consent28_active','index','CREATE INDEX idx_consent28_active ON astra_notification_consent28(telegram_id,generation,revision) WHERE consent_at IS NOT NULL AND revoked_at IS NULL'),('idx_consent28_pending','index','CREATE INDEX idx_consent28_pending ON astra_notification_consent28(pending_expires_at) WHERE pending_hash IS NOT NULL')) SELECT count(*) FROM expected e LEFT JOIN sqlite_master a ON a.name=e.name WHERE a.type IS NOT e.type OR a.sql IS NOT e.sql)>0 THEN RAISE(ABORT,'Consent schema definition mismatch') END;\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND migration_done=1) THEN RAISE(ABORT,'0027 incomplete') END;\nEND"
+  },
+  {
+    "name": "astra_consent_erase28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_erase28 BEFORE DELETE ON astra_users BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id;\n DELETE FROM astra_notification_consent28 WHERE telegram_id=OLD.telegram_id;\nEND"
+  },
+  {
+    "name": "astra_consent_insert28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_insert28 BEFORE INSERT ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation) THEN RAISE(ABORT,'Consent profile missing') END;\n SELECT CASE WHEN NEW.revision<>0 OR NEW.consent_at IS NOT NULL OR NEW.revoked_at IS NOT NULL THEN RAISE(ABORT,'Consent starts pending') END;\nEND"
+  },
+  {
+    "name": "astra_consent_off28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_off28 AFTER UPDATE OF notifications_enabled ON astra_users WHEN NEW.notifications_enabled=0 BEGIN\n UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),pending_hash=NULL, pending_revision=NULL, pending_version=NULL, pending_created_at=NULL, pending_expires_at=NULL, pending_message_id=NULL\n WHERE telegram_id=NEW.telegram_id AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL);\nEND"
+  },
+  {
+    "name": "astra_consent_runtime28",
+    "type": "table",
+    "sql": "CREATE TABLE astra_consent_runtime28 (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1), version TEXT NOT NULL CHECK(version='consent28-v1'),\n migration_done INTEGER NOT NULL DEFAULT 0 CHECK(migration_done IN(0,1)),\n delivery_quarantined INTEGER NOT NULL DEFAULT 1 CHECK(delivery_quarantined IN(0,1))\n)"
+  },
+  {
+    "name": "astra_consent_sync28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_sync28 AFTER UPDATE ON astra_notification_consent28 WHEN NEW.revision<>OLD.revision BEGIN\n UPDATE astra_users SET notifications_enabled=CASE WHEN NEW.consent_at IS NOT NULL AND NEW.revoked_at IS NULL THEN 1 ELSE 0 END WHERE telegram_id=NEW.telegram_id AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=NEW.telegram_id AND p.generation=NEW.generation);\n UPDATE astra_broadcast_outbox03 SET state='cancelled',last_reason='consent_revision_changed' WHERE telegram_id=NEW.telegram_id AND generation=NEW.generation AND state IN('sending','retry');\nEND"
+  },
+  {
+    "name": "astra_consent_update28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_update28 BEFORE UPDATE ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NEW.telegram_id<>OLD.telegram_id OR NEW.generation<>OLD.generation THEN RAISE(ABORT,'Consent identity immutable') END;\n SELECT CASE WHEN NOT coalesce((\n (NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id AND NEW.revoked_at IS OLD.revoked_at AND NEW.revision IS OLD.revision) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NOT NULL AND NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NULL AND NEW.consent_version='daily-forecast-v1' AND NEW.source='explicit_private_button' AND NEW.consent_at=unixepoch()\n AND OLD.pending_hash IS NOT NULL AND OLD.pending_revision=OLD.revision AND OLD.pending_version=NEW.consent_version AND OLD.pending_expires_at>unixepoch() AND OLD.pending_message_id=NEW.grant_message_id\n AND EXISTS(SELECT 1 FROM astra_update_jobs j WHERE j.update_id=NEW.grant_update_id AND j.telegram_id=NEW.telegram_id AND j.status='working')\n AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation))\n ),0) THEN RAISE(ABORT,'Invalid consent transition') END;\nEND"
+  },
+  {
+    "name": "astra_delivery_capture_insert28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_capture_insert28 AFTER INSERT ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND"
+  },
+  {
+    "name": "astra_delivery_capture_update28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_capture_update28 AFTER UPDATE ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND"
+  },
+  {
+    "name": "astra_delivery_consent28",
+    "type": "table",
+    "sql": "CREATE TABLE astra_delivery_consent28 (\n telegram_id INTEGER NOT NULL REFERENCES astra_users(telegram_id) ON DELETE CASCADE,day TEXT NOT NULL,\n generation TEXT NOT NULL,revision INTEGER NOT NULL,consent_version TEXT NOT NULL CHECK(consent_version='daily-forecast-v1'),\n PRIMARY KEY(telegram_id,day),FOREIGN KEY(telegram_id,day) REFERENCES astra_broadcast_outbox03(telegram_id,day) ON DELETE CASCADE\n)"
+  },
+  {
+    "name": "astra_delivery_erase28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_erase28 AFTER DELETE ON astra_broadcast_outbox03 BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id AND day=OLD.day;\nEND"
+  },
+  {
+    "name": "astra_delivery_guard_insert28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_guard_insert28 BEFORE INSERT ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND"
+  },
+  {
+    "name": "astra_delivery_guard_update28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_guard_update28 BEFORE UPDATE ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND"
+  },
+  {
+    "name": "astra_notification_consent28",
+    "type": "table",
+    "sql": "CREATE TABLE astra_notification_consent28 (\n telegram_id INTEGER PRIMARY KEY REFERENCES astra_users(telegram_id) ON DELETE CASCADE,\n generation TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0 CHECK(revision>=0),\n consent_version TEXT, consent_at INTEGER, source TEXT, grant_update_id INTEGER, grant_message_id INTEGER, revoked_at INTEGER,\n pending_hash TEXT, pending_revision INTEGER, pending_version TEXT, pending_created_at INTEGER, pending_expires_at INTEGER, pending_message_id INTEGER,\n CHECK((consent_version IS NULL AND consent_at IS NULL AND source IS NULL AND grant_update_id IS NULL AND grant_message_id IS NULL) OR\n (consent_version IS NOT NULL AND consent_at IS NOT NULL AND source IS NOT NULL AND grant_update_id IS NOT NULL AND grant_message_id IS NOT NULL AND consent_version='daily-forecast-v1' AND consent_at>0 AND source='explicit_private_button' AND grant_update_id>=0 AND grant_message_id>0)),\n CHECK((pending_hash IS NULL AND pending_revision IS NULL AND pending_version IS NULL AND pending_created_at IS NULL AND pending_expires_at IS NULL AND pending_message_id IS NULL) OR\n (pending_hash IS NOT NULL AND pending_revision IS NOT NULL AND pending_version IS NOT NULL AND pending_created_at IS NOT NULL AND pending_expires_at IS NOT NULL AND length(pending_hash)=64 AND pending_hash NOT GLOB '*[^a-f0-9]*' AND pending_revision=revision AND pending_version='daily-forecast-v1' AND pending_created_at>0 AND pending_expires_at=pending_created_at+900 AND (pending_message_id IS NULL OR pending_message_id>0)))\n)"
+  },
+  {
+    "name": "idx_consent28_active",
+    "type": "index",
+    "sql": "CREATE INDEX idx_consent28_active ON astra_notification_consent28(telegram_id,generation,revision) WHERE consent_at IS NOT NULL AND revoked_at IS NULL"
+  },
+  {
+    "name": "idx_consent28_pending",
+    "type": "index",
+    "sql": "CREATE INDEX idx_consent28_pending ON astra_notification_consent28(pending_expires_at) WHERE pending_hash IS NOT NULL"
+  }
+]
+;
+const CONSENT_VERSION28='daily-forecast-v1';
+const CONSENT_TEXT28='Если подтвердите подписку, Астра будет присылать вам в личные сообщения полный бесплатный гороскоп с числом дня один раз в сутки, обычно с 09:00 до 11:00 по московскому времени. Это добровольно. Отключить сообщения можно в «Досье → Уведомления» или командой /stop. Согласие можно отозвать в любое время.';
+const normalize28=s=>s.replace(/IF NOT EXISTS /gi,'').replace(/\s+/g,' ').trim().replace(/;$/,'');
+async function schemaConsent28(env){
+ try{
+  const rows=await env.DB.prepare("SELECT name,type,sql FROM sqlite_master WHERE name IN("+manifest28.map(x=>"'"+x.name+"'").join(',')+")").all();
+  const valid=rows.results.length===manifest28.length&&manifest28.every(x=>rows.results.some(y=>x.name===y.name&&x.type===y.type&&normalize28(x.sql)===normalize28(y.sql)));
+  if(!valid)return {ready:false,table:rows.results.some(x=>x.name==='astra_notification_consent28'),reason:'consent_gate_not_ready'};
+  const m=await env.DB.prepare('SELECT * FROM astra_consent_runtime28 WHERE singleton=1').first();
+  const ready=m?.version==='consent28-v1'&&m.migration_done===1;
+  return {ready,quarantined:m?.delivery_quarantined!==0,table:true,reason:ready?null:'schema_not_ready'};
+ }catch{return{ready:false,reason:'schema_not_ready'};}
+}
+const clearPending28='pending_hash=NULL,pending_revision=NULL,pending_version=NULL,pending_created_at=NULL,pending_expires_at=NULL,pending_message_id=NULL';
+async function nonceHash28(nonce){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(nonce))),x=>x.toString(16).padStart(2,'0')).join('');}
+async function revokeConsent28(env,id){
+ const schema=await schemaConsent28(env);
+ if(!schema.ready){
+  // Pre-0028 manual mode. A partial/foreign registry must never produce a false acknowledgement.
+  if(schema.table||schema.reason==='schema_not_ready')throw Error('Consent storage unavailable');
+  return env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(id).run();
+ }
+ await env.DB.batch([
+  env.DB.prepare(`UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),${clearPending28} WHERE telegram_id=? AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL)`).bind(id),
+  env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(id)
+ ]);
+}
+async function pendingConsent28(env,id){
+ const nonce=Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join(''),hash=await nonceHash28(nonce);
+ const row=await env.DB.prepare(`INSERT INTO astra_notification_consent28(telegram_id,generation,pending_hash,pending_revision,pending_version,pending_created_at,pending_expires_at)
+ SELECT u.telegram_id,p.generation,?,0,'daily-forecast-v1',unixepoch(),unixepoch()+900 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=?
+ ON CONFLICT(telegram_id) DO UPDATE SET pending_hash=excluded.pending_hash,pending_revision=astra_notification_consent28.revision,pending_version=excluded.pending_version,pending_created_at=excluded.pending_created_at,pending_expires_at=excluded.pending_expires_at,pending_message_id=NULL
+ WHERE astra_notification_consent28.generation=excluded.generation RETURNING generation,revision`).bind(hash,id).first();
+ if(!row)throw Error('Profile missing');return{nonce,hash,...row};
+}
+async function confirmConsent28(env,id,nonce,messageId,updateId){
+ if(!/^[a-f0-9]{32}$/.test(nonce)||!Number.isSafeInteger(messageId)||messageId<=0||!Number.isSafeInteger(updateId))return false;
+ const hash=await nonceHash28(nonce);
+ return Boolean(await env.DB.prepare(`UPDATE astra_notification_consent28 SET revision=revision+1,consent_version='daily-forecast-v1',consent_at=unixepoch(),source='explicit_private_button',grant_update_id=?,grant_message_id=?,revoked_at=NULL,${clearPending28}
+ WHERE telegram_id=? AND pending_hash=? AND pending_message_id=? AND pending_revision=revision AND pending_version='daily-forecast-v1' AND pending_expires_at>unixepoch()
+ AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=astra_notification_consent28.telegram_id AND p.generation=astra_notification_consent28.generation)
+ RETURNING revision`).bind(updateId,messageId,id,hash,messageId).first());
+}
+
+// TASK06: preserves TASK03 states/transport; adds three proof gates and smaller batches.
+function budget28(env,stats){
+ const consume=n=>{if(stats.statements+stats.http+n>46)throw Error('BROADCAST_BUDGET');stats.statements+=n;stats.d1_calls++;};
+ const raw=new WeakMap(),wrap=s=>{const w={bind(...args){return wrap(s.bind(...args));}};raw.set(w,s);for(const m of ['first','all','run'])w[m]=async(...args)=>{consume(1);return s[m](...args);};return w;};
+ return{...env,DB:{prepare(sql){return wrap(env.DB.prepare(sql));},async batch(ss){consume(ss.length);return env.DB.batch(ss.map(s=>raw.get(s)||s));}}};
+}
+async function finish28(env,user,day,token,state,parts,reason,code=null,next=0){
+ return env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=?,parts_sent=?,last_reason=?,last_code=?,not_before=?,updated_at=CURRENT_TIMESTAMP WHERE telegram_id=? AND day=? AND token=? AND state='sending'`).bind(state,parts,reason,code,next,user.telegram_id,day,token).run();
+}
+async function runBroadcast28(original,{load=(env,sign,day)=>getForecastDaily(env,sign,day,(s,d,l)=>generateForecastForEnv(env,s,d,l)),sendMessage=pre05_broadcastSend03}={}){
+ const stats={event:'astra_broadcast28',reason:null,candidates:0,claimed:0,sent:0,retry:0,blocked:0,unknown:0,failed:0,cancelled:0,skipped:0,d1_calls:0,statements:0,http:0};
+ const env=budget28(original,stats),run=crypto.randomUUID();let locked=false;
+ const canWork=n=>stats.statements+stats.http+n+1<=46; // include release statement
+ try{
+  if(!env.ASTRA_BOT_TOKEN){stats.reason='token_missing';return stats;}if(!morning03()){stats.reason='outside_window';return stats;}
+  if(!broadcastSchemaReady03(await broadcastSchema03(env))){stats.reason='broadcast_schema_unavailable';return stats;}
+  const consent=await schemaConsent28(env);if(!consent.ready){stats.reason=consent.reason;return stats;}
+  const day=activityDay(),now=epoch03();
+  const lock=await env.DB.prepare(`UPDATE astra_broadcast_runtime03 SET lease=?,lease_until=? WHERE singleton=1 AND migration_done=1 AND lease_until<=? AND cooldown_until<=? RETURNING singleton`).bind(run,now+BROADCAST_LEASE03,now,now).first();
+  if(!lock){stats.reason='busy_or_cooldown';return stats;}locked=true;
+  await env.DB.batch([
+   env.DB.prepare(`DELETE FROM astra_broadcast_jobs WHERE rowid IN(SELECT rowid FROM astra_broadcast_jobs WHERE day<date(?,'-14 days') ORDER BY day LIMIT 100)`).bind(day),
+   env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=CASE WHEN state='sending' THEN 'unknown' ELSE 'expired' END,last_reason=CASE WHEN state='sending' THEN 'interrupted_delivery' ELSE 'day_expired' END,updated_at=CURRENT_TIMESTAMP WHERE rowid IN(SELECT rowid FROM astra_broadcast_outbox03 WHERE(state='sending' AND last_try_at<?) OR(state='retry' AND day<?) LIMIT 100)`).bind(now-BROADCAST_LEASE03,day),
+   env.DB.prepare("DELETE FROM astra_processed_updates WHERE rowid IN(SELECT rowid FROM astra_processed_updates WHERE received_at<datetime('now','-14 days') LIMIT 100)"),
+   env.DB.prepare("DELETE FROM astra_update_jobs WHERE rowid IN(SELECT rowid FROM astra_update_jobs WHERE received_at<datetime('now','-14 days') AND status='done' LIMIT 100)")
+  ]);
+  await env.DB.prepare(`UPDATE astra_notification_consent28 SET ${clearPending28} WHERE telegram_id IN(SELECT telegram_id FROM astra_notification_consent28 WHERE pending_expires_at<=unixepoch() LIMIT 100)`).run();
+  if(!POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)||consent.quarantined){stats.reason='delivery_disabled';return stats;}
+  const batch=await env.DB.prepare(`SELECT u.telegram_id,u.zodiac,p.generation,f.free_text FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c ON c.telegram_id=u.telegram_id AND c.generation=p.generation
+   LEFT JOIN astra_broadcast_outbox03 q ON q.telegram_id=u.telegram_id AND q.day=?
+   LEFT JOIN astra_broadcast_jobs b ON b.telegram_id=u.telegram_id AND b.day=?
+   LEFT JOIN astra_forecast_daily f ON f.sign=u.zodiac AND f.day=? AND f.locale='ru'
+   WHERE c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND u.notifications_enabled=1 AND u.zodiac IN('aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces') AND(u.last_broadcast_day IS NULL OR u.last_broadcast_day<>?)
+   AND((q.telegram_id IS NULL AND b.telegram_id IS NULL) OR(q.state='retry' AND q.attempts<3 AND q.not_before<=? AND q.generation=p.generation AND q.sign=u.zodiac))
+   ORDER BY CASE WHEN q.telegram_id IS NULL THEN 0 ELSE 1 END,u.telegram_id LIMIT 4`).bind(day,day,day,day,now).all();
+  stats.candidates=batch.results.length;
+  for(const user of batch.results){
+   if(!canWork(user.free_text?5:8)){stats.reason='budget_yield';break;}
+   let text=user.free_text;if(!text){try{text=(await load(env,user.zodiac,day)).free_text;}catch{stats.reason='forecast_unavailable';break;}}
+   let chunks;try{chunks=forecastChunks(text);if(chunks.length>2)throw Error('Too many chunks');}catch{chunks=[];}
+   if(!canWork(2*chunks.length+3)){stats.reason='budget_yield';break;}if(!morning03()||activityDay()!==day){stats.reason='window_ended';break;}
+   const token=crypto.randomUUID(),stamp=epoch03();
+   const claim=await env.DB.prepare(`INSERT INTO astra_broadcast_outbox03(telegram_id,day,generation,sign,state,attempts,token,last_try_at)
+    SELECT u.telegram_id,?,p.generation,u.zodiac,'sending',1,?,? FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c ON c.telegram_id=u.telegram_id AND c.generation=p.generation
+    WHERE c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND u.telegram_id=? AND p.generation=? AND u.zodiac=? AND u.notifications_enabled=1 AND(u.last_broadcast_day IS NULL OR u.last_broadcast_day<>?)
+    AND EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND lease=? AND lease_until>? AND cooldown_until<=?)
+    ON CONFLICT(telegram_id,day) DO UPDATE SET state='sending',attempts=astra_broadcast_outbox03.attempts+1,token=excluded.token,last_try_at=excluded.last_try_at,updated_at=CURRENT_TIMESTAMP
+    WHERE astra_broadcast_outbox03.state='retry' AND astra_broadcast_outbox03.attempts<3 AND astra_broadcast_outbox03.not_before<=? AND astra_broadcast_outbox03.generation=excluded.generation AND astra_broadcast_outbox03.sign=excluded.sign
+    RETURNING attempts,(SELECT revision FROM astra_notification_consent28 WHERE telegram_id=astra_broadcast_outbox03.telegram_id) AS consent_revision,EXISTS(SELECT 1 FROM astra_forecast_unlocks f WHERE f.telegram_id=astra_broadcast_outbox03.telegram_id AND f.day=astra_broadcast_outbox03.day) AS owned`).bind(day,token,stamp,user.telegram_id,user.generation,user.zodiac,day,run,stamp,stamp,stamp).first();
+   if(!claim){stats.skipped++;continue;}stats.claimed++;if(!morning03()||activityDay()!==day){await finish28(env,user,day,token,'expired',0,'window_ended_before_send');stats.reason='window_ended';break;}if(!chunks.length){await finish28(env,user,day,token,'failed',0,'cached_content_invalid');stats.failed++;continue;}let parts=0;
+   try{
+    for(let i=0;i<chunks.length;i++){
+     const still=await env.DB.prepare(`SELECT EXISTS(SELECT 1 FROM astra_forecast_unlocks f WHERE f.telegram_id=u.telegram_id AND f.day=?) AS owned
+      FROM astra_users u JOIN astra_user_policy p USING(telegram_id)
+      JOIN astra_notification_consent28 c ON c.telegram_id=u.telegram_id AND c.generation=p.generation
+      JOIN astra_broadcast_outbox03 q ON q.telegram_id=u.telegram_id AND q.day=? AND q.token=? AND q.state='sending'
+      JOIN astra_delivery_consent28 d ON d.telegram_id=q.telegram_id AND d.day=q.day AND d.generation=p.generation AND d.revision=c.revision AND d.consent_version=c.consent_version
+      JOIN astra_consent_runtime28 m ON m.singleton=1 AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0
+      JOIN astra_broadcast_runtime03 r ON r.singleton=1
+      WHERE u.telegram_id=? AND u.notifications_enabled=1 AND u.zodiac=? AND p.generation=? AND c.revision=?
+      AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL
+      AND r.lease=? AND r.lease_until>? AND r.cooldown_until<=?`).bind(day,day,token,user.telegram_id,user.zodiac,user.generation,claim.consent_revision,run,epoch03(),epoch03()).first();
+     if(!still||!morning03()||activityDay()!==day){await finish28(env,user,day,token,'cancelled',parts,'consent_preflight_denied');stats.cancelled++;break;}
+     stats.http++;await sendMessage(env,user.telegram_id,chunks[i],i===chunks.length-1?forecastCta03(day,Boolean(still.owned)):[]);parts++;
+    }
+    if(parts===chunks.length){await finish28(env,user,day,token,'sent',parts,'accepted_by_telegram');stats.sent++;}
+   }catch(error){
+    const code=error.telegramCode;
+    if(code===429){const wait=Number.isSafeInteger(error.retryAfter)&&error.retryAfter>0?error.retryAfter:60,next=epoch03()+wait,state=parts?'unknown':claim.attempts<3?'retry':'failed';
+     await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET cooldown_until=max(cooldown_until,?) WHERE singleton=1').bind(next).run();
+     await finish28(env,user,day,token,state,parts,parts?'partial_rate_limit':state==='retry'?'telegram_429':'retry_exhausted',429,next);stats[state==='retry'?'retry':state==='unknown'?'unknown':'failed']++;stats.reason='telegram_cooldown';break;
+    }
+    const state=code===403?'blocked':parts?'unknown':Number.isInteger(code)&&code>=400&&code<500?'failed':'unknown';
+    await finish28(env,user,day,token,state,parts,code?'telegram_'+code:'network_or_unconfirmed',code||null);
+    if(code===403)await env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=? AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=astra_users.telegram_id AND p.generation=?)').bind(user.telegram_id,user.generation).run();
+    stats[state]++;
+   }
+  }
+  stats.reason??=stats.candidates?'batch_complete':'no_due_recipients';return stats;
+ }catch{stats.reason='storage_or_budget_failure';return stats;}
+ finally{if(locked)try{await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=NULL,lease_until=0 WHERE singleton=1 AND lease=?').bind(run).run();}catch{stats.reason='storage_finalize_unavailable';}console.log(JSON.stringify(stats));}
+}
+
+const deliveryPause28=(env,schema)=>schema.quarantined||!POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)?'\n\nАвтоматическая доставка пока приостановлена до отдельной проверки владельцем.':'';
+async function consentScreen28(env,id){
+ const schema=await schemaConsent28(env);
+ if(!schema.ready)return screen(env,id,'Утренний прогноз','Настройка подписки пока недоступна. Полный бесплатный прогноз можно открыть вручную.',[],'dossier');
+ const active=await env.DB.prepare(`SELECT 1 FROM astra_notification_consent28 c JOIN astra_users u USING(telegram_id) JOIN astra_user_policy p USING(telegram_id) WHERE c.telegram_id=? AND c.generation=p.generation AND u.notifications_enabled=1 AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL`).bind(id).first();
+ if(active)return screen(env,id,'Утренний прогноз','Подписка подтверждена. Полный бесплатный прогноз с числом дня — один раз в сутки, обычно с 09:00 до 11:00 по Москве. Отключить можно здесь или командой /stop.'+deliveryPause28(env,schema),[[button('Отключить уведомления','consent28:stop')]],'dossier');
+ const pending=await pendingConsent28(env,id);
+ const message=await screen(env,id,'Утренний прогноз',CONSENT_TEXT28+deliveryPause28(env,schema),[[button('Подтвердить подписку','consent28:grant:'+pending.nonce),button('Отмена','consent28:cancel:'+pending.nonce)]],'dossier');
+ if(!Number.isSafeInteger(message?.message_id)||message.message_id<=0)throw Error('Consent message not confirmed');
+ await env.DB.prepare(`UPDATE astra_notification_consent28 SET pending_message_id=? WHERE telegram_id=? AND generation=? AND revision=? AND pending_hash=? AND pending_expires_at>unixepoch() AND pending_message_id IS NULL`).bind(message.message_id,id,pending.generation,pending.revision,pending.hash).run();
+ return message;
+}
+async function shellPage(env,id,page,q=null,updateId=null){
+ if(page==='notifications'||page.startsWith('notifications:')||page.startsWith('consent28:')){
+  if(q&&(!Number.isSafeInteger(id)||id<=0||q.from?.is_bot||q.from?.id!==id||q.message?.chat?.id!==id||q.message?.chat?.type!=='private'))return;
+  if(page==='notifications:disable'||page==='consent28:stop'){
+   await revokeConsent28(env,id);return screen(env,id,'Утренний прогноз','Подписка отозвана. Новых утренних сообщений не будет; начатую отправку отозвать невозможно. Полный прогноз доступен вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
+  }
+  const match=/^consent28:(grant|cancel):([a-f0-9]{32})$/.exec(page);
+  if(match){
+   const schema=await schemaConsent28(env);if(!q||!schema.ready)return screen(env,id,'Утренний прогноз','Подтверждение недоступно. Откройте настройку заново.',[],'dossier');
+   if(match[1]==='cancel'){
+    const cancelled=await env.DB.prepare(`UPDATE astra_notification_consent28 SET ${clearPending28} WHERE telegram_id=? AND pending_hash=? AND pending_message_id=? RETURNING revision`).bind(id,await nonceHash28(match[2]),q.message.message_id).first();
+    return screen(env,id,'Утренний прогноз',cancelled?'Подписка не оформлена. Полный прогноз доступен вручную.':'Эта кнопка больше не действует. Текущий выбор не изменён.',[],'dossier');
+   }
+   const ok=await confirmConsent28(env,id,match[2],q.message.message_id,updateId);
+   return screen(env,id,'Утренний прогноз',ok?'Подписка подтверждена. Отозвать согласие можно в любой момент здесь или командой /stop.'+deliveryPause28(env,schema):'Эта кнопка больше не действует. Для подписки откройте настройку и подтвердите условия заново.',[[button('Настройка уведомлений','notifications')]],'dossier');
+  }
+  // Every legacy toggle/enable/confirm can only display a NEW notice, never grant.
+  return consentScreen28(env,id);
+ }
+ return pre28_shellPage(env,id,page,q,updateId);
+}
+async function incoming(env,m,updateId){
+ if(m.chat?.type==='private'&&m.from?.id===m.chat.id&&!m.from?.is_bot){
+  const text=String(m.text||'').trim();
+  if(text==='/stop'){await revokeConsent28(env,m.from.id);return send(env,m.from.id,'Подписка отозвана. Утренние уведомления выключены. Полный прогноз доступен вручную.');}
+  if(text==='🔔 Рассылка')return consentScreen28(env,m.from.id);
+ }
+ return pre28_incoming(env,m,updateId);
+}
+async function health(env){
+ const response=await pre28_health(env),state=await response.json(),schema=await schemaConsent28(env);
+ state.broadcast_consent_implemented=true;state.consent_schema_ready=schema.ready;state.consent_gate_ready=schema.ready;
+ state.broadcast_delivery_allowed=Boolean(schema.ready&&!schema.quarantined&&POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)&&state.broadcast_schema_ready&&state.manual_content_ready);
+ state.broadcast_blocker=!schema.ready?schema.reason:schema.quarantined?'delivery_quarantined':!POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)?'delivery_disabled':state.broadcast_prerequisite_blocker;
+ state.broadcast_ready=state.broadcast_delivery_allowed;state.public_ready=false;state.ready=false;state.release_scope='STAGING_REVIEW_ONLY';
+ return Response.json(state,{status:503,headers:{'Cache-Control':'no-store'}});
+}
+async function broadcast(env){return runBroadcast28(env);}
+
 const astraWorker = {
   async fetch(request,env) {
     const receivedAt=performance.now();
     const u=new URL(request.url);
-    if(u.pathname.startsWith('/internal/payments/')||u.pathname==='/internal/economy/policy'){
+    if(u.pathname.startsWith('/internal/payments/')||(u.pathname==='/internal/economy/policy'||u.pathname==='/internal/economy/fence')){
       try{if(!env.ASTRA_ADMIN_KEY||request.headers.get('Authorization')!=='Bearer '+env.ASTRA_ADMIN_KEY)return new Response('Forbidden',{status:403});if(!await schemaReady(env))return new Response('D1 schema unavailable',{status:503});return await paymentsAdmin(request,env);}catch{return new Response('Administrative operation unavailable; reconcile before retry',{status:503});}
     }
     if (request.method==='GET' && u.pathname==='/')
@@ -13945,6 +19009,6 @@ const astraWorker = {
 };
 
 export default {
-  fetch(request,env){return measureInvocation(env,'http',scoped=>astraWorker.fetch(request,scoped));},
-  scheduled(event,env){return measureInvocation(env,'cron',scoped=>astraWorker.scheduled(event,scoped));}
+  fetch(request,env){return measureInvocation(env,'http',scoped=>astraWorker.fetch(request,task01Env(scoped)));},
+  scheduled(event,env){return measureInvocation(env,'cron',async scoped=>{try{if(scoped.DB)await purgeFences26(scoped);}catch{console.error('Bonus fence cleanup unavailable');}return astraWorker.scheduled(event,task01Env(scoped));});}
 };

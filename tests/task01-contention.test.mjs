@@ -1,0 +1,31 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {Worker} from 'node:worker_threads';import fs from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {configureFence26,approveFenceNotice26,syncBonusOwner26} from '../src/task01/bonus.mjs';
+import {receiveStarPayment} from '../src/task01/payments.mjs';
+const migrations=['src/02_SCHEMA.sql','migrations/0021_wallet.sql','migrations/0022_shell.sql','migrations/0023_forecast.sql','migrations/0024_activity_history.sql','migrations/0025_rewards_stars.sql','migrations/0026_economy_fence.sql'];
+function adapter(db){return{async batch(ss){db.exec('BEGIN IMMEDIATE');try{const r=ss.map(s=>s._runSync());db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}},prepare(sql){const st=db.prepare(sql);let a=[];return{bind(...v){a=v;return this;},async first(){return st.get(...a)??null;},async all(){return{results:st.all(...a)};},async run(){return this._runSync();},_runSync(){return{meta:{changes:Number(st.run(...a).changes)}};}};}};}
+for(const scenario of ['initial','daily','referral','channel','referral-channel','purchase','receipt','refund','refund-purchase'])test(`TASK01 independent SQLite connections: ${scenario.includes('-')?40:20} ${scenario}, no JS mutex`,async()=>{
+ const dir=fs.mkdtempSync(join(tmpdir(),'astra-task01-')),file=join(dir,'race.sqlite'),db=new DatabaseSync(file);
+ const config={ASTRA_BONUS_FENCE_KEY:'CONCURRENCY_SYNTHETIC_HMAC_KEY_NOT_REAL_1234567890',ASTRA_BONUS_FENCE_KEY_ID:'v1',ASTRA_BONUS_FENCE_NOTICE_ACK:'APPROVED_BONUS_FENCE_30_DAYS',ASTRA_ECONOMY_V2_ENABLED:'true',ASTRA_TELEGRAM_TEST_MODE:'true'};
+ const env={...config,DB:adapter(db)},q=(sql,...a)=>db.prepare(sql).get(...a);
+ try{
+  db.exec(fs.readFileSync(new URL('../'+migrations[0],import.meta.url),'utf8'));db.exec("INSERT INTO astra_users(telegram_id,zodiac,balance) VALUES(1,'aries',100)");for(const p of migrations.slice(1))db.exec(fs.readFileSync(new URL('../'+p,import.meta.url),'utf8'));
+  db.exec('PRAGMA journal_mode=WAL');db.exec('PRAGMA foreign_keys=ON');await configureFence26(env);await approveFenceNotice26(env,'bonus-fence-30d-v1','APPROVED_BONUS_FENCE_30_DAYS');db.exec("UPDATE astra_patch26 SET enabled=1,activated=1,start_day='2026-01-01';UPDATE astra_policy SET payment_scope='test',support='mailto:support@example.test',terms_version='test-v1',retention_days=365,verified_bot_id=424242");await syncBonusOwner26(env,1);
+  if(['referral','channel','referral-channel'].includes(scenario)){db.exec("INSERT INTO astra_users(telegram_id,zodiac,referrer_id) VALUES(2,'aries',1)");await syncBonusOwner26(env,2);if(scenario==='channel')await (await import('../src/task01/bonus.mjs')).bonusCommand26(env,2,'referral');}
+  let proof;if(['receipt','refund','refund-purchase'].includes(scenario)){
+   db.exec("INSERT INTO astra_all_orders26(order_id,payload,owner_id,payer_id,request_key,package,xtr,dust,price_version,scope,terms_version,retention_days,created_at) VALUES('FAKE-RACE','a24:FAKE-RACE',1,1,'FAKE-RACE',10,10,40,'stars-pack-v2','test','test-v1',365,CURRENT_TIMESTAMP)");proof={currency:'XTR',total_amount:10,invoice_payload:'a24:FAKE-RACE',telegram_payment_charge_id:'FAKE-RACE-CHARGE'};
+   if(scenario!=='receipt'){await receiveStarPayment(env,1,proof);const gen=q('SELECT generation FROM astra_user_policy WHERE telegram_id=1').generation;for(let i=0;i<27;i++){db.prepare("INSERT INTO astra_tarot_offers26(offer_id,telegram_id,generation,request_key) VALUES(?,1,?,?)").run('spent:'+i,gen,'spent:'+i);db.prepare("INSERT INTO astra_tarot_purchases26(offer_id,telegram_id,price,result) VALUES(?,1,5,'PREVIOUS OWNED')").run('spent:'+i);}assert.equal(q('SELECT balance FROM astra_users WHERE telegram_id=1').balance,5);}
+  }
+  if(['purchase','refund-purchase'].includes(scenario))db.prepare("INSERT INTO astra_tarot_offers26(offer_id,telegram_id,generation,request_key) SELECT 'race-offer',1,generation,'race' FROM astra_user_policy WHERE telegram_id=1").run();
+  const jobs=scenario==='referral-channel'?[...Array(20).fill('referral'),...Array(20).fill('channel')]:scenario==='refund-purchase'?[...Array(20).fill('refund'),...Array(20).fill('purchase')]:Array(20).fill(scenario);
+  await Promise.all(jobs.map((kind,index)=>new Promise((resolve,reject)=>{const w=new Worker(new URL('./task01-contention-worker.mjs',import.meta.url),{workerData:{file,kind,index,proof,env:config}});w.once('error',reject);w.once('exit',c=>c?reject(Error('Worker exit '+c)):resolve());})));
+  const balance=q('SELECT balance FROM astra_users WHERE telegram_id=1').balance;
+  if(scenario==='initial'){assert.equal(q('SELECT balance FROM astra_users WHERE telegram_id=3').balance,5);assert.equal(q("SELECT count(*) n FROM astra_bonus_awards26 WHERE kind='initial'").n,1);}
+  if(scenario==='daily'){assert.equal(balance,102);assert.equal(q('SELECT count(*) n FROM astra_bonus_days26').n,1);}
+  if(scenario==='referral'){assert.equal(balance,110);assert.equal(q('SELECT balance FROM astra_users WHERE telegram_id=2').balance,3);}
+  if(['channel','referral-channel'].includes(scenario)){assert.equal(balance,115);assert.equal(q('SELECT balance FROM astra_users WHERE telegram_id=2').balance,18);assert.equal(q("SELECT count(*) n FROM astra_bonus_awards26 WHERE kind='inviter_channel'").n,1);}
+  if(scenario==='purchase'){assert.equal(balance,95);assert.equal(q('SELECT count(*) n FROM astra_tarot_purchases26').n,1);}
+  if(scenario==='receipt'){assert.equal(balance,140);assert.equal(q('SELECT count(*) n FROM astra_payment_receipts26').n,1);}
+  if(['refund','refund-purchase'].includes(scenario)){assert.equal(balance,0);const purchased=q("SELECT count(*) n FROM astra_tarot_purchases26 WHERE offer_id='race-offer'").n;assert.equal(q('SELECT debt FROM astra_refund_accounts').debt,35+purchased*5);assert.equal(q('SELECT count(*) n FROM astra_refund_settlements').n,1);}
+  assert.equal(q('SELECT count(*) n FROM astra_users u WHERE balance<>(SELECT coalesce(sum(delta),0) FROM astra_wallet_ledger l WHERE l.telegram_id=u.telegram_id) OR balance<0').n,0);assert.equal(q('SELECT count(*) n FROM astra_bonus_commands26').n,0);assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
+ }finally{db.close();fs.rmSync(dir,{recursive:true,force:true});}
+});

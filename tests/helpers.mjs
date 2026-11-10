@@ -35,7 +35,7 @@ export function fixture({full=process.env.ASTRA_TEST_RELEASE==='2.4',legacyUsers
     if(injected==='network')throw Error('Synthetic API network failure');
     if(injected==='malformed')return new Response('malformed');
     if(Number.isInteger(injected))return Response.json({ok:false,error_code:injected,parameters:{retry_after:1}},{status:injected});
-    if(apiResults.has(method))return Response.json({ok:true,result:apiResults.get(method)});
+    if(apiResults.has(method)){const value=apiResults.get(method);return Response.json({ok:true,result:typeof value==='function'?value(body):value});}
     if(method==='answerCallbackQuery' && expiredCallback) throw Error('Simulated expired callback');
     if (method==='sendMessage' && fail) {
       if (fail==='network') throw Error('Simulated network failure');

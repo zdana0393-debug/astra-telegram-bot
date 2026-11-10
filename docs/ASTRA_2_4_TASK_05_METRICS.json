@@ -1,0 +1,1050 @@
+{
+  "date_msk": "2026-11-09",
+  "base_commit": "6798c67",
+  "runtime": "v24.22.1",
+  "worker_bytes": 889963,
+  "worker_sha256": "ea9b6eef41b59e0275d2d829722bb9ff02492d451e465849ce791657728598a7",
+  "protected_base_worker_sha256": "766e17438d423303445dfd64664ec1cc3a8cb72177053c97ac67735f5e69ecd1",
+  "scenarios": 46,
+  "unchanged_monetary_effects": 46,
+  "same_free_cache": true,
+  "same_paid_tarot": true,
+  "maximum_message_chars": 1131,
+  "maximum_callback_bytes": 46,
+  "max_d1_calls": 27,
+  "local_vm_elapsed_only": {
+    "samples": 20,
+    "median_ms": 3.1357869999999366,
+    "p95_ms": 12.471299000000045
+  },
+  "screens": [
+    {
+      "name": "registration",
+      "before_chars": 202,
+      "after_chars": 291,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 22.931,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "home",
+      "before_chars": 105,
+      "after_chars": 57,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 5.243,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "forecast",
+      "before_chars": 169,
+      "after_chars": 252,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 4.86,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "tarot",
+      "before_chars": 228,
+      "after_chars": 239,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.533,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "self",
+      "before_chars": 268,
+      "after_chars": 196,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.184,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "dossier",
+      "before_chars": 236,
+      "after_chars": 97,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.093,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "dust",
+      "before_chars": 344,
+      "after_chars": 261,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.964,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "about",
+      "before_chars": 109,
+      "after_chars": 102,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.908,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "free",
+      "before_chars": 818,
+      "after_chars": 818,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 28.547,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "paid-tarot",
+      "before_chars": 360,
+      "after_chars": 360,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.011,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "forecast-owned",
+      "before_chars": 169,
+      "after_chars": 252,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 8.132,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "forecast-confirm",
+      "before_chars": 252,
+      "after_chars": 219,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.054,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "tarot-confirm",
+      "before_chars": 172,
+      "after_chars": 166,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.466,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "insufficient-tarot",
+      "before_chars": 68,
+      "after_chars": 229,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.766,
+          "rows_complete": false
+        },
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.995,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "insufficient-forecast",
+      "before_chars": 117,
+      "after_chars": 229,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 27,
+          "statements": 27,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 27,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 4.445,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "invite-active",
+      "before_chars": 400,
+      "after_chars": 341,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 25,
+          "statements": 25,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 25,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.862,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "channel-active",
+      "before_chars": 251,
+      "after_chars": 267,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.4,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "bonus-active",
+      "before_chars": 184,
+      "after_chars": 249,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 27,
+          "statements": 27,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 27,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.116,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "dust-active",
+      "before_chars": 512,
+      "after_chars": 371,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 27,
+          "statements": 27,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 27,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.419,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "dust-paused",
+      "before_chars": 512,
+      "after_chars": 362,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 4.06,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "invite-legacy",
+      "before_chars": 400,
+      "after_chars": 268,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.594,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "channel-legacy",
+      "before_chars": 250,
+      "after_chars": 204,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.016,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "bonus-legacy",
+      "before_chars": 184,
+      "after_chars": 176,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 22,
+          "statements": 22,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 22,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.697,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "notifications-off",
+      "before_chars": 101,
+      "after_chars": 268,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.002,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "notifications-old-on",
+      "before_chars": 100,
+      "after_chars": 361,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.798,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "privacy",
+      "before_chars": 959,
+      "after_chars": 1112,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.494,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "delete",
+      "before_chars": 293,
+      "after_chars": 416,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 12,
+          "statements": 12,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 12,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.215,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "before_chars": 412,
+      "after_chars": 476,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 17,
+          "statements": 17,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 17,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.254,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "terms-unconfigured",
+      "before_chars": 1016,
+      "after_chars": 1112,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.028,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "support-unconfigured",
+      "before_chars": 154,
+      "after_chars": 180,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.724,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "shop-off",
+      "before_chars": 156,
+      "after_chars": 108,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.505,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "shop-test-only",
+      "before_chars": 136,
+      "after_chars": 152,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.263,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "stars-consent",
+      "before_chars": 258,
+      "after_chars": 320,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.24,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "stars-consent-25",
+      "before_chars": 259,
+      "after_chars": 321,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.081,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "stars-consent-50",
+      "before_chars": 259,
+      "after_chars": 321,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.972,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "terms-configured",
+      "before_chars": 977,
+      "after_chars": 1131,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.289,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "support-configured",
+      "before_chars": 325,
+      "after_chars": 287,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.611,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "payment-history",
+      "before_chars": 100,
+      "after_chars": 107,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 11,
+          "statements": 11,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 11,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.287,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "payment-received",
+      "before_chars": 198,
+      "after_chars": 209,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 9,
+          "statements": 9,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 9,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.432,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "history",
+      "before_chars": 356,
+      "after_chars": 169,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 4.331,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "activity",
+      "before_chars": 251,
+      "after_chars": 319,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 5.105,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "economy-dossier",
+      "before_chars": 299,
+      "after_chars": 230,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 4.657,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "faq",
+      "before_chars": 1431,
+      "after_chars": 985,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.099,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "faq-authorship",
+      "before_chars": 534,
+      "after_chars": 357,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 5.237,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "rules",
+      "before_chars": 671,
+      "after_chars": 405,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.255,
+          "rows_complete": false
+        }
+      ]
+    },
+    {
+      "name": "debt",
+      "before_chars": 344,
+      "after_chars": 398,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.066,
+          "rows_complete": false
+        }
+      ]
+    }
+  ],
+  "limits": "Local mocks only. Node elapsed time is not Cloudflare CPU. D1 rows metadata incomplete; real CPU10ms, D1/HTTP50, rows_read/rows_written, DB500MB require future staging."
+}

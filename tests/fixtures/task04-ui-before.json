@@ -1,0 +1,3156 @@
+{
+  "worker_sha256": "766e17438d423303445dfd64664ec1cc3a8cb72177053c97ac67735f5e69ecd1",
+  "screens": [
+    {
+      "name": "registration",
+      "body": {
+        "chat_id": 1,
+        "text": "Астра\nАстрология · Таро · нумерологические соответствия\n\nВыберите солнечный знак. Баланс: 2 ✨. Бесплатный прогноз и число дня доступны независимо от бонусов. Условия защиты наград и удаления — /privacy.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "♈ Овен",
+                "callback_data": "sign:aries"
+              },
+              {
+                "text": "♉ Телец",
+                "callback_data": "sign:taurus"
+              }
+            ],
+            [
+              {
+                "text": "♊ Близнецы",
+                "callback_data": "sign:gemini"
+              },
+              {
+                "text": "♋ Рак",
+                "callback_data": "sign:cancer"
+              }
+            ],
+            [
+              {
+                "text": "♌ Лев",
+                "callback_data": "sign:leo"
+              },
+              {
+                "text": "♍ Дева",
+                "callback_data": "sign:virgo"
+              }
+            ],
+            [
+              {
+                "text": "♎ Весы",
+                "callback_data": "sign:libra"
+              },
+              {
+                "text": "♏ Скорпион",
+                "callback_data": "sign:scorpio"
+              }
+            ],
+            [
+              {
+                "text": "♐ Стрелец",
+                "callback_data": "sign:sagittarius"
+              },
+              {
+                "text": "♑ Козерог",
+                "callback_data": "sign:capricorn"
+              }
+            ],
+            [
+              {
+                "text": "♒ Водолей",
+                "callback_data": "sign:aquarius"
+              },
+              {
+                "text": "♓ Рыбы",
+                "callback_data": "sign:pisces"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 2,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 19.841,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 2,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 0,
+            "reason": "registration"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:legacy_initial"
+          }
+        ]
+      }
+    },
+    {
+      "name": "home",
+      "body": {
+        "chat_id": 1,
+        "text": "Астра · кабинет интерпретаций\n♈ Овен · 20 ✨\nДневная дата определяется по Europe/Moscow.\n\nВыберите раздел.",
+        "reply_markup": {
+          "keyboard": [
+            [
+              {
+                "text": "🌙 Прогноз дня"
+              },
+              {
+                "text": "🃏 Таро"
+              }
+            ],
+            [
+              {
+                "text": "🪞 Познай себя"
+              },
+              {
+                "text": "🗂 Досье"
+              }
+            ],
+            [
+              {
+                "text": "✨ Звёздная пыль"
+              },
+              {
+                "text": "🏛 Об Астре"
+              }
+            ]
+          ],
+          "resize_keyboard": true,
+          "is_persistent": true
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.869,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forecast",
+      "body": {
+        "chat_id": 1,
+        "text": "🌙 Прогноз дня\n\nОбщий прогноз по выбранному знаку: тема, отношения, дела, ресурсы, эмоциональный ритм, число дня и практический итог. Дата определяется по Europe/Moscow.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Открыть бесплатно",
+                "callback_data": "shell:forecast:read"
+              }
+            ],
+            [
+              {
+                "text": "Расширенный — 4 ✨",
+                "callback_data": "shell:forecast:extended"
+              }
+            ],
+            [
+              {
+                "text": "Повторить расширенный",
+                "callback_data": "shell:forecast:repeat"
+              }
+            ],
+            [
+              {
+                "text": "🃏 Таро",
+                "callback_data": "shell:tarot"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.227,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tarot",
+      "body": {
+        "chat_id": 1,
+        "text": "🃏 Таро\n\nТрактовки 22 Старших арканов. В раскладе различаются позиции карт, прямое и перевёрнутое положение.\n\nКарта дня бесплатна; ситуационный расклад на три карты — 5 ✨. Сохранённый результат можно открыть повторно без оплаты.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Карта дня — бесплатно",
+                "callback_data": "tarot:day"
+              }
+            ],
+            [
+              {
+                "text": "Три карты — 5 ✨",
+                "callback_data": "shell:buy"
+              }
+            ],
+            [
+              {
+                "text": "Последний расклад — бесплатно",
+                "callback_data": "shell:tarot:last"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.639,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "self",
+      "body": {
+        "chat_id": 1,
+        "text": "🪞 Познай себя\n\nСимволический портрет, совместимость и подбор соответствий находятся в разработке. Их методика потребует отдельных исходных данных и правил сопоставления.\n\nСейчас раздел не проводит анкетирование, не сохраняет новые личные сведения и не списывает пыль.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.385,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dossier",
+      "body": {
+        "chat_id": 1,
+        "text": "🗂 Досье\n\n♈ Овен\nБаланс: 20 ✨\nРассылка: выключена\nДата: 2026-11-10 · Europe/Moscow\n\nЗдесь показаны сохранённые настройки профиля. Активные дни и история пыли доступны в экономическом досье. Натальная карта и коллекции ещё не подключены.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Экономическое досье",
+                "callback_data": "shell:dossier:economy"
+              }
+            ],
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dossier:history"
+              }
+            ],
+            [
+              {
+                "text": "Рассылка",
+                "callback_data": "shell:notifications"
+              }
+            ],
+            [
+              {
+                "text": "Последний расклад",
+                "callback_data": "shell:tarot:last"
+              }
+            ],
+            [
+              {
+                "text": "Состав данных",
+                "callback_data": "shell:privacy"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.097,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dust",
+      "body": {
+        "chat_id": 1,
+        "text": "✨ Звёздная пыль\n\nБаланс: 20 ✨\nДолг по возвратам: 0 ✨\n\nНачальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.\nТаро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dust:history"
+              },
+              {
+                "text": "Активные дни",
+                "callback_data": "shell:dust:activity"
+              }
+            ],
+            [
+              {
+                "text": "Бонус дня",
+                "callback_data": "shell:gift"
+              },
+              {
+                "text": "Пригласить участника",
+                "callback_data": "shell:invite"
+              }
+            ],
+            [
+              {
+                "text": "Подписка на канал",
+                "callback_data": "shell:channel"
+              }
+            ],
+            [
+              {
+                "text": "Магазин Stars",
+                "callback_data": "shell:dust:shop"
+              },
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              },
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.908,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "about",
+      "body": {
+        "chat_id": 1,
+        "text": "🏛 Об Астре\n\nТропический зодиак, Старшие арканы и числовые соответствия: содержание, методы и редакция Астры.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Об архиве",
+                "callback_data": "shell:manifest"
+              }
+            ],
+            [
+              {
+                "text": "Методология",
+                "callback_data": "shell:trust"
+              }
+            ],
+            [
+              {
+                "text": "Отделы и консультанты",
+                "callback_data": "shell:team"
+              },
+              {
+                "text": "FAQ",
+                "callback_data": "shell:faq"
+              }
+            ],
+            [
+              {
+                "text": "Правила и данные",
+                "callback_data": "shell:rules"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.253,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "free",
+      "body": {
+        "chat_id": 1,
+        "text": "🌙 ГОРОСКОП · 10.11.2026\n♈ Овен\n\n✨ Главное: Огненный порыв стоит отличить от желания победить. Право начать не равно праву победить.\n\n💕 Отношения: Даже сильное влечение оставляет другому право отвечать по-своему. Желание можно назвать прямо.\n\n📚 Дела: Замысел оживает благодаря интересу, а не состязанию. Сопротивление материала не обязательно личный вызов.\n\n💰 Финансы: Покупка не доказывает ни силу, ни свободу. Желание стоит отличить от соперничества.\n\n🌿 Настроение: Внутренний жар без направления легко становится раздражением. Внутренней силе не обязательна победа. Раннее чувство допускает неизвестность.\n\n🍀 Совет дня: Выберите первый шаг для своего замысла, который нужен вам не ради победы над кем-то.\n\n🔢 Число дня: 1 — самостоятельная воля без превосходства.\n\nСимволическая интерпретация солнечного знака.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Подробнее — 4 ✨",
+                "callback_data": "shell:forecast:offer:2026-11-10"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:forecast"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 20.914,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "paid-tarot",
+      "body": {
+        "chat_id": 1,
+        "text": "Три карты · ситуационный расклад\n\n1. Ситуация\nЗвезда\nВосстановление перспективы, доверие к пути и ясный ориентир.\n\n2. Препятствие\nВерховная Жрица\nНаблюдение, скрытые связи и интуитивное понимание ситуации.\n\n3. Рекомендация\nШут\nОткрытость новому опыту; начало пути без готовой системы ориентиров.\n\nРассматривайте значение каждого аркана в контексте его позиции.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:tarot"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 15,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.55,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 15,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 1,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": -5,
+            "reason": "tarot:v2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forecast-owned",
+      "body": {
+        "chat_id": 1,
+        "text": "🌙 Прогноз дня\n\nОбщий прогноз по выбранному знаку: тема, отношения, дела, ресурсы, эмоциональный ритм, число дня и практический итог. Дата определяется по Europe/Moscow.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Открыть бесплатно",
+                "callback_data": "shell:forecast:read"
+              }
+            ],
+            [
+              {
+                "text": "Расширенный — 4 ✨",
+                "callback_data": "shell:forecast:extended"
+              }
+            ],
+            [
+              {
+                "text": "Повторить расширенный",
+                "callback_data": "shell:forecast:repeat"
+              }
+            ],
+            [
+              {
+                "text": "🃏 Таро",
+                "callback_data": "shell:tarot"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 16,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.423,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 16,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 1,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": -4,
+            "reason": "forecast:extended"
+          }
+        ]
+      }
+    },
+    {
+      "name": "forecast-confirm",
+      "body": {
+        "chat_id": 1,
+        "text": "Расширенный прогноз — 4 ✨\n\nВ пакет входят разбор доминанты и развилки выбора, символ и цвет, дополнение к бесплатному числу, руна Старшего футарка и Совет Жирного. Одна покупка на московскую дату; повторное чтение бесплатно. Отмена ничего не списывает.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Подтвердить — 4 ✨",
+                "callback_data": "shell:forecast:pay:2026-11-10"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:forecast"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.484,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tarot-confirm",
+      "body": {
+        "chat_id": 1,
+        "text": "Подтверждение расклада\n\nНовый расклад на три карты стоит 5 ✨. Старое неоплаченное предложение за 3 ✨ не списывает новую цену. Уже купленный результат открывается бесплатно.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Подтвердить — 5 ✨",
+                "callback_data": "shell:tarot26:e3fbe11fe6264137b16cdea2ce0ea096"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:tarot"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.329,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "insufficient-tarot",
+      "body": {
+        "chat_id": 1,
+        "text": "Расклад не оплачен\n\nДля нового расклада требуется 5 ✨. Списания нет.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:tarot"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 0,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.265,
+          "rows_complete": false
+        },
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.644,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 0,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 0,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "insufficient-forecast",
+      "body": {
+        "chat_id": 1,
+        "text": "Недостаточно пыли\n\nДля нового дневного пакета требуется 4 ✨. Бесплатный прогноз остаётся доступен; баланс не изменён.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:forecast"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 0,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 24,
+          "statements": 24,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 24,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 4.08,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 0,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 0,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invite-active",
+      "body": {
+        "chat_id": 1,
+        "text": "Приглашение\n\nПосле включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.\n\nhttps://t.me/LaDa_Iskra_Opel_Astrabot?start=ref_1",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 22,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 24,
+          "statements": 24,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 24,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.325,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 22,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "channel-active",
+      "body": {
+        "chat_id": 1,
+        "text": "Канал @examplechannel\n\nПодтверждённая подписка: 15 ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Открыть канал",
+                "url": "https://t.me/examplechannel"
+              }
+            ],
+            [
+              {
+                "text": "Проверить подписку",
+                "callback_data": "channel:check"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 22,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 25,
+          "statements": 25,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 25,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.931,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 22,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bonus-active",
+      "body": {
+        "chat_id": 1,
+        "text": "Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.\nБаланс: 22 ✨.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 22,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.599,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 22,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dust-active",
+      "body": {
+        "chat_id": 1,
+        "text": "✨ Звёздная пыль\n\nБаланс: 22 ✨\nДолг по возвратам: 0 ✨\n\nНовый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.\nНовые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.\nТаро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dust:history"
+              },
+              {
+                "text": "Активные дни",
+                "callback_data": "shell:dust:activity"
+              }
+            ],
+            [
+              {
+                "text": "Бонус дня",
+                "callback_data": "shell:gift"
+              },
+              {
+                "text": "Пригласить участника",
+                "callback_data": "shell:invite"
+              }
+            ],
+            [
+              {
+                "text": "Подписка на канал",
+                "callback_data": "shell:channel"
+              }
+            ],
+            [
+              {
+                "text": "Магазин Stars",
+                "callback_data": "shell:dust:shop"
+              },
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              },
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 22,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.401,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 22,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "dust-paused",
+      "body": {
+        "chat_id": 1,
+        "text": "✨ Звёздная пыль\n\nБаланс: 20 ✨\nДолг по возвратам: 0 ✨\n\nНовый профиль: 5 ✨ один раз. Первый активный вход: +2 ✨ автоматически.\nПервые 3 дня подряд: +3; каждые 7 подряд: +4; 30 разных активных дат: +6 один раз.\nНовые рефералы: +10/+3 после выбора знака. Новый канал: +15 самому, +5 исходному пригласившему; старые +5 закрывают право.\nТаро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dust:history"
+              },
+              {
+                "text": "Активные дни",
+                "callback_data": "shell:dust:activity"
+              }
+            ],
+            [
+              {
+                "text": "Бонус дня",
+                "callback_data": "shell:gift"
+              },
+              {
+                "text": "Пригласить участника",
+                "callback_data": "shell:invite"
+              }
+            ],
+            [
+              {
+                "text": "Подписка на канал",
+                "callback_data": "shell:channel"
+              }
+            ],
+            [
+              {
+                "text": "Магазин Stars",
+                "callback_data": "shell:dust:shop"
+              },
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              },
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.834,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invite-legacy",
+      "body": {
+        "chat_id": 1,
+        "text": "Приглашение\n\nПосле включения новых правил: +10 ✨ пригласившему и +3 ✨ приглашённому после регистрации и выбора знака, без ожидания двух дней. Подтверждённая новая подписка приглашённого даёт ещё +5 ✨ исходному пригласившему. Старые незавершённые договоры сохраняют прежние +5. Повторная регистрация ограничена правами на 30 дней; условия — /privacy.\n\nhttps://t.me/LaDa_Iskra_Opel_Astrabot?start=ref_1",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.211,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "channel-legacy",
+      "body": {
+        "chat_id": 1,
+        "text": "Канал @examplechannel\n\nПодтверждённая подписка: 5 ✨ один раз за право. Прежнее начисление за канал исключает доплату. После включения новых правил подписка подтверждённого приглашённого может дать ещё +5 ✨ исходному пригласившему. Условия — /privacy.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Открыть канал",
+                "url": "https://t.me/examplechannel"
+              }
+            ],
+            [
+              {
+                "text": "Проверить подписку",
+                "callback_data": "channel:check"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.632,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bonus-legacy",
+      "body": {
+        "chat_id": 1,
+        "text": "Первый активный вход после включения новых правил: +2 ✨ автоматически за московскую дату. До перехода действует прежний ручной +1. Повторное право ограничено по /privacy.\nБаланс: 21 ✨.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 21,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.847,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 21,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 1,
+            "reason": "reward:v3:legacy_daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "notifications-off",
+      "body": {
+        "chat_id": 1,
+        "text": "Утренний прогноз\n\nРассылка: выключена. Дневной прогноз можно открыть вручную независимо от настройки.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Изменить настройку",
+                "callback_data": "shell:notifications:toggle"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dossier"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.151,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "notifications-old-on",
+      "body": {
+        "chat_id": 1,
+        "text": "Утренний прогноз\n\nРассылка: включена. Дневной прогноз можно открыть вручную независимо от настройки.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Изменить настройку",
+                "callback_data": "shell:notifications:toggle"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dossier"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.393,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 1,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "privacy",
+      "body": {
+        "chat_id": 1,
+        "text": "Данные профиля\n\nЗнак, баланс, Telegram ID, активные даты, журнал, результаты и реферальные связи хранятся для работы сервиса; /delete удаляет эти обычные данные.\n\nДля защиты от повторного получения бонусов мы отдельно сохраняем HMAC-псевдоним аккаунта и минимальные полученные права на 30 дней после фактического начисления. Это персональные псевдонимизированные данные, не анонимизация. Попытки регистрации не продлевают срок. /delete не стирает эти права до истечения срока; просроченные записи удаляются ограниченной фоновой очисткой. Права не содержат исходный Telegram ID, имя, вопросы или тексты и не восстанавливают удалённый профиль.\n\nОплаченные доказательства, ID плательщика и долг сохраняются отдельно по /terms (срок ещё не утверждён дней после закрытия дел и погашения долга). Поддержка: не настроена. Сообщения Telegram и backup управляются отдельно. Публичная активация бонусов требует утверждённого уведомления и правового основания владельца.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:rules"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.093,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "delete",
+      "body": {
+        "chat_id": 1,
+        "text": "Профиль, обычный журнал, активность и материалы удалены. Минимальные HMAC-права на бонусы сохраняются до 30 дней после начисления; это персональные псевдонимизированные данные. Платёжные доказательства и долг сохраняются отдельно по /privacy и /terms. Для новой регистрации используйте /start.",
+        "reply_markup": {
+          "remove_keyboard": true
+        }
+      },
+      "balance": null,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 12,
+          "statements": 12,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 12,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.769,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": null,
+        "notifications": null,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": []
+      }
+    },
+    {
+      "name": "help",
+      "body": {
+        "chat_id": 1,
+        "text": "Помощь\n\nПрогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 5 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "FAQ",
+                "callback_data": "shell:faq"
+              },
+              {
+                "text": "Об Астре",
+                "callback_data": "shell:about"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 17,
+          "statements": 17,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 17,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 8.889,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "terms-unconfigured",
+      "body": {
+        "chat_id": 1,
+        "text": "Условия Stars\n\nПыль — внутренний доступ к материалам, без вывода в деньги. Стоимость пакета фиксируется в заказе до счёта. Пыль начисляется только после подтверждённой оплаты Telegram.\n\nПри возврате уже выданные материалы не отзываются. Доступная пыль уменьшается на стоимость возвращённого пакета; недостаток становится явным долгом. Будущие начисления сначала погашают долг. Баланс не становится отрицательным.\n\nПоддержка: владелец ещё не указал контакт; магазин недоступен.\nВерсия условий: не утверждена.\nОплаченные заказы, charge ID и ID плательщика нужны для возвратов/споров: не утверждено дней после закрытия всех платёжных дел и погашения долга. Неразрешённые случаи сохраняются до завершения. После удаления персональных доказательств остаётся необратимый hash charge ID с суммой пакета и признаком возврата, без ID плательщика без ограничения срока для запрета повторного начисления. /delete не стирает незавершённые платежи/долги.\n\nДо согласования условий, контакта, хранения и окружения магазин выключен.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 5.577,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "support-unconfigured",
+      "body": {
+        "chat_id": 1,
+        "text": "Поддержка платежей\n\nКонтакт поддержки владельцем ещё не установлен. Магазин не может выставлять счета. Текущие материалы и история пыли остаются доступны.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              },
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.382,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shop-off",
+      "body": {
+        "chat_id": 1,
+        "text": "Магазин Stars\n\nМагазин выключен или ещё не принят для этого окружения. Счета не выставляются. Доступные материалы и история работают независимо от магазина.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              },
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.465,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shop-test-only",
+      "body": {
+        "chat_id": 1,
+        "text": "Магазин Stars\n\nПакет — одноразовая покупка внутренней пыли. Сначала ознакомьтесь с условиями; после согласия будет выставлен счёт в XTR.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "10 XTR → 40 ✨",
+                "callback_data": "shell:stars:buy26:10"
+              }
+            ],
+            [
+              {
+                "text": "25 XTR → 110 ✨",
+                "callback_data": "shell:stars:buy26:25"
+              }
+            ],
+            [
+              {
+                "text": "50 XTR → 240 ✨",
+                "callback_data": "shell:stars:buy26:50"
+              }
+            ],
+            [
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              },
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.9,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "stars-consent",
+      "body": {
+        "chat_id": 1,
+        "text": "Подтверждение покупки\n\n10 XTR за 40 ✨.\nПрочитайте /terms версии test-v1. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Принимаю условия · 10 XTR",
+                "callback_data": "shell:stars:accept26:10:1c826d20caca"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.688,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "stars-consent-25",
+      "body": {
+        "chat_id": 1,
+        "text": "Подтверждение покупки\n\n25 XTR за 110 ✨.\nПрочитайте /terms версии test-v1. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Принимаю условия · 25 XTR",
+                "callback_data": "shell:stars:accept26:25:1c826d20caca"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.557,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "stars-consent-50",
+      "body": {
+        "chat_id": 1,
+        "text": "Подтверждение покупки\n\n50 XTR за 240 ✨.\nПрочитайте /terms версии test-v1. Возврат после расходования пыли может создать долг с погашением будущими начислениями. Нажатие ниже подтверждает согласие и создаёт счёт; само открытие этого экрана ничего не начисляет.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Принимаю условия · 50 XTR",
+                "callback_data": "shell:stars:accept26:50:1c826d20caca"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 19,
+          "statements": 19,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 19,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.396,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "terms-configured",
+      "body": {
+        "chat_id": 1,
+        "text": "Условия Stars\n\nПыль — внутренний доступ к материалам, без вывода в деньги. Стоимость пакета фиксируется в заказе до счёта. Пыль начисляется только после подтверждённой оплаты Telegram.\n\nПри возврате уже выданные материалы не отзываются. Доступная пыль уменьшается на стоимость возвращённого пакета; недостаток становится явным долгом. Будущие начисления сначала погашают долг. Баланс не становится отрицательным.\n\nПоддержка: mailto:support@example.test.\nВерсия условий: test-v1.\nОплаченные заказы, charge ID и ID плательщика нужны для возвратов/споров: 365 дней после закрытия всех платёжных дел и погашения долга. Неразрешённые случаи сохраняются до завершения. После удаления персональных доказательств остаётся необратимый hash charge ID с суммой пакета и признаком возврата, без ID плательщика без ограничения срока для запрета повторного начисления. /delete не стирает незавершённые платежи/долги.\n\nДо согласования условий, контакта, хранения и окружения магазин выключен.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.099,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "support-configured",
+      "body": {
+        "chat_id": 1,
+        "text": "Поддержка платежей\n\nКонтакт владельца: mailto:support@example.test\n\nУкажите номер заказа из «Мои платежи», сумму XTR и проблему. Не присылайте токен бота, webhook secret, данные других людей. Возврат рассматривается по /terms; долг не скрывается. При неопределённом исходе проводится сверка Telegram, а не повторное списание.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              },
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 10,
+          "statements": 10,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 10,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.134,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payment-history",
+      "body": {
+        "chat_id": 1,
+        "text": "Мои платежи\n\n09.11.2026, 22:38:31\nЗаказ b9e05d49-1e27-4953-94ce-11faa2f65edc\n10 XTR → 40 ✨ · created",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Обновить",
+                "callback_data": "shell:stars:history"
+              },
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 11,
+          "statements": 11,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 11,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.14,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 1,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payment-received",
+      "body": {
+        "chat_id": 1,
+        "text": "Платёж сохранён · заказ 3bdbfb64-b656-4e84-bc3b-1db690e2e9cd.\nСостояние: credited. Номер обращения: 5fc7144e2689ec6f.\nДоступный баланс: 60 ✨.\nПовтор не начисляет пыль заново. /payments · /paysupport",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 60,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 9,
+          "statements": 9,
+          "batches": 0,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 9,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 1.836,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 60,
+        "notifications": 0,
+        "orders": 1,
+        "receipts": 1,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 40,
+            "reason": "payment:stars"
+          }
+        ]
+      }
+    },
+    {
+      "name": "history",
+      "body": {
+        "chat_id": 1,
+        "text": "История звёздной пыли\nТекущий баланс: 20 ✨\nВремя записей: Europe/Moscow (UTC+3)\n\n09.11.2026, 22:38:31\nИсторический снимок баланса · +20 ✨\n\nПросмотр зафиксирован при открытии истории. Новые операции доступны по кнопке обновления. Исторический снимок — сохранённый старый баланс, не новая награда. Знак минус обозначает расход пыли, не платёж Telegram Stars.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Обновить историю",
+                "callback_data": "shell:dust:history"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.791,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "activity",
+      "body": {
+        "chat_id": 1,
+        "text": "Активные дни\n\npolicy-v2: 1 разных дат; текущая серия 1 дн.\nДаты отсчитываются с принятой политики, без восстановления прежних посещений. +2 за дату, +3 за первые 3 подряд, +4 за каждый 7-дневный цикл и +6 за 30 разных дат. Пропуск не уменьшает баланс.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dust:history"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dust"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 22,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.52,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 22,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "economy-dossier",
+      "body": {
+        "chat_id": 1,
+        "text": "Экономическое досье\n\nБаланс: 22 ✨\nДолг по возвратам: 0 ✨\nДат policy-v2: 1\nТекущая серия policy-v2: 1 дн.\n\n+2 за первый вход; первые 3 подряд +3 один раз; каждые 7 подряд +4; 30 разных дат +6 один раз. Все выплаты видны в истории. Пропуск не отнимает накопленную пыль. Старые даты не пересчитываются.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dossier:history"
+              },
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:dossier"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 22,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 26,
+          "statements": 26,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 26,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 3.935,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 22,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 2,
+            "reason": "reward:v3:daily"
+          }
+        ]
+      }
+    },
+    {
+      "name": "faq",
+      "body": {
+        "chat_id": 1,
+        "text": "Вопросы о методах и работе сервиса\n\nКраткие сведения. Откройте вопрос для подробного разбора.\n\n1. Как составляется дневной прогноз?\nПолный прогноз связан одной доминантой, символикой знака и московской датой; результат сохраняется в D1.\n\n2. Как устроены запросы и результаты?\nCloudflare Workers обрабатывает webhook Telegram; D1 хранит профиль, учёт и расклады.\n\n3. Почему у колоды один хранитель?\nЕдиный хранитель обозначает преемственность тарологического корпуса.\n\n4. Что можно заключить из трактовки?\nОна задаёт способ рассмотрения вопроса, но не доказывает будущий исход.\n\n5. Как учитывается звёздная пыль?\nЭто внутренняя единица доступа; баланс сверяется с журналом начислений и списаний.\n\n6. Что доступно бесплатно?\nДневной прогноз с числом дня, карта дня и просмотр сохранённого расклада.\n\n7. Какие данные сохраняются?\nПрофиль, настройки, финансовый журнал, результаты и технические статусы обработки.\n\n8. Какие разделы ещё разрабатываются?\nПортрет, совместимость, натальная карта и коллекции.\n\n9. Как взаимодействуют редакция и инженерное направление?\nРедакция задаёт структуру трактовок; инженерное направление обеспечивает обработку запросов, хранение результатов и согласованность учёта.\n\n10. Нужны ли время и место рождения?\nДля доступного прогноза достаточно выбранного солнечного знака.\n\n11. Можно ли оплатить через Stars?\nМагазин подготовлен: 10 XTR → 40 ✨; 25 → 110; 50 → 240. Включение требует отдельного решения.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Как составляется дневной прогноз?",
+                "callback_data": "shell:faq:0:more"
+              }
+            ],
+            [
+              {
+                "text": "Как устроены запросы и результаты?",
+                "callback_data": "shell:faq:1:more"
+              }
+            ],
+            [
+              {
+                "text": "Почему у колоды один хранитель?",
+                "callback_data": "shell:faq:2:more"
+              }
+            ],
+            [
+              {
+                "text": "Что можно заключить из трактовки?",
+                "callback_data": "shell:faq:3:more"
+              }
+            ],
+            [
+              {
+                "text": "Как учитывается звёздная пыль?",
+                "callback_data": "shell:faq:4:more"
+              }
+            ],
+            [
+              {
+                "text": "Что доступно бесплатно?",
+                "callback_data": "shell:faq:5:more"
+              }
+            ],
+            [
+              {
+                "text": "Какие данные сохраняются?",
+                "callback_data": "shell:faq:6:more"
+              }
+            ],
+            [
+              {
+                "text": "Какие разделы ещё разрабатываются?",
+                "callback_data": "shell:faq:7:more"
+              }
+            ],
+            [
+              {
+                "text": "Как взаимодействуют редакция и инженерное направление?",
+                "callback_data": "shell:faq:8:more"
+              }
+            ],
+            [
+              {
+                "text": "Нужны ли время и место рождения?",
+                "callback_data": "shell:faq:9:more"
+              }
+            ],
+            [
+              {
+                "text": "Можно ли оплатить через Stars?",
+                "callback_data": "shell:faq:10:more"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:about"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.621,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "faq-authorship",
+      "body": {
+        "chat_id": 1,
+        "text": "Как взаимодействуют редакция и инженерное направление?\n\nСодержательная редакция задаёт язык зодиака, арканов и числовых соответствий. Инженерный контур отвечает за программную архитектуру: webhook Telegram, хранение результатов в D1, обработку повторов и согласованность журнала с балансом. Это разные задачи, даже когда их решает один создатель с помощью ИИ.\n\nElias Voss обозначает инженерную роль в редакционной структуре. Имена на странице команды не являются биографиями независимого штата или свидетельством внешней аккредитации.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:faq"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 21,
+          "statements": 21,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 21,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.384,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rules",
+      "body": {
+        "chat_id": 1,
+        "text": "Правила и данные\n\nАстрологическая, тарологическая и нумерологическая трактовка не является гарантией события или профессиональным заключением о здоровье, праве либо инвестициях. Расчёты небесных координат следует отличать от символической интерпретации. Текущий набор методов описан в FAQ.\n\nЦена относится к доступу к материалу. Скрытых подписок нет, разрабатываемые услуги не продаются.\n\n/privacy — состав сохраняемых данных; /delete удаляет обычные данные профиля. Оплаченные доказательства и незавершённые долги сохраняются по /privacy и /terms для поддержки и возвратов. Сообщения Telegram и резервные копии управляются отдельно; уже начатую отправку отозвать нельзя.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "Состав данных",
+                "callback_data": "shell:privacy"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:about"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 20,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 18,
+          "statements": 18,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 18,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.421,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 20,
+        "notifications": 0,
+        "orders": 0,
+        "receipts": 0,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          }
+        ]
+      }
+    },
+    {
+      "name": "debt",
+      "body": {
+        "chat_id": 1,
+        "text": "✨ Звёздная пыль\n\nБаланс: 0 ✨\nДолг по возвратам: 40 ✨\n\nНачальный баланс: 2 ✨. Ручной бонус дня: +1. Реферал после выбора знака: +5. Новый подтверждённый канал: +5.\nТаро: 5 ✨. Расширенный прогноз: 4 ✨ на дату, повтор бесплатно. Прогноз с числом дня и карта дня бесплатны.\nПри долге новые начисления сначала погашают его отдельной записью журнала.",
+        "reply_markup": {
+          "inline_keyboard": [
+            [
+              {
+                "text": "История операций",
+                "callback_data": "shell:dust:history"
+              },
+              {
+                "text": "Активные дни",
+                "callback_data": "shell:dust:activity"
+              }
+            ],
+            [
+              {
+                "text": "Бонус дня",
+                "callback_data": "shell:gift"
+              },
+              {
+                "text": "Пригласить участника",
+                "callback_data": "shell:invite"
+              }
+            ],
+            [
+              {
+                "text": "Подписка на канал",
+                "callback_data": "shell:channel"
+              }
+            ],
+            [
+              {
+                "text": "Магазин Stars",
+                "callback_data": "shell:dust:shop"
+              },
+              {
+                "text": "Мои платежи",
+                "callback_data": "shell:stars:history"
+              }
+            ],
+            [
+              {
+                "text": "Условия",
+                "callback_data": "shell:stars:terms"
+              },
+              {
+                "text": "Поддержка",
+                "callback_data": "shell:stars:support"
+              }
+            ],
+            [
+              {
+                "text": "‹ Назад",
+                "callback_data": "shell:home"
+              },
+              {
+                "text": "Главное меню",
+                "callback_data": "shell:home"
+              }
+            ]
+          ]
+        }
+      },
+      "balance": 0,
+      "costs": [
+        {
+          "event": "astra_d1_invocation",
+          "kind": "http",
+          "d1_calls": 20,
+          "statements": 20,
+          "batches": 1,
+          "failed_calls": 0,
+          "meta_results": 0,
+          "results_without_meta": 20,
+          "rows_read_observed": 0,
+          "rows_written_observed": 0,
+          "db_size_after_max": null,
+          "wall_ms": 2.581,
+          "rows_complete": false
+        }
+      ],
+      "effects": {
+        "balance": 0,
+        "notifications": 0,
+        "orders": 1,
+        "receipts": 1,
+        "tarot": 0,
+        "forecast": 0,
+        "ledger": [
+          {
+            "delta": 20,
+            "reason": "opening"
+          },
+          {
+            "delta": 40,
+            "reason": "payment:stars"
+          },
+          {
+            "delta": -60,
+            "reason": "test:spent"
+          },
+          {
+            "delta": 0,
+            "reason": "refund:cash"
+          }
+        ]
+      }
+    }
+  ]
+}

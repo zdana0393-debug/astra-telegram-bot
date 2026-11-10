@@ -1,0 +1,90 @@
+{
+  "historical_pre_stopship_executions": 985,
+  "historical_legacy_assertions": 210,
+  "final_worker_sha256": "ea9b6eef41b59e0275d2d829722bb9ff02492d451e465849ce791657728598a7",
+  "final_stage_tests": 197,
+  "tests_with_actual_final_worker_api": 159,
+  "tests_module_sql_or_private_probe_only": 38,
+  "final_worker_fetch_calls": 2291,
+  "final_worker_scheduled_calls": 77,
+  "files": {
+    "task01-contention.test.mjs": {
+      "tests": 9,
+      "with_final_worker_api": 0,
+      "module_or_sql_only": 9,
+      "fetch_calls": 0,
+      "scheduled_calls": 0
+    },
+    "task01-economy.test.mjs": {
+      "tests": 53,
+      "with_final_worker_api": 50,
+      "module_or_sql_only": 3,
+      "fetch_calls": 1020,
+      "scheduled_calls": 1
+    },
+    "task01-recovery.test.mjs": {
+      "tests": 14,
+      "with_final_worker_api": 8,
+      "module_or_sql_only": 6,
+      "fetch_calls": 32,
+      "scheduled_calls": 1
+    },
+    "task02b-editorial.test.mjs": {
+      "tests": 14,
+      "with_final_worker_api": 1,
+      "module_or_sql_only": 13,
+      "fetch_calls": 2,
+      "scheduled_calls": 0
+    },
+    "task04-ui.test.mjs": {
+      "tests": 68,
+      "with_final_worker_api": 68,
+      "module_or_sql_only": 0,
+      "fetch_calls": 120,
+      "scheduled_calls": 0
+    },
+    "task05-backup-projection.test.mjs": {
+      "tests": 3,
+      "with_final_worker_api": 0,
+      "module_or_sql_only": 3,
+      "fetch_calls": 0,
+      "scheduled_calls": 0
+    },
+    "task05-migrations.test.mjs": {
+      "tests": 3,
+      "with_final_worker_api": 2,
+      "module_or_sql_only": 1,
+      "fetch_calls": 12,
+      "scheduled_calls": 2
+    },
+    "task05-privacy.test.mjs": {
+      "tests": 1,
+      "with_final_worker_api": 1,
+      "module_or_sql_only": 0,
+      "fetch_calls": 1,
+      "scheduled_calls": 0
+    },
+    "task05-source-proof.test.mjs": {
+      "tests": 2,
+      "with_final_worker_api": 0,
+      "module_or_sql_only": 2,
+      "fetch_calls": 0,
+      "scheduled_calls": 0
+    },
+    "task05-stopship.test.mjs": {
+      "tests": 18,
+      "with_final_worker_api": 17,
+      "module_or_sql_only": 1,
+      "fetch_calls": 24,
+      "scheduled_calls": 73
+    },
+    "task05-worker-corpus.test.mjs": {
+      "tests": 12,
+      "with_final_worker_api": 12,
+      "module_or_sql_only": 0,
+      "fetch_calls": 1080,
+      "scheduled_calls": 0
+    }
+  },
+  "classification": "Counted by a test-only preload wrapping the exact final module export per node:test; 1080 sign/date readings are invocations inside twelve tests, not 1080 tests. Private VM probes and independent SQL workers do not count as exported Worker API tests."
+}

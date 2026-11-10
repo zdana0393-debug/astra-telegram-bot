@@ -1,0 +1,37 @@
+{
+  "base_worker_sha256": "ea9b6eef41b59e0275d2d829722bb9ff02492d451e465849ce791657728598a7",
+  "changes": [
+    {
+      "from": "'ASTRA-2.4-task05-rc'",
+      "to": "'ASTRA-2.4-task06-rc'"
+    },
+    {
+      "from": "async function shellPage(",
+      "to": "async function pre28_shellPage("
+    },
+    {
+      "from": "async function incoming(",
+      "to": "async function pre28_incoming("
+    },
+    {
+      "from": "async function health(",
+      "to": "async function pre28_health("
+    },
+    {
+      "from": "async function broadcast(",
+      "to": "async function pre28_broadcast("
+    },
+    {
+      "from": "const recognized=",
+      "to": "const recognized=/^consent28:(?:stop|(?:grant|cancel):[a-f0-9]{32})$/.test(page||'')||"
+    },
+    {
+      "from": "'\\n\\nПлатёжные записи, включая ID плательщика,",
+      "to": "'\\n\\nДля добровольной утренней подписки отдельно сохраняются версия условий, время подтверждения, номера подтверждающего обновления и сообщения, статус отзыва. Это персональные данные, не бонусные HMAC. Отзыв — /stop; при /delete доказательство и временное подтверждение удаляются вместе с профилем. Временная кнопка действует 15 минут.\\n\\nПлатёжные записи, включая ID плательщика,"
+    },
+    {
+      "from": "return send(env,id,DELETE_NOTICE04,",
+      "to": "return send(env,id,DELETE_NOTICE04+' Доказательство утренней подписки и временные подтверждения удалены.',"
+    }
+  ]
+}
