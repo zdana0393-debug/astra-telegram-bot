@@ -1,0 +1,157 @@
+{
+  "snapshot_version": "tarot25-snapshot-v1",
+  "deck_version": "rws78-v1",
+  "engine_version": "tarot25-v1",
+  "spread_version": "tarot25-spreads-v1",
+  "card_ids": [
+    "major-00",
+    "major-01",
+    "major-02",
+    "major-03",
+    "major-04",
+    "major-05",
+    "major-06",
+    "major-07",
+    "major-08",
+    "major-09",
+    "major-10",
+    "major-11",
+    "major-12",
+    "major-13",
+    "major-14",
+    "major-15",
+    "major-16",
+    "major-17",
+    "major-18",
+    "major-19",
+    "major-20",
+    "major-21",
+    "wands-ace",
+    "wands-02",
+    "wands-03",
+    "wands-04",
+    "wands-05",
+    "wands-06",
+    "wands-07",
+    "wands-08",
+    "wands-09",
+    "wands-10",
+    "wands-page",
+    "wands-knight",
+    "wands-queen",
+    "wands-king",
+    "cups-ace",
+    "cups-02",
+    "cups-03",
+    "cups-04",
+    "cups-05",
+    "cups-06",
+    "cups-07",
+    "cups-08",
+    "cups-09",
+    "cups-10",
+    "cups-page",
+    "cups-knight",
+    "cups-queen",
+    "cups-king",
+    "swords-ace",
+    "swords-02",
+    "swords-03",
+    "swords-04",
+    "swords-05",
+    "swords-06",
+    "swords-07",
+    "swords-08",
+    "swords-09",
+    "swords-10",
+    "swords-page",
+    "swords-knight",
+    "swords-queen",
+    "swords-king",
+    "pentacles-ace",
+    "pentacles-02",
+    "pentacles-03",
+    "pentacles-04",
+    "pentacles-05",
+    "pentacles-06",
+    "pentacles-07",
+    "pentacles-08",
+    "pentacles-09",
+    "pentacles-10",
+    "pentacles-page",
+    "pentacles-knight",
+    "pentacles-queen",
+    "pentacles-king"
+  ],
+  "spreads": {
+    "basic-3": {
+      "theme": "general",
+      "positions": [
+        "situation",
+        "obstacle",
+        "advice"
+      ]
+    },
+    "relations-3": {
+      "theme": "relations",
+      "positions": [
+        "self",
+        "between",
+        "care"
+      ]
+    },
+    "work-3": {
+      "theme": "work",
+      "positions": [
+        "task",
+        "means",
+        "practice"
+      ]
+    },
+    "choice-3": {
+      "theme": "choice",
+      "positions": [
+        "criterion",
+        "tension",
+        "test"
+      ]
+    },
+    "depth-5": {
+      "theme": "general",
+      "positions": [
+        "resource",
+        "barrier",
+        "tendency",
+        "step",
+        "integration"
+      ]
+    },
+    "depth-7": {
+      "theme": "general",
+      "positions": [
+        "core",
+        "roots",
+        "inner",
+        "outer",
+        "obstacle",
+        "support",
+        "direction"
+      ]
+    },
+    "celtic-10": {
+      "theme": "general",
+      "positions": [
+        "present",
+        "crossing",
+        "foundation",
+        "past",
+        "crown",
+        "near",
+        "self",
+        "environment",
+        "hopes",
+        "outcome"
+      ]
+    }
+  }
+}

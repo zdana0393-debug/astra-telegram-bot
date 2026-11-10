@@ -1,0 +1,396 @@
+{
+  "new_test_groups": {
+    "finance_adapter": 40,
+    "sql_migration_reader": 10,
+    "independent_wal": 13
+  },
+  "scope": "LOCAL_SQLITE_D1_MODEL",
+  "base_commit": "9a2e578",
+  "node": "v24.22.1",
+  "previous_task01_executions": 1472,
+  "previous_legacy_assertions": 210,
+  "new_unique_tests": 63,
+  "new_worker_api_tests": 0,
+  "new_tests_scope": "pure D1 adapter + actual SQLite triggers and independent WAL connections; no new Worker routes",
+  "measured": [
+    {
+      "label": "basic-3:prepare",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 1,
+      "node_elapsed_ms": 10.794865999999999
+    },
+    {
+      "label": "basic-3:confirm",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 3,
+      "node_elapsed_ms": 3.00680100000001
+    },
+    {
+      "label": "basic-3:repeat-confirm",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.1547439999999938
+    },
+    {
+      "label": "basic-3:load",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.2008540000000067
+    },
+    {
+      "label": "basic-3:history",
+      "statements": 4,
+      "d1_calls": 4,
+      "http": 0,
+      "total_conservative_operations": 4,
+      "with_future_outer_reserve2": 6,
+      "returned_rows": 186,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.8710059999999942
+    },
+    {
+      "label": "basic-3:delivery",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 1,
+      "total_conservative_operations": 8,
+      "with_future_outer_reserve2": 10,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 2,
+      "node_elapsed_ms": 15.601798000000002
+    },
+    {
+      "label": "relations-3:prepare",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 1,
+      "node_elapsed_ms": 2.616351999999978
+    },
+    {
+      "label": "relations-3:confirm",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 3,
+      "node_elapsed_ms": 1.9088940000000036
+    },
+    {
+      "label": "relations-3:repeat-confirm",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.9689740000000029
+    },
+    {
+      "label": "relations-3:load",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.259131999999994
+    },
+    {
+      "label": "relations-3:history",
+      "statements": 4,
+      "d1_calls": 4,
+      "http": 0,
+      "total_conservative_operations": 4,
+      "with_future_outer_reserve2": 6,
+      "returned_rows": 186,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.7454859999999996
+    },
+    {
+      "label": "relations-3:delivery",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 1,
+      "total_conservative_operations": 8,
+      "with_future_outer_reserve2": 10,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 2,
+      "node_elapsed_ms": 2.507817999999986
+    },
+    {
+      "label": "depth-5:prepare",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 1,
+      "node_elapsed_ms": 2.798577999999992
+    },
+    {
+      "label": "depth-5:confirm",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 3,
+      "node_elapsed_ms": 1.9119590000000244
+    },
+    {
+      "label": "depth-5:repeat-confirm",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.9779770000000099
+    },
+    {
+      "label": "depth-5:load",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.9798600000000022
+    },
+    {
+      "label": "depth-5:history",
+      "statements": 4,
+      "d1_calls": 4,
+      "http": 0,
+      "total_conservative_operations": 4,
+      "with_future_outer_reserve2": 6,
+      "returned_rows": 186,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.7504240000000095
+    },
+    {
+      "label": "depth-5:delivery",
+      "statements": 8,
+      "d1_calls": 8,
+      "http": 2,
+      "total_conservative_operations": 10,
+      "with_future_outer_reserve2": 12,
+      "returned_rows": 188,
+      "sqlite_logical_changed_rows": 2,
+      "node_elapsed_ms": 2.8748329999999953
+    },
+    {
+      "label": "depth-7:prepare",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 1,
+      "node_elapsed_ms": 3.414588000000009
+    },
+    {
+      "label": "depth-7:confirm",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 3,
+      "node_elapsed_ms": 2.8874309999999923
+    },
+    {
+      "label": "depth-7:repeat-confirm",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.0150130000000104
+    },
+    {
+      "label": "depth-7:load",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.281626000000017
+    },
+    {
+      "label": "depth-7:history",
+      "statements": 4,
+      "d1_calls": 4,
+      "http": 0,
+      "total_conservative_operations": 4,
+      "with_future_outer_reserve2": 6,
+      "returned_rows": 186,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.6474290000000167
+    },
+    {
+      "label": "depth-7:delivery",
+      "statements": 8,
+      "d1_calls": 8,
+      "http": 2,
+      "total_conservative_operations": 10,
+      "with_future_outer_reserve2": 12,
+      "returned_rows": 188,
+      "sqlite_logical_changed_rows": 2,
+      "node_elapsed_ms": 2.8950030000000027
+    },
+    {
+      "label": "celtic-10:prepare",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 1,
+      "node_elapsed_ms": 3.661912000000001
+    },
+    {
+      "label": "celtic-10:confirm",
+      "statements": 7,
+      "d1_calls": 7,
+      "http": 0,
+      "total_conservative_operations": 7,
+      "with_future_outer_reserve2": 9,
+      "returned_rows": 187,
+      "sqlite_logical_changed_rows": 3,
+      "node_elapsed_ms": 2.556972000000002
+    },
+    {
+      "label": "celtic-10:repeat-confirm",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.4221990000000062
+    },
+    {
+      "label": "celtic-10:load",
+      "statements": 3,
+      "d1_calls": 3,
+      "http": 0,
+      "total_conservative_operations": 3,
+      "with_future_outer_reserve2": 5,
+      "returned_rows": 185,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 1.511292999999995
+    },
+    {
+      "label": "celtic-10:history",
+      "statements": 4,
+      "d1_calls": 4,
+      "http": 0,
+      "total_conservative_operations": 4,
+      "with_future_outer_reserve2": 6,
+      "returned_rows": 186,
+      "sqlite_logical_changed_rows": 0,
+      "node_elapsed_ms": 0.9707160000000101
+    },
+    {
+      "label": "celtic-10:delivery",
+      "statements": 8,
+      "d1_calls": 8,
+      "http": 2,
+      "total_conservative_operations": 10,
+      "with_future_outer_reserve2": 12,
+      "returned_rows": 188,
+      "sqlite_logical_changed_rows": 2,
+      "node_elapsed_ms": 4.1772200000000055
+    }
+  ],
+  "max_conservative_operations": 10,
+  "max_with_future_outer_reserve2": 12,
+  "cloudflare_cpu": "NOT_MEASURED",
+  "d1_rows_read": "NOT_MEASURED",
+  "d1_rows_written": "NOT_MEASURED",
+  "logical_rows_note": "SQLite total_changes includes local trigger writes; returned_rows is response rows, neither is actual D1 rows_read/rows_written.",
+  "flags_default_off": true,
+  "files": {
+    "src/tarot25/purchases29.mjs": {
+      "bytes": 13594,
+      "sha256": "2971120f238d869f1ea4ff9c8c551f86008f7df754211179a8a4a3f352e7a08f"
+    },
+    "src/tarot25/reader-v1.mjs": {
+      "bytes": 4392,
+      "sha256": "e07b5ce8935f9cc139141b0cf85bf7404982173126564886186e81aaa38affb5"
+    },
+    "src/tarot25/text29.mjs": {
+      "bytes": 1244,
+      "sha256": "4cbfb2481e00488572e6a390642af186177c53df830993ff3f9284a2ba9680d1"
+    },
+    "src/tarot25/legacy29.mjs": {
+      "bytes": 1986,
+      "sha256": "b4d97bdfae12b750ebf535cfb5538e08f869ce2e990263dfb4eecd26f0cb6b1b"
+    },
+    "src/tarot25/engine.mjs": {
+      "bytes": 16157,
+      "sha256": "98b18a97a5b9c251ac9e4d624c48c6b0fc8b53ac58cb60fe6de77d3bbb2cb213"
+    },
+    "migrations/0029_tarot.sql": {
+      "bytes": 39610,
+      "sha256": "ca64d5d7842c0e66d2859beeb34a03f287483c26ce950120d74aacb3ea34afba"
+    },
+    "migrations/0029_steps/01_tables.sql": {
+      "bytes": 4623,
+      "sha256": "e2d0f5cea747a15cff7e177c5af3e0c6d51e67df0f75090c70b7f04f3cc6d39c"
+    },
+    "migrations/0029_steps/02_offer_guards.sql": {
+      "bytes": 9214,
+      "sha256": "805911a4c344a92340636fddb7ac56c0660acf67d74375fb07f68a0cbf9b1523"
+    },
+    "migrations/0029_steps/03_payment.sql": {
+      "bytes": 5003,
+      "sha256": "bac224a74bb19961eac8247df1ab65763279244fa2ce283108436d6a16f42a42"
+    },
+    "migrations/0029_steps/04_complete.sql": {
+      "bytes": 20770,
+      "sha256": "b4f5cd60c18b83264db2a84f3273ed60f63bb50442cbc9cecda4af03d71ed24f"
+    }
+  }
+}

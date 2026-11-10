@@ -1,3 +1,4 @@
+import {validateSnapshot as readV1,serializeSnapshot as serializeV1,parseSnapshot as parseV1,renderSnapshot as renderV1} from './reader-v1.mjs';
 import {findCombination} from './combinations.mjs';
 import {CARDS,DECK_VERSION,getCard} from './catalog.mjs';
 import {getSpread,SPREAD_VERSION,THEMES} from './spreads.mjs';
@@ -127,40 +128,6 @@ export function createReading({spread_id,theme,question,question_consent=false,d
  const selected=draw??drawCards(spread_id,{rng}),reading=interpretDraw(selected,spread_id,{theme});
  return{snapshot_version:SNAPSHOT_VERSION,deck_version:DECK_VERSION,engine_version:ENGINE_VERSION,spread_version:SPREAD_VERSION,spread_id,theme:reading.theme,created_at,question:question??null,question_consent:question!==undefined,cards:selected.map(d=>({card_id:d.card_id,reversed:d.reversed,position_id:d.position_id})),interpretation:reading,text:(question!==undefined?'Вопрос: '+question+'\n\n':'')+reading.text};
 }
-// Replay is intentionally independent of CARDS/getSpread/RNG. Accepted immutable versions live here.
-export function validateSnapshot(snapshot){
- const s=snapshot;requireThat(s&&typeof s==='object'&&!Array.isArray(s),'Invalid snapshot');
- requireThat(s.snapshot_version===SNAPSHOT_VERSION&&s.deck_version===DECK_VERSION&&s.engine_version===ENGINE_VERSION&&s.spread_version===SPREAD_VERSION,'Unsupported immutable snapshot version');
- validateDraw(s.cards,s.spread_id);requireThat(THEMES.includes(s.theme),'Invalid snapshot theme');const spread=getSpread(s.spread_id);requireThat(spread.theme==='general'||s.theme===spread.theme,'Invalid snapshot spread theme');
- requireThat(textOK(s.text,MAX_TEXT),'Invalid snapshot text');
- requireThat(typeof s.created_at==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(s.created_at)&&new Date(s.created_at).toISOString()===s.created_at,'Invalid snapshot date');
- requireThat((s.question===null&&s.question_consent===false)||(s.question_consent===true&&textOK(s.question,MAX_QUESTION)&&s.question.trim().length>0&&!/[\r\n\t]/.test(s.question)),'Invalid snapshot question');
- requireThat(s.interpretation&&textOK(s.interpretation.text,MAX_TEXT)&&s.text===(s.question===null?'':'Вопрос: '+s.question+'\n\n')+s.interpretation.text,'Snapshot text mismatch');
- requireThat(Array.isArray(s.interpretation.positions)&&s.interpretation.positions.length===s.cards.length,'Invalid snapshot positions');
- s.cards.forEach((d,i)=>{const p=s.interpretation.positions[i];requireThat(p.card_id===d.card_id&&p.position_id===d.position_id&&p.reversed===d.reversed&&textOK(p.text,5000),'Snapshot position mismatch');});
- const selected=new Map(s.cards.map(d=>[d.position_id,d]));
- requireThat(s.interpretation.theme===s.theme,'Snapshot interpretation theme mismatch');
- requireThat(Array.isArray(s.interpretation.links)&&s.interpretation.links.length===s.cards.length-1,'Invalid snapshot links');
- for(const link of s.interpretation.links){requireThat(Array.isArray(link.position_ids)&&Array.isArray(link.card_ids)&&link.position_ids.length===2&&link.card_ids.length===2&&link.position_ids[0]!==link.position_ids[1]&&textOK(link.text,5000),'Invalid snapshot link');link.position_ids.forEach((id,i)=>requireThat(selected.get(id)?.card_id===link.card_ids[i],'Forged link source'));}
- requireThat(Array.isArray(s.interpretation.advice)&&s.interpretation.advice.length>=1&&s.interpretation.advice.length<=2,'Invalid snapshot advice');
- for(const a of s.interpretation.advice){const d=selected.get(a.position_id);requireThat(d&&d.card_id===a.card_id&&orientation(d)===a.orientation&&a.source==='advice.'+a.orientation&&textOK(a.text,2000),'Forged advice source');}
- return true;
-}
-export function serializeSnapshot(s){validateSnapshot(s);const json=JSON.stringify(s);requireThat(json.length<=300000,'Snapshot too large');return json;}
-export function parseSnapshot(json){requireThat(typeof json==='string'&&json.length<=300000,'Invalid serialized snapshot');const s=JSON.parse(json);validateSnapshot(s);return s;}
-export function renderSnapshot(s){validateSnapshot(s);return s.text;}
-export function splitTelegram(text,limit=4096){
- requireThat(textOK(text,MAX_TEXT),'Invalid delivery text');requireThat(Number.isInteger(limit)&&limit>=32&&limit<=4096,'Invalid Telegram limit');
- const segments=Array.from(new Intl.Segmenter('ru',{granularity:'grapheme'}).segment(text),x=>x.segment),chunks=[];
- let from=0;while(from<segments.length){
-  let length=0,to=from,newline=-1,space=-1;
-  while(to<segments.length&&length+segments[to].length<=limit){
-   const part=segments[to];length+=part.length;to++;
-   if(length>=limit/2){if(part.endsWith('\n'))newline=to;if(/\s$/u.test(part))space=to;}
-  }
-  requireThat(to>from,'Grapheme exceeds delivery limit');
-  const cut=to===segments.length?to:newline>from?newline:space>from?space:to;
-  chunks.push(segments.slice(from,cut).join(''));from=cut;
- }
- return chunks;
-}
+// Compatibility exports use the immutable structural v1 reader.
+export const validateSnapshot=readV1,serializeSnapshot=serializeV1,parseSnapshot=parseV1,renderSnapshot=renderV1;
+export {splitTelegram} from './text29.mjs';

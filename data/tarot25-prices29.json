@@ -1,0 +1,58 @@
+[
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "basic-3",
+    "size": 3,
+    "price": 5,
+    "theme": "general",
+    "positions_json": "[\"situation\",\"obstacle\",\"advice\"]"
+  },
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "relations-3",
+    "size": 3,
+    "price": 8,
+    "theme": "relations",
+    "positions_json": "[\"self\",\"between\",\"care\"]"
+  },
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "work-3",
+    "size": 3,
+    "price": 8,
+    "theme": "work",
+    "positions_json": "[\"task\",\"means\",\"practice\"]"
+  },
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "choice-3",
+    "size": 3,
+    "price": 8,
+    "theme": "choice",
+    "positions_json": "[\"criterion\",\"tension\",\"test\"]"
+  },
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "depth-5",
+    "size": 5,
+    "price": 14,
+    "theme": "general",
+    "positions_json": "[\"resource\",\"barrier\",\"tendency\",\"step\",\"integration\"]"
+  },
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "depth-7",
+    "size": 7,
+    "price": 21,
+    "theme": "general",
+    "positions_json": "[\"core\",\"roots\",\"inner\",\"outer\",\"obstacle\",\"support\",\"direction\"]"
+  },
+  {
+    "price_version": "tarot25-prices-proposal-v1",
+    "spread_id": "celtic-10",
+    "size": 10,
+    "price": 32,
+    "theme": "general",
+    "positions_json": "[\"present\",\"crossing\",\"foundation\",\"past\",\"crown\",\"near\",\"self\",\"environment\",\"hopes\",\"outcome\"]"
+  }
+]
