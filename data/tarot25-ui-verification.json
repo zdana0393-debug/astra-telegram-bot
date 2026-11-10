@@ -1,0 +1,77 @@
+{
+  "checked_at_utc": "2026-11-10T16:21:32.072158+00:00",
+  "command": "sh scripts/test-2.5-task03.sh",
+  "basis_task02": "f0bde5f13ff2c4f0c386084384425b53a9ab26d2",
+  "branch": "astra-2.5-tarot",
+  "new_unique_tests": 83,
+  "new_tests_calling_candidate": 82,
+  "new_static_build_test": 1,
+  "new_suites": {
+    "ui": 56,
+    "integration": 24,
+    "wal": 3
+  },
+  "historical_node_test_executions": 1535,
+  "total_node_test_executions": 1618,
+  "historical_separate_assertions": 210,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "in_process_concurrent_callbacks": [
+    2,
+    20,
+    100
+  ],
+  "wal_concurrent_callbacks": [
+    2,
+    20,
+    100
+  ],
+  "wal_connections": [
+    2,
+    20,
+    20
+  ],
+  "long_result_budgets": [
+    {
+      "scenario": "long_initial",
+      "sql": 33,
+      "http": 14,
+      "total": 47
+    },
+    {
+      "scenario": "manual_page_0",
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "scenario": "manual_page_1",
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "scenario": "manual_page_2",
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "scenario": "manual_page_3",
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "scenario": "manual_page_4",
+      "sql": 20,
+      "http": 5,
+      "total": 25
+    }
+  ],
+  "candidate_sha256": "d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f",
+  "frozen24_sha256": "5f34b44948e4bb6be643d586e712554d41f9b9bf7f2ee7175c4bf5e6d77786f4",
+  "live_services_used": false,
+  "public_ready": false
+}

@@ -1,0 +1,10 @@
+import {parentPort,workerData as w} from 'node:worker_threads';
+import {DatabaseSync} from 'node:sqlite';
+import bot from '../release/ASTRA_2_5_TASK03_CANDIDATE.js';
+const db=new DatabaseSync(w.file);db.exec('PRAGMA busy_timeout=30000');
+let barrierUsed=false;const wait=()=>{if(!w.barrier||barrierUsed)return;barrierUsed=true;const b=new Int32Array(w.barrier);Atomics.add(b,0,1);Atomics.wait(b,1,0,30000);};
+const DB={async batch(statements){db.exec('BEGIN');try{const r=statements.map(s=>s.sync());db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}},prepare(sql){const st=db.prepare(sql);let args=[];return {bind(...a){args=a;return this;},async first(){await Promise.resolve();return st.get(...args)??null;},async all(){await Promise.resolve();return {results:st.all(...args)};},async run(){if(sql.startsWith('INSERT INTO astra_tarot25_purchases29('))wait();await Promise.resolve();return {meta:{changes:Number(st.run(...args).changes)}};},sync(){return {meta:{changes:Number(st.run(...args).changes)}};}};}};
+let mid=100000+w.offset*100;
+globalThis.fetch=async(url,options)=>{if(!String(url).startsWith('https://api.telegram.org/botFAKE/'))throw Error('Unexpected network');const method=String(url).split('/').at(-1),body=JSON.parse(options.body);if(method==='sendMessage')db.prepare('INSERT INTO local_ui25_delivery(body) VALUES(?)').run(body.text);return Response.json({ok:true,result:method==='sendMessage'?{message_id:++mid,chat:{id:body.chat_id}}:true});};
+const env={DB,ASTRA_BOT_TOKEN:'FAKE',ASTRA_WEBHOOK_SECRET:'FAKE_HEADER',ASTRA_TAROT25_ENABLED:'true',ASTRA_FORECAST_START_DAY:'2026-01-01'};
+const out=[];try{for(let i=0;i<w.calls;i++){const update={update_id:100000+w.offset*100+i,callback_query:{id:'wal'+w.offset+':'+i,from:{id:1},message:{message_id:w.button.mid,chat:{id:1,type:'private'}},data:w.button.data}};const r=await bot.fetch(new Request('https://astra.test/telegram-webhook',{method:'POST',headers:{'X-Telegram-Bot-Api-Secret-Token':'FAKE_HEADER'},body:JSON.stringify(update)}),env);out.push(r.status);}parentPort.postMessage(out);}finally{db.close();}

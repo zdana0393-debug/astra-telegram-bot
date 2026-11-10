@@ -1,0 +1,173 @@
+{
+  "scope": "local Node 24 / SQLite / fake Telegram; NOT Cloudflare CPU or D1 rows",
+  "sha256": "d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f",
+  "bytes": 1379813,
+  "gzip_bytes": 253315,
+  "cold_imports": [
+    {
+      "import_ms": 28.854776000000005,
+      "rss": 40165376
+    },
+    {
+      "import_ms": 32.280871000000005,
+      "rss": 40308736
+    },
+    {
+      "import_ms": 30.944484000000003,
+      "rss": 40132608
+    },
+    {
+      "import_ms": 32.25403,
+      "rss": 38899712
+    },
+    {
+      "import_ms": 30.463546000000004,
+      "rss": 38985728
+    }
+  ],
+  "snapshots": [
+    {
+      "snapshot_utf16": 29584,
+      "snapshot_utf8": 50279,
+      "text_utf16": 7383,
+      "json_parse_stringify_mean_ms": 0.12759270000000014
+    },
+    {
+      "snapshot_utf16": 12152,
+      "snapshot_utf8": 20898,
+      "text_utf16": 3344,
+      "json_parse_stringify_mean_ms": 0.05379835000000014
+    },
+    {
+      "snapshot_utf16": 17463,
+      "snapshot_utf8": 29961,
+      "text_utf16": 4513,
+      "json_parse_stringify_mean_ms": 0.07244180000000028
+    },
+    {
+      "snapshot_utf16": 21631,
+      "snapshot_utf8": 37019,
+      "text_utf16": 5535,
+      "json_parse_stringify_mean_ms": 0.10334386999999992
+    }
+  ],
+  "costs": [
+    {
+      "label": "Меню OFF",
+      "sql": 12,
+      "d1_calls": 12,
+      "http": 3,
+      "operations": 15,
+      "wall_ms": 21.049,
+      "rows_complete": false
+    },
+    {
+      "label": "Каталог OFF",
+      "sql": 11,
+      "d1_calls": 11,
+      "http": 3,
+      "operations": 14,
+      "wall_ms": 6.143,
+      "rows_complete": false
+    },
+    {
+      "label": "Категория OFF",
+      "sql": 11,
+      "d1_calls": 11,
+      "http": 3,
+      "operations": 14,
+      "wall_ms": 2.637,
+      "rows_complete": false
+    },
+    {
+      "label": "Меню ON",
+      "sql": 11,
+      "d1_calls": 11,
+      "http": 3,
+      "operations": 14,
+      "wall_ms": 2.881,
+      "rows_complete": false
+    },
+    {
+      "label": "Каталог ON",
+      "sql": 11,
+      "d1_calls": 11,
+      "http": 3,
+      "operations": 14,
+      "wall_ms": 3.013,
+      "rows_complete": false
+    },
+    {
+      "label": "Quote 10",
+      "sql": 21,
+      "d1_calls": 21,
+      "http": 3,
+      "operations": 24,
+      "wall_ms": 13.066,
+      "rows_complete": false
+    },
+    {
+      "label": "Confirm 10 cold + delivery",
+      "sql": 23,
+      "d1_calls": 23,
+      "http": 4,
+      "operations": 27,
+      "wall_ms": 12.174,
+      "rows_complete": false
+    },
+    {
+      "label": "Duplicate confirm 10",
+      "sql": 15,
+      "d1_calls": 15,
+      "http": 3,
+      "operations": 18,
+      "wall_ms": 5.608,
+      "rows_complete": false
+    },
+    {
+      "label": "History",
+      "sql": 15,
+      "d1_calls": 15,
+      "http": 3,
+      "operations": 18,
+      "wall_ms": 3.219,
+      "rows_complete": false
+    },
+    {
+      "label": "Paid manual read",
+      "sql": 19,
+      "d1_calls": 19,
+      "http": 4,
+      "operations": 23,
+      "wall_ms": 5.362,
+      "rows_complete": false
+    },
+    {
+      "label": "Confirm + network failure",
+      "sql": 21,
+      "d1_calls": 21,
+      "http": 4,
+      "operations": 25,
+      "wall_ms": 6.5,
+      "rows_complete": false
+    },
+    {
+      "label": "Confirm 5",
+      "sql": 23,
+      "d1_calls": 23,
+      "http": 4,
+      "operations": 27,
+      "wall_ms": 6.203,
+      "rows_complete": false
+    },
+    {
+      "label": "Confirm 7",
+      "sql": 23,
+      "d1_calls": 23,
+      "http": 4,
+      "operations": 27,
+      "wall_ms": 7.352,
+      "rows_complete": false
+    }
+  ]
+}
