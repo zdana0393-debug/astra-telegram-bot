@@ -1,3 +1,4 @@
+import {patchTask06} from './patch-task06.mjs';
 import {patchTask05} from './patch-task05.mjs';
 import {patchTask04} from './patch-task04.mjs';
 import {patchTask03} from './patch-task03.mjs';
@@ -113,6 +114,7 @@ if(process.env.ASTRA_BUILD_BASELINE!=='1'&&process.env.ASTRA_BUILD_TASK01!=='1')
 if(process.env.ASTRA_BUILD_BASELINE!=='1'&&process.env.ASTRA_BUILD_TASK01!=='1'&&process.env.ASTRA_BUILD_TASK02B!=='1')source=patchTask03(source);
 if(process.env.ASTRA_BUILD_BASELINE!=='1'&&process.env.ASTRA_BUILD_TASK01!=='1'&&process.env.ASTRA_BUILD_TASK02B!=='1'&&process.env.ASTRA_BUILD_TASK03!=='1')source=patchTask04(source);
 if(!['ASTRA_BUILD_BASELINE','ASTRA_BUILD_TASK01','ASTRA_BUILD_TASK02B','ASTRA_BUILD_TASK03','ASTRA_BUILD_TASK04'].some(k=>process.env[k]==='1'))source=patchTask05(source);
+if(!['ASTRA_BUILD_BASELINE','ASTRA_BUILD_TASK01','ASTRA_BUILD_TASK02B','ASTRA_BUILD_TASK03','ASTRA_BUILD_TASK04','ASTRA_BUILD_TASK05'].some(k=>process.env[k]==='1'))source=patchTask06(source);
 fs.writeFileSync(path.join(root,'release/ASTRA_2_4_WORKER.js'),source);
 fs.writeFileSync(path.join(root,'data/payment-schema-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 console.log(`Built release/ASTRA_2_4_WORKER.js (${Buffer.byteLength(source)} bytes); schema ${manifest.length}`);

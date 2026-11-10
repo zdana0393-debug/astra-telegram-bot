@@ -1,0 +1,139 @@
+-- No backfill. Writers must be paused; preserve all legacy flags.
+CREATE TABLE IF NOT EXISTS astra_consent_runtime28 (
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1), version TEXT NOT NULL CHECK(version='consent28-v1'),
+ migration_done INTEGER NOT NULL DEFAULT 0 CHECK(migration_done IN(0,1)),
+ delivery_quarantined INTEGER NOT NULL DEFAULT 1 CHECK(delivery_quarantined IN(0,1))
+);
+INSERT OR IGNORE INTO astra_consent_runtime28(singleton,version) VALUES(1,'consent28-v1');
+CREATE TABLE IF NOT EXISTS astra_notification_consent28 (
+ telegram_id INTEGER PRIMARY KEY REFERENCES astra_users(telegram_id) ON DELETE CASCADE,
+ generation TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0 CHECK(revision>=0),
+ consent_version TEXT, consent_at INTEGER, source TEXT, grant_update_id INTEGER, grant_message_id INTEGER, revoked_at INTEGER,
+ pending_hash TEXT, pending_revision INTEGER, pending_version TEXT, pending_created_at INTEGER, pending_expires_at INTEGER, pending_message_id INTEGER,
+ CHECK((consent_version IS NULL AND consent_at IS NULL AND source IS NULL AND grant_update_id IS NULL AND grant_message_id IS NULL) OR
+ (consent_version IS NOT NULL AND consent_at IS NOT NULL AND source IS NOT NULL AND grant_update_id IS NOT NULL AND grant_message_id IS NOT NULL AND consent_version='daily-forecast-v1' AND consent_at>0 AND source='explicit_private_button' AND grant_update_id>=0 AND grant_message_id>0)),
+ CHECK((pending_hash IS NULL AND pending_revision IS NULL AND pending_version IS NULL AND pending_created_at IS NULL AND pending_expires_at IS NULL AND pending_message_id IS NULL) OR
+ (pending_hash IS NOT NULL AND pending_revision IS NOT NULL AND pending_version IS NOT NULL AND pending_created_at IS NOT NULL AND pending_expires_at IS NOT NULL AND length(pending_hash)=64 AND pending_hash NOT GLOB '*[^a-f0-9]*' AND pending_revision=revision AND pending_version='daily-forecast-v1' AND pending_created_at>0 AND pending_expires_at=pending_created_at+900 AND (pending_message_id IS NULL OR pending_message_id>0)))
+);
+CREATE INDEX IF NOT EXISTS idx_consent28_active ON astra_notification_consent28(telegram_id,generation,revision) WHERE consent_at IS NOT NULL AND revoked_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_consent28_pending ON astra_notification_consent28(pending_expires_at) WHERE pending_hash IS NOT NULL;
+CREATE TABLE IF NOT EXISTS astra_delivery_consent28 (
+ telegram_id INTEGER NOT NULL REFERENCES astra_users(telegram_id) ON DELETE CASCADE,day TEXT NOT NULL,
+ generation TEXT NOT NULL,revision INTEGER NOT NULL,consent_version TEXT NOT NULL CHECK(consent_version='daily-forecast-v1'),
+ PRIMARY KEY(telegram_id,day),FOREIGN KEY(telegram_id,day) REFERENCES astra_broadcast_outbox03(telegram_id,day) ON DELETE CASCADE
+);
+CREATE TRIGGER IF NOT EXISTS astra_consent_insert28 BEFORE INSERT ON astra_notification_consent28 BEGIN
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation) THEN RAISE(ABORT,'Consent profile missing') END;
+ SELECT CASE WHEN NEW.revision<>0 OR NEW.consent_at IS NOT NULL OR NEW.revoked_at IS NOT NULL THEN RAISE(ABORT,'Consent starts pending') END;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_consent_update28 BEFORE UPDATE ON astra_notification_consent28 BEGIN
+ SELECT CASE WHEN NEW.telegram_id<>OLD.telegram_id OR NEW.generation<>OLD.generation THEN RAISE(ABORT,'Consent identity immutable') END;
+ SELECT CASE WHEN NOT coalesce((
+ (NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id AND NEW.revoked_at IS OLD.revoked_at AND NEW.revision IS OLD.revision) OR
+ (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NOT NULL AND NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id) OR
+ (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NULL AND NEW.consent_version='daily-forecast-v1' AND NEW.source='explicit_private_button' AND NEW.consent_at=unixepoch()
+ AND OLD.pending_hash IS NOT NULL AND OLD.pending_revision=OLD.revision AND OLD.pending_version=NEW.consent_version AND OLD.pending_expires_at>unixepoch() AND OLD.pending_message_id=NEW.grant_message_id
+ AND EXISTS(SELECT 1 FROM astra_update_jobs j WHERE j.update_id=NEW.grant_update_id AND j.telegram_id=NEW.telegram_id AND j.status='working')
+ AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation))
+ ),0) THEN RAISE(ABORT,'Invalid consent transition') END;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_consent_sync28 AFTER UPDATE ON astra_notification_consent28 WHEN NEW.revision<>OLD.revision BEGIN
+ UPDATE astra_users SET notifications_enabled=CASE WHEN NEW.consent_at IS NOT NULL AND NEW.revoked_at IS NULL THEN 1 ELSE 0 END WHERE telegram_id=NEW.telegram_id AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=NEW.telegram_id AND p.generation=NEW.generation);
+ UPDATE astra_broadcast_outbox03 SET state='cancelled',last_reason='consent_revision_changed' WHERE telegram_id=NEW.telegram_id AND generation=NEW.generation AND state IN('sending','retry');
+END;
+CREATE TRIGGER IF NOT EXISTS astra_consent_off28 AFTER UPDATE OF notifications_enabled ON astra_users WHEN NEW.notifications_enabled=0 BEGIN
+ UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),pending_hash=NULL, pending_revision=NULL, pending_version=NULL, pending_created_at=NULL, pending_expires_at=NULL, pending_message_id=NULL
+ WHERE telegram_id=NEW.telegram_id AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL);
+END;
+CREATE TRIGGER IF NOT EXISTS astra_consent_erase28 BEFORE DELETE ON astra_users BEGIN
+ DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id;
+ DELETE FROM astra_notification_consent28 WHERE telegram_id=OLD.telegram_id;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_delivery_guard_insert28 BEFORE INSERT ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)
+ JOIN astra_consent_runtime28 m ON m.singleton=1
+ WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1
+ AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_delivery_capture_insert28 AFTER INSERT ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN
+ INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id
+ ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_delivery_guard_update28 BEFORE UPDATE ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)
+ JOIN astra_consent_runtime28 m ON m.singleton=1
+ WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1
+ AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_delivery_capture_update28 AFTER UPDATE ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN
+ INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id
+ ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_delivery_erase28 AFTER DELETE ON astra_broadcast_outbox03 BEGIN
+ DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id AND day=OLD.day;
+END;
+CREATE TRIGGER IF NOT EXISTS astra_consent_complete28 BEFORE UPDATE OF migration_done ON astra_consent_runtime28 WHEN NEW.migration_done=1 BEGIN
+ SELECT CASE WHEN (WITH expected(name,type,sql) AS (VALUES ('astra_consent_erase28','trigger','CREATE TRIGGER astra_consent_erase28 BEFORE DELETE ON astra_users BEGIN
+ DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id;
+ DELETE FROM astra_notification_consent28 WHERE telegram_id=OLD.telegram_id;
+END'),('astra_consent_insert28','trigger','CREATE TRIGGER astra_consent_insert28 BEFORE INSERT ON astra_notification_consent28 BEGIN
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation) THEN RAISE(ABORT,''Consent profile missing'') END;
+ SELECT CASE WHEN NEW.revision<>0 OR NEW.consent_at IS NOT NULL OR NEW.revoked_at IS NOT NULL THEN RAISE(ABORT,''Consent starts pending'') END;
+END'),('astra_consent_off28','trigger','CREATE TRIGGER astra_consent_off28 AFTER UPDATE OF notifications_enabled ON astra_users WHEN NEW.notifications_enabled=0 BEGIN
+ UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),pending_hash=NULL, pending_revision=NULL, pending_version=NULL, pending_created_at=NULL, pending_expires_at=NULL, pending_message_id=NULL
+ WHERE telegram_id=NEW.telegram_id AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL);
+END'),('astra_consent_runtime28','table','CREATE TABLE astra_consent_runtime28 (
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1), version TEXT NOT NULL CHECK(version=''consent28-v1''),
+ migration_done INTEGER NOT NULL DEFAULT 0 CHECK(migration_done IN(0,1)),
+ delivery_quarantined INTEGER NOT NULL DEFAULT 1 CHECK(delivery_quarantined IN(0,1))
+)'),('astra_consent_sync28','trigger','CREATE TRIGGER astra_consent_sync28 AFTER UPDATE ON astra_notification_consent28 WHEN NEW.revision<>OLD.revision BEGIN
+ UPDATE astra_users SET notifications_enabled=CASE WHEN NEW.consent_at IS NOT NULL AND NEW.revoked_at IS NULL THEN 1 ELSE 0 END WHERE telegram_id=NEW.telegram_id AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=NEW.telegram_id AND p.generation=NEW.generation);
+ UPDATE astra_broadcast_outbox03 SET state=''cancelled'',last_reason=''consent_revision_changed'' WHERE telegram_id=NEW.telegram_id AND generation=NEW.generation AND state IN(''sending'',''retry'');
+END'),('astra_consent_update28','trigger','CREATE TRIGGER astra_consent_update28 BEFORE UPDATE ON astra_notification_consent28 BEGIN
+ SELECT CASE WHEN NEW.telegram_id<>OLD.telegram_id OR NEW.generation<>OLD.generation THEN RAISE(ABORT,''Consent identity immutable'') END;
+ SELECT CASE WHEN NOT coalesce((
+ (NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id AND NEW.revoked_at IS OLD.revoked_at AND NEW.revision IS OLD.revision) OR
+ (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NOT NULL AND NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id) OR
+ (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NULL AND NEW.consent_version=''daily-forecast-v1'' AND NEW.source=''explicit_private_button'' AND NEW.consent_at=unixepoch()
+ AND OLD.pending_hash IS NOT NULL AND OLD.pending_revision=OLD.revision AND OLD.pending_version=NEW.consent_version AND OLD.pending_expires_at>unixepoch() AND OLD.pending_message_id=NEW.grant_message_id
+ AND EXISTS(SELECT 1 FROM astra_update_jobs j WHERE j.update_id=NEW.grant_update_id AND j.telegram_id=NEW.telegram_id AND j.status=''working'')
+ AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation))
+ ),0) THEN RAISE(ABORT,''Invalid consent transition'') END;
+END'),('astra_delivery_capture_insert28','trigger','CREATE TRIGGER astra_delivery_capture_insert28 AFTER INSERT ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN
+ INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id
+ ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;
+END'),('astra_delivery_capture_update28','trigger','CREATE TRIGGER astra_delivery_capture_update28 AFTER UPDATE ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN
+ INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id
+ ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;
+END'),('astra_delivery_consent28','table','CREATE TABLE astra_delivery_consent28 (
+ telegram_id INTEGER NOT NULL REFERENCES astra_users(telegram_id) ON DELETE CASCADE,day TEXT NOT NULL,
+ generation TEXT NOT NULL,revision INTEGER NOT NULL,consent_version TEXT NOT NULL CHECK(consent_version=''daily-forecast-v1''),
+ PRIMARY KEY(telegram_id,day),FOREIGN KEY(telegram_id,day) REFERENCES astra_broadcast_outbox03(telegram_id,day) ON DELETE CASCADE
+)'),('astra_delivery_erase28','trigger','CREATE TRIGGER astra_delivery_erase28 AFTER DELETE ON astra_broadcast_outbox03 BEGIN
+ DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id AND day=OLD.day;
+END'),('astra_delivery_guard_insert28','trigger','CREATE TRIGGER astra_delivery_guard_insert28 BEFORE INSERT ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)
+ JOIN astra_consent_runtime28 m ON m.singleton=1
+ WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1
+ AND c.consent_version=''daily-forecast-v1'' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version=''consent28-v1'' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;
+END'),('astra_delivery_guard_update28','trigger','CREATE TRIGGER astra_delivery_guard_update28 BEFORE UPDATE ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)
+ JOIN astra_consent_runtime28 m ON m.singleton=1
+ WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1
+ AND c.consent_version=''daily-forecast-v1'' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version=''consent28-v1'' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;
+END'),('astra_notification_consent28','table','CREATE TABLE astra_notification_consent28 (
+ telegram_id INTEGER PRIMARY KEY REFERENCES astra_users(telegram_id) ON DELETE CASCADE,
+ generation TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0 CHECK(revision>=0),
+ consent_version TEXT, consent_at INTEGER, source TEXT, grant_update_id INTEGER, grant_message_id INTEGER, revoked_at INTEGER,
+ pending_hash TEXT, pending_revision INTEGER, pending_version TEXT, pending_created_at INTEGER, pending_expires_at INTEGER, pending_message_id INTEGER,
+ CHECK((consent_version IS NULL AND consent_at IS NULL AND source IS NULL AND grant_update_id IS NULL AND grant_message_id IS NULL) OR
+ (consent_version IS NOT NULL AND consent_at IS NOT NULL AND source IS NOT NULL AND grant_update_id IS NOT NULL AND grant_message_id IS NOT NULL AND consent_version=''daily-forecast-v1'' AND consent_at>0 AND source=''explicit_private_button'' AND grant_update_id>=0 AND grant_message_id>0)),
+ CHECK((pending_hash IS NULL AND pending_revision IS NULL AND pending_version IS NULL AND pending_created_at IS NULL AND pending_expires_at IS NULL AND pending_message_id IS NULL) OR
+ (pending_hash IS NOT NULL AND pending_revision IS NOT NULL AND pending_version IS NOT NULL AND pending_created_at IS NOT NULL AND pending_expires_at IS NOT NULL AND length(pending_hash)=64 AND pending_hash NOT GLOB ''*[^a-f0-9]*'' AND pending_revision=revision AND pending_version=''daily-forecast-v1'' AND pending_created_at>0 AND pending_expires_at=pending_created_at+900 AND (pending_message_id IS NULL OR pending_message_id>0)))
+)'),('idx_consent28_active','index','CREATE INDEX idx_consent28_active ON astra_notification_consent28(telegram_id,generation,revision) WHERE consent_at IS NOT NULL AND revoked_at IS NULL'),('idx_consent28_pending','index','CREATE INDEX idx_consent28_pending ON astra_notification_consent28(pending_expires_at) WHERE pending_hash IS NOT NULL')) SELECT count(*) FROM expected e LEFT JOIN sqlite_master a ON a.name=e.name WHERE a.type IS NOT e.type OR a.sql IS NOT e.sql)>0 THEN RAISE(ABORT,'Consent schema definition mismatch') END;
+ SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND migration_done=1) THEN RAISE(ABORT,'0027 incomplete') END;
+END;
+UPDATE astra_consent_runtime28 SET migration_done=1 WHERE singleton=1 AND version='consent28-v1'
+ AND EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND migration_done=1);
+SELECT singleton,version,migration_done,delivery_quarantined FROM astra_consent_runtime28;
+PRAGMA foreign_key_check;

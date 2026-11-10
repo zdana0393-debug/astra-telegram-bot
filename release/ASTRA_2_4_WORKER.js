@@ -9,7 +9,7 @@
  *
  * ВАЖНО: читать docs/ASTRA_2_4_STAGING_GUIDE.md. /activate отключён; webhook не менять.
  */
-const VERSION = 'ASTRA-2.4-task05-rc';
+const VERSION = 'ASTRA-2.4-task06-rc';
 const BOT_USERNAME = 'LaDa_Iskra_Opel_Astrabot';
 const ZODIAC = [
   ['aries','♈ Овен'], ['taurus','♉ Телец'], ['gemini','♊ Близнецы'],
@@ -546,7 +546,7 @@ async function pre26_secretArchive(env,id) {
 async function pre04_help(env,id) {
   return screen(env,id,"Помощь","Прогноз по солнечному знаку, Таро и досье доступны из главного меню. Число дня входит в бесплатный прогноз. Карта дня бесплатна; новый расклад на три карты — 5 ✨.\n\n/start — открыть профиль и меню\n/stop — отключить утреннюю рассылку\n/privacy — проверить состав данных\n/delete — удалить профиль и связанные записи\n\nБонусы и приглашение — в разделе «Звёздная пыль». Методы и технические ограничения — в FAQ.",[[button('FAQ','faq'),button('Об Астре','about')]]);
 }
-async function incoming(env,m,updateId) {
+async function pre28_incoming(env,m,updateId) {
   if(m.chat?.type==='private'&&m.from&&await paymentCommand(env,m))return;
   if (m.chat?.type!=='private' || !m.from) return;
   const id=m.from.id;
@@ -560,7 +560,7 @@ async function incoming(env,m,updateId) {
   if (text==='/delete') {
     await syncBonusOwner26(env,id);
     await env.DB.prepare('DELETE FROM astra_users WHERE telegram_id=?').bind(id).run();
-    return send(env,id,DELETE_NOTICE04,{reply_markup:{remove_keyboard:true}});
+    return send(env,id,DELETE_NOTICE04+' Доказательство утренней подписки и временные подтверждения удалены.',{reply_markup:{remove_keyboard:true}});
   }
   if (text==='/help'||text==='⚙️ Помощь') return help(env,id);
   if (text==='/stop') {
@@ -13471,7 +13471,7 @@ function economyEvent(update){
     const page=data.startsWith('shell:')?data.slice(6):null;
     const faq=/^faq:([0-9]{1,2})(?::more)?$/.exec(page||'');
     const validSign=data.startsWith('sign:')&&Boolean(zodiacName(data.slice(5)));
-    const recognized=/^notifications:(?:confirm|enable|disable)$/.test(page||'')||/^forecast:(?:offer|owned):\d{4}-\d{2}-\d{2}$/.test(page||'')||/^tarot26:[a-f0-9]{32}$/.test(page||'')||/^stars:(?:buy26:(?:10|25|50)|accept26:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
+    const recognized=/^consent28:(?:stop|(?:grant|cancel):[a-f0-9]{32})$/.test(page||'')||/^notifications:(?:confirm|enable|disable)$/.test(page||'')||/^forecast:(?:offer|owned):\d{4}-\d{2}-\d{2}$/.test(page||'')||/^tarot26:[a-f0-9]{32}$/.test(page||'')||/^stars:(?:buy26:(?:10|25|50)|accept26:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||/^stars:(?:terms|support|history(?::[on]:[0-9a-z]+:[0-9a-z]+)?|buy:(?:10|25|50)|accept:(?:10|25|50):[a-f0-9]{12})$/.test(page||'')||validSign||['tarot:day','tarot:three','channel:check'].includes(data)||pages.has(page)||Boolean(faq&&FAQ[Number(faq[1])])||/^pay:[1-9][0-9]{0,15}$/.test(page||'')||/^forecast:pay:\d{4}-\d{2}-\d{2}$/.test(page||'')||(/^history:[dp]:/.test(page||'')&&decodeHistoryCursor(page.slice(10))!==null);
     return recognized?{id:from.id,source:'callback',signSelection:validSign}:null;
   }
   const text=String(m.text||'').trim();
@@ -18626,7 +18626,7 @@ async function paymentTerms(env,id){const p=await readPolicy(env);return screen(
 async function paymentSupport(env,id){const p=await readPolicy(env);return screen(env,id,'Помощь с оплатой',supportText04(p)+(supportValid(p.support)?'\n\nУкажите номер заказа из «Мои платежи», сумму Stars и опишите, что произошло. Если номер не сохранился, сообщите дату оплаты. Пароли и секретные ключи не нужны.\n\nМы проверим оплату, начисление или возврат. Повторно платить за тот же заказ не нужно.':'\n\nСохранённые материалы и история пыли доступны. Контакт появится здесь после настройки владельцем.'),supportRows04(p).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');}
 async function paymentHistory(env,id,cursor=null){const page=await readStarHistory(env,id,cursor);if(page.expired)return screen(env,id,'Мои платежи','Не удалось открыть эту страницу. Обновите историю.',[[button('Обновить','stars:history')]],'dust');const nav=[];if(page.newer)nav.push(button('‹ Новее','stars:history:'+page.newer));if(page.older)nav.push(button('Старее ›','stars:history:'+page.older));return screen(env,id,'Мои платежи',page.rows.length?page.rows.map(o=>`${formatLedgerTime(o.created_at)}\nЗаказ ${o.order_id}\n${o.xtr} XTR → ${o.dust} ✨\n${paymentLabel04(o.status)}`).join('\n\n'):'Покупок пока нет. Счёт сам по себе не списывает Stars.',[...(nav.length?[nav]:[]),[button('Обновить','stars:history'),button('Поддержка','stars:support')]],'dust');}
 async function starsShop(env,id){if(!await shopAvailable04(env))return screen(env,id,'Магазин Stars','Магазин пока закрыт. Покупки недоступны; сохранённые материалы и история работают как обычно.',[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'dust');return screen(env,id,'Магазин Stars','Одноразовые пакеты звёздной пыли. Выберите пакет — затем увидите цену и условия до оплаты. Обратного обмена пыли на Stars или деньги нет.',Object.entries(STAR_PACKAGES).map(([key,p])=>[button(`${p.xtr} XTR → ${p.dust} ✨`,`stars:buy26:${key}`)]).concat([[button('Мои платежи','stars:history'),button('Условия','stars:terms')]]),'dust');}
-async function privacy04(env,id){const p=await readPolicy(env);return screen(env,id,'Ваши данные','Астра хранит Telegram ID, знак, настройки, баланс, историю пыли, активные дни, приглашения и сохранённые материалы. Телефон, дату рождения и фотографии мы не запрашиваем.\n\n/delete удаляет обычный профиль, его историю и материалы.\n\n'+PRIVACY_BONUS04+'\n\nПлатёжные записи, включая ID плательщика, и непогашенные обязательства хранятся отдельно для поддержки и разбора споров. '+retentionText04(p)+' Подробнее об остаточном контрольном отпечатке платежа — /terms.\n\nСообщения Telegram и резервные копии управляются отдельно; уже начатую отправку нельзя отозвать.\nПоддержка: '+supportText04(p),[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'rules');}
+async function privacy04(env,id){const p=await readPolicy(env);return screen(env,id,'Ваши данные','Астра хранит Telegram ID, знак, настройки, баланс, историю пыли, активные дни, приглашения и сохранённые материалы. Телефон, дату рождения и фотографии мы не запрашиваем.\n\n/delete удаляет обычный профиль, его историю и материалы.\n\n'+PRIVACY_BONUS04+'\n\nДля добровольной утренней подписки отдельно сохраняются версия условий, время подтверждения, номера подтверждающего обновления и сообщения, статус отзыва. Это персональные данные, не бонусные HMAC. Отзыв — /stop; при /delete доказательство и временное подтверждение удаляются вместе с профилем. Временная кнопка действует 15 минут.\n\nПлатёжные записи, включая ID плательщика, и непогашенные обязательства хранятся отдельно для поддержки и разбора споров. '+retentionText04(p)+' Подробнее об остаточном контрольном отпечатке платежа — /terms.\n\nСообщения Telegram и резервные копии управляются отдельно; уже начатую отправку нельзя отозвать.\nПоддержка: '+supportText04(p),[[button('Условия','stars:terms'),button('Поддержка','stars:support')]],'rules');}
 async function paymentCommand(env,m){if(String(m.text||'').trim()==='/privacy'){await privacy04(env,m.from.id);return true;}return pre04_paymentCommand(env,m);}
 async function ledgerScreen(env,id,u,parent,cursor=null){const page=await readHistoryPage(env,id,cursor);if(page.expired)return screen(env,id,'История пыли','Эта страница больше недоступна. Откройте историю заново.',[[button('Обновить историю',`${parent}:history`)]],parent);const short=parent==='dossier'?'p':'d',paging=[];if(page.newer)paging.push(button('‹ Новее',`history:${short}:${page.newer}`));if(page.older)paging.push(button('Старее ›',`history:${short}:${page.older}`));const rows=[...(paging.length?[paging]:[]),[button('Обновить историю',`${parent}:history`)]],body=`История пыли\nБаланс: ${u.balance} ✨\nВремя — московское.\n\n`+(page.rows.length?page.rows.map(historyRecordText).join('\n\n'):'Начислений и списаний пока нет.')+'\n\nНовые операции появятся после обновления. Минус означает расход пыли.';const chunks=economyChunks(body);for(let i=0;i<chunks.length;i++){if(i===chunks.length-1)await send(shellEnv(env,parent),id,chunks[i],{reply_markup:{inline_keyboard:rows}});else await tg(env,'sendMessage',{chat_id:id,text:chunks[i]});}}
 async function policyFaq(env){const s=await rewardState04(env),shop=await shopAvailable04(env);return[
@@ -18649,7 +18649,7 @@ async function notificationsSet04(env,id,next,updateId){
  await env.DB.prepare('UPDATE astra_users SET notifications_enabled=? WHERE telegram_id=?').bind(job.notification_target,id).run();
  return screen(env,id,'Утренний прогноз',job.notification_target?'Ваш выбор сохранён. Автоматическая рассылка пока отключена до завершения проверки согласия. Полный бесплатный прогноз можно открыть вручную. Отменить выбор — здесь или командой /stop.':'Уведомления выключены. Полный прогноз всегда можно открыть вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
 }
-async function shellPage(env,id,page,q=null,updateId=null){
+async function pre28_shellPage(env,id,page,q=null,updateId=null){
  const pages=new Set(['about','manifest','trust','trust:forecast','trust:tarot','trust:future','team','rules','self','dossier','notifications','notifications:confirm','notifications:enable','notifications:disable','tarot','faq']);
  if(!pages.has(page))return pre04_shellPage(env,id,page,q,updateId);
  const u=await getUser(env,id);
@@ -18691,9 +18691,9 @@ async function runBroadcast03(env={}){
  }catch{stats.maintenance='storage_unavailable';return stats;}
  finally{if(locked)try{stats.d1_calls++;stats.statements++;await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=NULL,lease_until=0 WHERE singleton=1 AND lease=?').bind(token).run();}catch{stats.maintenance='release_unavailable';}console.log(JSON.stringify(stats));}
 }
-async function broadcast(env){return runBroadcast03(env);}
+async function pre28_broadcast(env){return runBroadcast03(env);}
 async function broadcastSend03(){throw Error(BROADCAST_BLOCKER05);}
-async function health(env){
+async function pre28_health(env){
  const response=await pre05_health(env),state=await response.json();let config=true;try{compactStartDay(env);}catch{config=false;}
  state.manual_content_ready=Boolean(state.free_content_ready&&state.secrets_ready&&state.policy_ready&&config);
  state.broadcast_prerequisite_blocker=state.broadcast_blocker;state.broadcast_ready=false;state.broadcast_blocker=BROADCAST_BLOCKER05;
@@ -18701,6 +18701,269 @@ async function health(env){
  state.release_scope='STAGING_MANUAL_ONLY';state.ready=false;
  return Response.json(state,{status:503,headers:{'Cache-Control':'no-store'}});
 }
+
+
+// TASK06 consent28; no automatic backfill, default delivery OFF.
+const manifest28=[
+  {
+    "name": "astra_consent_complete28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_complete28 BEFORE UPDATE OF migration_done ON astra_consent_runtime28 WHEN NEW.migration_done=1 BEGIN\n SELECT CASE WHEN (WITH expected(name,type,sql) AS (VALUES ('astra_consent_erase28','trigger','CREATE TRIGGER astra_consent_erase28 BEFORE DELETE ON astra_users BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id;\n DELETE FROM astra_notification_consent28 WHERE telegram_id=OLD.telegram_id;\nEND'),('astra_consent_insert28','trigger','CREATE TRIGGER astra_consent_insert28 BEFORE INSERT ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation) THEN RAISE(ABORT,''Consent profile missing'') END;\n SELECT CASE WHEN NEW.revision<>0 OR NEW.consent_at IS NOT NULL OR NEW.revoked_at IS NOT NULL THEN RAISE(ABORT,''Consent starts pending'') END;\nEND'),('astra_consent_off28','trigger','CREATE TRIGGER astra_consent_off28 AFTER UPDATE OF notifications_enabled ON astra_users WHEN NEW.notifications_enabled=0 BEGIN\n UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),pending_hash=NULL, pending_revision=NULL, pending_version=NULL, pending_created_at=NULL, pending_expires_at=NULL, pending_message_id=NULL\n WHERE telegram_id=NEW.telegram_id AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL);\nEND'),('astra_consent_runtime28','table','CREATE TABLE astra_consent_runtime28 (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1), version TEXT NOT NULL CHECK(version=''consent28-v1''),\n migration_done INTEGER NOT NULL DEFAULT 0 CHECK(migration_done IN(0,1)),\n delivery_quarantined INTEGER NOT NULL DEFAULT 1 CHECK(delivery_quarantined IN(0,1))\n)'),('astra_consent_sync28','trigger','CREATE TRIGGER astra_consent_sync28 AFTER UPDATE ON astra_notification_consent28 WHEN NEW.revision<>OLD.revision BEGIN\n UPDATE astra_users SET notifications_enabled=CASE WHEN NEW.consent_at IS NOT NULL AND NEW.revoked_at IS NULL THEN 1 ELSE 0 END WHERE telegram_id=NEW.telegram_id AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=NEW.telegram_id AND p.generation=NEW.generation);\n UPDATE astra_broadcast_outbox03 SET state=''cancelled'',last_reason=''consent_revision_changed'' WHERE telegram_id=NEW.telegram_id AND generation=NEW.generation AND state IN(''sending'',''retry'');\nEND'),('astra_consent_update28','trigger','CREATE TRIGGER astra_consent_update28 BEFORE UPDATE ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NEW.telegram_id<>OLD.telegram_id OR NEW.generation<>OLD.generation THEN RAISE(ABORT,''Consent identity immutable'') END;\n SELECT CASE WHEN NOT coalesce((\n (NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id AND NEW.revoked_at IS OLD.revoked_at AND NEW.revision IS OLD.revision) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NOT NULL AND NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NULL AND NEW.consent_version=''daily-forecast-v1'' AND NEW.source=''explicit_private_button'' AND NEW.consent_at=unixepoch()\n AND OLD.pending_hash IS NOT NULL AND OLD.pending_revision=OLD.revision AND OLD.pending_version=NEW.consent_version AND OLD.pending_expires_at>unixepoch() AND OLD.pending_message_id=NEW.grant_message_id\n AND EXISTS(SELECT 1 FROM astra_update_jobs j WHERE j.update_id=NEW.grant_update_id AND j.telegram_id=NEW.telegram_id AND j.status=''working'')\n AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation))\n ),0) THEN RAISE(ABORT,''Invalid consent transition'') END;\nEND'),('astra_delivery_capture_insert28','trigger','CREATE TRIGGER astra_delivery_capture_insert28 AFTER INSERT ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND'),('astra_delivery_capture_update28','trigger','CREATE TRIGGER astra_delivery_capture_update28 AFTER UPDATE ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND'),('astra_delivery_consent28','table','CREATE TABLE astra_delivery_consent28 (\n telegram_id INTEGER NOT NULL REFERENCES astra_users(telegram_id) ON DELETE CASCADE,day TEXT NOT NULL,\n generation TEXT NOT NULL,revision INTEGER NOT NULL,consent_version TEXT NOT NULL CHECK(consent_version=''daily-forecast-v1''),\n PRIMARY KEY(telegram_id,day),FOREIGN KEY(telegram_id,day) REFERENCES astra_broadcast_outbox03(telegram_id,day) ON DELETE CASCADE\n)'),('astra_delivery_erase28','trigger','CREATE TRIGGER astra_delivery_erase28 AFTER DELETE ON astra_broadcast_outbox03 BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id AND day=OLD.day;\nEND'),('astra_delivery_guard_insert28','trigger','CREATE TRIGGER astra_delivery_guard_insert28 BEFORE INSERT ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version=''daily-forecast-v1'' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version=''consent28-v1'' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND'),('astra_delivery_guard_update28','trigger','CREATE TRIGGER astra_delivery_guard_update28 BEFORE UPDATE ON astra_broadcast_outbox03 WHEN NEW.state=''sending'' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version=''daily-forecast-v1'' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version=''consent28-v1'' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND'),('astra_notification_consent28','table','CREATE TABLE astra_notification_consent28 (\n telegram_id INTEGER PRIMARY KEY REFERENCES astra_users(telegram_id) ON DELETE CASCADE,\n generation TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0 CHECK(revision>=0),\n consent_version TEXT, consent_at INTEGER, source TEXT, grant_update_id INTEGER, grant_message_id INTEGER, revoked_at INTEGER,\n pending_hash TEXT, pending_revision INTEGER, pending_version TEXT, pending_created_at INTEGER, pending_expires_at INTEGER, pending_message_id INTEGER,\n CHECK((consent_version IS NULL AND consent_at IS NULL AND source IS NULL AND grant_update_id IS NULL AND grant_message_id IS NULL) OR\n (consent_version IS NOT NULL AND consent_at IS NOT NULL AND source IS NOT NULL AND grant_update_id IS NOT NULL AND grant_message_id IS NOT NULL AND consent_version=''daily-forecast-v1'' AND consent_at>0 AND source=''explicit_private_button'' AND grant_update_id>=0 AND grant_message_id>0)),\n CHECK((pending_hash IS NULL AND pending_revision IS NULL AND pending_version IS NULL AND pending_created_at IS NULL AND pending_expires_at IS NULL AND pending_message_id IS NULL) OR\n (pending_hash IS NOT NULL AND pending_revision IS NOT NULL AND pending_version IS NOT NULL AND pending_created_at IS NOT NULL AND pending_expires_at IS NOT NULL AND length(pending_hash)=64 AND pending_hash NOT GLOB ''*[^a-f0-9]*'' AND pending_revision=revision AND pending_version=''daily-forecast-v1'' AND pending_created_at>0 AND pending_expires_at=pending_created_at+900 AND (pending_message_id IS NULL OR pending_message_id>0)))\n)'),('idx_consent28_active','index','CREATE INDEX idx_consent28_active ON astra_notification_consent28(telegram_id,generation,revision) WHERE consent_at IS NOT NULL AND revoked_at IS NULL'),('idx_consent28_pending','index','CREATE INDEX idx_consent28_pending ON astra_notification_consent28(pending_expires_at) WHERE pending_hash IS NOT NULL')) SELECT count(*) FROM expected e LEFT JOIN sqlite_master a ON a.name=e.name WHERE a.type IS NOT e.type OR a.sql IS NOT e.sql)>0 THEN RAISE(ABORT,'Consent schema definition mismatch') END;\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND migration_done=1) THEN RAISE(ABORT,'0027 incomplete') END;\nEND"
+  },
+  {
+    "name": "astra_consent_erase28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_erase28 BEFORE DELETE ON astra_users BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id;\n DELETE FROM astra_notification_consent28 WHERE telegram_id=OLD.telegram_id;\nEND"
+  },
+  {
+    "name": "astra_consent_insert28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_insert28 BEFORE INSERT ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation) THEN RAISE(ABORT,'Consent profile missing') END;\n SELECT CASE WHEN NEW.revision<>0 OR NEW.consent_at IS NOT NULL OR NEW.revoked_at IS NOT NULL THEN RAISE(ABORT,'Consent starts pending') END;\nEND"
+  },
+  {
+    "name": "astra_consent_off28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_off28 AFTER UPDATE OF notifications_enabled ON astra_users WHEN NEW.notifications_enabled=0 BEGIN\n UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),pending_hash=NULL, pending_revision=NULL, pending_version=NULL, pending_created_at=NULL, pending_expires_at=NULL, pending_message_id=NULL\n WHERE telegram_id=NEW.telegram_id AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL);\nEND"
+  },
+  {
+    "name": "astra_consent_runtime28",
+    "type": "table",
+    "sql": "CREATE TABLE astra_consent_runtime28 (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1), version TEXT NOT NULL CHECK(version='consent28-v1'),\n migration_done INTEGER NOT NULL DEFAULT 0 CHECK(migration_done IN(0,1)),\n delivery_quarantined INTEGER NOT NULL DEFAULT 1 CHECK(delivery_quarantined IN(0,1))\n)"
+  },
+  {
+    "name": "astra_consent_sync28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_sync28 AFTER UPDATE ON astra_notification_consent28 WHEN NEW.revision<>OLD.revision BEGIN\n UPDATE astra_users SET notifications_enabled=CASE WHEN NEW.consent_at IS NOT NULL AND NEW.revoked_at IS NULL THEN 1 ELSE 0 END WHERE telegram_id=NEW.telegram_id AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=NEW.telegram_id AND p.generation=NEW.generation);\n UPDATE astra_broadcast_outbox03 SET state='cancelled',last_reason='consent_revision_changed' WHERE telegram_id=NEW.telegram_id AND generation=NEW.generation AND state IN('sending','retry');\nEND"
+  },
+  {
+    "name": "astra_consent_update28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_consent_update28 BEFORE UPDATE ON astra_notification_consent28 BEGIN\n SELECT CASE WHEN NEW.telegram_id<>OLD.telegram_id OR NEW.generation<>OLD.generation THEN RAISE(ABORT,'Consent identity immutable') END;\n SELECT CASE WHEN NOT coalesce((\n (NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id AND NEW.revoked_at IS OLD.revoked_at AND NEW.revision IS OLD.revision) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NOT NULL AND NEW.consent_version IS OLD.consent_version AND NEW.consent_at IS OLD.consent_at AND NEW.source IS OLD.source AND NEW.grant_update_id IS OLD.grant_update_id AND NEW.grant_message_id IS OLD.grant_message_id) OR\n (NEW.revision=OLD.revision+1 AND NEW.pending_hash IS NULL AND NEW.revoked_at IS NULL AND NEW.consent_version='daily-forecast-v1' AND NEW.source='explicit_private_button' AND NEW.consent_at=unixepoch()\n AND OLD.pending_hash IS NOT NULL AND OLD.pending_revision=OLD.revision AND OLD.pending_version=NEW.consent_version AND OLD.pending_expires_at>unixepoch() AND OLD.pending_message_id=NEW.grant_message_id\n AND EXISTS(SELECT 1 FROM astra_update_jobs j WHERE j.update_id=NEW.grant_update_id AND j.telegram_id=NEW.telegram_id AND j.status='working')\n AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation))\n ),0) THEN RAISE(ABORT,'Invalid consent transition') END;\nEND"
+  },
+  {
+    "name": "astra_delivery_capture_insert28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_capture_insert28 AFTER INSERT ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND"
+  },
+  {
+    "name": "astra_delivery_capture_update28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_capture_update28 AFTER UPDATE ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n INSERT INTO astra_delivery_consent28(telegram_id,day,generation,revision,consent_version) SELECT NEW.telegram_id,NEW.day,NEW.generation,c.revision,c.consent_version FROM astra_notification_consent28 c WHERE c.telegram_id=NEW.telegram_id\n ON CONFLICT(telegram_id,day) DO UPDATE SET generation=excluded.generation,revision=excluded.revision,consent_version=excluded.consent_version;\nEND"
+  },
+  {
+    "name": "astra_delivery_consent28",
+    "type": "table",
+    "sql": "CREATE TABLE astra_delivery_consent28 (\n telegram_id INTEGER NOT NULL REFERENCES astra_users(telegram_id) ON DELETE CASCADE,day TEXT NOT NULL,\n generation TEXT NOT NULL,revision INTEGER NOT NULL,consent_version TEXT NOT NULL CHECK(consent_version='daily-forecast-v1'),\n PRIMARY KEY(telegram_id,day),FOREIGN KEY(telegram_id,day) REFERENCES astra_broadcast_outbox03(telegram_id,day) ON DELETE CASCADE\n)"
+  },
+  {
+    "name": "astra_delivery_erase28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_erase28 AFTER DELETE ON astra_broadcast_outbox03 BEGIN\n DELETE FROM astra_delivery_consent28 WHERE telegram_id=OLD.telegram_id AND day=OLD.day;\nEND"
+  },
+  {
+    "name": "astra_delivery_guard_insert28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_guard_insert28 BEFORE INSERT ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND"
+  },
+  {
+    "name": "astra_delivery_guard_update28",
+    "type": "trigger",
+    "sql": "CREATE TRIGGER astra_delivery_guard_update28 BEFORE UPDATE ON astra_broadcast_outbox03 WHEN NEW.state='sending' BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c USING(telegram_id)\n JOIN astra_consent_runtime28 m ON m.singleton=1\n WHERE u.telegram_id=NEW.telegram_id AND p.generation=NEW.generation AND c.generation=p.generation AND u.notifications_enabled=1\n AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0) THEN RAISE(IGNORE) END;\nEND"
+  },
+  {
+    "name": "astra_notification_consent28",
+    "type": "table",
+    "sql": "CREATE TABLE astra_notification_consent28 (\n telegram_id INTEGER PRIMARY KEY REFERENCES astra_users(telegram_id) ON DELETE CASCADE,\n generation TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0 CHECK(revision>=0),\n consent_version TEXT, consent_at INTEGER, source TEXT, grant_update_id INTEGER, grant_message_id INTEGER, revoked_at INTEGER,\n pending_hash TEXT, pending_revision INTEGER, pending_version TEXT, pending_created_at INTEGER, pending_expires_at INTEGER, pending_message_id INTEGER,\n CHECK((consent_version IS NULL AND consent_at IS NULL AND source IS NULL AND grant_update_id IS NULL AND grant_message_id IS NULL) OR\n (consent_version IS NOT NULL AND consent_at IS NOT NULL AND source IS NOT NULL AND grant_update_id IS NOT NULL AND grant_message_id IS NOT NULL AND consent_version='daily-forecast-v1' AND consent_at>0 AND source='explicit_private_button' AND grant_update_id>=0 AND grant_message_id>0)),\n CHECK((pending_hash IS NULL AND pending_revision IS NULL AND pending_version IS NULL AND pending_created_at IS NULL AND pending_expires_at IS NULL AND pending_message_id IS NULL) OR\n (pending_hash IS NOT NULL AND pending_revision IS NOT NULL AND pending_version IS NOT NULL AND pending_created_at IS NOT NULL AND pending_expires_at IS NOT NULL AND length(pending_hash)=64 AND pending_hash NOT GLOB '*[^a-f0-9]*' AND pending_revision=revision AND pending_version='daily-forecast-v1' AND pending_created_at>0 AND pending_expires_at=pending_created_at+900 AND (pending_message_id IS NULL OR pending_message_id>0)))\n)"
+  },
+  {
+    "name": "idx_consent28_active",
+    "type": "index",
+    "sql": "CREATE INDEX idx_consent28_active ON astra_notification_consent28(telegram_id,generation,revision) WHERE consent_at IS NOT NULL AND revoked_at IS NULL"
+  },
+  {
+    "name": "idx_consent28_pending",
+    "type": "index",
+    "sql": "CREATE INDEX idx_consent28_pending ON astra_notification_consent28(pending_expires_at) WHERE pending_hash IS NOT NULL"
+  }
+]
+;
+const CONSENT_VERSION28='daily-forecast-v1';
+const CONSENT_TEXT28='Если подтвердите подписку, Астра будет присылать вам в личные сообщения полный бесплатный гороскоп с числом дня один раз в сутки, обычно с 09:00 до 11:00 по московскому времени. Это добровольно. Отключить сообщения можно в «Досье → Уведомления» или командой /stop. Согласие можно отозвать в любое время.';
+const normalize28=s=>s.replace(/IF NOT EXISTS /gi,'').replace(/\s+/g,' ').trim().replace(/;$/,'');
+async function schemaConsent28(env){
+ try{
+  const rows=await env.DB.prepare("SELECT name,type,sql FROM sqlite_master WHERE name IN("+manifest28.map(x=>"'"+x.name+"'").join(',')+")").all();
+  const valid=rows.results.length===manifest28.length&&manifest28.every(x=>rows.results.some(y=>x.name===y.name&&x.type===y.type&&normalize28(x.sql)===normalize28(y.sql)));
+  if(!valid)return {ready:false,table:rows.results.some(x=>x.name==='astra_notification_consent28'),reason:'consent_gate_not_ready'};
+  const m=await env.DB.prepare('SELECT * FROM astra_consent_runtime28 WHERE singleton=1').first();
+  const ready=m?.version==='consent28-v1'&&m.migration_done===1;
+  return {ready,quarantined:m?.delivery_quarantined!==0,table:true,reason:ready?null:'schema_not_ready'};
+ }catch{return{ready:false,reason:'schema_not_ready'};}
+}
+const clearPending28='pending_hash=NULL,pending_revision=NULL,pending_version=NULL,pending_created_at=NULL,pending_expires_at=NULL,pending_message_id=NULL';
+async function nonceHash28(nonce){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(nonce))),x=>x.toString(16).padStart(2,'0')).join('');}
+async function revokeConsent28(env,id){
+ const schema=await schemaConsent28(env);
+ if(!schema.ready){
+  // Pre-0028 manual mode. A partial/foreign registry must never produce a false acknowledgement.
+  if(schema.table||schema.reason==='schema_not_ready')throw Error('Consent storage unavailable');
+  return env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(id).run();
+ }
+ await env.DB.batch([
+  env.DB.prepare(`UPDATE astra_notification_consent28 SET revision=revision+1,revoked_at=coalesce(revoked_at,unixepoch()),${clearPending28} WHERE telegram_id=? AND ((consent_at IS NOT NULL AND revoked_at IS NULL) OR pending_hash IS NOT NULL)`).bind(id),
+  env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=?').bind(id)
+ ]);
+}
+async function pendingConsent28(env,id){
+ const nonce=Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,'0')).join(''),hash=await nonceHash28(nonce);
+ const row=await env.DB.prepare(`INSERT INTO astra_notification_consent28(telegram_id,generation,pending_hash,pending_revision,pending_version,pending_created_at,pending_expires_at)
+ SELECT u.telegram_id,p.generation,?,0,'daily-forecast-v1',unixepoch(),unixepoch()+900 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=?
+ ON CONFLICT(telegram_id) DO UPDATE SET pending_hash=excluded.pending_hash,pending_revision=astra_notification_consent28.revision,pending_version=excluded.pending_version,pending_created_at=excluded.pending_created_at,pending_expires_at=excluded.pending_expires_at,pending_message_id=NULL
+ WHERE astra_notification_consent28.generation=excluded.generation RETURNING generation,revision`).bind(hash,id).first();
+ if(!row)throw Error('Profile missing');return{nonce,hash,...row};
+}
+async function confirmConsent28(env,id,nonce,messageId,updateId){
+ if(!/^[a-f0-9]{32}$/.test(nonce)||!Number.isSafeInteger(messageId)||messageId<=0||!Number.isSafeInteger(updateId))return false;
+ const hash=await nonceHash28(nonce);
+ return Boolean(await env.DB.prepare(`UPDATE astra_notification_consent28 SET revision=revision+1,consent_version='daily-forecast-v1',consent_at=unixepoch(),source='explicit_private_button',grant_update_id=?,grant_message_id=?,revoked_at=NULL,${clearPending28}
+ WHERE telegram_id=? AND pending_hash=? AND pending_message_id=? AND pending_revision=revision AND pending_version='daily-forecast-v1' AND pending_expires_at>unixepoch()
+ AND EXISTS(SELECT 1 FROM astra_users u JOIN astra_user_policy p USING(telegram_id) WHERE u.telegram_id=astra_notification_consent28.telegram_id AND p.generation=astra_notification_consent28.generation)
+ RETURNING revision`).bind(updateId,messageId,id,hash,messageId).first());
+}
+
+// TASK06: preserves TASK03 states/transport; adds three proof gates and smaller batches.
+function budget28(env,stats){
+ const consume=n=>{if(stats.statements+stats.http+n>46)throw Error('BROADCAST_BUDGET');stats.statements+=n;stats.d1_calls++;};
+ const raw=new WeakMap(),wrap=s=>{const w={bind(...args){return wrap(s.bind(...args));}};raw.set(w,s);for(const m of ['first','all','run'])w[m]=async(...args)=>{consume(1);return s[m](...args);};return w;};
+ return{...env,DB:{prepare(sql){return wrap(env.DB.prepare(sql));},async batch(ss){consume(ss.length);return env.DB.batch(ss.map(s=>raw.get(s)||s));}}};
+}
+async function finish28(env,user,day,token,state,parts,reason,code=null,next=0){
+ return env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=?,parts_sent=?,last_reason=?,last_code=?,not_before=?,updated_at=CURRENT_TIMESTAMP WHERE telegram_id=? AND day=? AND token=? AND state='sending'`).bind(state,parts,reason,code,next,user.telegram_id,day,token).run();
+}
+async function runBroadcast28(original,{load=(env,sign,day)=>getForecastDaily(env,sign,day,(s,d,l)=>generateForecastForEnv(env,s,d,l)),sendMessage=pre05_broadcastSend03}={}){
+ const stats={event:'astra_broadcast28',reason:null,candidates:0,claimed:0,sent:0,retry:0,blocked:0,unknown:0,failed:0,cancelled:0,skipped:0,d1_calls:0,statements:0,http:0};
+ const env=budget28(original,stats),run=crypto.randomUUID();let locked=false;
+ const canWork=n=>stats.statements+stats.http+n+1<=46; // include release statement
+ try{
+  if(!env.ASTRA_BOT_TOKEN){stats.reason='token_missing';return stats;}if(!morning03()){stats.reason='outside_window';return stats;}
+  if(!broadcastSchemaReady03(await broadcastSchema03(env))){stats.reason='broadcast_schema_unavailable';return stats;}
+  const consent=await schemaConsent28(env);if(!consent.ready){stats.reason=consent.reason;return stats;}
+  const day=activityDay(),now=epoch03();
+  const lock=await env.DB.prepare(`UPDATE astra_broadcast_runtime03 SET lease=?,lease_until=? WHERE singleton=1 AND migration_done=1 AND lease_until<=? AND cooldown_until<=? RETURNING singleton`).bind(run,now+BROADCAST_LEASE03,now,now).first();
+  if(!lock){stats.reason='busy_or_cooldown';return stats;}locked=true;
+  await env.DB.batch([
+   env.DB.prepare(`DELETE FROM astra_broadcast_jobs WHERE rowid IN(SELECT rowid FROM astra_broadcast_jobs WHERE day<date(?,'-14 days') ORDER BY day LIMIT 100)`).bind(day),
+   env.DB.prepare(`UPDATE astra_broadcast_outbox03 SET state=CASE WHEN state='sending' THEN 'unknown' ELSE 'expired' END,last_reason=CASE WHEN state='sending' THEN 'interrupted_delivery' ELSE 'day_expired' END,updated_at=CURRENT_TIMESTAMP WHERE rowid IN(SELECT rowid FROM astra_broadcast_outbox03 WHERE(state='sending' AND last_try_at<?) OR(state='retry' AND day<?) LIMIT 100)`).bind(now-BROADCAST_LEASE03,day),
+   env.DB.prepare("DELETE FROM astra_processed_updates WHERE rowid IN(SELECT rowid FROM astra_processed_updates WHERE received_at<datetime('now','-14 days') LIMIT 100)"),
+   env.DB.prepare("DELETE FROM astra_update_jobs WHERE rowid IN(SELECT rowid FROM astra_update_jobs WHERE received_at<datetime('now','-14 days') AND status='done' LIMIT 100)")
+  ]);
+  await env.DB.prepare(`UPDATE astra_notification_consent28 SET ${clearPending28} WHERE telegram_id IN(SELECT telegram_id FROM astra_notification_consent28 WHERE pending_expires_at<=unixepoch() LIMIT 100)`).run();
+  if(!POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)||consent.quarantined){stats.reason='delivery_disabled';return stats;}
+  const batch=await env.DB.prepare(`SELECT u.telegram_id,u.zodiac,p.generation,f.free_text FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c ON c.telegram_id=u.telegram_id AND c.generation=p.generation
+   LEFT JOIN astra_broadcast_outbox03 q ON q.telegram_id=u.telegram_id AND q.day=?
+   LEFT JOIN astra_broadcast_jobs b ON b.telegram_id=u.telegram_id AND b.day=?
+   LEFT JOIN astra_forecast_daily f ON f.sign=u.zodiac AND f.day=? AND f.locale='ru'
+   WHERE c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND u.notifications_enabled=1 AND u.zodiac IN('aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces') AND(u.last_broadcast_day IS NULL OR u.last_broadcast_day<>?)
+   AND((q.telegram_id IS NULL AND b.telegram_id IS NULL) OR(q.state='retry' AND q.attempts<3 AND q.not_before<=? AND q.generation=p.generation AND q.sign=u.zodiac))
+   ORDER BY CASE WHEN q.telegram_id IS NULL THEN 0 ELSE 1 END,u.telegram_id LIMIT 4`).bind(day,day,day,day,now).all();
+  stats.candidates=batch.results.length;
+  for(const user of batch.results){
+   if(!canWork(user.free_text?5:8)){stats.reason='budget_yield';break;}
+   let text=user.free_text;if(!text){try{text=(await load(env,user.zodiac,day)).free_text;}catch{stats.reason='forecast_unavailable';break;}}
+   let chunks;try{chunks=forecastChunks(text);if(chunks.length>2)throw Error('Too many chunks');}catch{chunks=[];}
+   if(!canWork(2*chunks.length+3)){stats.reason='budget_yield';break;}if(!morning03()||activityDay()!==day){stats.reason='window_ended';break;}
+   const token=crypto.randomUUID(),stamp=epoch03();
+   const claim=await env.DB.prepare(`INSERT INTO astra_broadcast_outbox03(telegram_id,day,generation,sign,state,attempts,token,last_try_at)
+    SELECT u.telegram_id,?,p.generation,u.zodiac,'sending',1,?,? FROM astra_users u JOIN astra_user_policy p USING(telegram_id) JOIN astra_notification_consent28 c ON c.telegram_id=u.telegram_id AND c.generation=p.generation
+    WHERE c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL AND u.telegram_id=? AND p.generation=? AND u.zodiac=? AND u.notifications_enabled=1 AND(u.last_broadcast_day IS NULL OR u.last_broadcast_day<>?)
+    AND EXISTS(SELECT 1 FROM astra_broadcast_runtime03 WHERE singleton=1 AND lease=? AND lease_until>? AND cooldown_until<=?)
+    ON CONFLICT(telegram_id,day) DO UPDATE SET state='sending',attempts=astra_broadcast_outbox03.attempts+1,token=excluded.token,last_try_at=excluded.last_try_at,updated_at=CURRENT_TIMESTAMP
+    WHERE astra_broadcast_outbox03.state='retry' AND astra_broadcast_outbox03.attempts<3 AND astra_broadcast_outbox03.not_before<=? AND astra_broadcast_outbox03.generation=excluded.generation AND astra_broadcast_outbox03.sign=excluded.sign
+    RETURNING attempts,(SELECT revision FROM astra_notification_consent28 WHERE telegram_id=astra_broadcast_outbox03.telegram_id) AS consent_revision,EXISTS(SELECT 1 FROM astra_forecast_unlocks f WHERE f.telegram_id=astra_broadcast_outbox03.telegram_id AND f.day=astra_broadcast_outbox03.day) AS owned`).bind(day,token,stamp,user.telegram_id,user.generation,user.zodiac,day,run,stamp,stamp,stamp).first();
+   if(!claim){stats.skipped++;continue;}stats.claimed++;if(!morning03()||activityDay()!==day){await finish28(env,user,day,token,'expired',0,'window_ended_before_send');stats.reason='window_ended';break;}if(!chunks.length){await finish28(env,user,day,token,'failed',0,'cached_content_invalid');stats.failed++;continue;}let parts=0;
+   try{
+    for(let i=0;i<chunks.length;i++){
+     const still=await env.DB.prepare(`SELECT EXISTS(SELECT 1 FROM astra_forecast_unlocks f WHERE f.telegram_id=u.telegram_id AND f.day=?) AS owned
+      FROM astra_users u JOIN astra_user_policy p USING(telegram_id)
+      JOIN astra_notification_consent28 c ON c.telegram_id=u.telegram_id AND c.generation=p.generation
+      JOIN astra_broadcast_outbox03 q ON q.telegram_id=u.telegram_id AND q.day=? AND q.token=? AND q.state='sending'
+      JOIN astra_delivery_consent28 d ON d.telegram_id=q.telegram_id AND d.day=q.day AND d.generation=p.generation AND d.revision=c.revision AND d.consent_version=c.consent_version
+      JOIN astra_consent_runtime28 m ON m.singleton=1 AND m.version='consent28-v1' AND m.migration_done=1 AND m.delivery_quarantined=0
+      JOIN astra_broadcast_runtime03 r ON r.singleton=1
+      WHERE u.telegram_id=? AND u.notifications_enabled=1 AND u.zodiac=? AND p.generation=? AND c.revision=?
+      AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL
+      AND r.lease=? AND r.lease_until>? AND r.cooldown_until<=?`).bind(day,day,token,user.telegram_id,user.zodiac,user.generation,claim.consent_revision,run,epoch03(),epoch03()).first();
+     if(!still||!morning03()||activityDay()!==day){await finish28(env,user,day,token,'cancelled',parts,'consent_preflight_denied');stats.cancelled++;break;}
+     stats.http++;await sendMessage(env,user.telegram_id,chunks[i],i===chunks.length-1?forecastCta03(day,Boolean(still.owned)):[]);parts++;
+    }
+    if(parts===chunks.length){await finish28(env,user,day,token,'sent',parts,'accepted_by_telegram');stats.sent++;}
+   }catch(error){
+    const code=error.telegramCode;
+    if(code===429){const wait=Number.isSafeInteger(error.retryAfter)&&error.retryAfter>0?error.retryAfter:60,next=epoch03()+wait,state=parts?'unknown':claim.attempts<3?'retry':'failed';
+     await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET cooldown_until=max(cooldown_until,?) WHERE singleton=1').bind(next).run();
+     await finish28(env,user,day,token,state,parts,parts?'partial_rate_limit':state==='retry'?'telegram_429':'retry_exhausted',429,next);stats[state==='retry'?'retry':state==='unknown'?'unknown':'failed']++;stats.reason='telegram_cooldown';break;
+    }
+    const state=code===403?'blocked':parts?'unknown':Number.isInteger(code)&&code>=400&&code<500?'failed':'unknown';
+    await finish28(env,user,day,token,state,parts,code?'telegram_'+code:'network_or_unconfirmed',code||null);
+    if(code===403)await env.DB.prepare('UPDATE astra_users SET notifications_enabled=0 WHERE telegram_id=? AND EXISTS(SELECT 1 FROM astra_user_policy p WHERE p.telegram_id=astra_users.telegram_id AND p.generation=?)').bind(user.telegram_id,user.generation).run();
+    stats[state]++;
+   }
+  }
+  stats.reason??=stats.candidates?'batch_complete':'no_due_recipients';return stats;
+ }catch{stats.reason='storage_or_budget_failure';return stats;}
+ finally{if(locked)try{await env.DB.prepare('UPDATE astra_broadcast_runtime03 SET lease=NULL,lease_until=0 WHERE singleton=1 AND lease=?').bind(run).run();}catch{stats.reason='storage_finalize_unavailable';}console.log(JSON.stringify(stats));}
+}
+
+const deliveryPause28=(env,schema)=>schema.quarantined||!POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)?'\n\nАвтоматическая доставка пока приостановлена до отдельной проверки владельцем.':'';
+async function consentScreen28(env,id){
+ const schema=await schemaConsent28(env);
+ if(!schema.ready)return screen(env,id,'Утренний прогноз','Настройка подписки пока недоступна. Полный бесплатный прогноз можно открыть вручную.',[],'dossier');
+ const active=await env.DB.prepare(`SELECT 1 FROM astra_notification_consent28 c JOIN astra_users u USING(telegram_id) JOIN astra_user_policy p USING(telegram_id) WHERE c.telegram_id=? AND c.generation=p.generation AND u.notifications_enabled=1 AND c.consent_version='daily-forecast-v1' AND c.consent_at IS NOT NULL AND c.revoked_at IS NULL`).bind(id).first();
+ if(active)return screen(env,id,'Утренний прогноз','Подписка подтверждена. Полный бесплатный прогноз с числом дня — один раз в сутки, обычно с 09:00 до 11:00 по Москве. Отключить можно здесь или командой /stop.'+deliveryPause28(env,schema),[[button('Отключить уведомления','consent28:stop')]],'dossier');
+ const pending=await pendingConsent28(env,id);
+ const message=await screen(env,id,'Утренний прогноз',CONSENT_TEXT28+deliveryPause28(env,schema),[[button('Подтвердить подписку','consent28:grant:'+pending.nonce),button('Отмена','consent28:cancel:'+pending.nonce)]],'dossier');
+ if(!Number.isSafeInteger(message?.message_id)||message.message_id<=0)throw Error('Consent message not confirmed');
+ await env.DB.prepare(`UPDATE astra_notification_consent28 SET pending_message_id=? WHERE telegram_id=? AND generation=? AND revision=? AND pending_hash=? AND pending_expires_at>unixepoch() AND pending_message_id IS NULL`).bind(message.message_id,id,pending.generation,pending.revision,pending.hash).run();
+ return message;
+}
+async function shellPage(env,id,page,q=null,updateId=null){
+ if(page==='notifications'||page.startsWith('notifications:')||page.startsWith('consent28:')){
+  if(q&&(!Number.isSafeInteger(id)||id<=0||q.from?.is_bot||q.from?.id!==id||q.message?.chat?.id!==id||q.message?.chat?.type!=='private'))return;
+  if(page==='notifications:disable'||page==='consent28:stop'){
+   await revokeConsent28(env,id);return screen(env,id,'Утренний прогноз','Подписка отозвана. Новых утренних сообщений не будет; начатую отправку отозвать невозможно. Полный прогноз доступен вручную.',[[button('Настройка уведомлений','notifications')]],'dossier');
+  }
+  const match=/^consent28:(grant|cancel):([a-f0-9]{32})$/.exec(page);
+  if(match){
+   const schema=await schemaConsent28(env);if(!q||!schema.ready)return screen(env,id,'Утренний прогноз','Подтверждение недоступно. Откройте настройку заново.',[],'dossier');
+   if(match[1]==='cancel'){
+    const cancelled=await env.DB.prepare(`UPDATE astra_notification_consent28 SET ${clearPending28} WHERE telegram_id=? AND pending_hash=? AND pending_message_id=? RETURNING revision`).bind(id,await nonceHash28(match[2]),q.message.message_id).first();
+    return screen(env,id,'Утренний прогноз',cancelled?'Подписка не оформлена. Полный прогноз доступен вручную.':'Эта кнопка больше не действует. Текущий выбор не изменён.',[],'dossier');
+   }
+   const ok=await confirmConsent28(env,id,match[2],q.message.message_id,updateId);
+   return screen(env,id,'Утренний прогноз',ok?'Подписка подтверждена. Отозвать согласие можно в любой момент здесь или командой /stop.'+deliveryPause28(env,schema):'Эта кнопка больше не действует. Для подписки откройте настройку и подтвердите условия заново.',[[button('Настройка уведомлений','notifications')]],'dossier');
+  }
+  // Every legacy toggle/enable/confirm can only display a NEW notice, never grant.
+  return consentScreen28(env,id);
+ }
+ return pre28_shellPage(env,id,page,q,updateId);
+}
+async function incoming(env,m,updateId){
+ if(m.chat?.type==='private'&&m.from?.id===m.chat.id&&!m.from?.is_bot){
+  const text=String(m.text||'').trim();
+  if(text==='/stop'){await revokeConsent28(env,m.from.id);return send(env,m.from.id,'Подписка отозвана. Утренние уведомления выключены. Полный прогноз доступен вручную.');}
+  if(text==='🔔 Рассылка')return consentScreen28(env,m.from.id);
+ }
+ return pre28_incoming(env,m,updateId);
+}
+async function health(env){
+ const response=await pre28_health(env),state=await response.json(),schema=await schemaConsent28(env);
+ state.broadcast_consent_implemented=true;state.consent_schema_ready=schema.ready;state.consent_gate_ready=schema.ready;
+ state.broadcast_delivery_allowed=Boolean(schema.ready&&!schema.quarantined&&POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)&&state.broadcast_schema_ready&&state.manual_content_ready);
+ state.broadcast_blocker=!schema.ready?schema.reason:schema.quarantined?'delivery_quarantined':!POLICY_TRUE(env.ASTRA_DAILY_DELIVERY_ENABLED)?'delivery_disabled':state.broadcast_prerequisite_blocker;
+ state.broadcast_ready=state.broadcast_delivery_allowed;state.public_ready=false;state.ready=false;state.release_scope='STAGING_REVIEW_ONLY';
+ return Response.json(state,{status:503,headers:{'Cache-Control':'no-store'}});
+}
+async function broadcast(env){return runBroadcast28(env);}
 
 const astraWorker = {
   async fetch(request,env) {
