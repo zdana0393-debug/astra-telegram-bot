@@ -1,0 +1,10 @@
+{"target":"frozen_candidate","sha256":"d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f","import_wall_ms":32.87611700000001,"process_cpu_ms":34.735,"rss_bytes":41463808,"cloudflare_cpu_measured":false}
+{"target":"frozen_candidate","sha256":"d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f","import_wall_ms":32.100972,"process_cpu_ms":33.628,"rss_bytes":41426944,"cloudflare_cpu_measured":false}
+{"target":"frozen_candidate","sha256":"d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f","import_wall_ms":30.19992599999999,"process_cpu_ms":31.568,"rss_bytes":41660416,"cloudflare_cpu_measured":false}
+{"target":"frozen_candidate","sha256":"d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f","import_wall_ms":29.77895,"process_cpu_ms":31.229,"rss_bytes":41721856,"cloudflare_cpu_measured":false}
+{"target":"frozen_candidate","sha256":"d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f","import_wall_ms":28.804097000000002,"process_cpu_ms":30.371,"rss_bytes":41598976,"cloudflare_cpu_measured":false}
+{"target":"wrangler_dryrun","sha256":"fa74992c0d962231466d565d61068981430c750dc53917628ea142e6c5e27c86","import_wall_ms":37.287882,"process_cpu_ms":38.705,"rss_bytes":50438144,"cloudflare_cpu_measured":false}
+{"target":"wrangler_dryrun","sha256":"fa74992c0d962231466d565d61068981430c750dc53917628ea142e6c5e27c86","import_wall_ms":33.674173999999994,"process_cpu_ms":35.194,"rss_bytes":50524160,"cloudflare_cpu_measured":false}
+{"target":"wrangler_dryrun","sha256":"fa74992c0d962231466d565d61068981430c750dc53917628ea142e6c5e27c86","import_wall_ms":35.130863999999995,"process_cpu_ms":36.632,"rss_bytes":50536448,"cloudflare_cpu_measured":false}
+{"target":"wrangler_dryrun","sha256":"fa74992c0d962231466d565d61068981430c750dc53917628ea142e6c5e27c86","import_wall_ms":39.937042999999996,"process_cpu_ms":41.451,"rss_bytes":50520064,"cloudflare_cpu_measured":false}
+{"target":"wrangler_dryrun","sha256":"fa74992c0d962231466d565d61068981430c750dc53917628ea142e6c5e27c86","import_wall_ms":37.892125,"process_cpu_ms":39.431,"rss_bytes":50393088,"cloudflare_cpu_measured":false}

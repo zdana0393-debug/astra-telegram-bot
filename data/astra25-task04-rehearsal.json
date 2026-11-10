@@ -1,0 +1,384 @@
+{
+  "version": "astra25-task04-rehearsal-v1",
+  "synthetic_only": true,
+  "plan_sha256": "593200c7d3ccdd9ee140fec081f12376cf7ee167b7a138fe65732d1c9a61ff65",
+  "candidate": {
+    "path": "release/ASTRA_2_5_TASK03_CANDIDATE.js",
+    "sha256": "d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f"
+  },
+  "origin20": {
+    "users": 20,
+    "balance_total": 444,
+    "per_user": [
+      {
+        "fixture_label": "fictional-profile-1",
+        "sha256": "ea60e663d407c94a442d8f2b4533865f2fe53980646c724672533186492ea782",
+        "balance": 8
+      },
+      {
+        "fixture_label": "fictional-profile-2",
+        "sha256": "a5a3bddc83dc10f12ef13c4c4be0a43589e371d39ee887749b3345d238a973f1",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-3",
+        "sha256": "9991e9cc9d88bd2062d75cc1db10f98ebf0d6fccf6dd73bcc418646da29b6c24",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-4",
+        "sha256": "3fe495c3d6793aa4f88af5387502ef1eaf98c4272c4ab9227516545beff155b8",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-5",
+        "sha256": "b660ced79b7ed77f8d08060eeda8fca3d640b1af787c653a6869b79d28498af3",
+        "balance": 0
+      },
+      {
+        "fixture_label": "fictional-profile-6",
+        "sha256": "011bbe47d10335a330adddfe939198a33baeada10476726eecbdbc8aae93edfb",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-7",
+        "sha256": "66d6e35fa04404452f79ca6f8d6e6720bf76e44ed1e5b204503d322d8fa81e74",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-8",
+        "sha256": "10a0288ccb602d842181a921c6a106f088a8aa0dea331201fa6ac0d2718ec5e9",
+        "balance": 100
+      },
+      {
+        "fixture_label": "fictional-profile-9",
+        "sha256": "495f240fb85166f21c12b2ec924b217e600f09b2cf78671ecefbe428ba871b5b",
+        "balance": 0
+      },
+      {
+        "fixture_label": "fictional-profile-10",
+        "sha256": "fe3fba8f9491d386886f6a604aacba3c1b7a6255973db614be7cf1fb7b4e7b00",
+        "balance": 7
+      },
+      {
+        "fixture_label": "fictional-profile-11",
+        "sha256": "045d07d75479616d2793e26a84e5779231a6349e22dcc228d36d275e3d0f9c58",
+        "balance": 5
+      },
+      {
+        "fixture_label": "fictional-profile-12",
+        "sha256": "3514feee86a9d58a764754d7c517a046929910183358dcfdd49f35f2b7852f59",
+        "balance": 100
+      },
+      {
+        "fixture_label": "fictional-profile-13",
+        "sha256": "5b0579b1c2d1e77933f8669517743962615fe6a482f76ef2f05d8df2900e986e",
+        "balance": 0
+      },
+      {
+        "fixture_label": "fictional-profile-14",
+        "sha256": "29113df43d3ec8819d0d39391fc22b8e42e0d4f97eb7d8b9ff60b055e64fa95b",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-15",
+        "sha256": "5b8c1fb3f157276170b527d692baf17105c85b71ce0dcd20c8a99c90175eb980",
+        "balance": 5
+      },
+      {
+        "fixture_label": "fictional-profile-16",
+        "sha256": "18484175222509e15ccaa5b2aa476138dc1d0afa84cab48a8a8f0bafd3c8b8b1",
+        "balance": 100
+      },
+      {
+        "fixture_label": "fictional-profile-17",
+        "sha256": "dea2eb831112b131dd8292a23b03c01fe9e5fe728f5121aa73ea4c0def193ef8",
+        "balance": 0
+      },
+      {
+        "fixture_label": "fictional-profile-18",
+        "sha256": "c33365835be9d0e45e5b0a0a169baf2b9e729b6cd54a887eb3270db5eade034b",
+        "balance": 2
+      },
+      {
+        "fixture_label": "fictional-profile-19",
+        "sha256": "9e54750fa224a688efb9f04c856a4bcddd94abb01879287f415e3a2c15b6a62f",
+        "balance": 5
+      },
+      {
+        "fixture_label": "fictional-profile-20",
+        "sha256": "71c38bfdc24ef5750bb55a3b41281d7d5dc1c2160be5cd1dfad16e7003879c5d",
+        "balance": 100
+      }
+    ],
+    "pending_updates_count": 2,
+    "legacy20_delivered_not_stored": {
+      "present": true,
+      "text_sha256": "1d034a7ab9bbce91267904635700712b2f8c5e0af99e387df6645e70fa4e3334",
+      "stored_material_count": 0
+    }
+  },
+  "simple_upgrade": {
+    "source_stage": "2.0",
+    "target_stage": "0029",
+    "steps": [
+      {
+        "path": "migrations/0021_wallet.sql",
+        "sha256": "db3b3f02c1f2a374415eff4d1622867962e9f03fd6816ac83e3a5c8dc41da798",
+        "bytes": 5198
+      },
+      {
+        "path": "migrations/0022_shell.sql",
+        "sha256": "ad7203bf9431a9ca8aea178b030139948c562041783d893118de9221e58e5d70",
+        "bytes": 1181
+      },
+      {
+        "path": "migrations/0023_forecast.sql",
+        "sha256": "ab9f185d5667faab23fb2ffc179161e9227a8b1eb0fab022671304755ab7f2fd",
+        "bytes": 3418
+      },
+      {
+        "path": "migrations/0024_activity_history.sql",
+        "sha256": "59afa3b4517608f340b664b7ceb6c1aeb42ba0307e351eef2c665e342a2eee9b",
+        "bytes": 1296
+      },
+      {
+        "path": "migrations/0025_rewards_stars.sql",
+        "sha256": "5e85b25583e6a6bafca83d2a80ca2029e838ea4a3ddf7161634a4ca0d5a81a94",
+        "bytes": 32409
+      },
+      {
+        "path": "migrations/0026_economy_fence.sql",
+        "sha256": "4068dc6370ab381dfb2575c07e7745f13198637bfd5a50a3186da936c5483e17",
+        "bytes": 47750
+      },
+      {
+        "path": "migrations/0027_broadcast.sql",
+        "sha256": "58af0861a595c6d72f3d36b46831e78067ad90c1c70d5b8e070fddcadebd7261",
+        "bytes": 4439
+      },
+      {
+        "path": "migrations/0028_notification_consent.sql",
+        "sha256": "a0de7b95d8951a0f079a8275c66637feb6230dda52a7c1f21a2f9ec660c0561d",
+        "bytes": 18660
+      },
+      {
+        "path": "migrations/0029_tarot.sql",
+        "sha256": "ca64d5d7842c0e66d2859beeb34a03f287483c26ce950120d74aacb3ea34afba",
+        "bytes": 39610
+      }
+    ],
+    "profiles_before": 20,
+    "profiles_after": 20,
+    "balance_before": 444,
+    "balance_after": 444,
+    "each_user_hash_preserved": true,
+    "processed_updates_hash_preserved": true,
+    "opening": {
+      "count": 20,
+      "sum": 444
+    },
+    "source_file_bytes_preserved": true,
+    "backup_verified": true,
+    "backup_restore_file_sha256": "d9b944ec0b2504c5e959ec1346998ed68d1d7e36a62c921b0074eafbe37bf6b5",
+    "backup_snapshot_sha256": "227b065ed83efb6ead5d4cafca5ca12637b54269886140839a3ff3dc7187a627",
+    "actual_d1_used": false,
+    "repeat_changed": false,
+    "repeat_file_bytes_preserved": true,
+    "restored_origin_snapshot_matches": true
+  },
+  "final_baseline_flags": {
+    "policy25": {
+      "enabled": 0,
+      "activated": 0,
+      "stars_enabled": 0,
+      "start_day": null
+    },
+    "patch26": {
+      "enabled": 0,
+      "activated": 0,
+      "start_day": null,
+      "notice_approved": 0,
+      "active_key_id": null
+    },
+    "consent28": {
+      "delivery_quarantined": 1
+    },
+    "tarot29": {
+      "enabled": 0
+    },
+    "legacy_on_preferences_retained": 13,
+    "consents_created": 0
+  },
+  "historical_upgrade": {
+    "existing_table_hashes_preserved_by_migrations": true,
+    "balance_before_migrations": 537,
+    "balance_after_migrations": 537,
+    "introduced_later_events": [
+      {
+        "introduced_after": "0021",
+        "kind": "tarot3",
+        "text_sha256": "dc92872ebc5e06901ced5965703a6fdb147b656911fdc5eaf2ee55985ac7cf2f",
+        "utf8_bytes": 118
+      },
+      {
+        "introduced_after": "0022",
+        "kind": "gpt6",
+        "amount": 5
+      },
+      {
+        "introduced_after": "0023",
+        "kind": "forecast4",
+        "text_sha256": "c5918c0a83db8ee9c2591d12eace16f783604cb8881af5a813c0b8329a425466",
+        "utf8_bytes": 4518
+      },
+      {
+        "introduced_after": "0025",
+        "kind": "old_stars_proof",
+        "dust": 100
+      },
+      {
+        "introduced_after": "0026",
+        "kind": "tarot5",
+        "text_sha256": "853ddae0ad317132171ff586f2e9257a7f9d97cd13818b79d6c0d0a10bad41d6",
+        "utf8_bytes": 143
+      }
+    ],
+    "new_purchases": [
+      {
+        "spread_id": "basic-3",
+        "proposed_price": 5,
+        "balance_before": 193,
+        "balance_after": 188,
+        "one_purchase": true,
+        "result_utf8_bytes": 5660,
+        "result_sha256": "4eddebea930c13908a82b201b080b402efec0a27e87faf4275900ede3837f5d8",
+        "free_reread_exact": true
+      },
+      {
+        "spread_id": "relations-3",
+        "proposed_price": 8,
+        "balance_before": 188,
+        "balance_after": 180,
+        "one_purchase": true,
+        "result_utf8_bytes": 5714,
+        "result_sha256": "0882116617723bbbb35bc82b68620b0de2df8e85a517ec78be794b07a7963853",
+        "free_reread_exact": true
+      },
+      {
+        "spread_id": "work-3",
+        "proposed_price": 8,
+        "balance_before": 180,
+        "balance_after": 172,
+        "one_purchase": true,
+        "result_utf8_bytes": 6027,
+        "result_sha256": "e85742f12abdf187d5059f34c4725f1bfbba9985419da4cb929ad66c4b9a6185",
+        "free_reread_exact": true
+      },
+      {
+        "spread_id": "choice-3",
+        "proposed_price": 8,
+        "balance_before": 172,
+        "balance_after": 164,
+        "one_purchase": true,
+        "result_utf8_bytes": 6198,
+        "result_sha256": "00880281f871a530ed984c4aa0a0c653e6822d576a9b4eda9a890848179313f0",
+        "free_reread_exact": true
+      },
+      {
+        "spread_id": "depth-5",
+        "proposed_price": 14,
+        "balance_before": 164,
+        "balance_after": 150,
+        "one_purchase": true,
+        "result_utf8_bytes": 7263,
+        "result_sha256": "fb33ab663f9ec78ca3ffabd3c5f5d988296a5c32fbc6237a6a495f30e79020ef",
+        "free_reread_exact": true
+      },
+      {
+        "spread_id": "depth-7",
+        "proposed_price": 21,
+        "balance_before": 150,
+        "balance_after": 129,
+        "one_purchase": true,
+        "result_utf8_bytes": 9975,
+        "result_sha256": "3ef8f06fb36a426839d33e2a60c286dbf0739ef884d74fd6947f9e5be8c3f7dc",
+        "free_reread_exact": true
+      },
+      {
+        "spread_id": "celtic-10",
+        "proposed_price": 32,
+        "balance_before": 129,
+        "balance_after": 97,
+        "one_purchase": true,
+        "result_utf8_bytes": 13823,
+        "result_sha256": "dfb99f96ada6b3bdb2387097655eb7c1543bce6ac32fce7838f176cb78571b83",
+        "free_reread_exact": true
+      }
+    ],
+    "completed_repeat_with_new_business": {
+      "changed": false,
+      "business_changed_since_migration": true
+    }
+  },
+  "storage": {
+    "before": {
+      "sqlite_allocated_bytes": 1236992,
+      "page_size": 4096,
+      "offers": {
+        "count": 7,
+        "payload_bytes": 252728
+      },
+      "paid": {
+        "count": 7,
+        "payload_bytes": 252728
+      },
+      "cloudflare_bytes_measured": false
+    },
+    "after_100_more_drafts": {
+      "sqlite_allocated_bytes": 7942144,
+      "page_size": 4096,
+      "offers": {
+        "count": 107,
+        "payload_bytes": 6825903
+      },
+      "paid": {
+        "count": 7,
+        "payload_bytes": 252728
+      },
+      "cloudflare_bytes_measured": false
+    },
+    "growth_bytes": 6705152,
+    "observed_bytes_per_draft": 67051.52,
+    "model_free_database_cap_bytes": 500000000,
+    "rough_additional_drafts_to_cap": 7338,
+    "daily_100_new_unpaid_drafts_rough_days_to_cap": 73,
+    "warning": "SQLite allocation projection only; not Cloudflare storage/rows or an approved retention policy",
+    "retention_preview": {
+      "proposal_only": true,
+      "delete_permitted": false,
+      "approved_retention_days": null,
+      "proposed_retention_days": 7,
+      "as_of": 1795023391,
+      "limit": 20,
+      "candidates": 20,
+      "candidate_payload_bytes": 1326170,
+      "question_bearing_candidates": 0,
+      "purchases_excluded": true
+    }
+  },
+  "readiness": {
+    "migration_and_integrity": "PASS_FOR_VALIDATED_SYNTHETIC_SOURCE_ONLY",
+    "business_logic": "LOCAL_ONLY_TESTED",
+    "manual_ui": "LOCAL_ONLY_BUDGET_REVIEW_BLOCKER",
+    "cloud_platform": false,
+    "Telegram_transport": false,
+    "privacy_financial_editorial": "OWNER_REVIEW_REQUIRED",
+    "public_ready": false
+  },
+  "open_blockers": [
+    "LEGACY_DANGLING_REFERRER_REQUIRES_REVIEW",
+    "ERROR_PATH_LOCAL_OPERATION_HEADROOM_49_OF_50"
+  ],
+  "new_remote_actions": 0
+}

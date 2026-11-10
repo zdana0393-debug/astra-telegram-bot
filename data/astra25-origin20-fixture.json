@@ -1,0 +1,161 @@
+{
+  "synthetic": true,
+  "schema_source": "src/02_SCHEMA.sql",
+  "version": "2.0",
+  "per_user": [
+    {
+      "fixture_label": "fictional-profile-1",
+      "sha256": "ea60e663d407c94a442d8f2b4533865f2fe53980646c724672533186492ea782",
+      "balance": 8
+    },
+    {
+      "fixture_label": "fictional-profile-2",
+      "sha256": "a5a3bddc83dc10f12ef13c4c4be0a43589e371d39ee887749b3345d238a973f1",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-3",
+      "sha256": "9991e9cc9d88bd2062d75cc1db10f98ebf0d6fccf6dd73bcc418646da29b6c24",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-4",
+      "sha256": "3fe495c3d6793aa4f88af5387502ef1eaf98c4272c4ab9227516545beff155b8",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-5",
+      "sha256": "b660ced79b7ed77f8d08060eeda8fca3d640b1af787c653a6869b79d28498af3",
+      "balance": 0
+    },
+    {
+      "fixture_label": "fictional-profile-6",
+      "sha256": "011bbe47d10335a330adddfe939198a33baeada10476726eecbdbc8aae93edfb",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-7",
+      "sha256": "66d6e35fa04404452f79ca6f8d6e6720bf76e44ed1e5b204503d322d8fa81e74",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-8",
+      "sha256": "10a0288ccb602d842181a921c6a106f088a8aa0dea331201fa6ac0d2718ec5e9",
+      "balance": 100
+    },
+    {
+      "fixture_label": "fictional-profile-9",
+      "sha256": "495f240fb85166f21c12b2ec924b217e600f09b2cf78671ecefbe428ba871b5b",
+      "balance": 0
+    },
+    {
+      "fixture_label": "fictional-profile-10",
+      "sha256": "fe3fba8f9491d386886f6a604aacba3c1b7a6255973db614be7cf1fb7b4e7b00",
+      "balance": 7
+    },
+    {
+      "fixture_label": "fictional-profile-11",
+      "sha256": "045d07d75479616d2793e26a84e5779231a6349e22dcc228d36d275e3d0f9c58",
+      "balance": 5
+    },
+    {
+      "fixture_label": "fictional-profile-12",
+      "sha256": "3514feee86a9d58a764754d7c517a046929910183358dcfdd49f35f2b7852f59",
+      "balance": 100
+    },
+    {
+      "fixture_label": "fictional-profile-13",
+      "sha256": "5b0579b1c2d1e77933f8669517743962615fe6a482f76ef2f05d8df2900e986e",
+      "balance": 0
+    },
+    {
+      "fixture_label": "fictional-profile-14",
+      "sha256": "29113df43d3ec8819d0d39391fc22b8e42e0d4f97eb7d8b9ff60b055e64fa95b",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-15",
+      "sha256": "5b8c1fb3f157276170b527d692baf17105c85b71ce0dcd20c8a99c90175eb980",
+      "balance": 5
+    },
+    {
+      "fixture_label": "fictional-profile-16",
+      "sha256": "18484175222509e15ccaa5b2aa476138dc1d0afa84cab48a8a8f0bafd3c8b8b1",
+      "balance": 100
+    },
+    {
+      "fixture_label": "fictional-profile-17",
+      "sha256": "dea2eb831112b131dd8292a23b03c01fe9e5fe728f5121aa73ea4c0def193ef8",
+      "balance": 0
+    },
+    {
+      "fixture_label": "fictional-profile-18",
+      "sha256": "c33365835be9d0e45e5b0a0a169baf2b9e729b6cd54a887eb3270db5eade034b",
+      "balance": 2
+    },
+    {
+      "fixture_label": "fictional-profile-19",
+      "sha256": "9e54750fa224a688efb9f04c856a4bcddd94abb01879287f415e3a2c15b6a62f",
+      "balance": 5
+    },
+    {
+      "fixture_label": "fictional-profile-20",
+      "sha256": "71c38bfdc24ef5750bb55a3b41281d7d5dc1c2160be5cd1dfad16e7003879c5d",
+      "balance": 100
+    }
+  ],
+  "source_snapshot": {
+    "ddl_sha256": "dfd2aa4737b307a8d1dbfd97b6fe355dccd4e208c886ff37de403910d568ce78",
+    "tables": {
+      "astra_processed_updates": {
+        "rows": 13,
+        "sha256": "74b5d1bbb793e7a8b3749f5fbadf8683596a158d58ba6e8e40a5a60fef6d24d1"
+      },
+      "astra_users": {
+        "rows": 20,
+        "sha256": "df9c1e9929c13f883869e13c35e0ff68a6dbbbc0ef547a4316d03f7e4acceeb5"
+      }
+    },
+    "user_version": 0,
+    "sha256": "227b065ed83efb6ead5d4cafca5ca12637b54269886140839a3ff3dc7187a627"
+  },
+  "pending_updates": [
+    {
+      "update_id": 990001,
+      "message": {
+        "from": {
+          "id": 12,
+          "is_bot": false
+        },
+        "chat": {
+          "id": 12,
+          "type": "private"
+        },
+        "text": "✨ Баланс"
+      }
+    },
+    {
+      "update_id": 990002,
+      "callback_query": {
+        "id": "task04-990002",
+        "from": {
+          "id": 13,
+          "is_bot": false
+        },
+        "message": {
+          "message_id": 900,
+          "chat": {
+            "id": 13,
+            "type": "private"
+          }
+        },
+        "data": "tarot:day"
+      }
+    }
+  ],
+  "legacy20_delivered_not_stored": {
+    "present": true,
+    "text_sha256": "1d034a7ab9bbce91267904635700712b2f8c5e0af99e387df6645e70fa4e3334",
+    "stored_material_count": 0
+  }
+}
