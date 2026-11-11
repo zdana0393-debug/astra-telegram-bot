@@ -1,0 +1,16 @@
+# Author portraits and private Telegram inventories must never enter this repository.
+# Existing tracked technical screenshots are unaffected.
+*.zip
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.PNG
+*.JPG
+*.JPEG
+*.WEBP
+private/
+.private/
+*-private-art*
+*file-ids*.json
+__pycache__/

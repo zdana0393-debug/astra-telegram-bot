@@ -1,0 +1,192 @@
+{
+  "version": "astra25-private-art-local-verification-v1",
+  "checked_at_utc": "2026-11-11T22:13:27.537493+00:00",
+  "branch": "astra-2.5-tarot",
+  "base_commit": "38416a96457f96b2ebc7134fa4e76bbaeac8e207",
+  "node": "v24.22.1",
+  "status": "LOCAL_ADAPTER_VERIFIED_ASSETS_BLOCKED",
+  "task08_status": "PREPARATION_ONLY",
+  "stop_ship": true,
+  "public_ready": false,
+  "art_default": "OFF",
+  "author_archive": {
+    "name": "Astra_Tarot_78_for_Codex.zip",
+    "read": false,
+    "reason": "file exceeds the executor transfer limit of 32 MiB",
+    "manifest_mapping": "NOT_TESTED",
+    "author_assets_verified": 0,
+    "author_derivatives_created": 0
+  },
+  "cloudflare_actions": 0,
+  "telegram_api_actions": 0,
+  "images_in_git": false,
+  "protected_files_matched": 72,
+  "task07_artifacts_matched": 9,
+  "suites": [
+    {
+      "suite": "astra-art-unit-direct",
+      "scope": "new-adapter",
+      "tests": 188,
+      "passed": 188,
+      "failed": 0,
+      "log_sha256": "3f9dc7dfb79e532f455d44c1a2f4f9621dce27c8ba46c99d73369b0ca5faa8b1"
+    },
+    {
+      "suite": "astra-art-worker-direct",
+      "scope": "private-single-file-worker",
+      "tests": 27,
+      "passed": 27,
+      "failed": 0,
+      "log_sha256": "7cd1e3a864a841697b2c987ac6b12bb72def1ada53f371c3bcaa15ea6d0b4e9b"
+    },
+    {
+      "suite": "astra-art-regression-tarot31",
+      "scope": "existing-task07-regression",
+      "tests": 34,
+      "passed": 34,
+      "failed": 0,
+      "log_sha256": "34ed96a193a79e7f0e24efb91bc4efdefae7c0def7a970c792c4cda0a31f78bd"
+    },
+    {
+      "suite": "astra-art-regression-tarot31-safety",
+      "scope": "existing-task07-regression",
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "log_sha256": "ac5cc5fdd3bde736030632710b87f39a695d4c903dc244375b7e4a27fb55397b"
+    },
+    {
+      "suite": "astra-art-regression-tarot31-concurrency",
+      "scope": "existing-task07-regression",
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "log_sha256": "c6fca44eb571536a0f8088dbc47987bf782611f244d74c4e315ef5ec97bca7b9"
+    },
+    {
+      "suite": "astra-art-regression-tarot31-editorial",
+      "scope": "existing-task07-regression",
+      "tests": 170,
+      "passed": 170,
+      "failed": 0,
+      "log_sha256": "28660bba80d4f64b955bd7aac1815724eb8a436b308cb5995a03e3003cc02c93"
+    },
+    {
+      "suite": "astra-art-regression-astra25-task07-business",
+      "scope": "existing-task07-regression",
+      "tests": 39,
+      "passed": 39,
+      "failed": 0,
+      "log_sha256": "0472678058b1ca90f5449ad9657f0243c83d89dfa6f5e114f04b69ff582eed1d"
+    },
+    {
+      "suite": "astra-art-regression-astra25-task07-compat",
+      "scope": "existing-task07-regression",
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "log_sha256": "a097cc0370e62dedef9339b45e6f8cba1a9d5dfa2f6223429f01da34681e2341"
+    },
+    {
+      "suite": "tarot-art-private.test.py",
+      "scope": "synthetic-archive-cli",
+      "tests": 14,
+      "passed": 14,
+      "failed": 0,
+      "log_sha256": "ab0cb8387ee04eb0d61c3ce7e4cf35a388754b8bd0e5f63748c99e0454bd772d"
+    }
+  ],
+  "node_tests_passed": 510,
+  "python_tests_passed": 14,
+  "tests_passed_total": 524,
+  "historical_task07_2569_rerun": false,
+  "local_operations": {
+    "scope": "private art candidate + native SQLite + fake Telegram",
+    "cloudflare_measured": false,
+    "cases": [
+      {
+        "case": "basic-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "relations-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "work-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "choice-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "depth-5",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "depth-7",
+        "status": 200,
+        "sql": 27,
+        "http": 6,
+        "total": 33
+      },
+      {
+        "case": "celtic-10",
+        "status": 200,
+        "sql": 27,
+        "http": 6,
+        "total": 33
+      },
+      {
+        "case": "long58k",
+        "status": 200,
+        "sql": 35,
+        "http": 12,
+        "total": 47
+      }
+    ],
+    "max_operations": 47
+  },
+  "local_build": {
+    "base_sha256": "018d2eda3fc13a7a0f85fffcc6e1c866a9901bfb2e8dcce5e1bd6d184d6f8bda",
+    "base_bytes": 2019722,
+    "base_gzip9_bytes": 340386,
+    "synthetic_private_candidate_sha256": "6897f50af9cad8ef7bb7daaed426c46122eb528e949cf8d46f59923b7f981f5f",
+    "synthetic_private_candidate_bytes": 2044952,
+    "synthetic_gzip9_bytes": 345024,
+    "real_registry_build": "NOT_TESTED",
+    "deployed": false
+  },
+  "source_sha256": {
+    ".gitignore": "4eb92652835e5f89ece4849caaac29694100699c8e5d524878b4dd0085e353ed",
+    "src/tarot25/art-delivery.mjs": "3e48fa674e74fa5f04043d44bfb22b594b3ecf2241113ba038d47172e65570c9",
+    "scripts/import-tarot-art-private.py": "f192b21569e8bcf430e54ed0bb44eb5077f09d91191d6fd5f4cff1fba8137994",
+    "scripts/build-tarot-art-private.mjs": "5284852e4ac4cd76862d1d0a6836a4b61928cfc9611f9e54de4f8ab738b68bea",
+    "tests/tarot-art-delivery.test.mjs": "40a7ac3fed906c7cb663b948694595396918fd533df2c57c8b55dad0bec28f12",
+    "tests/tarot-art-worker.test.mjs": "a635c762afdee1f4f700223d2a55c712667b8660b4e35cbd72cc00c7ad8bc106",
+    "tests/tarot-art-private.test.py": "0da91d2847563b7a3154dbe20d6a983b5a6a7a3801d8003b9606679812e24875",
+    "tests/fixtures/art-private-registry.mjs": "4f8af034bedfedc4f93d4de3fbb051033997395bbf2a5b7ed0b510b25047b232"
+  },
+  "real_platform": {
+    "cloudflare_cpu": "NOT_TESTED",
+    "d1_rows": "NOT_TESTED",
+    "telegram_images": "NOT_TESTED",
+    "owner_art_visual_review": "NOT_TESTED"
+  }
+}
