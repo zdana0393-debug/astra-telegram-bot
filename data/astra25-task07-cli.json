@@ -1,0 +1,14 @@
+{
+  "local_only": true,
+  "actual_cli_cases": 4,
+  "cli_preflight_no_write": true,
+  "cli_full_20_to_31_and_compact": true,
+  "cli_repeat_read_only": true,
+  "backup_restore_verified": true,
+  "actual_emitted_sql_replayed": true,
+  "sql_replay_cases": 2,
+  "typed_rowid_sequence_match": true,
+  "nul_unicode_paid_bytes_exact": true,
+  "nul_fixture_total_balance": 441,
+  "cloud_import_proven": false
+}

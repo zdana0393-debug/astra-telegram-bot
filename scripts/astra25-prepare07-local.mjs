@@ -1,0 +1,7 @@
+import fs from'node:fs';import{fileURLToPath}from'node:url';import{upgradeLocal25,inspectUpgrade25}from'./lib/astra25-upgrade07.mjs';import{compactCopy07}from'./lib/astra25-compact07.mjs';
+export async function prepare07(args){const o={},flags=new Set(['--local-only','--writers-paused','--resume','--preflight']);for(let i=0;i<args.length;i++){const a=args[i];if(flags.has(a)){if(a in o)throw Error('DUPLICATE_OPTION');o[a]=true;}else if(['--source','--output','--compact-output','--sql-output'].includes(a)){if(a in o||!args[i+1]||args[i+1].startsWith('--'))throw Error('OPTION_VALUE_REQUIRED');o[a]=args[++i];}else throw Error('UNKNOWN_OPTION');}
+ const options={local_only:o['--local-only']===true,writers_paused:o['--writers-paused']===true,source:o['--source'],output:o['--output'],resume:o['--resume']===true};
+ if(o['--preflight'])return{status:'READY_FOR_LOCAL_REHEARSAL_ONLY',...inspectUpgrade25(options),cloud_ready:false};
+ const upgrade=await upgradeLocal25(options);let compact=null;if(o['--compact-output'])compact=await compactCopy07({local_only:true,writers_paused:options.writers_paused,source:options.output,output:o['--compact-output'],sql_output:o['--sql-output']??null});
+ return{status:'LOCAL_PREPARATION_COMPLETE_STOP_BEFORE_CLOUD',upgrade,compact,cloud_ready:false};}
+if(process.argv[1]===fileURLToPath(import.meta.url))try{console.log(JSON.stringify(await prepare07(process.argv.slice(2)),null,2));}catch(e){console.error(JSON.stringify({status:'NOT_READY_STOP',code:e.code||e.message,cloud_ready:false}));process.exitCode=1;}

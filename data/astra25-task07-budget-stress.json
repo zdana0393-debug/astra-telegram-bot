@@ -1,0 +1,91 @@
+{
+  "local_only": true,
+  "cloudflare_measured": false,
+  "max_conservative_operations": 47,
+  "cases": [
+    {
+      "name": "cold58k_markup_null",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47
+    },
+    {
+      "name": "cold58k_markup_400",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47
+    },
+    {
+      "name": "cold58k_markup_403",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47
+    },
+    {
+      "name": "cold58k_markup_429",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47
+    },
+    {
+      "name": "cold58k_markup_500",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47
+    },
+    {
+      "name": "archive_page_0",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "name": "archive_page_1",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "name": "archive_page_2",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "name": "archive_page_3",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26
+    },
+    {
+      "name": "archive_page_4",
+      "status": 200,
+      "sql": 20,
+      "http": 5,
+      "total": 25
+    },
+    {
+      "name": "partial_2",
+      "status": 200,
+      "sql": 26,
+      "http": 5,
+      "total": 31
+    },
+    {
+      "name": "partial_3",
+      "status": 200,
+      "sql": 27,
+      "http": 6,
+      "total": 33
+    }
+  ]
+}

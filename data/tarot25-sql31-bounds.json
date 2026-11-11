@@ -1,0 +1,12 @@
+{
+  "individual_statements": 133,
+  "max_statement_utf8_bytes": 20429,
+  "project_max_bytes": 50000,
+  "completion_groups": 21,
+  "changed_definitions": [
+    "astra_tarot25_offer_guard29",
+    "astra_tarot30_offer_admission",
+    "astra_tarot30_offer_post"
+  ],
+  "financial_purchase_guards_unchanged": true
+}

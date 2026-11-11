@@ -1,0 +1,142 @@
+{
+  "standalone_cli_cases": 4,
+  "standalone_sql_replay_cases": 2,
+  "version": "astra25-task07-verification-v1",
+  "checked_at_utc": "2026-11-11T15:32:16.892Z",
+  "base_commit": "78bf3eecc0fe1da07ce52d3294ba5376d8105537",
+  "node": "v24.22.1",
+  "local_only": true,
+  "public_ready": false,
+  "stop_ship": true,
+  "all_new_flags_default_off": true,
+  "historical_node_test_executions": 2214,
+  "new_node_test_executions": 355,
+  "total_node_test_executions": 2569,
+  "raw_worker_test_cases": 52,
+  "raw_worker_calls": {
+    "fetch": 302,
+    "scheduled": 1
+  },
+  "compiled_bundle_cases": 5,
+  "compiled_default_export_cases": 4,
+  "compiled_named_cleanup_cases": 1,
+  "new_real_sigkill_cases": 5,
+  "standalone_mobile_viewports": 2,
+  "standalone_large_stock": 10000,
+  "suites": {
+    "astra25-task07-business.log": {
+      "tests": 39,
+      "sha256": "c15c6b6af3802f33a5261dc5104562f108e25ea2263259091ba085e81dbb07ed",
+      "failures": 0
+    },
+    "astra25-task07-compat.log": {
+      "tests": 21,
+      "sha256": "12b3edb6a3d4c8a75469ca0a3b7b599b5f84038b1068f9e85a600e38ff8c2960",
+      "failures": 0
+    },
+    "tarot31-art-python.log": {
+      "tests": 1,
+      "sha256": "51cefeb370cbe19f0b856a2dbd9415d13b17d2b18e4e62e84ade5d2629bb9b83",
+      "failures": 0
+    },
+    "tarot31-budget.log": {
+      "tests": 9,
+      "sha256": "f976d93a4a6548240ad10dc0642181e1d73dd47acc3d4a62a7f0ba467448373d",
+      "failures": 0
+    },
+    "tarot31-concurrency.log": {
+      "tests": 12,
+      "sha256": "ea273de718802cd9c105ae0d839f51c8a757977d0a75d3213b9e92f7c38600da",
+      "failures": 0
+    },
+    "tarot31-crash.log": {
+      "tests": 5,
+      "sha256": "64c164c991ceb44d859031a72a64defae58ee36f1b596f9e1cdd544d30182ea1",
+      "failures": 0
+    },
+    "tarot31-editorial.log": {
+      "tests": 170,
+      "sha256": "a617be1e5836c0ac14efc3213e28fae8b083934b5c797a4bacc42bb004c6ae6c",
+      "failures": 0
+    },
+    "tarot31-safety.log": {
+      "tests": 19,
+      "sha256": "3f964c6857150efa3b893a8c452eb1868b01eab1928854eb927bf26a876ddb67",
+      "failures": 0
+    },
+    "tarot31-upgrade.log": {
+      "tests": 22,
+      "sha256": "ca3d119d9f73c800107d408adf8e80cbf628d699b9a1969c5910fb17d2b08b34",
+      "failures": 0
+    },
+    "tarot31-worker.log": {
+      "tests": 18,
+      "sha256": "6c8c7d8ae2e2bda8db364d402103310cdd637d1d08227051a87ada9941882f9c",
+      "failures": 0
+    },
+    "tarot31-wrangler.log": {
+      "tests": 5,
+      "sha256": "47299a4730a58d0db5a620171bcf26ac17407b9de30e7912e668d55dd2cc0508",
+      "failures": 0
+    },
+    "tarot31.log": {
+      "tests": 34,
+      "sha256": "c62bfb1eaaff88605735755ebc69b53396b446fd6010affafeac12be2ba66284",
+      "failures": 0
+    }
+  },
+  "historical_log_sha256": "1255c6664cf0735a291940e44efbb37a468720e9316604b2ca945e48df6c0347",
+  "plan_sha256": "83f75d7cfd00b27876f7fba2c6c3519233be4f2edd676f58757d696a079faa3a",
+  "raw_worker": {
+    "path": "release/ASTRA_2_5_TASK07_CANDIDATE.js",
+    "sha256": "018d2eda3fc13a7a0f85fffcc6e1c866a9901bfb2e8dcce5e1bd6d184d6f8bda",
+    "bytes": 2019722,
+    "gzip9_bytes": 340386
+  },
+  "compiled": {
+    "sha256": "74ad11ccb7d4bdd43bbee6d0eca994b50a9dfd8627a4d24aafb64bf3857a42ac",
+    "bytes": 2896093,
+    "gzip9_bytes": 349409,
+    "wrangler_version": "4.45.0",
+    "local_dry_run_only": true
+  },
+  "migration": {
+    "path": "migrations/0031_tarot_intents.sql",
+    "sha256": "f69aa193302d5332994c3a37184a558ffcce599ccef7f18fd3199545b1652afb",
+    "individual_statements": 133,
+    "max_statement_utf8_bytes": 20429,
+    "project_max_bytes": 50000,
+    "completion_groups": 21,
+    "changed_definitions": [
+      "astra_tarot25_offer_guard29",
+      "astra_tarot30_offer_admission",
+      "astra_tarot30_offer_post"
+    ],
+    "financial_purchase_guards_unchanged": true
+  },
+  "max_conservative_operations": 47,
+  "storage_compact": {
+    "source_bytes": 664072192,
+    "output_bytes": 4870144,
+    "paid_preserved": true,
+    "balances_preserved": true,
+    "cloud_import_proven": false
+  },
+  "platform_measurements": {
+    "cloudflare_cpu": false,
+    "d1_rows": false,
+    "d1_compatibility": false,
+    "real_telegram": false
+  },
+  "artifact_sha256": {
+    "data/astra25-task07-cli.json": "41aac2c95af2df802848af26b2a696beffb624447df7adb64928143f18127106",
+    "data/astra25-task07-protected.json": "eca92876344c45abfbe3c9260952904b9111af30d632456952a04615d4d31229",
+    "data/astra25-task07-runtime.json": "1ace013dd92fd67e6b8ff23640d8e85313fd6cb871ba518be20ce84b6e834877",
+    "data/astra25-task07-budget.json": "bfc5564fe2762540d3f9e6fa19f4cd55c3840f0d5247755540dc81e9c092efa1",
+    "data/astra25-task07-budget-stress.json": "c20f9d82ebba921681a6a2876588e6a9cce1e331660506835d7676100115e466",
+    "data/astra25-task07-storage.json": "a44261e63c934f93be702571972cff5b582d1478af7c9d8af8429a6456691b8e",
+    "data/astra25-task07-editorial.json": "043832d06c04e63b8593df27379fe2083bbb1b685c8ca6b5163aacfa5564707f",
+    "data/astra25-task07-mobile-browser.json": "22c6aa784899a507865b002985cedd9d4cd8a3d667fe6823ae19db5e599416af",
+    "data/astra25-task07-official-docs.json": "bf57eee6db3a36d2b4fcb75c967556f70acb093c200e64a65b2843ed30311336"
+  }
+}

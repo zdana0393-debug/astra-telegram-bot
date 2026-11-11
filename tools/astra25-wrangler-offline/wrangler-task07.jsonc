@@ -1,0 +1,10 @@
+{
+  "name": "astra25-task07-offline-candidate",
+  "main": "../../release/ASTRA_2_5_TASK07_CANDIDATE.js",
+  "compatibility_date": "2026-11-10",
+  "workers_dev": false,
+  "preview_urls": false,
+  "triggers": {"crons": []},
+  "d1_databases": [{"binding": "DB", "database_name": "task07-local-synthetic-placeholder", "database_id": "00000000-0000-0000-0000-000000000000"}],
+  "vars": {"ASTRA_TAROT25_INDEPENDENT_TEST_MODE": false, "ASTRA_TAROT25_QUESTIONS_TEST_MODE": false, "ASTRA_TAROT25_STORAGE_TEST_MODE": false, "ASTRA_TAROT25_ENABLED": false, "ASTRA_ECONOMY_V2_ENABLED": false, "STARS_SHOP_ENABLED": false, "ASTRA_DAILY_DELIVERY_ENABLED": false}
+}

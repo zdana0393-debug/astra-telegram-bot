@@ -1,0 +1,134 @@
+{
+  "scope": "raw TASK07 Worker + native SQLite + fake Telegram",
+  "cloudflare_measured": false,
+  "cases": [
+    {
+      "name": "purchase0",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "purchase1",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "purchase2",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "purchase3",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "reject_signature",
+      "status": 200,
+      "sql": 9,
+      "http": 3,
+      "total": 12
+    },
+    {
+      "name": "reject_payload",
+      "status": 200,
+      "sql": 9,
+      "http": 3,
+      "total": 12
+    },
+    {
+      "name": "reject_message",
+      "status": 200,
+      "sql": 9,
+      "http": 3,
+      "total": 12
+    },
+    {
+      "name": "reject_owner",
+      "status": 200,
+      "sql": 8,
+      "http": 1,
+      "total": 9
+    },
+    {
+      "name": "reject_group",
+      "status": 200,
+      "sql": 8,
+      "http": 1,
+      "total": 9
+    },
+    {
+      "name": "reject_negative_update",
+      "status": 500,
+      "sql": 1,
+      "http": 0,
+      "total": 1
+    },
+    {
+      "name": "reject_generation",
+      "status": 200,
+      "sql": 9,
+      "http": 3,
+      "total": 12
+    },
+    {
+      "name": "delivery_400",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "delivery_403",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "delivery_429",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "delivery_500",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "delivery_network",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "delivery_unknown_ack",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    },
+    {
+      "name": "question_purchase",
+      "status": 200,
+      "sql": 25,
+      "http": 4,
+      "total": 29
+    }
+  ],
+  "max_conservative_operations": 29,
+  "batch_counting": "conservatively count each SQL statement; official current D1 counts batch once"
+}

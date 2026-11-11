@@ -1,0 +1,19 @@
+{
+  "local_preview_only": true,
+  "results": [
+    {
+      "viewport_width": 320,
+      "horizontal_overflow": false,
+      "screen_texts": 4,
+      "engine": "local Chromium",
+      "real_telegram": false
+    },
+    {
+      "viewport_width": 360,
+      "horizontal_overflow": false,
+      "screen_texts": 4,
+      "engine": "local Chromium",
+      "real_telegram": false
+    }
+  ]
+}

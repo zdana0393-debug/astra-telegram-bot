@@ -1,0 +1,294 @@
+{
+  "base": "78bf3eecc0fe1da07ce52d3294ba5376d8105537",
+  "files": [
+    {
+      "path": "migrations/0021_wallet.sql",
+      "sha256": "db3b3f02c1f2a374415eff4d1622867962e9f03fd6816ac83e3a5c8dc41da798"
+    },
+    {
+      "path": "migrations/0022_shell.sql",
+      "sha256": "ad7203bf9431a9ca8aea178b030139948c562041783d893118de9221e58e5d70"
+    },
+    {
+      "path": "migrations/0022_steps/01_rewards.sql",
+      "sha256": "9f4fbc2a1cbf9206b9cd7b42f9fb6cfd5977de0fcdd088e5a17e5435ce64c9f6"
+    },
+    {
+      "path": "migrations/0022_steps/02_guard.sql",
+      "sha256": "a490d148314ac2ebc2ecb50a573bfb10165ff64d01e167e38dd1215c69ecd2bd"
+    },
+    {
+      "path": "migrations/0022_steps/03_post.sql",
+      "sha256": "561f9655408961b8c0f4fb4a5878f7a80725f955770d64b81d13ae4ef29d2873"
+    },
+    {
+      "path": "migrations/0022_steps/04_erase.sql",
+      "sha256": "9eedbde25855b615e62a053100aa7a04c15e5d213798b137e54c9b11220510a3"
+    },
+    {
+      "path": "migrations/0023_forecast.sql",
+      "sha256": "ab9f185d5667faab23fb2ffc179161e9227a8b1eb0fab022671304755ab7f2fd"
+    },
+    {
+      "path": "migrations/0023_steps/01_daily.sql",
+      "sha256": "f8977a9f42867767780de73027a779c3cf3e0573f50631856f28d9907a3ea39b"
+    },
+    {
+      "path": "migrations/0023_steps/02_unlocks.sql",
+      "sha256": "9aef03c8076c74b2427876965970ce419442521c92194203058804e2d05cbcb9"
+    },
+    {
+      "path": "migrations/0023_steps/03_guard.sql",
+      "sha256": "4e73d7e212c9b862a4fd53ee77659ad634eefc6dd8344eef5e3007e63d5d3c0e"
+    },
+    {
+      "path": "migrations/0023_steps/04_post.sql",
+      "sha256": "01fc62aceda3592a2902c29dfb87881020951d3de5a6586e9812619798f91aba"
+    },
+    {
+      "path": "migrations/0023_steps/05_erase.sql",
+      "sha256": "080c417f461d478dd013ed555c5ea23254a88922abf6cb31133295a50794059c"
+    },
+    {
+      "path": "migrations/0023_steps/06_cache_immutable.sql",
+      "sha256": "ed34ded5d1e2378665b23e5214defd8920a625a2200480aff5422df4b7be7b93"
+    },
+    {
+      "path": "migrations/0023_steps/07_unlock_immutable.sql",
+      "sha256": "1d6dc781259d1acbc7711e8bc26d49b2902919c5f9b18005f2c23f021bbd820a"
+    },
+    {
+      "path": "migrations/0024_activity_history.sql",
+      "sha256": "59afa3b4517608f340b664b7ceb6c1aeb42ba0307e351eef2c665e342a2eee9b"
+    },
+    {
+      "path": "migrations/0024_steps/01_activity.sql",
+      "sha256": "eb625d7cb40496675104a6ca12667e591a4f02d1ac4346624327d3a5a808b476"
+    },
+    {
+      "path": "migrations/0024_steps/02_history_index.sql",
+      "sha256": "ce6ff9e6f33d5ca3a107e05884ea54e127802ed4b0fd20cafd80e5dade54bb55"
+    },
+    {
+      "path": "migrations/0024_steps/03_activity_guard.sql",
+      "sha256": "a5615091dc60a2140b665d31b2f2774509689775adfd7ef1e492eb3ecfc223e8"
+    },
+    {
+      "path": "migrations/0024_steps/04_activity_erase.sql",
+      "sha256": "cbfe052fcf71d74d3b50800e01e8400b47fc48dcf510344a2edf26438240a4e3"
+    },
+    {
+      "path": "migrations/0025_rewards_stars.sql",
+      "sha256": "5e85b25583e6a6bafca83d2a80ca2029e838ea4a3ddf7161634a4ca0d5a81a94"
+    },
+    {
+      "path": "migrations/0025_steps/01_policy.sql",
+      "sha256": "756ca8f8b527e21f982cd912756d87ae5fc5aba44487e9c0cdcd04c0f78935e5"
+    },
+    {
+      "path": "migrations/0025_steps/02_legacy_snapshot.sql",
+      "sha256": "16a34d3fc49534f3f0df4824e212be531cf16bf6f290836d065db0b65021cf14"
+    },
+    {
+      "path": "migrations/0025_steps/03_rewards.sql",
+      "sha256": "c1dc19adda0a0568e676b3e4b74cc0b225336214654c1c66357e7c2501262a56"
+    },
+    {
+      "path": "migrations/0025_steps/04_legacy_cutover.sql",
+      "sha256": "3923e9e1c7895ceee6178dfe5f92285a258085356de38d77554eeb18a51bef26"
+    },
+    {
+      "path": "migrations/0025_steps/05_payment_tables.sql",
+      "sha256": "02cbddb2be140d84333158db69bc647aba42a0fb8fb2d45724782481cf5f4998"
+    },
+    {
+      "path": "migrations/0025_steps/06_payment_credit.sql",
+      "sha256": "7702d9588cd1892b0dba40eda9bee330907c02a4fcb1fbe78e0d432b5e60f575"
+    },
+    {
+      "path": "migrations/0025_steps/07_refund_debt.sql",
+      "sha256": "14b8a4ef9f1fda4b29780a3ce8197f3540147c4507a77b64352c700bd9209262"
+    },
+    {
+      "path": "migrations/0025_steps/08_cleanup_fence.sql",
+      "sha256": "f4e91da3c2747b8e6828eb9deaef8612372738e2498190b5b5e48f88137eb76b"
+    },
+    {
+      "path": "migrations/0025_steps/09_audit_retention.sql",
+      "sha256": "e13262ab13a9d74c55415444e3b3d5bf9386d88d6c1593d3326933f7d86b7be8"
+    },
+    {
+      "path": "migrations/0026_economy_fence.sql",
+      "sha256": "4068dc6370ab381dfb2575c07e7745f13198637bfd5a50a3186da936c5483e17"
+    },
+    {
+      "path": "migrations/0026_steps/01_policy_fences.sql",
+      "sha256": "8390c36fcb404a54f8a0af2a2e6ca4dd515e46795743e71e1768ebf271b5d706"
+    },
+    {
+      "path": "migrations/0026_steps/02_awards.sql",
+      "sha256": "bcf0921af4a9e80b17e801f85648fe7ef99e75752631e8555d8cfd2c55c18ca5"
+    },
+    {
+      "path": "migrations/0026_steps/03_days_commands.sql",
+      "sha256": "a445fb33d184626025d38737eb76341bf96d4ab1e13231916f329c3e524ee620"
+    },
+    {
+      "path": "migrations/0026_steps/04_cutover_legacy.sql",
+      "sha256": "5e37567860e26a7bfa6a7a73ada3f0e9b39cfe1a34ec706b64b9c6c088361abe"
+    },
+    {
+      "path": "migrations/0026_steps/05_tarot.sql",
+      "sha256": "2b9005c2d55773bb6384c0e7da66a2eb904ec7ca0ee81ff6926124ca0a9ea2cc"
+    },
+    {
+      "path": "migrations/0026_steps/06_payment_versions.sql",
+      "sha256": "50a2c679b91d5da2a8449a8299c000ae5991845ab15a558e5f3f95710d5c49e3"
+    },
+    {
+      "path": "migrations/0026_steps/07_refunds_cleanup.sql",
+      "sha256": "d394a74692c4bde241bddb8d377dec5d8293045e27f4bebbe3c8b52b2c80a360"
+    },
+    {
+      "path": "migrations/0027_broadcast.sql",
+      "sha256": "58af0861a595c6d72f3d36b46831e78067ad90c1c70d5b8e070fddcadebd7261"
+    },
+    {
+      "path": "migrations/0027_steps/01_queue.sql",
+      "sha256": "53572fbaf2a4f9a0ecec2c946638152406751380b878c59cf26e44190519c4ea"
+    },
+    {
+      "path": "migrations/0027_steps/02_delivery_guards.sql",
+      "sha256": "da6481c691499163729a911964a6724f93a14fac9aae71f4e08c70a2256b6cdc"
+    },
+    {
+      "path": "migrations/0027_steps/03_cleanup.sql",
+      "sha256": "45dbd6595f89ecdd97fb62025c5ffebd89a24aa6b1c6df25666f9d8b1c728041"
+    },
+    {
+      "path": "migrations/0028_notification_consent.sql",
+      "sha256": "a0de7b95d8951a0f079a8275c66637feb6230dda52a7c1f21a2f9ec660c0561d"
+    },
+    {
+      "path": "migrations/0028_steps/01_registry.sql",
+      "sha256": "0e29025a6dccd01b6a6ee43e7d145073f613ce2dd31aabb9dc0bdd40dd17f4c2"
+    },
+    {
+      "path": "migrations/0028_steps/02_consent_guards.sql",
+      "sha256": "cc4016463f7781d909bcab455504c3227832216b42fc70d8fb0ad38df9677d82"
+    },
+    {
+      "path": "migrations/0028_steps/03_delivery_guards.sql",
+      "sha256": "648992980ffd4d2b4925d9542937d2aaa674fea4ccf2a0793e12a04fae19389a"
+    },
+    {
+      "path": "migrations/0028_steps/04_complete.sql",
+      "sha256": "e73c3b4968bc4017aaa24ac4632499a4e349fe17c1c0306def02b9b295d18720"
+    },
+    {
+      "path": "migrations/0029_steps/01_tables.sql",
+      "sha256": "e2d0f5cea747a15cff7e177c5af3e0c6d51e67df0f75090c70b7f04f3cc6d39c"
+    },
+    {
+      "path": "migrations/0029_steps/02_offer_guards.sql",
+      "sha256": "805911a4c344a92340636fddb7ac56c0660acf67d74375fb07f68a0cbf9b1523"
+    },
+    {
+      "path": "migrations/0029_steps/03_payment.sql",
+      "sha256": "bac224a74bb19961eac8247df1ab65763279244fa2ce283108436d6a16f42a42"
+    },
+    {
+      "path": "migrations/0029_steps/04_complete.sql",
+      "sha256": "b4f5cd60c18b83264db2a84f3273ed60f63bb50442cbc9cecda4af03d71ed24f"
+    },
+    {
+      "path": "migrations/0029_tarot.sql",
+      "sha256": "ca64d5d7842c0e66d2859beeb34a03f287483c26ce950120d74aacb3ea34afba"
+    },
+    {
+      "path": "migrations/0030_tarot_retention.sql",
+      "sha256": "fe4db93e95f0487e1c64a192e3848da9424e31c55b66e227020237d95c83d227"
+    },
+    {
+      "path": "migrations/compat/astra25-before-0025-referrers.v1.sql",
+      "sha256": "a9128aa09cfd98c7b14f156648b4d76de8b1792d83d001e564d9254215748566"
+    },
+    {
+      "path": "release/ASTRA_2_1_MAINTENANCE.js",
+      "sha256": "ad3fe1ba1a9eb7c95d7c5262719880664fead692858b789489f99c7408f0feeb"
+    },
+    {
+      "path": "release/ASTRA_2_1_WORKER.js",
+      "sha256": "e00a19a46e16fd8b510767ccd1e83c10a78fe23a65c4df6059d183a650f2c5fe"
+    },
+    {
+      "path": "release/ASTRA_2_2_WORKER.js",
+      "sha256": "0cf368b5f65ccfb73803ac49d4737bc0288732bb2e3610af7a1bfd7289918464"
+    },
+    {
+      "path": "release/ASTRA_2_3B_WORKER.js",
+      "sha256": "770e184849a1476f39ba42f8a1e3170694acf52b91c00f6714d0082715864f09"
+    },
+    {
+      "path": "release/ASTRA_2_3_EDITORIAL_WORKER.js",
+      "sha256": "3b208911634182751672a5930cbbc3c0a71e7efaa7c08e682b9a37e18f22c0fa"
+    },
+    {
+      "path": "release/ASTRA_2_4A_WORKER.js",
+      "sha256": "d2efcc17578dd162583d901f0de47682cd08d82df78f78487a1567edbbea384e"
+    },
+    {
+      "path": "release/ASTRA_2_4_MAINTENANCE.js",
+      "sha256": "002c71fe1580816566e6552bb0ecd44df9b06a6f29d45df3b2b9032a8bf94862"
+    },
+    {
+      "path": "release/ASTRA_2_4_WORKER.js",
+      "sha256": "5f34b44948e4bb6be643d586e712554d41f9b9bf7f2ee7175c4bf5e6d77786f4"
+    },
+    {
+      "path": "release/ASTRA_2_5_TASK03_CANDIDATE.js",
+      "sha256": "d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f"
+    },
+    {
+      "path": "release/ASTRA_2_5_TASK05_CANDIDATE.js",
+      "sha256": "9c84edfe190894e39faac272f67825f7c323612c577f5e42405a09a5bcf0268c"
+    },
+    {
+      "path": "release/ASTRA_2_5_TASK06_CANDIDATE.js",
+      "sha256": "b7550dc682c4f0b42ff0c823c2de752a7e76e612af2f6dbe56d1456bf2c4b984"
+    },
+    {
+      "path": "src/01_ASTRA_V2.js",
+      "sha256": "a8d51e5cf4fe18268b548bcc6fbcb716a204e5c3eabff575244b94e969a4133b"
+    },
+    {
+      "path": "src/tarot25/catalog.mjs",
+      "sha256": "139a430e83f5ad192e758426bb0afa8593b5ffc5c72b15d259c40bcf3fd51b76"
+    },
+    {
+      "path": "src/tarot25/combinations.mjs",
+      "sha256": "25b491e0d7063505e9a90095adcace707be01b97772d73c4ed0828e0409b9aad"
+    },
+    {
+      "path": "src/tarot25/engine.mjs",
+      "sha256": "98b18a97a5b9c251ac9e4d624c48c6b0fc8b53ac58cb60fe6de77d3bbb2cb213"
+    },
+    {
+      "path": "src/tarot25/reader-v1.mjs",
+      "sha256": "e07b5ce8935f9cc139141b0cf85bf7404982173126564886186e81aaa38affb5"
+    },
+    {
+      "path": "src/tarot25/spreads.mjs",
+      "sha256": "e7dcf13f673579f317ffd9aa509f7e807a3e01d82e9fec3b13b406baabfd01b2"
+    },
+    {
+      "path": "src/task01/bonus.mjs",
+      "sha256": "761f99b728d80fb9d4e7d90c3b4bd37003266e45f749a0f330202f3094c28ebb"
+    },
+    {
+      "path": "src/task01/payments.mjs",
+      "sha256": "22030af227f9c6742df61b181c6ae14b75f3ef29f8e7ad3ac2404a5b07b96d9d"
+    }
+  ],
+  "all_byte_identical": true
+}

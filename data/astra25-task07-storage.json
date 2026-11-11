@@ -1,0 +1,48 @@
+{
+  "local_only": true,
+  "cloudflare_measured": false,
+  "fixture_note": "Identical full V1 payload deliberately repeated to measure storage, not editorial variety",
+  "stock": 10000,
+  "before_upgrade": {
+    "sqlite_file_bytes": 658808832,
+    "unpaid": 10000,
+    "paid": 1,
+    "snapshot_utf8_bytes": 51636,
+    "sum_balance": 505
+  },
+  "upgrade": {
+    "target": "0031",
+    "source_preserved": true,
+    "backup_verified": true
+  },
+  "cleanup": {
+    "deleted": 10000,
+    "runs": 500,
+    "paid_preserved": true,
+    "file_bytes": 664072192
+  },
+  "compact": {
+    "local_only": true,
+    "source_stage": "0031",
+    "source_preserved": true,
+    "typed_bytes_preserved": true,
+    "rowid_sequence_preserved": true,
+    "foreign_keys": "ON, deferred until COMMIT",
+    "triggers_created_after_data": true,
+    "statements": 21578,
+    "max_statement_bytes": 28398,
+    "source_bytes": 664072192,
+    "output_bytes": 4870144,
+    "typed_sha256": "eeca8a44c0d0d5b7e903478a46d1d4468c37d54af98be3ba5ce2bb010ea80cc8",
+    "state_sha256": "e361403d2fc5e9c50b80184ba5dacf75376c69950e44d937e9aad1a48f16a58f",
+    "cloud_import_proven": false,
+    "uses_unhex": true
+  },
+  "final": {
+    "paid_exact": true,
+    "balances_exact": true,
+    "ledger_rows": 26,
+    "remaining_unpaid": 0,
+    "receipts": 10001
+  }
+}

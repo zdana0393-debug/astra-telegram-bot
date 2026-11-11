@@ -1,0 +1,44 @@
+{
+  "scope": "Node/native SQLite CPU proxy, not Cloudflare isolate/D1 CPU",
+  "cloudflare_cpu": false,
+  "cloudflare_rows_measured": false,
+  "raw": {
+    "path": "release/ASTRA_2_5_TASK07_CANDIDATE.js",
+    "sha256": "018d2eda3fc13a7a0f85fffcc6e1c866a9901bfb2e8dcce5e1bd6d184d6f8bda",
+    "bytes": 2019722,
+    "gzip9_bytes": 340386
+  },
+  "cold_import": {
+    "cpu_ms": 34.029,
+    "wall_ms": 82.95520099999996
+  },
+  "cases": [
+    {
+      "name": "cold_confirm_real_celtic10",
+      "status": 200,
+      "sql": 26,
+      "http": 5,
+      "total": 31,
+      "node_cpu_ms": 20.966,
+      "node_wall_ms": 29.66418699999997,
+      "cloudflare_measured": false
+    },
+    {
+      "name": "warm_repeat_paid_no_redraw",
+      "status": 200,
+      "sql": 15,
+      "http": 3,
+      "total": 18,
+      "node_cpu_ms": 6.51,
+      "node_wall_ms": 9.187820999999985,
+      "cloudflare_measured": false
+    }
+  ],
+  "compiled": {
+    "sha256": "74ad11ccb7d4bdd43bbee6d0eca994b50a9dfd8627a4d24aafb64bf3857a42ac",
+    "bytes": 2896093,
+    "gzip9_bytes": 349409,
+    "wrangler_version": "4.45.0",
+    "local_dry_run_only": true
+  }
+}

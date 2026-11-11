@@ -1,0 +1,76 @@
+{
+  "checked_utc": "2026-11-11",
+  "official_repository_ref": "081afc3427e9218fc31ec8e8537cfd70e52a2ad4",
+  "direct_site_status": 403,
+  "mirror": "Official Cloudflare repository; branch content hashes recorded, D1 limits rechecked at pinned commit",
+  "d1_limits_pinned_sha256": "5ede988a7821c2b44da32856430e1137a56502c80d11f7cf15e33559fed05dca",
+  "sources": [
+    {
+      "url": "https://developers.cloudflare.com/workers/platform/limits/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/workers/platform/limits.mdx",
+      "sha256": "db1e59ef967a5933c770b4dd0b17e16d547b854ecd1484ae9322f18855d74b9a",
+      "bytes": 23381
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/platform/limits/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/platform/limits.mdx",
+      "sha256": "5ede988a7821c2b44da32856430e1137a56502c80d11f7cf15e33559fed05dca",
+      "bytes": 7774
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/platform/pricing/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/platform/pricing.mdx",
+      "sha256": "bbf8d86456c42295dfda3b6dc0ef05557cdf25193291b0d99dffe4da6705259c",
+      "bytes": 950
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/reference/migrations/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/reference/migrations.mdx",
+      "sha256": "f638c1b1e2df6c1c623a13a2e28075aa02c6033c8e89c46bff58225437302f0c",
+      "bytes": 4193
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/reference/time-travel/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/reference/time-travel.mdx",
+      "sha256": "fd4bdc08222041eab3d0f3c3d50e64adf789784f1455378ae1620f5a3cac4a9c",
+      "bytes": 7344
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/best-practices/import-export-data/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/best-practices/import-export-data.mdx",
+      "sha256": "d424b950c0338d1fc1ab339d4ebd667c613b1433894c8b007e245c57a8fe8709",
+      "bytes": 8824
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/sql-api/sql-statements/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/sql-api/sql-statements.mdx",
+      "sha256": "6951a17d509d4db61429a64bc9985609186ff2837b064a32d4b3ce4be5ca208c",
+      "bytes": 3451
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/sql-api/foreign-keys/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/sql-api/foreign-keys.mdx",
+      "sha256": "35898b6b83aa718ad50e7dbc64a254621f3dfa511b94fe3c516fbc7e64e6efda",
+      "bytes": 6595
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/worker-api/return-object/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/worker-api/return-object.mdx",
+      "sha256": "e09b393ccbceeec5fededb8e3d870738b65abe7acde3fc089583c234a716006b",
+      "bytes": 5060
+    },
+    {
+      "url": "https://developers.cloudflare.com/d1/observability/metrics-analytics/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/d1/observability/metrics-analytics.mdx",
+      "sha256": "20be6fca80306c8d4c4753cd2f2d6077254feb629aa1c50c45d21ac608a803c3",
+      "bytes": 14297
+    },
+    {
+      "url": "https://developers.cloudflare.com/workers/observability/metrics-and-analytics/",
+      "official_source": "https://raw.githubusercontent.com/cloudflare/cloudflare-docs/production/src/content/docs/workers/observability/metrics-and-analytics.mdx",
+      "sha256": "277b0667c32ae8d2e801d66de390f11e5b3498052261e99f6ae61854f728bb28",
+      "bytes": 12805
+    }
+  ],
+  "platform_probes_executed": false
+}
