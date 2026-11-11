@@ -1,0 +1,426 @@
+{
+  "version": "astra25-task06-verification-v1",
+  "checked_at_utc": "2026-11-11T11:34:01.256Z",
+  "base_commit": "d7aeb27379df723644c56571850f0aa3c39a183f",
+  "node": "v24.22.1",
+  "commands_executed": {
+    "historical": "git archive base → isolated /tmp; sh scripts/test-2.5-task05.sh with both old offline bundles",
+    "current": "ASTRA25_TASK06_WRANGLER_BUNDLE=<pinned dry-run bundle> sh scripts/test-astra25-task06-current.sh",
+    "rehearsal": "node --experimental-sqlite scripts/rehearse-astra25-task06-local.mjs --local-only",
+    "storage": "sh scripts/audit-tarot30-local.sh --local-only",
+    "runtime": "ASTRA25_TASK06_WRANGLER_BUNDLE=<pinned dry-run bundle> node --experimental-sqlite scripts/audit-astra25-task06-runtime.mjs --local-only"
+  },
+  "logs_sha256": {
+    "history": "499951d3f32f08829c71fde0e711ad15b4e00ff8f3e1f8887306ecd5621efceb",
+    "current": "e69c3ac7724889cf1ac36e1e348d1be94da1a9e29f773464be05adc9a92e069f"
+  },
+  "historical_node_test_executions": 1963,
+  "new_node_tests": 251,
+  "new_suites": {
+    "upgrade": 40,
+    "recovery": 62,
+    "compatibility": 21,
+    "business": 39,
+    "ui_budget": 32,
+    "payment_concurrency": 6,
+    "retention_unit": 10,
+    "sql_safety": 13,
+    "storage_concurrency": 13,
+    "worker_integration": 7,
+    "streaming_and_filled_upgrade": 4,
+    "compiled_bundle": 4
+  },
+  "total_node_test_executions": 2214,
+  "node_failures": 0,
+  "node_skipped": 0,
+  "old_standalone_assertions": 210,
+  "actual_task06_raw_fetch_or_scheduled_test_cases": 70,
+  "compiled_bundle_cases": 4,
+  "compiled_cases_include_one_named_cleanup_entry": true,
+  "additional_raw_named_cleanup_test_cases": 1,
+  "new_migration_sigkill": [
+    {
+      "task06_migration_sigkill_case": "after_sql",
+      "passed": true,
+      "source_preserved": true
+    },
+    {
+      "task06_migration_sigkill_case": "committed_before_journal",
+      "passed": true,
+      "source_preserved": true
+    }
+  ],
+  "new_cleanup_sigkill": [
+    {
+      "task06_cleanup_sigkill_case": "after_sql",
+      "passed": true,
+      "paid_preserved": true,
+      "same_token_recovery": true
+    },
+    {
+      "task06_cleanup_sigkill_case": "after_commit",
+      "passed": true,
+      "paid_preserved": true,
+      "same_token_recovery": true
+    }
+  ],
+  "actual_new_cli_cases": 3,
+  "three_way_wal": [
+    {
+      "fk": "ON",
+      "connections": 20,
+      "old_unpaid_deleted": 3,
+      "paid_preserved": true,
+      "one_debit": true,
+      "rows_remaining": 3,
+      "sqlite_pages": 286
+    },
+    {
+      "fk": "OFF",
+      "connections": 20,
+      "old_unpaid_deleted": 3,
+      "paid_preserved": true,
+      "one_debit": true,
+      "rows_remaining": 3,
+      "sqlite_pages": 290
+    }
+  ],
+  "maximum_local_sql_plus_http": 47,
+  "cleanup_maximum_top_level_adapter_sql": 5,
+  "budget_examples": [
+    {
+      "scenario": "long_hmac_markup_null",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_400",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_403",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_429",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_500",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "short_markup_400",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "short_markup_403",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "short_markup_429",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "short_markup_500",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_400",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_403",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_429",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_500",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_network",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_timeout",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_unknown_ack",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "partial_2",
+      "status": 200,
+      "sql": 23,
+      "http": 5,
+      "total": 28,
+      "official_spare": 22
+    },
+    {
+      "scenario": "manual_after_partial_2",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "partial_3",
+      "status": 200,
+      "sql": 24,
+      "http": 6,
+      "total": 30,
+      "official_spare": 20
+    },
+    {
+      "scenario": "manual_after_partial_3",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "d1_purchase_before",
+      "status": 200,
+      "sql": 15,
+      "http": 3,
+      "total": 18,
+      "official_spare": 32
+    },
+    {
+      "scenario": "d1_purchase_after",
+      "status": 200,
+      "sql": 15,
+      "http": 3,
+      "total": 18,
+      "official_spare": 32
+    },
+    {
+      "scenario": "d1_delivery_finalize_before",
+      "status": 200,
+      "sql": 22,
+      "http": 4,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "d1_delivery_finalize_after",
+      "status": 200,
+      "sql": 22,
+      "http": 4,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "cutover_hmac_markup_null",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "cutover_hmac_markup_400",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "manual_archive_page_1",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_2",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_3",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_4",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_5",
+      "status": 200,
+      "sql": 20,
+      "http": 5,
+      "total": 25,
+      "official_spare": 25
+    }
+  ],
+  "additional_budget_examples": [
+    {
+      "scenario": "default3_limit",
+      "status": 200,
+      "sql": 18,
+      "http": 3,
+      "total": 21
+    },
+    {
+      "scenario": "late_update_after_purge",
+      "status": 200,
+      "sql": 9,
+      "http": 3,
+      "total": 12
+    },
+    {
+      "scenario": "storage_cap",
+      "status": 200,
+      "sql": 21,
+      "http": 3,
+      "total": 24
+    },
+    {
+      "scenario": "privacy_trial",
+      "status": 200,
+      "sql": 11,
+      "http": 2,
+      "total": 13
+    }
+  ],
+  "plan_sha256": "8c1f2782c300d9ae620568b6519da872f94fec3a3d0331461fc11dcc34d09982",
+  "migration0030": {
+    "path": "migrations/0030_tarot_retention.sql",
+    "sha256": "fe4db93e95f0487e1c64a192e3848da9424e31c55b66e227020237d95c83d227",
+    "bytes": 335621,
+    "id": "0030"
+  },
+  "final_schema_objects": 231,
+  "sql_statement_bounds": {
+    "individual_statements": 61,
+    "max_statement_utf8_bytes": 28413,
+    "project_max_bytes": 50000,
+    "reference_d1_statement_limit_bytes": 100000,
+    "completion_groups": 7,
+    "full_core_ddl_checks": 223,
+    "primary_completion_checked": true,
+    "part_bodies_checked_by_full_runtime_and_runner_manifest": true,
+    "financial_guards_not_removed": true
+  },
+  "administrative_migration_not_a_worker_invocation": true,
+  "candidate": {
+    "path": "release/ASTRA_2_5_TASK06_CANDIDATE.js",
+    "sha256": "b7550dc682c4f0b42ff0c823c2de752a7e76e612af2f6dbe56d1456bf2c4b984",
+    "bytes": 1585554,
+    "gzip9_bytes": 279620
+  },
+  "compiled_offline_bundle": {
+    "sha256": "9028b47dab6924e8a2e0c15eef3d380a2abeb423e8cde66731fe71ba1ae6bc46",
+    "bytes": 2440653,
+    "gzip9_bytes": 286571,
+    "wrangler_version": "4.45.0",
+    "local_dry_run_only": true
+  },
+  "protected_worker24_sha256": "5f34b44948e4bb6be643d586e712554d41f9b9bf7f2ee7175c4bf5e6d77786f4",
+  "protected_worker05_sha256": "9c84edfe190894e39faac272f67825f7c323612c577f5e42405a09a5bcf0268c",
+  "input_artifacts": {
+    "storage_sha256": "5f4a2b5d8c4655389bf6e33484a4da011b2d09513be8f79b7b04c9c3350210d2",
+    "rehearsal_sha256": "19cecadc898eeaccd53b3c34911e8231db4408f8b0991a7d0b4bcf006387e710",
+    "runtime_sha256": "f72a3a23d9f03a02d9db11d554d897dba0d2b579c5f81bfd38f90f0d4756e232"
+  },
+  "local_acceptance": true,
+  "real_policy_approved": false,
+  "cleanup_real_data_permitted": false,
+  "cloudflare_cpu_measured": false,
+  "d1_rows_measured": false,
+  "Telegram_transport": false,
+  "new_cloud_or_Telegram_actions": 0,
+  "public_ready": false,
+  "release_acceptance": false,
+  "open_release_blockers": [
+    "OWNER_RETENTION_RATE_CAP_PRIVACY_APPROVAL",
+    "REAL_WORKERS_CPU_D1_PRAGMA_QUOTAS_TRANSACTIONS_ACCEPTANCE",
+    "DEDICATED_TELEGRAM_TEST_ENVIRONMENT_ACCEPTANCE",
+    "COMPACT_RESTORE_PROOF_IF_LEGACY_STOCK_EXCEEDS_CAP"
+  ],
+  "warning": "Historical passes include intentional old B1 and old49-budget reproductions. Current251 cases are separate; counts include native SQL/runner tests and do not all represent Worker end-to-end. SQLite freelist is not D1 storage reclamation."
+}

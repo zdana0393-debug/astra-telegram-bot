@@ -1,0 +1,908 @@
+{
+  "version": "task06-actual-local-storage-v1",
+  "synthetic_only": true,
+  "baseline": {
+    "mode": "TASK05_REAL_100_1000_10000_UNPAID",
+    "samples": [
+      {
+        "cumulative_unpaid": 100,
+        "storage": {
+          "offers": {
+            "count": 101,
+            "payload_bytes": 6581693
+          },
+          "unpaid": {
+            "count": 100,
+            "payload_bytes": 6557824
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {},
+          "sqlite_allocated_bytes": 7450624,
+          "actual_file_bytes": 7450624,
+          "freelist_pages": 0,
+          "sqlite_reusable_bytes": 0,
+          "sqlite_active_page_estimate_bytes": 7450624,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 714,
+        "node_wall_ms": 685
+      },
+      {
+        "cumulative_unpaid": 1000,
+        "storage": {
+          "offers": {
+            "count": 1001,
+            "payload_bytes": 65576387
+          },
+          "unpaid": {
+            "count": 1000,
+            "payload_bytes": 65552518
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {},
+          "sqlite_allocated_bytes": 67530752,
+          "actual_file_bytes": 67530752,
+          "freelist_pages": 0,
+          "sqlite_reusable_bytes": 0,
+          "sqlite_active_page_estimate_bytes": 67530752,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 7014,
+        "node_wall_ms": 7335
+      },
+      {
+        "cumulative_unpaid": 10000,
+        "storage": {
+          "offers": {
+            "count": 10001,
+            "payload_bytes": 655612544
+          },
+          "unpaid": {
+            "count": 10000,
+            "payload_bytes": 655588675
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {},
+          "sqlite_allocated_bytes": 668540928,
+          "actual_file_bytes": 668540928,
+          "freelist_pages": 0,
+          "sqlite_reusable_bytes": 0,
+          "sqlite_active_page_estimate_bytes": 668540928,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 70014,
+        "node_wall_ms": 62848
+      }
+    ],
+    "paid_proof": {
+      "users": "c5b9a19112f495ce74501f9f2fbc3bffe650ae36862a7971f4a8cde5aaf69d87",
+      "ledger": "c9dcf99451ac0df2666b63e2757b26002a14fcb46e87bcd208ea0567f7293e56",
+      "paid": "49df23d1ec199068bc51d2f76ecec77aef77aafbc1ba11d019e90e3d5980479b"
+    },
+    "source_state": {
+      "fingerprint_version": "row-sha256-sorted-v1",
+      "ddl_sha256": "d94ac46f97e031ab1734b2a5ec1fc32c3047fdead2f76885781943997f9563e7",
+      "tables": {
+        "astra_activity_days": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_aliases26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_awards26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_commands26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_days26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_fences26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_keys26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_bonus_profiles26": {
+          "rows": 20,
+          "sha256": "fe497e1af1e7a03be5605269d1574081b0412d8bcb1ffd9e2a18358d7c527d29"
+        },
+        "astra_bonus_referrals26": {
+          "rows": 3,
+          "sha256": "8d49e27b91721b44494214007718c72351c530a4a7c660f5d6179e84312c807e"
+        },
+        "astra_broadcast_jobs": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_broadcast_outbox03": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_broadcast_runtime03": {
+          "rows": 1,
+          "sha256": "7664a5e33dab4a189bbfc3d6b51aba4c5d56597a451c9b4a18ae84cd15715f09"
+        },
+        "astra_consent_runtime28": {
+          "rows": 1,
+          "sha256": "6bcf8612a88c4b448131eb37a65f28ba87682c271a23329d5a4a2b2fa1091247"
+        },
+        "astra_debt_repayments": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_delivery_consent28": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_external_refunds": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_forecast_daily": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_forecast_unlocks": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_notification_consent28": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_operations": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_patch26": {
+          "rows": 1,
+          "sha256": "a88603dc91419c147b659039c0f64b073910c5ac7abe34ba20f5137d12a3da24"
+        },
+        "astra_payment_anomalies": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_audit": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_order_index26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_orders": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_orders26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_receipts": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_receipts26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_payment_tombstones": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_policy": {
+          "rows": 1,
+          "sha256": "03bc222ee0892da97156a63c209ba86a3ed3b022ccff5b41d150a9b7c2b2780a"
+        },
+        "astra_policy_days": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_policy_events": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_processed_updates": {
+          "rows": 13,
+          "sha256": "933c89baeaab464d6d1892dbf85c6c7faf82fc05620e07bcdcea65b167cd9609"
+        },
+        "astra_referral_contracts": {
+          "rows": 3,
+          "sha256": "e5a0eb5d4bb6bd8e10c576f2772e0b0d18279a89f3012615f6ca4a1d9145ecbb"
+        },
+        "astra_referral_payouts": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_refund_accounts": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_refund_requests": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_refund_settlements": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_reward_claims": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_shell_rewards": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_tarot25_offers29": {
+          "rows": 10001,
+          "sha256": "d81dad2595387c8e8ecfdc1bc4ac58f0d6df6c390b7f6ea64ce46e72f6102efa"
+        },
+        "astra_tarot25_prices29": {
+          "rows": 7,
+          "sha256": "a306d93c2142ac8d6f3bd15f7b9d55bf7726349398e3808f2e68757433ebb9d5"
+        },
+        "astra_tarot25_purchases29": {
+          "rows": 1,
+          "sha256": "1325bcc8d8c164902a335fdd21e230940102bb1054a58e37fd94dc0e271c3a1a"
+        },
+        "astra_tarot25_runtime29": {
+          "rows": 1,
+          "sha256": "08d10febf5bcb290f4b040a253a7b062035b192c2922df9cf0df36dd81114474"
+        },
+        "astra_tarot_offers26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_tarot_purchases26": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_tarot_requests": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_update_jobs": {
+          "rows": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "astra_user_policy": {
+          "rows": 20,
+          "sha256": "6188c5c95dcf298ec3da8e9847a797986e95e0f12d63eeb2864893f16ce8275f"
+        },
+        "astra_users": {
+          "rows": 20,
+          "sha256": "5e9a5c7b5a606875a2e507cf13146d9d06ced24ca3aa3b363b763bd320c5242a"
+        },
+        "astra_wallet_ledger": {
+          "rows": 21,
+          "sha256": "9bbb7e9e0ac62cdf8c166fd581fb94fb42920d4343a85ba77ae299d3e8f0a1a7"
+        },
+        "sqlite_sequence": {
+          "rows": 1,
+          "sha256": "3cf053403df692c02c239c6330d9da387c8b4c2b13b9e8436dae821056a145d7"
+        }
+      },
+      "user_version": 0,
+      "sha256": "ef923b0ff01466f0e5bfcb6d3a50a6dad0eadd95ea46dd1b924db06025706015"
+    },
+    "flags_off": true,
+    "counts_scope": "adapter statements only; metric SQL excluded",
+    "cloudflare": false
+  },
+  "filled_migration": {
+    "source_stage": "0029",
+    "target_stage": "0030",
+    "source_preserved": true,
+    "backup_verified": true,
+    "steps": [
+      {
+        "path": "migrations/0030_tarot_retention.sql",
+        "sha256": "fe4db93e95f0487e1c64a192e3848da9424e31c55b66e227020237d95c83d227",
+        "bytes": 335621,
+        "id": "0030"
+      }
+    ]
+  },
+  "rate": {
+    "mode": "TASK06_DEFAULT3_SAME_DAY_10000_ATTEMPTS",
+    "samples": [
+      {
+        "attempts": 100,
+        "accepted": 44,
+        "denied": 56,
+        "cumulative_deleted": 0,
+        "storage": {
+          "offers": {
+            "count": 3,
+            "payload_bytes": 74198
+          },
+          "unpaid": {
+            "count": 3,
+            "payload_bytes": 74198
+          },
+          "paid": {
+            "count": 0,
+            "payload_bytes": 0
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 44,
+              "column_value_utf8_bytes": 4694
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 0,
+              "column_value_utf8_bytes": 0
+            }
+          },
+          "sqlite_allocated_bytes": 1077248,
+          "actual_file_bytes": 1077248,
+          "freelist_pages": 0,
+          "sqlite_reusable_bytes": 0,
+          "sqlite_active_page_estimate_bytes": 1077248,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 750,
+        "node_wall_ms": 215
+      },
+      {
+        "attempts": 1000,
+        "accepted": 429,
+        "denied": 571,
+        "cumulative_deleted": 0,
+        "storage": {
+          "offers": {
+            "count": 3,
+            "payload_bytes": 74198
+          },
+          "unpaid": {
+            "count": 3,
+            "payload_bytes": 74198
+          },
+          "paid": {
+            "count": 0,
+            "payload_bytes": 0
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 429,
+              "column_value_utf8_bytes": 46141
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 0,
+              "column_value_utf8_bytes": 0
+            }
+          },
+          "sqlite_allocated_bytes": 1212416,
+          "actual_file_bytes": 1212416,
+          "freelist_pages": 0,
+          "sqlite_reusable_bytes": 0,
+          "sqlite_active_page_estimate_bytes": 1212416,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 7435,
+        "node_wall_ms": 2224
+      },
+      {
+        "attempts": 10000,
+        "accepted": 4287,
+        "denied": 5713,
+        "cumulative_deleted": 0,
+        "storage": {
+          "offers": {
+            "count": 3,
+            "payload_bytes": 74198
+          },
+          "unpaid": {
+            "count": 3,
+            "payload_bytes": 74198
+          },
+          "paid": {
+            "count": 0,
+            "payload_bytes": 0
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 4287,
+              "column_value_utf8_bytes": 465377
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 0,
+              "column_value_utf8_bytes": 0
+            }
+          },
+          "sqlite_allocated_bytes": 2453504,
+          "actual_file_bytes": 2453504,
+          "freelist_pages": 0,
+          "sqlite_reusable_bytes": 0,
+          "sqlite_active_page_estimate_bytes": 2453504,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 74293,
+        "node_wall_ms": 20246
+      }
+    ],
+    "accepted": 4287,
+    "denied": 5713,
+    "cumulative_deleted": 0,
+    "maximum_cleanup_adapter_statements": 0,
+    "paid_and_finance_preserved": true,
+    "flags_off": true,
+    "no_real_cron": true,
+    "counts_scope": "adapter statements only; metric SQL excluded",
+    "cloudflare": false
+  },
+  "cleanup": {
+    "mode": "TASK06_MIGRATED_10000_STOCK",
+    "migration_original_tables_preserved": true,
+    "before": {
+      "offers": {
+        "count": 10001,
+        "payload_bytes": 655612544
+      },
+      "unpaid": {
+        "count": 10000,
+        "payload_bytes": 655588675
+      },
+      "paid": {
+        "count": 1,
+        "payload_bytes": 23869
+      },
+      "metadata": {
+        "astra_tarot30_requests": {
+          "count": 10001,
+          "column_value_utf8_bytes": 1139006
+        },
+        "astra_tarot30_bindings": {
+          "count": 0,
+          "column_value_utf8_bytes": 0
+        },
+        "astra_tarot30_quota": {
+          "count": 0,
+          "column_value_utf8_bytes": 0
+        },
+        "astra_tarot30_days": {
+          "count": 0,
+          "column_value_utf8_bytes": 0
+        },
+        "astra_tarot30_cleanup_runs": {
+          "count": 0,
+          "column_value_utf8_bytes": 0
+        }
+      },
+      "sqlite_allocated_bytes": 673361920,
+      "actual_file_bytes": 673361920,
+      "freelist_pages": 0,
+      "sqlite_reusable_bytes": 0,
+      "sqlite_active_page_estimate_bytes": 673361920,
+      "cloudflare_bytes_measured": false
+    },
+    "preview": {
+      "read_only": true,
+      "limit": 20,
+      "candidates": 10000,
+      "payload_bytes": 655588675,
+      "batch_candidates": 20,
+      "batch_payload_bytes": 1303219,
+      "estimated_logical_payload_reclaim_bytes": 655588675,
+      "physical_bytes_reclaimed": null,
+      "cloudflare_bytes_measured": false
+    },
+    "samples": [
+      {
+        "remaining_unpaid": 9980,
+        "storage": {
+          "offers": {
+            "count": 9981,
+            "payload_bytes": 654309325
+          },
+          "unpaid": {
+            "count": 9980,
+            "payload_bytes": 654285456
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 10001,
+              "column_value_utf8_bytes": 1139006
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 1,
+              "column_value_utf8_bytes": 70
+            }
+          },
+          "sqlite_allocated_bytes": 673361920,
+          "actual_file_bytes": 673361920,
+          "freelist_pages": 324,
+          "sqlite_reusable_bytes": 1327104,
+          "sqlite_active_page_estimate_bytes": 672034816,
+          "cloudflare_bytes_measured": false
+        }
+      },
+      {
+        "remaining_unpaid": 1000,
+        "storage": {
+          "offers": {
+            "count": 1001,
+            "payload_bytes": 65537335
+          },
+          "unpaid": {
+            "count": 1000,
+            "payload_bytes": 65513466
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 10001,
+              "column_value_utf8_bytes": 1139006
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 450,
+              "column_value_utf8_bytes": 31500
+            }
+          },
+          "sqlite_allocated_bytes": 673361920,
+          "actual_file_bytes": 673361920,
+          "freelist_pages": 146965,
+          "sqlite_reusable_bytes": 601968640,
+          "sqlite_active_page_estimate_bytes": 71393280,
+          "cloudflare_bytes_measured": false
+        }
+      },
+      {
+        "remaining_unpaid": 100,
+        "storage": {
+          "offers": {
+            "count": 101,
+            "payload_bytes": 6582265
+          },
+          "unpaid": {
+            "count": 100,
+            "payload_bytes": 6558396
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 10001,
+              "column_value_utf8_bytes": 1139006
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 495,
+              "column_value_utf8_bytes": 34650
+            }
+          },
+          "sqlite_allocated_bytes": 673361920,
+          "actual_file_bytes": 673361920,
+          "freelist_pages": 161669,
+          "sqlite_reusable_bytes": 662196224,
+          "sqlite_active_page_estimate_bytes": 11165696,
+          "cloudflare_bytes_measured": false
+        }
+      },
+      {
+        "remaining_unpaid": 0,
+        "storage": {
+          "offers": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "unpaid": {
+            "count": 0,
+            "payload_bytes": 0
+          },
+          "paid": {
+            "count": 1,
+            "payload_bytes": 23869
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 10001,
+              "column_value_utf8_bytes": 1139006
+            },
+            "astra_tarot30_bindings": {
+              "count": 1,
+              "column_value_utf8_bytes": 108
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1,
+              "column_value_utf8_bytes": 74
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 500,
+              "column_value_utf8_bytes": 35000
+            }
+          },
+          "sqlite_allocated_bytes": 673361920,
+          "actual_file_bytes": 673361920,
+          "freelist_pages": 163307,
+          "sqlite_reusable_bytes": 668905472,
+          "sqlite_active_page_estimate_bytes": 4456448,
+          "cloudflare_bytes_measured": false
+        }
+      }
+    ],
+    "deleted_offers": 10000,
+    "runs": 500,
+    "maximum_adapter_statements_per_run": 5,
+    "total_adapter_statements": 2524,
+    "paid_and_finance_preserved": true,
+    "legacy_over_cap_new_draft_refused": true,
+    "filled_migration_v8_heap_limit_mb": 256,
+    "rollback_proven": true,
+    "same_token_replayed_without_next_batch": true,
+    "auto_vacuum": false,
+    "physical_shrink_claimed": false,
+    "flags_off": true,
+    "cloudflare": false
+  },
+  "lifecycle": {
+    "mode": "TASK06_DEFAULT3_10000_CUMULATIVE_DRAWS_ONE_PER_SIMULATED_DAY_WITH3_PAID",
+    "samples": [
+      {
+        "attempts": 100,
+        "accepted": 100,
+        "denied": 0,
+        "cumulative_deleted": 95,
+        "storage": {
+          "offers": {
+            "count": 5,
+            "payload_bytes": 326852
+          },
+          "unpaid": {
+            "count": 2,
+            "payload_bytes": 132471
+          },
+          "paid": {
+            "count": 3,
+            "payload_bytes": 194381
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 100,
+              "column_value_utf8_bytes": 11292
+            },
+            "astra_tarot30_bindings": {
+              "count": 100,
+              "column_value_utf8_bytes": 10800
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 100,
+              "column_value_utf8_bytes": 7400
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 100,
+              "column_value_utf8_bytes": 6680
+            }
+          },
+          "sqlite_allocated_bytes": 1667072,
+          "actual_file_bytes": 1667072,
+          "freelist_pages": 17,
+          "sqlite_reusable_bytes": 69632,
+          "sqlite_active_page_estimate_bytes": 1597440,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 1721,
+        "node_wall_ms": 986
+      },
+      {
+        "attempts": 1000,
+        "accepted": 1000,
+        "denied": 0,
+        "cumulative_deleted": 995,
+        "storage": {
+          "offers": {
+            "count": 5,
+            "payload_bytes": 327542
+          },
+          "unpaid": {
+            "count": 2,
+            "payload_bytes": 133161
+          },
+          "paid": {
+            "count": 3,
+            "payload_bytes": 194381
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 1000,
+              "column_value_utf8_bytes": 113893
+            },
+            "astra_tarot30_bindings": {
+              "count": 1000,
+              "column_value_utf8_bytes": 108000
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 1000,
+              "column_value_utf8_bytes": 74000
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 1000,
+              "column_value_utf8_bytes": 66980
+            }
+          },
+          "sqlite_allocated_bytes": 2318336,
+          "actual_file_bytes": 2318336,
+          "freelist_pages": 16,
+          "sqlite_reusable_bytes": 65536,
+          "sqlite_active_page_estimate_bytes": 2252800,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 17021,
+        "node_wall_ms": 10446
+      },
+      {
+        "attempts": 10000,
+        "accepted": 10000,
+        "denied": 0,
+        "cumulative_deleted": 9995,
+        "storage": {
+          "offers": {
+            "count": 5,
+            "payload_bytes": 326769
+          },
+          "unpaid": {
+            "count": 2,
+            "payload_bytes": 132388
+          },
+          "paid": {
+            "count": 3,
+            "payload_bytes": 194381
+          },
+          "metadata": {
+            "astra_tarot30_requests": {
+              "count": 10000,
+              "column_value_utf8_bytes": 1148894
+            },
+            "astra_tarot30_bindings": {
+              "count": 10000,
+              "column_value_utf8_bytes": 1080000
+            },
+            "astra_tarot30_quota": {
+              "count": 1,
+              "column_value_utf8_bytes": 75
+            },
+            "astra_tarot30_days": {
+              "count": 10000,
+              "column_value_utf8_bytes": 740000
+            },
+            "astra_tarot30_cleanup_runs": {
+              "count": 10000,
+              "column_value_utf8_bytes": 669980
+            }
+          },
+          "sqlite_allocated_bytes": 8937472,
+          "actual_file_bytes": 8937472,
+          "freelist_pages": 16,
+          "sqlite_reusable_bytes": 65536,
+          "sqlite_active_page_estimate_bytes": 8871936,
+          "cloudflare_bytes_measured": false
+        },
+        "adapter_statements": 170021,
+        "node_wall_ms": 119056
+      }
+    ],
+    "accepted": 10000,
+    "denied": 0,
+    "cumulative_deleted": 9995,
+    "maximum_cleanup_adapter_statements": 5,
+    "paid_and_finance_preserved": true,
+    "flags_off": true,
+    "no_real_cron": true,
+    "counts_scope": "adapter statements only; metric SQL excluded",
+    "cloudflare": false
+  },
+  "cloudflare_storage_measured": false,
+  "policy_approved_for_real_service": false,
+  "warning": "Rate mode reports attempts, not10000 successful offers. Lifecycle mode measures10000 actual generated draws over simulated days. SQLite free pages do not imply file/D1 quota shrink."
+}

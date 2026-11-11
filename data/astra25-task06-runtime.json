@@ -1,0 +1,122 @@
+{
+  "scope": "LOCAL_NODE_SQLITE_FAKE_TELEGRAM_ONLY",
+  "node": "v24.22.1",
+  "raw": {
+    "path": "release/ASTRA_2_5_TASK06_CANDIDATE.js",
+    "sha256": "b7550dc682c4f0b42ff0c823c2de752a7e76e612af2f6dbe56d1456bf2c4b984",
+    "bytes": 1585554,
+    "gzip9_bytes": 279620
+  },
+  "bundle": {
+    "sha256": "9028b47dab6924e8a2e0c15eef3d380a2abeb423e8cde66731fe71ba1ae6bc46",
+    "bytes": 2440653,
+    "gzip9_bytes": 286571,
+    "wrangler_version": "4.45.0",
+    "local_dry_run_only": true
+  },
+  "cold_import": {
+    "node_cpu_ms": 70.922,
+    "node_wall_ms": 72.86662000000001,
+    "cloudflare_cpu": false,
+    "scope": "fresh TASK06 module import in Node process; shared old fixture dependencies already loaded"
+  },
+  "samples": [
+    {
+      "name": "cold_tarot_menu",
+      "status": 200,
+      "node_cpu_ms": 18.277,
+      "node_wall_ms": 27.04942600000004,
+      "sql": 12,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_1",
+      "status": 200,
+      "node_cpu_ms": 5.175,
+      "node_wall_ms": 8.571008000000006,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_2",
+      "status": 200,
+      "node_cpu_ms": 3.513,
+      "node_wall_ms": 8.546823000000018,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_3",
+      "status": 200,
+      "node_cpu_ms": 5.027,
+      "node_wall_ms": 10.006446000000096,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_4",
+      "status": 200,
+      "node_cpu_ms": 3.786,
+      "node_wall_ms": 6.880451999999991,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_5",
+      "status": 200,
+      "node_cpu_ms": 3.28,
+      "node_wall_ms": 7.356276999999977,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "health",
+      "status": 503,
+      "node_cpu_ms": 3.962,
+      "node_wall_ms": 4.075512000000003,
+      "sql": 10,
+      "http": 0,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "cold_celtic10_actual_worker_offer",
+      "status": 200,
+      "node_cpu_ms": 21.181,
+      "node_wall_ms": 29.52487999999994,
+      "sql": 26,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "cleanup20_actual_candidate_named_entry",
+      "node_cpu_ms": 3.941,
+      "node_wall_ms": 5.040113000000019,
+      "sql": 5,
+      "http": 0,
+      "deleted_count": 20,
+      "default_daily_limit": 3,
+      "call_kind": "local raw candidate named export; fixtures prepared one per simulated day",
+      "cloudflare_cpu": false,
+      "rows_complete": false
+    }
+  ],
+  "cloudflare_cpu_measured": false,
+  "d1_rows_read_measured": false,
+  "d1_rows_written_measured": false,
+  "workers_request_limit_experiment": false,
+  "caveat": "Node wall/CPU and SQL statement+fake HTTP counts do not measure Workers 10ms CPU, platform subrequests, D1 rows or live error1102; counters count SQL statements, not recursive trigger instructions."
+}

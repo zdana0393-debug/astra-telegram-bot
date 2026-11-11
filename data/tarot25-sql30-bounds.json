@@ -1,0 +1,11 @@
+{
+  "individual_statements": 61,
+  "max_statement_utf8_bytes": 28413,
+  "project_max_bytes": 50000,
+  "reference_d1_statement_limit_bytes": 100000,
+  "completion_groups": 7,
+  "full_core_ddl_checks": 223,
+  "primary_completion_checked": true,
+  "part_bodies_checked_by_full_runtime_and_runner_manifest": true,
+  "financial_guards_not_removed": true
+}

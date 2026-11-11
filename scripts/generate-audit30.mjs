@@ -1,0 +1,4 @@
+import fs from 'node:fs';import manifest from '../data/tarot25-schema30.json' with{type:'json'};import {readOnlyStatements} from './lib/migrate-tarot29-local.mjs';import {chunks30,splitSQL30} from './lib/sql30-bounds.mjs';
+const q=s=>"'"+s.replaceAll("'","''")+"'",tuple=o=>'('+[o.name,o.type,o.sql].map(q).join(',')+')';let schema='';
+for(const [i,group]of chunks30(manifest,tuple,48000).entries())schema+=`WITH expected(name,type,sql)AS(VALUES ${group.map(tuple).join(',')}) SELECT 'schema30/${i}' check_name,count(*) violations FROM expected e LEFT JOIN sqlite_master a ON a.name=e.name WHERE a.name IS NULL OR a.type IS NOT e.type OR a.sql IS NOT e.sql;\n`;
+const old=readOnlyStatements(fs.readFileSync('scripts/check_integrity_tarot25_29.sql','utf8')),sql=schema+old.slice(1).join(';\n')+';\n';if(splitSQL30(sql).some(s=>Buffer.byteLength(s)>50000))throw Error('AUDIT30_STATEMENT_BUDGET');fs.writeFileSync('scripts/check_integrity_tarot25_30.sql',sql);

@@ -1,0 +1,389 @@
+{
+  "version": "task06-local-rehearsal-v1",
+  "synthetic_only": true,
+  "plan_sha256": "8c1f2782c300d9ae620568b6519da872f94fec3a3d0331461fc11dcc34d09982",
+  "candidate": {
+    "path": "release/ASTRA_2_5_TASK06_CANDIDATE.js",
+    "sha256": "b7550dc682c4f0b42ff0c823c2de752a7e76e612af2f6dbe56d1456bf2c4b984"
+  },
+  "scenarios": [
+    {
+      "mode": "clean20",
+      "source_stage": "2.0",
+      "target_stage": "0030",
+      "steps": [
+        {
+          "id": "0021",
+          "sha256": "db3b3f02c1f2a374415eff4d1622867962e9f03fd6816ac83e3a5c8dc41da798"
+        },
+        {
+          "id": "0022",
+          "sha256": "ad7203bf9431a9ca8aea178b030139948c562041783d893118de9221e58e5d70"
+        },
+        {
+          "id": "0023",
+          "sha256": "ab9f185d5667faab23fb2ffc179161e9227a8b1eb0fab022671304755ab7f2fd"
+        },
+        {
+          "id": "0024",
+          "sha256": "59afa3b4517608f340b664b7ceb6c1aeb42ba0307e351eef2c665e342a2eee9b"
+        },
+        {
+          "id": "astra25-before-0025-referrers.v1",
+          "sha256": "a9128aa09cfd98c7b14f156648b4d76de8b1792d83d001e564d9254215748566"
+        },
+        {
+          "id": "0025",
+          "sha256": "5e85b25583e6a6bafca83d2a80ca2029e838ea4a3ddf7161634a4ca0d5a81a94"
+        },
+        {
+          "id": "0026",
+          "sha256": "4068dc6370ab381dfb2575c07e7745f13198637bfd5a50a3186da936c5483e17"
+        },
+        {
+          "id": "0027",
+          "sha256": "58af0861a595c6d72f3d36b46831e78067ad90c1c70d5b8e070fddcadebd7261"
+        },
+        {
+          "id": "0028",
+          "sha256": "a0de7b95d8951a0f079a8275c66637feb6230dda52a7c1f21a2f9ec660c0561d"
+        },
+        {
+          "id": "0029",
+          "sha256": "ca64d5d7842c0e66d2859beeb34a03f287483c26ce950120d74aacb3ea34afba"
+        },
+        {
+          "id": "0030",
+          "sha256": "fe4db93e95f0487e1c64a192e3848da9424e31c55b66e227020237d95c83d227"
+        }
+      ],
+      "profiles": 20,
+      "balance_before": 444,
+      "balance_after": 444,
+      "each_balance_preserved": true,
+      "all_original_tables_preserved": true,
+      "only_missing_referrer_links_changed": 0,
+      "paid_and_financial_tables_preserved": true,
+      "source_file_unchanged": true,
+      "backup_and_separate_restore_verified": true,
+      "repeat_changed": false,
+      "repeat_file_unchanged": true,
+      "flags": {
+        "policy25": {
+          "enabled": 0,
+          "activated": 0,
+          "stars_enabled": 0,
+          "start_day": null
+        },
+        "patch26": {
+          "enabled": 0,
+          "activated": 0,
+          "start_day": null
+        },
+        "tarot29": {
+          "enabled": 0
+        },
+        "storage30": {
+          "migration_done": 1,
+          "write_enabled": 0,
+          "cleanup_enabled": 0,
+          "daily_limit": 3,
+          "retention_seconds": 86400,
+          "batch_limit": 20,
+          "soft_cap_bytes": 350000000
+        },
+        "consent28": {
+          "delivery_quarantined": 1
+        },
+        "confirmed_consents": 0
+      }
+    },
+    {
+      "mode": "deleted_referrer20",
+      "source_stage": "2.0",
+      "target_stage": "0030",
+      "steps": [
+        {
+          "id": "0021",
+          "sha256": "db3b3f02c1f2a374415eff4d1622867962e9f03fd6816ac83e3a5c8dc41da798"
+        },
+        {
+          "id": "0022",
+          "sha256": "ad7203bf9431a9ca8aea178b030139948c562041783d893118de9221e58e5d70"
+        },
+        {
+          "id": "0023",
+          "sha256": "ab9f185d5667faab23fb2ffc179161e9227a8b1eb0fab022671304755ab7f2fd"
+        },
+        {
+          "id": "0024",
+          "sha256": "59afa3b4517608f340b664b7ceb6c1aeb42ba0307e351eef2c665e342a2eee9b"
+        },
+        {
+          "id": "astra25-before-0025-referrers.v1",
+          "sha256": "a9128aa09cfd98c7b14f156648b4d76de8b1792d83d001e564d9254215748566"
+        },
+        {
+          "id": "0025",
+          "sha256": "5e85b25583e6a6bafca83d2a80ca2029e838ea4a3ddf7161634a4ca0d5a81a94"
+        },
+        {
+          "id": "0026",
+          "sha256": "4068dc6370ab381dfb2575c07e7745f13198637bfd5a50a3186da936c5483e17"
+        },
+        {
+          "id": "0027",
+          "sha256": "58af0861a595c6d72f3d36b46831e78067ad90c1c70d5b8e070fddcadebd7261"
+        },
+        {
+          "id": "0028",
+          "sha256": "a0de7b95d8951a0f079a8275c66637feb6230dda52a7c1f21a2f9ec660c0561d"
+        },
+        {
+          "id": "0029",
+          "sha256": "ca64d5d7842c0e66d2859beeb34a03f287483c26ce950120d74aacb3ea34afba"
+        },
+        {
+          "id": "0030",
+          "sha256": "fe4db93e95f0487e1c64a192e3848da9424e31c55b66e227020237d95c83d227"
+        }
+      ],
+      "profiles": 19,
+      "balance_before": 436,
+      "balance_after": 436,
+      "each_balance_preserved": true,
+      "all_original_tables_preserved": false,
+      "only_missing_referrer_links_changed": 3,
+      "paid_and_financial_tables_preserved": true,
+      "source_file_unchanged": true,
+      "backup_and_separate_restore_verified": true,
+      "repeat_changed": false,
+      "repeat_file_unchanged": true,
+      "flags": {
+        "policy25": {
+          "enabled": 0,
+          "activated": 0,
+          "stars_enabled": 0,
+          "start_day": null
+        },
+        "patch26": {
+          "enabled": 0,
+          "activated": 0,
+          "start_day": null
+        },
+        "tarot29": {
+          "enabled": 0
+        },
+        "storage30": {
+          "migration_done": 1,
+          "write_enabled": 0,
+          "cleanup_enabled": 0,
+          "daily_limit": 3,
+          "retention_seconds": 86400,
+          "batch_limit": 20,
+          "soft_cap_bytes": 350000000
+        },
+        "consent28": {
+          "delivery_quarantined": 1
+        },
+        "confirmed_consents": 0
+      }
+    },
+    {
+      "mode": "historical26",
+      "source_stage": "0026",
+      "target_stage": "0030",
+      "steps": [
+        {
+          "id": "0027",
+          "sha256": "58af0861a595c6d72f3d36b46831e78067ad90c1c70d5b8e070fddcadebd7261"
+        },
+        {
+          "id": "0028",
+          "sha256": "a0de7b95d8951a0f079a8275c66637feb6230dda52a7c1f21a2f9ec660c0561d"
+        },
+        {
+          "id": "0029",
+          "sha256": "ca64d5d7842c0e66d2859beeb34a03f287483c26ce950120d74aacb3ea34afba"
+        },
+        {
+          "id": "0030",
+          "sha256": "fe4db93e95f0487e1c64a192e3848da9424e31c55b66e227020237d95c83d227"
+        }
+      ],
+      "profiles": 20,
+      "balance_before": 537,
+      "balance_after": 537,
+      "each_balance_preserved": true,
+      "all_original_tables_preserved": true,
+      "only_missing_referrer_links_changed": 0,
+      "paid_and_financial_tables_preserved": true,
+      "source_file_unchanged": true,
+      "backup_and_separate_restore_verified": true,
+      "repeat_changed": false,
+      "repeat_file_unchanged": true,
+      "flags": {
+        "policy25": {
+          "enabled": 0,
+          "activated": 0,
+          "stars_enabled": 0,
+          "start_day": null
+        },
+        "patch26": {
+          "enabled": 0,
+          "activated": 0,
+          "start_day": null
+        },
+        "tarot29": {
+          "enabled": 0
+        },
+        "storage30": {
+          "migration_done": 1,
+          "write_enabled": 0,
+          "cleanup_enabled": 0,
+          "daily_limit": 3,
+          "retention_seconds": 86400,
+          "batch_limit": 20,
+          "soft_cap_bytes": 350000000
+        },
+        "consent28": {
+          "delivery_quarantined": 1
+        },
+        "confirmed_consents": 0
+      }
+    }
+  ],
+  "business": {
+    "default_daily_limit": 3,
+    "quota_used_on_three_simulated_days": [
+      3,
+      3,
+      1
+    ],
+    "purchases": [
+      {
+        "spread_id": "basic-3",
+        "price": 5,
+        "balance_before": 100,
+        "balance_after": 95,
+        "snapshot_sha256": "ff6bd128ac9936da628a9d07a6f4752d879808551f0e86e5ce4c6e3f56836dea",
+        "result_sha256": "416d469c25325efc22dbceace8c231ec53a41084d51315ef049813d0c13bbe4c",
+        "utf8_result_bytes": 5659,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      },
+      {
+        "spread_id": "relations-3",
+        "price": 8,
+        "balance_before": 95,
+        "balance_after": 87,
+        "snapshot_sha256": "42e83b29034160e90d015f3c334e8582e3f20e2ffc3439209e6a21879291f0cb",
+        "result_sha256": "0fa0f5f2f10a76cd768c139c5efe2fa33f8abc429611971e2c8908ceb8f313a0",
+        "utf8_result_bytes": 5790,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      },
+      {
+        "spread_id": "work-3",
+        "price": 8,
+        "balance_before": 87,
+        "balance_after": 79,
+        "snapshot_sha256": "1aee460906c829e3dae712848c72aa0a0eb6c8a0d8d3a580fd3f8aaf01d2c698",
+        "result_sha256": "3d7c8e715a754e0be588c53a9139b257b4d1daafb995d3b03259fb78c34610a9",
+        "utf8_result_bytes": 5968,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      },
+      {
+        "spread_id": "choice-3",
+        "price": 8,
+        "balance_before": 79,
+        "balance_after": 71,
+        "snapshot_sha256": "f5e1c50123fd83cc80366942a66a94569d53fb3a15383e3a86f131eeb581efdf",
+        "result_sha256": "4c773ece51d6ecdc0b5c4911e09658cc63753926654ebd9e28b8472c4dfe5536",
+        "utf8_result_bytes": 5845,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      },
+      {
+        "spread_id": "depth-5",
+        "price": 14,
+        "balance_before": 71,
+        "balance_after": 57,
+        "snapshot_sha256": "6f7f435e31b3f239ab35f4c331802fcfb366dc31feb3485e6e7ddf4edc86ce74",
+        "result_sha256": "e485671e4b209abeb38b761e1b4da2db9e56218865757716241a6595b7c56dd7",
+        "utf8_result_bytes": 7827,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      },
+      {
+        "spread_id": "depth-7",
+        "price": 21,
+        "balance_before": 57,
+        "balance_after": 36,
+        "snapshot_sha256": "143b852dee6433f0d9ddbc2842e25399cb595f9b3b849ec52a892c30f84630a2",
+        "result_sha256": "3265f027e2f348cfbc52a907a9ddc8d3805f91fdb9451673e5174fc53fecd823",
+        "utf8_result_bytes": 10426,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      },
+      {
+        "spread_id": "celtic-10",
+        "price": 32,
+        "balance_before": 36,
+        "balance_after": 4,
+        "snapshot_sha256": "9fbf6bba4d6fbdb291ce4b3ebfc349877341fa9561bcf0a0c7be245e726adec7",
+        "result_sha256": "03345cc3681f4b60016b5ba352a3196793c9d15fba79dba1e389a89fd53ad83e",
+        "utf8_result_bytes": 14021,
+        "versions": {
+          "deck": "rws78-v1",
+          "engine": "tarot25-v1",
+          "spread": "tarot25-spreads-v1",
+          "snapshot": "tarot25-snapshot-v1"
+        },
+        "free_exact_read_with_all_flags_off": true
+      }
+    ],
+    "one_debit_each": true,
+    "prices_activated_for_real": false,
+    "new_ledger_rows": 7,
+    "final_owner_balance": 4,
+    "repeat_after_legitimate_business": {
+      "changed": false,
+      "business_changed_since_migration": true
+    }
+  },
+  "cloud_platform": false,
+  "Telegram_transport": false,
+  "public_ready": false
+}
