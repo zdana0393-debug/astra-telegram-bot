@@ -1,0 +1,94 @@
+{
+  "scope": "TASK05_LOCAL_SYNTHETIC_SQLITE_ONLY",
+  "generated_at": "2026-11-11T09:44:01.562Z",
+  "spread": "celtic-10",
+  "actual_generated_offers": 10000,
+  "all_unpaid": true,
+  "question_collected": false,
+  "initial": {
+    "sqlite_allocated_bytes": 708608,
+    "page_size": 4096,
+    "offers": {
+      "count": 0,
+      "payload_bytes": 0
+    },
+    "paid": {
+      "count": 0,
+      "payload_bytes": 0
+    },
+    "cloudflare_bytes_measured": false
+  },
+  "samples": [
+    {
+      "offers": {
+        "count": 100,
+        "payload_bytes": 6574434
+      },
+      "sqlite_allocated_bytes": 7409664,
+      "page_size": 4096,
+      "paid": {
+        "count": 0,
+        "payload_bytes": 0
+      },
+      "cloudflare_bytes_measured": false,
+      "actual_file_bytes": 7409664,
+      "elapsed_wall_ms": 450
+    },
+    {
+      "offers": {
+        "count": 1000,
+        "payload_bytes": 65633437
+      },
+      "sqlite_allocated_bytes": 67571712,
+      "page_size": 4096,
+      "paid": {
+        "count": 0,
+        "payload_bytes": 0
+      },
+      "cloudflare_bytes_measured": false,
+      "actual_file_bytes": 67571712,
+      "elapsed_wall_ms": 4870
+    },
+    {
+      "offers": {
+        "count": 10000,
+        "payload_bytes": 655715019
+      },
+      "sqlite_allocated_bytes": 668905472,
+      "page_size": 4096,
+      "paid": {
+        "count": 0,
+        "payload_bytes": 0
+      },
+      "cloudflare_bytes_measured": false,
+      "actual_file_bytes": 668905472,
+      "elapsed_wall_ms": 46567
+    }
+  ],
+  "ttl_seconds": 900,
+  "elapsed_simulated_days": 8,
+  "after_expiry_unchanged": true,
+  "expired_purchase_refused": true,
+  "live_profile_delete_guard_refused": true,
+  "read_only_retention_preview": {
+    "proposal_only": true,
+    "delete_permitted": false,
+    "approved_retention_days": null,
+    "proposed_retention_days": 7,
+    "as_of": 1795081394,
+    "limit": 100,
+    "candidates": 100,
+    "candidate_payload_bytes": 6560831,
+    "question_bearing_candidates": 0,
+    "purchases_excluded": true
+  },
+  "automatic_cleanup": false,
+  "owner_retention_approved": false,
+  "cloudflare_storage_measured": false,
+  "cloudflare_cpu_measured": false,
+  "sqlite_size_limit_comparison": {
+    "reference_bytes": 524288000,
+    "exceeded_locally": true
+  },
+  "runtime_enabled_at_finish": false
+}

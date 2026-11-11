@@ -1,0 +1,100 @@
+{
+  "scope": "LOCAL_NODE_SQLITE_FAKE_TELEGRAM_ONLY",
+  "node": "v24.22.1",
+  "raw": {
+    "path": "release/ASTRA_2_5_TASK05_CANDIDATE.js",
+    "sha256": "9c84edfe190894e39faac272f67825f7c323612c577f5e42405a09a5bcf0268c",
+    "bytes": 1380074,
+    "gzip9_bytes": 253436
+  },
+  "bundle": {
+    "sha256": "3d38d73e38956b9bb1c5cb21d5f0230e5628ddb70f553eb5510a9f2f16c0e793",
+    "bytes": 2226877,
+    "gzip9_bytes": 259891,
+    "wrangler_version": "4.45.0",
+    "local_dry_run_only": true
+  },
+  "cold_import": {
+    "node_cpu_ms": 35.875,
+    "node_wall_ms": 26.17156300000005,
+    "cloudflare_cpu": false,
+    "scope": "fresh TASK05 module import in Node process; shared old fixture dependencies already loaded"
+  },
+  "samples": [
+    {
+      "name": "cold_tarot_menu",
+      "status": 200,
+      "node_cpu_ms": 17.303,
+      "node_wall_ms": 15.155400000000043,
+      "sql": 12,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_1",
+      "status": 200,
+      "node_cpu_ms": 3.102,
+      "node_wall_ms": 4.9667630000000145,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_2",
+      "status": 200,
+      "node_cpu_ms": 2.513,
+      "node_wall_ms": 4.592829999999935,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_3",
+      "status": 200,
+      "node_cpu_ms": 2.267,
+      "node_wall_ms": 4.306826000000001,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_4",
+      "status": 200,
+      "node_cpu_ms": 2.515,
+      "node_wall_ms": 4.321517999999969,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "warm_tarot_menu_5",
+      "status": 200,
+      "node_cpu_ms": 2.359,
+      "node_wall_ms": 3.950287000000003,
+      "sql": 11,
+      "http": 3,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    },
+    {
+      "name": "health",
+      "status": 503,
+      "node_cpu_ms": 2.977,
+      "node_wall_ms": 2.9913549999999987,
+      "sql": 10,
+      "http": 0,
+      "rows_complete": false,
+      "cloudflare_cpu": false
+    }
+  ],
+  "cloudflare_cpu_measured": false,
+  "d1_rows_read_measured": false,
+  "d1_rows_written_measured": false,
+  "workers_request_limit_experiment": false,
+  "caveat": "Node wall/CPU and SQL statement+fake HTTP counts do not measure Workers 10ms CPU, platform subrequests, D1 rows or live error1102; counters count SQL statements, not recursive trigger instructions."
+}

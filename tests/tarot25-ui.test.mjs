@@ -42,7 +42,7 @@ for(const mutation of ['actor','chat','message','payload','price','negative'])ch
  if(mutation==='actor'){q.callback_query.from.id=2;q.callback_query.message.chat.id=2;}
  if(mutation==='chat')q.callback_query.message.chat.id=2;
  if(mutation==='message')q.callback_query.message.message_id++;
- if(mutation==='payload')q.callback_query.data=p.data.replace(/t25:p:./,'t25:p:f');
+ if(mutation==='payload'){q.callback_query.data=p.data.replace(/t25:p:(.)/,(_,c)=>'t25:p:'+(c==='f'?'e':'f'));assert.notEqual(q.callback_query.data,p.data);}
  if(mutation==='price')q.callback_query.data+=':1';
  if(mutation==='negative')q.update_id=-1;
  await f.hook(q);assert.equal(count(f,'astra_tarot25_purchases29'),0);assert.equal(f.balance(1),100);assert.equal(f.balance(2),100);

@@ -1,0 +1,374 @@
+{
+  "version": "astra25-task05-verification-v1",
+  "checked_at_utc": "2026-11-11T09:44:48.473Z",
+  "command": "ASTRA25_WRANGLER_BUNDLE=<TASK03 offline bundle> ASTRA25_TASK05_WRANGLER_BUNDLE=<TASK05 offline bundle> sh scripts/test-2.5-task05.sh",
+  "regression_log_sha256": "ea8933ffd420b5ea639b12d12b784189b7e832002c48c6acb0e7a2dc24651cdc",
+  "base_commit": "22f2cdded11fcde13e4582f5fb2942f5862b2125",
+  "node": "v24.22.1",
+  "previous_node_test_executions": 1766,
+  "new_node_tests": 197,
+  "new_suites": {
+    "upgrade": 40,
+    "compatibility": 21,
+    "recovery": 57,
+    "business": 39,
+    "ui_budget": 32,
+    "concurrency": 6,
+    "wrangler_bundle": 2
+  },
+  "full_regression_node_test_executions": 1963,
+  "additional_targeted_node_test_executions": 32,
+  "new_node_test_executions": 229,
+  "total_node_test_executions": 1995,
+  "targeted_ui_recheck": {
+    "log_sha256": "d45743ffd098aaa6fc4e11ecab6c642495e4f412d647df8c7d54eb51d2504353",
+    "test_source_sha256": "1154c181d4a6958454a793a295f6046936d5a3a9872630040e8284dd73bdb3d1",
+    "reason": "Historical stress name58000 actually built57000 UTF16 units; new fixture asserts real58000 and reruns affected32 tests",
+    "fixture_utf16_units": 58000
+  },
+  "old_standalone_assertions": 210,
+  "node_test_failures": 0,
+  "node_tests_skipped": 0,
+  "new_tests_invoking_task05_raw_worker": 64,
+  "new_tests_invoking_task05_wrangler_bundle": 2,
+  "native_process_crash_cases": [
+    {
+      "task05_actual_sigkill_case": "after_sql",
+      "passed": true,
+      "source_preserved": true
+    },
+    {
+      "task05_actual_sigkill_case": "committed_before_journal",
+      "passed": true,
+      "source_preserved": true
+    }
+  ],
+  "historical_native_crash_cases": [
+    {
+      "task04_actual_sigkill_case": "after_sql",
+      "passed": true,
+      "source_preserved": true
+    },
+    {
+      "task04_actual_sigkill_case": "committed_before_journal",
+      "passed": true,
+      "source_preserved": true
+    }
+  ],
+  "actual_cli_cases": 3,
+  "historical_cli_cases": 3,
+  "plan_sha256": "1a5cd0d58461fc7c6171bac36f5865b5d85ce7114f5f3043268ff08d15a34b1b",
+  "compatibility": {
+    "path": "migrations/compat/astra25-before-0025-referrers.v1.sql",
+    "sha256": "a9128aa09cfd98c7b14f156648b4d76de8b1792d83d001e564d9254215748566",
+    "bytes": 413,
+    "id": "astra25-before-0025-referrers.v1"
+  },
+  "candidate": {
+    "path": "release/ASTRA_2_5_TASK05_CANDIDATE.js",
+    "sha256": "9c84edfe190894e39faac272f67825f7c323612c577f5e42405a09a5bcf0268c",
+    "bytes": 1380074,
+    "gzip9_bytes": 253436
+  },
+  "compiled_offline_bundle": {
+    "sha256": "3d38d73e38956b9bb1c5cb21d5f0230e5628ddb70f553eb5510a9f2f16c0e793",
+    "bytes": 2226877,
+    "gzip9_bytes": 259891,
+    "wrangler_version": "4.45.0",
+    "local_dry_run_only": true
+  },
+  "old24_worker_sha256": "5f34b44948e4bb6be643d586e712554d41f9b9bf7f2ee7175c4bf5e6d77786f4",
+  "old03_candidate_sha256": "d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f",
+  "local_budget_examples": [
+    {
+      "scenario": "long_hmac_markup_null",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_400",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_403",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_429",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "long_hmac_markup_500",
+      "status": 200,
+      "sql": 34,
+      "http": 13,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "short_markup_400",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "short_markup_403",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "short_markup_429",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "short_markup_500",
+      "status": 200,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_400",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_403",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_429",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_500",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_network",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_timeout",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "body_unknown_ack",
+      "status": 500,
+      "sql": 22,
+      "http": 3,
+      "total": 25,
+      "official_spare": 25
+    },
+    {
+      "scenario": "partial_2",
+      "status": 200,
+      "sql": 23,
+      "http": 5,
+      "total": 28,
+      "official_spare": 22
+    },
+    {
+      "scenario": "manual_after_partial_2",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "partial_3",
+      "status": 200,
+      "sql": 24,
+      "http": 6,
+      "total": 30,
+      "official_spare": 20
+    },
+    {
+      "scenario": "manual_after_partial_3",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "d1_purchase_before",
+      "status": 200,
+      "sql": 15,
+      "http": 3,
+      "total": 18,
+      "official_spare": 32
+    },
+    {
+      "scenario": "d1_purchase_after",
+      "status": 200,
+      "sql": 15,
+      "http": 3,
+      "total": 18,
+      "official_spare": 32
+    },
+    {
+      "scenario": "d1_delivery_finalize_before",
+      "status": 200,
+      "sql": 22,
+      "http": 4,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "d1_delivery_finalize_after",
+      "status": 200,
+      "sql": 22,
+      "http": 4,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "cutover_hmac_markup_null",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "cutover_hmac_markup_400",
+      "status": 200,
+      "sql": 35,
+      "http": 12,
+      "total": 47,
+      "official_spare": 3
+    },
+    {
+      "scenario": "manual_archive_page_1",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_2",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_3",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_4",
+      "status": 200,
+      "sql": 21,
+      "http": 5,
+      "total": 26,
+      "official_spare": 24
+    },
+    {
+      "scenario": "manual_archive_page_5",
+      "status": 200,
+      "sql": 20,
+      "http": 5,
+      "total": 25,
+      "official_spare": 25
+    }
+  ],
+  "maximum_local_sql_plus_http": 47,
+  "conservative_corridor": 48,
+  "known_historical_expected_failure_reproductions": [
+    {
+      "candidate_sha256": "d6ae0b3aed3c80bae0da2969042e3e3e6b21d71061fcbea38b329ab6d72cb15f",
+      "scenario": "long_archive_configured_hmac_markup400",
+      "sql": 33,
+      "http": 16,
+      "total": 49,
+      "official_limit": 50,
+      "project_corridor": 48,
+      "spare": 1,
+      "acceptance": false,
+      "official_limit_exceeded": false,
+      "status": 500,
+      "financial_integrity": true
+    }
+  ],
+  "historical_test_correction": {
+    "path": "tests/tarot25-ui.test.mjs",
+    "reason": "Constant f substitution could be a no-op with probability1/16; now guarantees a different payload and asserts inequality",
+    "allowed_diff": "single test line; no production or auth change"
+  },
+  "resolved_local_blockers": [
+    "B1_EXACT_COMPATIBILITY_BEFORE_0025",
+    "B2_ERROR_CASCADE_WITHIN_48"
+  ],
+  "open_release_blockers": [
+    "REAL_CLOUDFLARE_D1_WORKERS_TELEGRAM_ACCEPTANCE",
+    "OWNER_RETENTION_RATE_STORAGE_DECISION_AND_SEPARATE_IMPLEMENTATION",
+    "OWNER_FINANCIAL_PRIVACY_AND_ROLLOUT_APPROVAL"
+  ],
+  "synthetic_rehearsal": "data/astra25-task05-rehearsal.json",
+  "actual_storage_study": "data/astra25-task05-storage.json",
+  "local_node_runtime_proxy": "data/astra25-task05-runtime.json",
+  "cloud_platform": false,
+  "Telegram_transport": false,
+  "new_remote_actions": 0,
+  "public_ready": false,
+  "release_acceptance": false,
+  "local_b1_b2_acceptance": true,
+  "warning": "Historical tests intentionally reproduce B1/FK failure and old TASK03 budget49. Only separate TASK05 suites support resolved local B1/B2; passing regression is not platform or public release acceptance."
+}
