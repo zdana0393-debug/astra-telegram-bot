@@ -1,0 +1,199 @@
+{
+  "version": "astra25-task08-preparation-v1",
+  "prepared_at_utc": "2026-11-11T17:33:35.822Z",
+  "prepared_at_moscow": "2026-11-11 20:33:35 GMT+3",
+  "base_commit": "1b05664d6fb45d1cc63c8b7bfa2c1df1c0e06ad8",
+  "branch": "astra-2.5-tarot",
+  "phase": "PREPARATION_ONLY_AWAITING_OWNER_PERMISSION",
+  "local_checks": {
+    "status": "PASS",
+    "historical_files_checked": 72,
+    "plan_recomputed": true,
+    "source_files_and_artifact_hashes_valid": true,
+    "schema_objects": 286,
+    "migration_statements": 133,
+    "max_statement_bytes": 20429,
+    "worker_sha256": "018d2eda3fc13a7a0f85fffcc6e1c866a9901bfb2e8dcce5e1bd6d184d6f8bda",
+    "migration_sha256": "f69aa193302d5332994c3a37184a558ffcce599ccef7f18fd3199545b1652afb",
+    "plan_sha256": "83f75d7cfd00b27876f7fba2c6c3519233be4f2edd676f58757d696a079faa3a"
+  },
+  "historical_tests": {
+    "executions": 2569,
+    "reexecuted_in_task08": false,
+    "source": "data/astra25-task07-verification.json"
+  },
+  "authorization": {
+    "resource_creation": false,
+    "remote_sql": false,
+    "deploy": false,
+    "telegram_api": false,
+    "test_webhook": false,
+    "test_feature_activation": false,
+    "production_inventory": false,
+    "production_cutover": false
+  },
+  "resources": [
+    {
+      "kind": "d1",
+      "name": "astra25-task08-lab",
+      "id": null,
+      "role": "synthetic profiles; no Telegram token; source for verified restore"
+    },
+    {
+      "kind": "d1",
+      "name": "astra25-task08-functional",
+      "id": null,
+      "role": "test-realm accounts with fictional profiles only"
+    },
+    {
+      "kind": "worker",
+      "name": "astra25-task08-probe",
+      "id": null,
+      "role": "private lab harness; reviewed code required before deploy",
+      "initial_deploy": "503 inert stub, no bindings or secrets; requires permission A"
+    },
+    {
+      "kind": "worker",
+      "name": "astra25-task08-candidate",
+      "id": null,
+      "role": "unchanged TASK07 candidate; functional DB only",
+      "initial_deploy": "503 inert stub, no bindings or secrets; requires permission A"
+    },
+    {
+      "kind": "telegram_test_bot",
+      "name": null,
+      "id": null,
+      "role": "owner-created bot in dedicated test environment"
+    }
+  ],
+  "test_account_id": null,
+  "production_exclusion_actual_ids": "NOT_TESTED",
+  "production_values_used_by_executed_actions": false,
+  "known_source_fallback_requires_override": "BOT_USERNAME",
+  "planned_budget": {
+    "worker_invocations_total": 300,
+    "d1_rows_read_total": 250000,
+    "d1_rows_written_total": 25000,
+    "storage_bytes_per_database": 25000000,
+    "max_parallel_requests": 10,
+    "automatic_budget_enforcement_implemented": false
+  },
+  "platform_cases": [
+    {
+      "id": "D1-01",
+      "case_name": "SQL/PRAGMA/unhex/system schema",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "D1-02",
+      "case_name": "Migration chain0021–0031",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "D1-03",
+      "case_name": "Financial atomicity/concurrency",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "D1-04",
+      "case_name": "Export/import/rowid/restore",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "D1-05",
+      "case_name": "Interrupted migration/unknown commit",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "W-01",
+      "case_name": "Free CPU/1102",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "W-02",
+      "case_name": "Startup/memory",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "W-03",
+      "case_name": "D1 meta/subrequests",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "T-01",
+      "case_name": "Seven Tarot formats",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "T-02",
+      "case_name": "Four independent questions",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "T-03",
+      "case_name": "Optional consent/delete",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "T-04",
+      "case_name": "Unpaid secrecy/forged callbacks",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "T-05",
+      "case_name": "Delivery/history/long text",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "T-06",
+      "case_name": "Forecast/day number/main functions",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "E-01",
+      "case_name": "Ledger/referrals/bonuses",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "GC-01",
+      "case_name": "Expiry/retention/cleanup",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "ISO-01",
+      "case_name": "Actual production exclusion",
+      "status": "NOT_TESTED",
+      "evidence": null
+    },
+    {
+      "id": "ISO-02",
+      "case_name": "Test realm/recipient allowlist",
+      "status": "NOT_TESTED",
+      "evidence": null
+    }
+  ],
+  "public_ready": false,
+  "production_ready": false,
+  "stop_ship": true,
+  "planned_recipient_transport": "local allowlist relay; not implemented or authorized",
+  "production_isolation_shared_account": "NOT_GUARANTEED; separate owner-designated test account required absent revised permission",
+  "cloudflare_telegram_actions_executed": 0,
+  "permission_a_scope": "Two new empty D1 plus two new Workers with reviewed inert503 stub only; no bindings/secrets/SQL/Telegram",
+  "permission_b_scope": "Separate approval after resource registry and harness/relay code review; not granted"
+}
