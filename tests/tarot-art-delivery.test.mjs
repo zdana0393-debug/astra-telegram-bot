@@ -5,8 +5,9 @@ import {validateTelegramArt, imagePlan, sendArt, sendPurchasedArt} from '../src/
 import {createReadingV2} from '../src/tarot25/engine-v2.mjs';
 import {seededRng} from '../src/tarot25/engine.mjs';
 import {SPREADS} from '../src/tarot25/spreads.mjs';
-import {registry} from './fixtures/art-private-registry.mjs';
+import {registry,verifyPrivateMockMedia} from './fixtures/art-private-registry.mjs';
 import fs from 'node:fs';
+import {validateArtManifest,cardPresentation} from '../src/tarot25/art07.mjs';
 const env = {ASTRA_TAROT_ART_ENABLED: 'true', ASTRA_BOT_TOKEN: '901:OFFLINE_NOT_REAL', ASTRA_TELEGRAM_TEST_MODE: 'true'};
 const actor = {telegram_id: 12, generation: 'synthetic-generation'};
 const card = {card_id: 'major-00', reversed: false, position_id: 'day'};
@@ -17,6 +18,7 @@ for (const c of names) for (const reversed of [false, true]) test(c.card_id + ' 
   const plan = imagePlan(registry, [{card_id: c.card_id, reversed, position_id: 'saved-position'}]);
   assert.equal(plan[0].media, 'SYNTHETIC_' + (reversed ? 'REVERSED_' : 'UPRIGHT_') + c.card_id);
   assert.ok(plan[0].caption.includes(c.name_ru));
+  verifyPrivateMockMedia(plan[0].media);
 });
 for (const mutation of ['duplicate', 'unknown', 'missing', 'same_image', 'url', 'unique_id', 'no_hash']) test('fail closed registry ' + mutation, () => {
   const r = structuredClone(registry);
@@ -79,3 +81,13 @@ test('the frozen paid V1 fixture supplies the same saved images without current 
   const r=await sendPurchasedArt({...options(),material:{snapshot,result:snapshot.text,telegram_id:12,generation:actor.generation},send:async(method,body)=>{observed=body.media;return ack(12,snapshot.cards.length);}});
   assert.equal(r.state,'sent');assert.deepEqual(observed,imagePlan(registry,snapshot.cards));
 });
+test('real admitted private manifest is compatible with the existing TASK07 art contract',
+  {skip:!process.env.ASTRA_PRIVATE_TAROT_MANIFEST},()=>{
+    const m=JSON.parse(fs.readFileSync(process.env.ASTRA_PRIVATE_TAROT_MANIFEST,'utf8'));
+    assert.deepEqual(validateArtManifest(m),{total:78,available:78,missing:0,text_fallback:false});
+    for(const c of m.cards)for(const reversed of [false,true]){
+      const view=cardPresentation(m,{card_id:c.card_id,reversed,position_id:'saved-position'},{art_enabled:true});
+      assert.equal(view.card_id,c.card_id);assert.equal(view.rotation,reversed?180:0);
+      assert.equal(view.asset,c['telegram_'+(reversed?'reversed':'upright')]);assert.equal(view.text_only,false);
+    }
+  });

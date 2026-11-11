@@ -1,0 +1,175 @@
+{
+  "version": "astra25-private-art-assets-verification-v1",
+  "checked_at_utc": "2026-11-11T22:37:45.666685+00:00",
+  "base_commit": "5106d2c20906aee38ea0c9c7a687a9bee7f1822a",
+  "branch": "astra-2.5-tarot",
+  "status": "AUTHOR_JPEG_ASSETS_LOCALLY_VERIFIED",
+  "task08_status": "PREPARATION_ONLY",
+  "stop_ship": true,
+  "art_default": "OFF",
+  "cloudflare_actions": 0,
+  "telegram_api_actions": 0,
+  "images_or_private_registries_in_git": false,
+  "source_pngs_supplied": false,
+  "source_pngs_required": false,
+  "source_png_hashes_verified": false,
+  "author_asset_summary": {
+    "local_only": true,
+    "input_pngs_required": false,
+    "cards": 78,
+    "input_jpegs": 78,
+    "upright_byte_identical": 78,
+    "reversed_generated": 78,
+    "missing": 0,
+    "duplicate_ids": 0,
+    "duplicate_entries": 0,
+    "sha256_mismatches": 0,
+    "dimensions_mismatches": 0,
+    "max_rotation_rmse": 2.467831137748523,
+    "max_rotation_mae": 1.8118196286743633,
+    "min_unrotated_rmse": 61.72250445618397,
+    "max_derivative_bytes": 1092924,
+    "telegram_file_ids_assigned": 0
+  },
+  "private_locations_omitted": true,
+  "telegram_registry_status": "PRIVATE_TEMPLATE_ONLY_NO_FILE_IDS",
+  "suites": [
+    {
+      "suite": "art-adapter",
+      "scope": "real-private-assets + mock identifiers",
+      "tests": 189,
+      "passed": 189,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "53926297a99cb1bc385e1449e7db171311b5b27926de4d4735ae79a86ffe7fdf"
+    },
+    {
+      "suite": "private-worker",
+      "scope": "single-file + native SQLite + fake Telegram + real private JPEG lookup",
+      "tests": 27,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "e3e5e58e3654b2151717700c8972be9657b1e33e226c2eed1d4af8e71b331948"
+    },
+    {
+      "suite": "tarot31-editorial",
+      "scope": "existing TASK07 regression",
+      "tests": 170,
+      "passed": 170,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "ad1d61798ae0882c3fce53194911d8e3084024878148b567ae6b2bbe99b19f69"
+    },
+    {
+      "suite": "tarot31-concurrency",
+      "scope": "existing TASK07 regression",
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "fd0bfad79d0b5dea421ba151afe6961b4362fe6439e7b913de1e64bf6b966a36"
+    },
+    {
+      "suite": "astra25-task07-business",
+      "scope": "existing TASK07 regression",
+      "tests": 39,
+      "passed": 39,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "b23e7ba8e0f5928b1889ddc713870765c62a84030f4099a4025c85733fc6bfe8"
+    },
+    {
+      "suite": "private-import-python",
+      "scope": "synthetic legacy + optimized multipart ZIPs; no PNG inputs for optimized mode",
+      "tests": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "2cc5ec8b8212abbef28b6efd0964c6e68275dfda03be545dc08d583481c8e4ef"
+    }
+  ],
+  "node_tests_passed": 437,
+  "python_tests_passed": 24,
+  "tests_passed_total": 461,
+  "private_worker_tests": 27,
+  "protected_files_matched": 72,
+  "task07_artifacts_matched": 9,
+  "local_invocation_metrics": {
+    "scope": "private art candidate + native SQLite + fake Telegram",
+    "cloudflare_measured": false,
+    "cases": [
+      {
+        "case": "basic-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "relations-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "work-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "choice-3",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "depth-5",
+        "status": 200,
+        "sql": 26,
+        "http": 5,
+        "total": 31
+      },
+      {
+        "case": "depth-7",
+        "status": 200,
+        "sql": 27,
+        "http": 6,
+        "total": 33
+      },
+      {
+        "case": "celtic-10",
+        "status": 200,
+        "sql": 27,
+        "http": 6,
+        "total": 33
+      },
+      {
+        "case": "long58k",
+        "status": 200,
+        "sql": 35,
+        "http": 12,
+        "total": 47
+      }
+    ],
+    "max_operations": 47
+  },
+  "real_platform": {
+    "d1_compatibility": "NOT_TESTED",
+    "cloudflare_cpu": "NOT_TESTED",
+    "telegram_image_acceptance": "NOT_TESTED",
+    "real_file_ids": "NOT_TESTED",
+    "mobile_telegram": "NOT_TESTED"
+  },
+  "source_sha256": {
+    "scripts/import-tarot-art-private.py": "3f87a3c738b415b4a7cd880e3b9f61f5ffda057a26f9074fca3a2ed4f37c40a0",
+    "tests/fixtures/art-private-registry.mjs": "e597ec187dde8bbe960354afe9318fbbef86cf83d560832cf21b99e3e57b9c1c",
+    "tests/tarot-art-private.test.py": "24c8236cc927977c855a0fa98751af58ce7b4c6509639bf9021454d2306a5852",
+    "tests/tarot-art-delivery.test.mjs": "056a866177e56a434bb3b766d077ec900a5547ce02613566a7fd5e7ce22c4dad",
+    "tests/tarot-art-worker.test.mjs": "76a8f655ac3c8224acb5edba62c262d3e2cb51ea8f8b2a667fa91f41b8869c61"
+  }
+}

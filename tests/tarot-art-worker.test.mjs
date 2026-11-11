@@ -5,7 +5,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {assembleArtCandidate, writePrivateArtCandidate} from '../scripts/build-tarot-art-private.mjs';
-import {registry} from './fixtures/art-private-registry.mjs';
+import {registry,verifyPrivateMockMedia} from './fixtures/art-private-registry.mjs';
 import {scenario07,fakeBot07,enable07,openTarot25,press25,pick25,screen25,sent25,seedHistorical25} from './task07/helpers.mjs';
 import {measure05} from './task05/helpers.mjs';
 import names from '../data/tarot25-art-contract07.json' with {type:'json'};
@@ -23,6 +23,7 @@ async function context({historical=false}={}) {
     assert.ok(String(url).startsWith('https://api.telegram.org/bot901:OFFLINE_NOT_REAL/'),'ALL NETWORK MUST BE MOCKED');
     const method=String(url).split('/').at(-1),body=JSON.parse(options.body);
     if(['sendPhoto','sendMediaGroup'].includes(method)){
+      for(const item of method==='sendPhoto'?[{media:body.photo}]:body.media)verifyPrivateMockMedia(item.media);
       fake.calls.push({method,body});if(beforeImage)await beforeImage();
       if(fault==='network')throw Error('SYNTHETIC_UNKNOWN_NETWORK');
       if(Number.isInteger(fault))return Response.json({ok:false,error_code:fault,parameters:{retry_after:12}},{status:fault});
