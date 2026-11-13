@@ -57,10 +57,52 @@ def inspect_registry(path):
     return registry
 
 
+ACL_REASONS={
+    'PRIVATE_PATH_LINK':'папка или файл является ссылкой',
+    'PRIVATE_OWNER_MISMATCH':'владелец отличается от текущего пользователя',
+    'DIRECTORY_REQUIRED':'ожидалась новая папка',
+    'PRIVATE_NEW_BUILD_REQUIRED':'изменять права разрешено только новой папке build-*',
+    'PRIVATE_PARENT_MISMATCH':'папка находится не в ожидаемом каталоге сборки',
+    'PRIVATE_BUILD_NOT_EMPTY':'папка уже содержит файлы; её права не изменялись',
+    'ICACLS_REQUIRED':'штатная программа icacls недоступна',
+    'PRIVATE_DACL_WRITE_FAILED':'Windows отказала в изменении DACL',
+    'PRIVATE_DACL_COMPLEX':'обнаружено слишком много дополнительных разрешений',
+    'PRIVATE_DACL_INHERITANCE':'не удалось отключить наследование папки',
+    'PRIVATE_ACL_DENY':'в DACL остался запрет доступа',
+    'PRIVATE_ACL_TOO_BROAD':'в DACL осталось разрешение посторонней стороне',
+    'PRIVATE_ACL_INCOMPLETE':'не подтверждён полный доступ разрешённой стороне',
+    'PRIVATE_ACL_PROPAGATION':'неподходящие правила распространения прав',
+    'PRIVATE_ACL_CHILDREN':'защита не распространяется правильно на дочерние файлы',
+    'PRIVATE_ACL_PRINCIPAL_MISSING':'нет доступа пользователя, SYSTEM или Administrators',
+    'PRIVATE_DACL_UNEXPECTED':'не удалось прочитать или проверить DACL',
+}
+
+
+def safe_dacl_failure(result):
+    # Never relay raw PowerShell/Node stderr: it may contain paths or private data.
+    def text(value):return value.decode('ascii',errors='ignore') if isinstance(value,bytes) else str(value or '')
+    output=(text(result.stdout)+'\n'+text(result.stderr)).replace('\r\n','\n')
+    codes=re.findall(r'(?:ASTRA_DACL_ERROR:|STOP_WINDOWS_PRIVATE_ACL:)([A-Z_]+)\b',output)
+    code=next((value for value in reversed(codes) if value in ACL_REASONS),'PRIVATE_DACL_UNEXPECTED')
+    detail=''
+    pattern=r'^ASTRA_DACL_DIAG explicit_allow=(\d{1,5}) explicit_deny=(\d{1,5}) inherited_extra=(\d{1,5}) everyone=(\d{1,5}) authenticated_users=(\d{1,5}) users=(\d{1,5}) other=(\d{1,5})$'
+    match=re.search(pattern,output,re.MULTILINE)
+    if match:
+        a,d,i,e,auth,u,other=map(int,match.groups())
+        detail=f' Дополнительные ACE до изменения: явные Allow={a}, Deny={d}, наследуемые={i}; Everyone={e}, Authenticated Users={auth}, Users={u}, прочие={other}.'
+    return f'{code}: {ACL_REASONS[code]}.{detail} Приватные данные в диагностике не выводятся.'
+
+
 def protect_release_folder(folder):
     if os.name!='nt':return
-    result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',str(ROOT/'tools/tarot-bulk-loader/protect_private_folder.ps1'),'-Path',str(folder)],capture_output=True,env=clean_env(),timeout=60,creationflags=subprocess.CREATE_NO_WINDOW)
-    need(result.returncode==0,'Не удалось защитить локальную папку Windows DACL. Сборка остановлена до копирования реестра. Запуск от администратора не требуется.')
+    try:
+        result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',str(ROOT/'tools/tarot-bulk-loader/protect_private_folder.ps1'),'-Path',str(folder),'-NewEmptyBuild','-ExpectedParent',str(Path(folder).parent)],capture_output=True,env=clean_env(),timeout=60,creationflags=subprocess.CREATE_NO_WINDOW)
+    except subprocess.TimeoutExpired:
+        raise Stop('PRIVATE_DACL_TIMEOUT: Windows не завершила проверку прав за 60 секунд. Реестр не копировался.') from None
+    except OSError:
+        raise Stop('PRIVATE_DACL_LAUNCH_FAILED: не удалось запустить локальный PowerShell. Реестр не копировался.') from None
+    if result.returncode!=0:raise Stop('Сборка остановлена до копирования реестра. '+safe_dacl_failure(result))
+    need(b'ASTRA_DACL_OK' in result.stdout.splitlines(),'DACL не подтверждена: нет завершающего ответа ASTRA_DACL_OK. Реестр не копировался.')
 
 
 def build_private_release(registry_path, destination, node=None):
@@ -77,7 +119,9 @@ def build_private_release(registry_path, destination, node=None):
         # This copy inherits the restricted Windows ACL, or0600 on POSIX.
         save_json(copied,registry)
         result=subprocess.run([node,str(ROOT/'scripts/build-tarot-art-private.mjs'),'--local-only','--registry',str(copied),'--output',str(worker)],**options)
-        need(result.returncode==0,'Приватный сборщик остановился на проверке версии, путей или прав доступа. Ничего не устанавливалось.')
+        if result.returncode!=0:
+            if b'STOP_WINDOWS_PRIVATE_ACL:' in result.stderr:raise Stop(safe_dacl_failure(result))
+            raise Stop('Приватный сборщик остановился на проверке версии, путей или прав доступа. Ничего не устанавливалось.')
         metadata=json.loads(result.stdout)
         data=worker.read_bytes();sha=hashlib.sha256(data).hexdigest()
         need(metadata.get('sha256')==sha and metadata.get('deployed') is False,'Хеш сборки не подтверждён.')

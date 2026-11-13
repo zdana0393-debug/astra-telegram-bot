@@ -13,7 +13,10 @@ const inSource=file=>{const rel=path.relative(root,file);return rel===''||(!rel.
 function windowsPrivateACL(file){
  if(process.platform!=='win32')return;
  try{execFileSync('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,'tools/tarot-bulk-loader/protect_private_folder.ps1'),'-Path',file,'-CheckOnly'],{stdio:'pipe',windowsHide:true,timeout:15000});}
- catch{throw Error('STOP_WINDOWS_PRIVATE_ACL');}
+ catch(error){
+  const code=String(error.stderr??'').match(/ASTRA_DACL_ERROR:(PRIVATE_PATH_LINK|PRIVATE_OWNER_MISMATCH|PRIVATE_DACL_INHERITANCE|PRIVATE_ACL_DENY|PRIVATE_ACL_TOO_BROAD|PRIVATE_ACL_INCOMPLETE|PRIVATE_ACL_PROPAGATION|PRIVATE_ACL_CHILDREN|PRIVATE_ACL_PRINCIPAL_MISSING)\b/)?.[1]??'PRIVATE_DACL_UNEXPECTED';
+  throw Error('STOP_WINDOWS_PRIVATE_ACL:'+code);
+ }
 }
 
 export function assembleArtCandidate(registry) {
