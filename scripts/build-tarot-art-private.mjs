@@ -3,10 +3,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {validateTelegramArt} from '../src/tarot25/art-delivery.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const baseSHA = '018d2eda3fc13a7a0f85fffcc6e1c866a9901bfb2e8dcce5e1bd6d184d6f8bda';
 const sha = s => createHash('sha256').update(s).digest('hex');
+const samePath=(a,b)=>process.platform==='win32'?path.resolve(a).toLowerCase()===path.resolve(b).toLowerCase():a===b;
+const inSource=file=>{const rel=path.relative(root,file);return rel===''||(!rel.startsWith('..'+path.sep)&&rel!=='..'&&!path.isAbsolute(rel));};
+function windowsPrivateACL(file){
+ if(process.platform!=='win32')return;
+ try{execFileSync('powershell.exe',['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,'tools/tarot-bulk-loader/protect_private_folder.ps1'),'-Path',file,'-CheckOnly'],{stdio:'pipe',windowsHide:true,timeout:15000});}
+ catch{throw Error('STOP_WINDOWS_PRIVATE_ACL');}
+}
 
 export function assembleArtCandidate(registry) {
   validateTelegramArt(registry);
@@ -75,8 +83,8 @@ async function legacyArtDay(env,id){
 export function writePrivateArtCandidate(registryFile, output) {
   for (const file of [registryFile, output]) if (!path.isAbsolute(file)) throw Error('STOP_EXPLICIT_ABSOLUTE_PRIVATE_PATHS');
   const stat = fs.statSync(registryFile);
-  if (fs.realpathSync(registryFile) !== registryFile || !stat.isFile() || stat.nlink !== 1 || (stat.mode & 0o077)) throw Error('STOP_UNSAFE_REGISTRY');
-  for (const file of [registryFile, output]) if (file === root.slice(0,-1) || file.startsWith(root)) throw Error('STOP_PRIVATE_ART_OUTSIDE_GIT');
+  if (!samePath(fs.realpathSync(registryFile),registryFile) || !stat.isFile() || stat.nlink !== 1 || (process.platform!=='win32' && (stat.mode & 0o077))) throw Error('STOP_UNSAFE_REGISTRY');
+  for (const file of [registryFile, output]) if (inSource(file)) throw Error('STOP_PRIVATE_ART_OUTSIDE_GIT');
   for (const file of [registryFile, output]) {
     for (let parent = path.dirname(file);; parent = path.dirname(parent)) {
       const marker = path.join(parent, '.git');
@@ -84,7 +92,8 @@ export function writePrivateArtCandidate(registryFile, output) {
       if (path.dirname(parent) === parent) break;
     }
   }
-  if (fs.realpathSync(path.dirname(output)) !== path.dirname(output) || fs.existsSync(output)) throw Error('STOP_NEW_PRIVATE_OUTPUT');
+  if (!samePath(fs.realpathSync(path.dirname(output)),path.dirname(output)) || fs.existsSync(output)) throw Error('STOP_NEW_PRIVATE_OUTPUT');
+  windowsPrivateACL(registryFile);windowsPrivateACL(path.dirname(output));
   const registry = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
   const code = assembleArtCandidate(registry);
   fs.writeFileSync(output, code, {flag: 'wx', mode: 0o600});

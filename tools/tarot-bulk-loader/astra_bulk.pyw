@@ -19,7 +19,7 @@ def safe(value): return ''.join(c for c in str(value) if not unicodedata.categor
 
 class App:
     def __init__(self, window):
-        self.window=window;window.title('Астра · загрузка78 карт');window.geometry('850x700')
+        self.window=window;window.title('Астра · колода и приватная сборка');window.geometry('850x700')
         canvas=tk.Canvas(window,highlightthickness=0)
         scroll=ttk.Scrollbar(window,orient='vertical',command=canvas.yview)
         scroll.pack(side='right',fill='y');canvas.pack(side='left',fill='both',expand=True)
@@ -27,7 +27,7 @@ class App:
         frame=ttk.Frame(canvas,padding=16);body=canvas.create_window((0,0),window=frame,anchor='nw')
         frame.bind('<Configure>',lambda event:canvas.configure(scrollregion=canvas.bbox('all')))
         canvas.bind('<Configure>',lambda event:canvas.itemconfigure(body,width=event.width))
-        ttk.Label(frame,text='78 карт · 156 изображений · только ваш личный чат',font=('',14)).pack(anchor='w')
+        ttk.Label(frame,text='Колода156/156 готова? Нажмите «Собрать Worker» — без ZIP и токена.',wraplength=800,font=('',13)).pack(anchor='w')
         ttk.Label(frame,text='Worker/D1/webhook и балансы не меняются. Токен не сохраняется.',wraplength=800).pack(anchor='w',pady=8)
         self.events=queue.Queue();self.busy=False;self.stop=threading.Event();self.assets=None;self.manifest=None
         self.root=(Path(os.environ['LOCALAPPDATA'])/'Astra25DeckLoader') if os.name=='nt' else Path.home()/'.local/share/astra25-deck-loader'
@@ -55,11 +55,14 @@ class App:
         self.start=ttk.Button(row,text='Проверить адресата / продолжить',command=self.start_clicked);self.start.pack(side='left')
         self.pause=ttk.Button(row,text='Остановить после текущего запроса',command=self.stop.set);self.pause.pack(side='left',padx=8)
         self.retry=ttk.Button(frame,text='Разобрать неизвестную отправку',command=lambda:self.start_clicked(resolve=True));self.retry.pack(anchor='w',pady=8)
+        self.build=ttk.Button(frame,text='Собрать Worker из готового реестра — без сети',command=self.build_clicked);self.build.pack(anchor='w',pady=8)
+        self.release_folder=None
+        self.open_release=ttk.Button(frame,text='Открыть папку готовой сборки',command=self.open_release_clicked);self.open_release.pack(anchor='w',pady=3)
         self.bar=ttk.Progressbar(frame,maximum=156);self.bar.pack(fill='x',pady=8)
         self.status=tk.StringVar(value='Выберите manifest и два ZIP. Сначала только локальная подготовка.')
         ttk.Label(frame,textvariable=self.status,wraplength=800).pack(anchor='w',pady=8)
         ttk.Label(frame,text='Приватные результаты: '+str(self.root),wraplength=800).pack(anchor='w')
-        self.lockables=self.buttons+[self.clear,self.id_entry,self.token_entry,self.check,self.install,self.prepare,self.start,self.retry]
+        self.lockables=self.buttons+[self.clear,self.id_entry,self.token_entry,self.check,self.install,self.prepare,self.start,self.retry,self.build,self.open_release]
         window.protocol('WM_DELETE_WINDOW',self.close);window.after(100,self.poll)
 
     def autofill(self):
@@ -99,6 +102,10 @@ class App:
                     self.set_busy(False);self.status.set(data);messagebox.showinfo('Астра',data)
                 elif kind=='error':
                     self.set_busy(False);self.status.set(data);messagebox.showerror('STOP без слепых повторов',data)
+                elif kind=='release_ready':
+                    folder,receipt=data;self.release_folder=folder;self.set_busy(False)
+                    self.status.set('Приватный ASTRA_2_5_WORKER.js собран локально. SHA256: '+receipt['worker_sha256'])
+                    messagebox.showinfo('Локальная сборка готова','Сохранено в:\n'+str(folder)+'\n\nASTRA_2_5_WORKER.js содержит приватные file_id: не отправляйте его в ChatGPT/GitHub.\nДля проверки можно передать только safe-build-receipt.json.\n\nНа Cloudflare ничего не устанавливалось. До проверки реальной D1 этот Worker не устанавливайте.')
                 elif kind=='confirm':
                     prompt,reply=data;reply['answer']=messagebox.askyesno('Явное разрешение',prompt,default='no');reply['event'].set()
         except queue.Empty:pass
@@ -137,6 +144,23 @@ class App:
                 self.assets,self.manifest=assets,manifest_data
             self.events.put(('done','Колода готова локально. Теперь можно проверить адресата; до отдельного подтверждения фото не отправляются.'))
         self.background(work)
+
+    def build_clicked(self):
+        default=self.root/'telegram-registry.json'
+        registry=str(default) if default.is_file() else filedialog.askopenfilename(title='Выберите готовый telegram-registry.json',initialdir=str(self.root),filetypes=[('Реестр JSON','*.json')])
+        if not registry:return
+        destination=(Path(os.environ['LOCALAPPDATA'])/'Astra25Release') if os.name=='nt' else Path.home()/'.local/share/astra25-release'
+        def work():
+            from release_build import build_private_release
+            self.events.put(('status','Локальная сборка с156 готовыми file_id. Telegram, Cloudflare и D1 не вызываются…'))
+            folder,receipt=build_private_release(registry,destination)
+            self.events.put(('release_ready',(folder,receipt)))
+        self.background(work)
+
+    def open_release_clicked(self):
+        if self.release_folder is None:messagebox.showinfo('Сборка','Сначала соберите Worker из готового реестра.');return
+        if os.name=='nt':os.startfile(self.release_folder)
+        else:messagebox.showinfo('Папка сборки',str(self.release_folder))
 
     def start_clicked(self,resolve=False):
         try:
