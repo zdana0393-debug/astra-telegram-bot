@@ -6,6 +6,8 @@ import sys
 import tempfile
 import unittest
 import subprocess
+import sqlite3
+import hmac
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -37,6 +39,33 @@ class ReleaseBuild(unittest.TestCase):
         self.assertNotIn('SYNTHETIC_major',json.dumps(receipt));self.assertNotIn('DO_NOT_PASS_TO_NODE',worker.read_text())
         self.assertEqual(inspect_registry(folder/'telegram-registry.json'),self.registry)
         if sys.platform!='win32':self.assertEqual(worker.stat().st_mode&0o777,0o600)
+    def test_final_release_profile_preserves_all_ids_and_requires_real_readiness(self):
+        folder,receipt=build_private_release(self.file,self.root/'final',release=True)
+        code=(folder/'ASTRA_2_5_WORKER.js').read_text()
+        self.assertEqual(receipt['release_profile'],'clean-release')
+        self.assertIn("readiness_scope='operational_checks_only'",code)
+        self.assertIn('FINAL_SCHEMA_MISMATCH',code)
+        for card in self.registry['cards']:
+            for mode in ('upright','reversed'):self.assertIn(card[mode]['file_id'],code)
+        self.assertFalse(receipt['deployed']);self.assertFalse(receipt['public_ready'])
+        settings=(folder/'CLOUDFLARE_SETTINGS_PRIVATE.txt').read_text()
+        key=settings.split('ASTRA_BONUS_FENCE_KEY = ')[1].splitlines()[0]
+        check=hmac.new(key.encode(),b'astra:bonus-fence:v1:check:configuration',hashlib.sha256).hexdigest()
+        self.assertNotIn(key,code);self.assertNotIn(key,json.dumps(receipt));self.assertNotIn(check,json.dumps(receipt))
+        self.assertIn('ASTRA_TAROT_ART_ENABLED = true',settings)
+        self.assertIn('STARS_SHOP_ENABLED = false',settings)
+        sql=(folder/'SETUP_NEW_D1.sql').read_text();self.assertIn(check,sql)
+        db=sqlite3.connect(':memory:')
+        try:
+            db.executescript((ROOT/'release/ASTRA_2_5_CLEAN_SCHEMA.sql').read_text())
+            db.executescript(sql);db.executescript(sql)
+            self.assertEqual(db.execute('SELECT check_hmac FROM astra_bonus_keys26').fetchone()[0],check)
+            self.assertEqual(db.execute('SELECT notice_approved FROM astra_patch26').fetchone()[0],1)
+            self.assertEqual(db.execute('SELECT count(*) FROM astra_users').fetchone()[0],0)
+            self.assertEqual(db.execute('SELECT enabled FROM astra_tarot25_runtime29').fetchone()[0],0)
+            with self.assertRaises(sqlite3.IntegrityError):db.executescript(sql.replace(check,'1'*64))
+            self.assertEqual(db.execute('SELECT check_hmac FROM astra_bonus_keys26').fetchone()[0],check)
+        finally:db.close()
     def test_missing_image_blocks_before_build(self):
         del self.registry['cards'][0]['reversed'];self.write()
         with self.assertRaises(Stop):build_private_release(self.file,self.root/'output')

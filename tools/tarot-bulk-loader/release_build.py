@@ -1,5 +1,6 @@
 """Offline assembly from an owner's private registry. Never calls an account/API."""
 import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -7,6 +8,8 @@ import re
 import shutil
 import subprocess
 import tempfile
+import secrets
+from datetime import datetime, timezone, timedelta
 from bulk_core import ROOT, Stop, need, private_folder, save_json
 
 
@@ -105,7 +108,7 @@ def protect_release_folder(folder):
     need(b'ASTRA_DACL_OK' in result.stdout.splitlines(),'DACL не подтверждена: нет завершающего ответа ASTRA_DACL_OK. Реестр не копировался.')
 
 
-def build_private_release(registry_path, destination, node=None):
+def build_private_release(registry_path, destination, node=None, release=False):
     registry=inspect_registry(registry_path)
     node=node or node_path()
     folder=Path(tempfile.mkdtemp(prefix='build-',dir=private_folder(destination)))
@@ -118,7 +121,9 @@ def build_private_release(registry_path, destination, node=None):
         copied=folder/'telegram-registry.json'
         # This copy inherits the restricted Windows ACL, or0600 on POSIX.
         save_json(copied,registry)
-        result=subprocess.run([node,str(ROOT/'scripts/build-tarot-art-private.mjs'),'--local-only','--registry',str(copied),'--output',str(worker)],**options)
+        command=[node,str(ROOT/'scripts/build-tarot-art-private.mjs'),'--local-only','--registry',str(copied),'--output',str(worker)]
+        if release:command+=['--release25']
+        result=subprocess.run(command,**options)
         if result.returncode!=0:
             if b'STOP_WINDOWS_PRIVATE_ACL:' in result.stderr:raise Stop(safe_dacl_failure(result))
             raise Stop('Приватный сборщик остановился на проверке версии, путей или прав доступа. Ничего не устанавливалось.')
@@ -127,8 +132,34 @@ def build_private_release(registry_path, destination, node=None):
         need(metadata.get('sha256')==sha and metadata.get('deployed') is False,'Хеш сборки не подтверждён.')
         syntax=subprocess.run([node,'--input-type=module','--check'],input=data,**options)
         need(syntax.returncode==0,'Синтаксис Worker не прошёл проверку. Сборка остановлена.')
+        if release:
+            # New bonus privacy key, NOT a bot token. Local preparation only.
+            # Keep this key + its matching SQL from the SAME build together.
+            key=secrets.token_urlsafe(48)
+            check=hmac.new(key.encode(),b'astra:bonus-fence:v1:check:configuration',hashlib.sha256).hexdigest()
+            day=datetime.now(timezone(timedelta(hours=3))).date().isoformat()
+            settings='PRIVATE — не отправлять в ChatGPT/GitHub. Не применять до финального разрешения.\n'
+            settings+='Токен бота и существующие секреты не менять.\nНовый Secret:\nASTRA_BONUS_FENCE_KEY = '+key+'\n\nОбычные Variables:\n'
+            values={'ASTRA_BONUS_FENCE_KEY_ID':'v1','ASTRA_BONUS_FENCE_NOTICE_ACK':'APPROVED_BONUS_FENCE_30_DAYS',
+                    'ASTRA_FORECAST_START_DAY':day,'ASTRA_FORECAST_COMPACT_START_DAY':day,
+                    'ASTRA_TAROT25_ENABLED':'true','ASTRA_TAROT25_STORAGE_TEST_MODE':'true','ASTRA_TAROT25_INDEPENDENT_TEST_MODE':'true',
+                    'ASTRA_TAROT_ART_ENABLED':'true','ASTRA_TAROT25_QUESTIONS_TEST_MODE':'false','STARS_SHOP_ENABLED':'false',
+                    'ASTRA_DAILY_DELIVERY_ENABLED':'false','ASTRA_ECONOMY_V2_ENABLED':'false','ASTRA_TELEGRAM_TEST_MODE':'false'}
+            settings+='\n'.join(k+' = '+v for k,v in values.items())+'\n'
+            settings+='\nD1: только новая astra25-release. Использовать ключ и SETUP_NEW_D1.sql из одной папки.\nВсе значения выше — подготовка для проверки/разрешения, не автоматическое включение.\n'
+            setup=("-- PRIVATE. Only NEW astra25-release, after CLEAN_SCHEMA, with zero profiles.\n"
+                   "-- Matches the bonus privacy secret from THIS build. No bot token or balance writes.\n"
+                   "INSERT INTO astra_bonus_keys26(key_id,check_hmac,added_at)\n"
+                   "SELECT 'v1',CASE WHEN NOT EXISTS(SELECT 1 FROM astra_users) AND NOT EXISTS(SELECT 1 FROM astra_bonus_keys26) AND EXISTS(SELECT 1 FROM astra_patch26 WHERE singleton=1 AND activated=0 AND enabled=0) THEN '"+check+"' ELSE '' END,unixepoch()\n"
+                   "WHERE NOT EXISTS(SELECT 1 FROM astra_bonus_keys26 WHERE key_id='v1' AND check_hmac='"+check+"');\n"
+                   "UPDATE astra_patch26 SET active_key_id='v1',notice_approved=1 WHERE singleton=1 AND activated=0 AND enabled=0 AND NOT EXISTS(SELECT 1 FROM astra_users) AND EXISTS(SELECT 1 FROM astra_bonus_keys26 WHERE key_id='v1' AND check_hmac='"+check+"');\n"
+                   "-- Tarot activation still requires a separate controlled approval.\n")
+            for name,content in [('CLOUDFLARE_SETTINGS_PRIVATE.txt',settings),('SETUP_NEW_D1.sql',setup)]:
+                fd=os.open(folder/name,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+                with os.fdopen(fd,'w',encoding='utf-8') as stream:stream.write(content)
         receipt={'version':'astra25-private-release-receipt-v1','cards':78,'images':156,
                  'worker_sha256':sha,'worker_bytes':len(data),'syntax':'PASS',
+                 'release_profile':metadata.get('release_profile','local-candidate'),
                  'deployed':False,'art_default':'OFF','public_ready':False,
                  'cloudflare_acceptance':'NOT_TESTED','production_inventory':'NOT_TESTED',
                  'contains_no_file_ids_tokens_or_user_ids':True}

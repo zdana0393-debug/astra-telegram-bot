@@ -5,6 +5,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {validateTelegramArt} from '../src/tarot25/art-delivery.mjs';
+import {assembleRelease25} from './apply-astra25-release.mjs';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const baseSHA = '018d2eda3fc13a7a0f85fffcc6e1c866a9901bfb2e8dcce5e1bd6d184d6f8bda';
 const sha = s => createHash('sha256').update(s).digest('hex');
@@ -83,7 +84,7 @@ async function legacyArtDay(env,id){
   return body;
 }
 
-export function writePrivateArtCandidate(registryFile, output) {
+export function writePrivateArtCandidate(registryFile, output, {release25=false}={}) {
   for (const file of [registryFile, output]) if (!path.isAbsolute(file)) throw Error('STOP_EXPLICIT_ABSOLUTE_PRIVATE_PATHS');
   const stat = fs.statSync(registryFile);
   if (!samePath(fs.realpathSync(registryFile),registryFile) || !stat.isFile() || stat.nlink !== 1 || (process.platform!=='win32' && (stat.mode & 0o077))) throw Error('STOP_UNSAFE_REGISTRY');
@@ -98,13 +99,14 @@ export function writePrivateArtCandidate(registryFile, output) {
   if (!samePath(fs.realpathSync(path.dirname(output)),path.dirname(output)) || fs.existsSync(output)) throw Error('STOP_NEW_PRIVATE_OUTPUT');
   windowsPrivateACL(registryFile);windowsPrivateACL(path.dirname(output));
   const registry = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
-  const code = assembleArtCandidate(registry);
+  const candidate = assembleArtCandidate(registry);
+  const code = release25?assembleRelease25(candidate):candidate;
   fs.writeFileSync(output, code, {flag: 'wx', mode: 0o600});
   try{windowsPrivateACL(output);}catch(error){fs.unlinkSync(output);throw error;}
-  return {local_only: true, deployed: false, art_default: 'OFF', bytes: Buffer.byteLength(code), sha256: sha(code)};
+  return {local_only: true, deployed: false, art_default: 'OFF', release_profile:release25?'clean-release':'local-candidate',bytes: Buffer.byteLength(code), sha256: sha(code)};
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const args = process.argv.slice(2);
-  if (args.length !== 5 || args[0] !== '--local-only' || args[1] !== '--registry' || args[3] !== '--output') throw Error('Use --local-only --registry /private/file --output /private/new-worker.mjs');
-  console.log(JSON.stringify(writePrivateArtCandidate(args[2], args[4])));
+  if (![5,6].includes(args.length) || args[0] !== '--local-only' || args[1] !== '--registry' || args[3] !== '--output'||(args.length===6&&args[5]!=='--release25')) throw Error('Use --local-only --registry /private/file --output /private/new-worker.mjs [--release25]');
+  console.log(JSON.stringify(writePrivateArtCandidate(args[2], args[4],{release25:args.length===6})));
 }

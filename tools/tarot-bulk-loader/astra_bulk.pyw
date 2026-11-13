@@ -105,7 +105,7 @@ class App:
                 elif kind=='release_ready':
                     folder,receipt=data;self.release_folder=folder;self.set_busy(False)
                     self.status.set('Приватный ASTRA_2_5_WORKER.js собран локально. SHA256: '+receipt['worker_sha256'])
-                    messagebox.showinfo('Локальная сборка готова','Сохранено в:\n'+str(folder)+'\n\nASTRA_2_5_WORKER.js содержит приватные file_id: не отправляйте его в ChatGPT/GitHub.\nДля проверки можно передать только safe-build-receipt.json.\n\nНа Cloudflare ничего не устанавливалось. До проверки реальной D1 этот Worker не устанавливайте.')
+                    messagebox.showinfo('Локальная сборка готова','Сохранено в:\n'+str(folder)+'\n\nWorker и реестр содержат приватные file_id, CLOUDFLARE_SETTINGS_PRIVATE.txt — новый ключ защиты бонусов. Не отправляйте эти файлы в ChatGPT/GitHub.\nДля проверки можно передать только safe-build-receipt.json.\n\nТокен бота не меняется. На Cloudflare ничего не устанавливалось. До финального разрешения не применяйте Worker, настройки или SETUP_NEW_D1.sql.')
                 elif kind=='confirm':
                     prompt,reply=data;reply['answer']=messagebox.askyesno('Явное разрешение',prompt,default='no');reply['event'].set()
         except queue.Empty:pass
@@ -153,7 +153,7 @@ class App:
         def work():
             from release_build import build_private_release
             self.events.put(('status','Локальная сборка с156 готовыми file_id. Telegram, Cloudflare и D1 не вызываются…'))
-            folder,receipt=build_private_release(registry,destination)
+            folder,receipt=build_private_release(registry,destination,release=True)
             self.events.put(('release_ready',(folder,receipt)))
         self.background(work)
 
