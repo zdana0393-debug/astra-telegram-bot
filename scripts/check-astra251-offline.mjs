@@ -1,0 +1,7 @@
+// Only a local synthetic bundle. No optional deploy mode; no private build input.
+import fs from'node:fs';import{execFileSync}from'node:child_process';import{fileURLToPath}from'node:url';import{build251,apply251,publicParent251}from'./build-astra251.mjs';
+for(const key of Object.keys(process.env))if(/^(CLOUDFLARE_API_TOKEN|CLOUDFLARE_API_KEY|CLOUDFLARE_ACCOUNT_ID|CF_API_TOKEN|CF_API_KEY|CF_EMAIL)$/.test(key))throw Error('OFFLINE_ENV_WITHOUT_CREDENTIAL_BINDINGS_REQUIRED');
+const tool=process.argv[2];if(!tool?.startsWith('/tmp/'))throw Error('EXPLICIT_LOCAL_PINNED_WRANGLER_REQUIRED');const pkg=JSON.parse(fs.readFileSync(tool+'/node_modules/wrangler/package.json'));if(pkg.version!=='4.45.0')throw Error('PINNED_OFFLINE_WRANGLER_4_45_0');
+const folder=fs.mkdtempSync('/tmp/astra251-offline-'),code=apply251(publicParent251(),await build251());fs.writeFileSync(folder+'/worker.mjs',code,{mode:0o600});fs.writeFileSync(folder+'/wrangler.json',JSON.stringify({name:'astra251-offline-synthetic-only',main:'worker.mjs',compatibility_date:'2026-11-03',send_metrics:false,workers_dev:false}));
+execFileSync(process.execPath,[tool+'/node_modules/wrangler/bin/wrangler.js','deploy','--dry-run','--config',folder+'/wrangler.json','--outdir',folder+'/bundle'],{stdio:'pipe',env:{...process.env,WRANGLER_SEND_METRICS:'false',CI:'true',XDG_CONFIG_HOME:folder+'/config',WRANGLER_LOG_PATH:folder+'/wrangler.log'},timeout:60000});
+console.log(JSON.stringify({scope:'synthetic local Wrangler dry-run only',folder,cloudflare:false,private_assets:false}));

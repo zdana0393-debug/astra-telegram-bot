@@ -14,8 +14,11 @@ function context(actor){need(actor&&Number.isSafeInteger(actor.telegram_id)&&act
 const EXPECTED29=expected30;
 const SCHEMA_QUERY29='SELECT name,type,sql FROM sqlite_master WHERE name IN('+EXPECTED29.map(x=>"'"+x.name+"'").join(',')+')';
 export async function schema31(env){
- try{const r=await env.DB.prepare(SCHEMA_QUERY29).all(),actual=new Map(r.results.map(x=>[x.name,x]));
+ try{const extended=env[Symbol.for('astra251.schema-check')];
+  if(typeof extended==='function'){if(!await extended())return{ready:false};}
+  else{const r=await env.DB.prepare(SCHEMA_QUERY29).all(),actual=new Map(r.results.map(x=>[x.name,x]));
   if(r.results.length!==EXPECTED29.length||!EXPECTED29.every(x=>{const y=actual.get(x.name);return y&&y.type===x.type&&y.sql?.trim()===x.sql.trim();}))return{ready:false};
+  }
   const state=await env.DB.prepare(`SELECT n.enabled AS independent_enabled,n.questions_enabled,n.cleanup_enabled AS independent_cleanup,n.revision AS intent_revision,n.migration_done AS independent_done,n.max_open,n.burst_limit,r.*,s.version AS storage_version,s.migration_done AS storage_done,s.write_enabled,s.cleanup_enabled,s.daily_limit,s.retention_seconds,s.batch_limit,s.soft_cap_bytes,s.revision AS storage_revision,date(unixepoch(),'unixepoch','+3 hours') AS db_day,(SELECT json_group_array(json_object('price_version',price_version,'spread_id',spread_id,'size',size,'price',price,'theme',theme,'positions_json',positions_json)) FROM astra_tarot25_prices29) AS tariff_json FROM astra_tarot25_runtime29 r JOIN astra_tarot30_policy s ON s.singleton=r.singleton JOIN astra_tarot31_policy n ON n.singleton=1 WHERE r.singleton=1`).first();
   const rows=JSON.parse(state?.tariff_json??'[]'),valid=rows.length===prices29.length&&prices29.every(p=>rows.some(t=>Object.keys(p).every(k=>t[k]===p[k])));
   return{...state,ready:valid&&state?.version==='tarot25-policy-v1'&&state.migration_done===1&&state.storage_version==='tarot30-local-proposal-v1'&&state.storage_done===1&&state.independent_done===1};
@@ -42,6 +45,7 @@ export async function prepareOffer(env,actor,options={}){
  let r=await env.DB.prepare(receiptSQL31).bind(a.telegram_id,a.generation,request_key,update_id).first();if(r)return same(r);
  const t=await env.DB.prepare('SELECT * FROM astra_tarot25_prices29 WHERE spread_id=? AND price_version=?').bind(spread_id,state.price_version).first();need(t&&(t.theme==='general'||t.theme===theme),'UNKNOWN_SPREAD');
  const seed=Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');
+ if(typeof env[Symbol.for('astra251.storage-admission')]==='function')await env[Symbol.for('astra251.storage-admission')](65536,state.soft_cap_bytes);
  try{await env.DB.prepare(`INSERT INTO astra_tarot31_intents(offer_id,telegram_id,generation,request_key,update_id,spread_id,theme,price,price_version,policy_revision,intent_revision,seed,expires_at)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,unixepoch()+900)`).bind(intent_id,a.telegram_id,a.generation,request_key,update_id,spread_id,theme,t.price,t.price_version,state.revision,state.intent_revision,seed).run();}
  catch(e){r=await env.DB.prepare(receiptSQL31).bind(a.telegram_id,a.generation,request_key,update_id).first();if(r)return same(r);throw e;}
  r=await env.DB.prepare(receiptSQL31).bind(a.telegram_id,a.generation,request_key,update_id).first();need(r,'OFFER_RESULT_UNCONFIRMED');return same(r);
@@ -68,6 +72,7 @@ export async function captureQuestion(env,actor,text,update_id){
 }
 export async function confirmPurchase(env,actor,offer_id){
  const a=context(actor);need(idOK(offer_id),'INVALID_OFFER');const state=await ready(env);const paid=await owned(env,a,offer_id);if(paid)return material(paid);sales(env,state);await profile(env,a);
+ if(typeof env[Symbol.for('astra251.storage-admission')]==='function')await env[Symbol.for('astra251.storage-admission')](65536,state.soft_cap_bytes);
  let i=await env.DB.prepare(intentSQL).bind(offer_id,a.telegram_id,a.generation).first();
  // Sealed historical V1 orders may still be paid under their original price/TTL.
  if(i){
