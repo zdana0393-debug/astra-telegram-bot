@@ -10,6 +10,7 @@ import time
 import urllib.error
 import urllib.request
 import uuid
+import zipfile
 
 BOT = 'LaDa_Iskra_Opel_Astrabot'
 LIMIT = 512 * 1024
@@ -46,6 +47,34 @@ def load_card(folder):
     need(path.is_file() and not path.is_symlink() and path.stat().st_size < 10 * 1024 * 1024, 'Файл карты недоступен.')
     data = path.read_bytes()
     need(data.startswith(b'\xff\xd8\xff') and hashlib.sha256(data).hexdigest() == meta.get('sha256'), 'SHA256 карты не совпал. STOP.')
+    return meta, data
+
+
+def load_owner_archive(manifest_file, archive_file):
+    """Read ONE JPEG from owner's local archive; never extract/copy private assets into Git."""
+    manifest_file, archive_file = Path(manifest_file), Path(archive_file)
+    need(manifest_file.stat().st_size <= 1024 * 1024, 'Manifest слишком велик.')
+    manifest = json.loads(manifest_file.read_text(encoding='utf-8'))
+    need(manifest.get('manifest_version') == 'astra-author-art-assets-v1'
+         and manifest.get('deck_version') == 'rws78-v1' and manifest.get('card_count') == 78,
+         'Выберите исходный manifest.json авторской колоды.')
+    cards = manifest.get('cards')
+    need(isinstance(cards, list) and len(cards) == 78
+         and len({c['card_id'] for c in cards}) == 78, 'Неверный список карт в manifest.')
+    card = next((c for c in cards if c.get('card_id') == 'major-00'), None)
+    need(card and card.get('telegram_image') == 'cards/major-00.jpg'
+         and card.get('asset_id') == 'rws78-v1/major-00' and card.get('upright_rotation') == 0,
+         'В manifest нет правильного прямого THE FOOL.')
+    expected = card.get('telegram_image_sha256')
+    need(isinstance(expected, str) and re.fullmatch('[a-f0-9]{64}', expected), 'Нет SHA256 JPEG.')
+    with zipfile.ZipFile(archive_file) as archive:
+        matches = [i for i in archive.infolist() if i.filename == 'cards/major-00.jpg']
+        need(len(matches) == 1 and 0 < matches[0].file_size < 10 * 1024 * 1024
+             and not matches[0].flag_bits & 1, 'Выберите ZIP Part_01: нужна одна карта cards/major-00.jpg.')
+        data = archive.read(matches[0])
+    need(data.startswith(b'\xff\xd8\xff') and hashlib.sha256(data).hexdigest() == expected, 'SHA256 THE FOOL не совпал. Ничего не отправляется.')
+    meta = {'card_id':'major-00','orientation':'upright','deck_version':'rws78-v1',
+            'art_version':manifest['art_version'],'sha256':expected}
     return meta, data
 
 

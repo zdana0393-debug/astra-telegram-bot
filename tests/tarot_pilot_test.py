@@ -10,11 +10,12 @@ import sys
 import tempfile
 import unittest
 import urllib.error
+import zipfile
 from unittest.mock import patch
 
 TOOLS = Path(__file__).resolve().parent.parent / 'tools/tarot-pilot'
 sys.path.insert(0, str(TOOLS))
-from pilot_core import BOT, Telegram, Journal, Stop, owner_id, run_two, load_card, NoRedirect
+from pilot_core import BOT, Telegram, Journal, Stop, owner_id, run_two, load_card, load_owner_archive, NoRedirect
 
 TOKEN = str(123456789) + ':' + 'OFFLINE_SYNTHETIC_TOKEN_NEVER_REAL_123'
 IMAGE = b'\xff\xd8\xffONLY_SYNTHETIC_TEST_BYTES'
@@ -139,6 +140,20 @@ for fault in [400,403,429,500,'network','unknown_ack','wrong_chat','wrong_sender
 
 
 class Identity(unittest.TestCase):
+    def test_read_owner_zip_without_private_files_in_program_folder(self):
+        with tempfile.TemporaryDirectory(prefix='astra-owner-zip-') as folder:
+            root=Path(folder)
+            manifest={'manifest_version':'astra-author-art-assets-v1','deck_version':'rws78-v1','card_count':78,'art_version':'SYNTHETIC',
+                      'cards':[{'card_id':'major-00','asset_id':'rws78-v1/major-00','upright_rotation':0,'telegram_image':'cards/major-00.jpg',
+                                'telegram_image_sha256':META['sha256'],'source_name':'NOT_PRESENT.png','source_sha256':'f'*64}]
+                              +[{'card_id':'synthetic-'+str(i)} for i in range(77)]}
+            p=root/'manifest.json';p.write_text(json.dumps(manifest));z=root/'part01.zip'
+            with zipfile.ZipFile(z,'w') as archive:archive.writestr('cards/major-00.jpg',IMAGE)
+            before={file.name:file.read_bytes() for file in root.iterdir()}
+            meta,data=load_owner_archive(p,z);self.assertEqual(data,IMAGE);self.assertEqual(meta['sha256'],META['sha256'])
+            self.assertEqual({file.name:file.read_bytes() for file in root.iterdir()},before)
+            manifest['cards'][0]['telegram_image_sha256']='0'*64;p.write_text(json.dumps(manifest))
+            with self.assertRaises(Stop):load_owner_archive(p,z)
     def test_default_https_errors_do_not_leak_url_token_or_retry(self):
         for error in [urllib.error.URLError(TOKEN),urllib.error.HTTPError('https://invalid/'+TOKEN,429,TOKEN,None,None)]:
             with patch('urllib.request.build_opener') as build:

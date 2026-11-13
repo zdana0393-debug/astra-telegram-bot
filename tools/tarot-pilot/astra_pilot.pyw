@@ -3,9 +3,9 @@ import os
 from pathlib import Path
 import threading
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 import unicodedata
-from pilot_core import BOT, Stop, Telegram, Journal, load_card, owner_id, run_two
+from pilot_core import BOT, Stop, Telegram, Journal, load_card, load_owner_archive, owner_id, run_two
 
 
 def label(value):
@@ -53,7 +53,15 @@ class App:
         try:
             target = owner_id(self.id.get())
             if not self.own.get(): raise Stop('Сначала подтвердите, что ID принадлежит вам.')
-            card, image = load_card(Path(__file__).resolve().parent)
+            folder = Path(__file__).resolve().parent
+            if (folder / 'pilot-card.json').is_file():
+                card, image = load_card(folder)
+            else:
+                manifest = filedialog.askopenfilename(title='Выберите ваш исходный manifest.json колоды', filetypes=[('Manifest JSON','*.json')])
+                if not manifest: return
+                archive = filedialog.askopenfilename(title='Выберите Astra_Tarot_78_Codex_Part_01_of_02.zip', filetypes=[('ZIP','*.zip')])
+                if not archive: return
+                card, image = load_owner_archive(manifest, archive)
             journal = Journal(self.folder)
             token = self.token.get().strip() or os.environ.get('ASTRA_PILOT_BOT_TOKEN', '').strip()
             client = Telegram(token, target)
