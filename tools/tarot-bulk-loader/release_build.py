@@ -57,6 +57,12 @@ def inspect_registry(path):
     return registry
 
 
+def protect_release_folder(folder):
+    if os.name!='nt':return
+    result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',str(ROOT/'tools/tarot-bulk-loader/protect_private_folder.ps1'),'-Path',str(folder)],capture_output=True,env=clean_env(),timeout=60,creationflags=subprocess.CREATE_NO_WINDOW)
+    need(result.returncode==0,'Не удалось защитить локальную папку Windows DACL. Сборка остановлена до копирования реестра. Запуск от администратора не требуется.')
+
+
 def build_private_release(registry_path, destination, node=None):
     registry=inspect_registry(registry_path)
     node=node or node_path()
@@ -66,9 +72,7 @@ def build_private_release(registry_path, destination, node=None):
     options={'capture_output':True,'env':env,'timeout':60}
     if os.name=='nt':options['creationflags']=subprocess.CREATE_NO_WINDOW
     try:
-        if os.name=='nt':
-            result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',str(ROOT/'tools/tarot-bulk-loader/protect_private_folder.ps1'),'-Path',str(folder)],**options)
-            need(result.returncode==0,'Не удалось защитить локальную папку Windows ACL. Сборка остановлена.')
+        protect_release_folder(folder)
         copied=folder/'telegram-registry.json'
         # This copy inherits the restricted Windows ACL, or0600 on POSIX.
         save_json(copied,registry)

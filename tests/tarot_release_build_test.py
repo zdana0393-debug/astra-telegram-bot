@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'tools/tarot-bulk-loader'))
-from release_build import inspect_registry,build_private_release,clean_env
+from release_build import inspect_registry,build_private_release,clean_env,protect_release_folder
 from bulk_core import Stop,save_json
 
 
@@ -60,6 +60,24 @@ class ReleaseBuild(unittest.TestCase):
         with patch('release_build.node_path',side_effect=Stop('NO_NODE')):
             with self.assertRaises(Stop):build_private_release(self.file,self.root/'output')
         self.assertFalse((self.root/'output').exists())
+    def test_dacl_error_stops_before_any_private_copy(self):
+        for error in ('SeSecurityPrivilege unavailable','PRIVATE_ACL_TOO_BROAD','PRIVATE_DACL_WRITE_FAILED'):
+            with self.subTest(error=error):
+                with patch('release_build.protect_release_folder',side_effect=Stop(error)):
+                    with self.assertRaises(Stop):build_private_release(self.file,self.root/'output')
+                self.assertFalse(list((self.root/'output').rglob('telegram-registry.json')))
+                self.assertFalse(list((self.root/'output').rglob('ASTRA_2_5_WORKER.js')))
+                self.assertFalse(list((self.root/'output').rglob('safe-build-receipt.json')))
+    def test_windows_helper_failure_is_not_ignored_or_retried(self):
+        with patch('release_build.os') as platform, patch('release_build.subprocess.run') as run, patch('release_build.subprocess.CREATE_NO_WINDOW',0,create=True):
+            platform.name='nt';platform.environ={}
+            run.return_value.returncode=1
+            run.return_value.stderr=b'SeSecurityPrivilege unavailable'
+            with self.assertRaises(Stop):protect_release_folder(self.root)
+            run.assert_called_once()
+            command=run.call_args.args[0]
+            self.assertEqual(command[0],'powershell.exe')
+            self.assertNotIn('-Verb',command)
     def test_unsafe_symlink_rejected(self):
         alias=self.root/'alias.json';alias.symlink_to(self.file)
         with self.assertRaises(Stop):inspect_registry(alias)

@@ -97,6 +97,7 @@ export function writePrivateArtCandidate(registryFile, output) {
   const registry = JSON.parse(fs.readFileSync(registryFile, 'utf8'));
   const code = assembleArtCandidate(registry);
   fs.writeFileSync(output, code, {flag: 'wx', mode: 0o600});
+  try{windowsPrivateACL(output);}catch(error){fs.unlinkSync(output);throw error;}
   return {local_only: true, deployed: false, art_default: 'OFF', bytes: Buffer.byteLength(code), sha256: sha(code)};
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
