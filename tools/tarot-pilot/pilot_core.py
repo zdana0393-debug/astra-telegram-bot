@@ -107,13 +107,21 @@ class Telegram:
                 return json.loads(data)
         except urllib.error.HTTPError as exc:
             # Never expose exception URL/body: the URL contains the token.
-            raise Stop('Telegram отклонил запрос. Автоматического повтора нет.', int(exc.code)) from None
+            error = Stop('Telegram отклонил запрос. Автоматического повтора нет.', int(exc.code))
+            if exc.code == 429:
+                try:
+                    raw = exc.read(LIMIT + 1)
+                    seconds = json.loads(raw).get('parameters', {}).get('retry_after') if len(raw) <= LIMIT else None
+                    error.retry_after = seconds if type(seconds) is int and 0 < seconds <= 86400 else 60
+                except Exception:
+                    error.retry_after = 60
+            raise error from None
         except Stop:
             raise
         except Exception:
             raise Stop('Ответ сети неизвестен. Не повторяйте отправку: проверьте личный чат.') from None
 
-    def call(self, method, body, image=None):
+    def call(self, method, body, image=None, image_filename='major-00-upright.jpg'):
         need(method in ('getMe', 'getChat', 'sendPhoto'), 'Запрещённый метод API.')
         if method != 'getMe':
             need(type(body.get('chat_id')) is int and body['chat_id'] == self.target, 'Запрос другому получателю запрещён.')
@@ -124,12 +132,13 @@ class Telegram:
             content = json.dumps(body).encode('utf-8'); kind = 'application/json'
         else:
             need(method == 'sendPhoto' and type(image) is bytes, 'Недопустимая загрузка.')
+            need(bool(re.fullmatch(r'[a-z0-9-]+\.jpg',image_filename)), 'Небезопасное имя изображения.')
             boundary = 'astra' + uuid.uuid4().hex
             parts = []
             for key, value in body.items():
                 text = str(value).lower() if isinstance(value, bool) else str(value)
                 parts.append((f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{text}\r\n').encode())
-            parts.append((f'--{boundary}\r\nContent-Disposition: form-data; name="photo"; filename="major-00-upright.jpg"\r\nContent-Type: image/jpeg\r\n\r\n').encode() + image + b'\r\n')
+            parts.append((f'--{boundary}\r\nContent-Disposition: form-data; name="photo"; filename="{image_filename}"\r\nContent-Type: image/jpeg\r\n\r\n').encode() + image + b'\r\n')
             content = b''.join(parts) + f'--{boundary}--\r\n'.encode()
             kind = 'multipart/form-data; boundary=' + boundary
         result = self._exchange(method, content, kind)

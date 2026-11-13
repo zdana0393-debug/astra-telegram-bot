@@ -140,6 +140,13 @@ for fault in [400,403,429,500,'network','unknown_ack','wrong_chat','wrong_sender
 
 
 class Identity(unittest.TestCase):
+    def test_429_retry_after_is_read_without_exposing_error_body(self):
+        body=json.dumps({'parameters':{'retry_after':7},'description':TOKEN}).encode()
+        error=urllib.error.HTTPError('https://invalid/'+TOKEN,429,TOKEN,None,io.BytesIO(body))
+        with patch('urllib.request.build_opener') as build:
+            build.return_value.open.side_effect=error
+            with self.assertRaises(Stop) as caught:Telegram(TOKEN,12345).verify()
+            self.assertEqual(caught.exception.retry_after,7);self.assertNotIn(TOKEN,str(caught.exception))
     def test_read_owner_zip_without_private_files_in_program_folder(self):
         with tempfile.TemporaryDirectory(prefix='astra-owner-zip-') as folder:
             root=Path(folder)
