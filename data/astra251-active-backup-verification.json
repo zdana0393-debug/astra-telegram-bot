@@ -1,0 +1,72 @@
+{
+  "scope": "synthetic local verification only",
+  "issue": "active catalogue was incorrectly treated as closed import",
+  "fix": "closed:false validates enabled0/1 + singleton + migration_done1 without modifying flags; closed:true remains strict OFF",
+  "javascript": [
+    {
+      "suite": "active_backup_mode",
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "export_restore",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "legacy_upgrade31",
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "legacy_task07_business",
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "legacy_task07_compatibility",
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "schema0032",
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "patched_worker_core",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  ],
+  "javascript_total": 107,
+  "javascript_passed": 107,
+  "python_tests": 20,
+  "python_passed": 20,
+  "protected_historical_files": 72,
+  "private_backup_tested_in_codex": false,
+  "cloudflare_modified": false,
+  "worker_changed": false,
+  "worker_patch_sha256": "579ec8472ad06bfed86f0acc973585c393262122fa7e2840865a3a76d01ad803"
+}

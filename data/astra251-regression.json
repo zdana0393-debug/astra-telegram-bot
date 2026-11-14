@@ -1,0 +1,954 @@
+{
+  "local_only": true,
+  "node": "v24.22.1",
+  "branch": "review/astra-2.5.1-stars-admin-audit",
+  "baseline": "43e3871",
+  "command": "node --experimental-sqlite tests/FILE.test.mjs (each in a separate process; 2 processes at a time)",
+  "historical_wrangler_bundles": "TASK04/05 existing pinned4.45.0 offline outputs; TASK06 freshly rebuilt --dry-run; TASK07 reviewed final offline output; all4 dedicated bundle suites PASS",
+  "current": [
+    {
+      "file": "astra25-business.test.mjs",
+      "exit_code": 0,
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 10.532
+    },
+    {
+      "file": "astra25-clean-install.test.mjs",
+      "exit_code": 0,
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.996
+    },
+    {
+      "file": "astra25-clean-worker.test.mjs",
+      "exit_code": 0,
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.029
+    },
+    {
+      "file": "astra25-concurrency.test.mjs",
+      "exit_code": 0,
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 5.106
+    },
+    {
+      "file": "astra25-cost.test.mjs",
+      "exit_code": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.964
+    },
+    {
+      "file": "astra25-recovery.test.mjs",
+      "exit_code": 0,
+      "tests": 57,
+      "pass": 57,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 10.948
+    },
+    {
+      "file": "astra25-task05-business.test.mjs",
+      "exit_code": 0,
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 9.408
+    },
+    {
+      "file": "astra25-task05-compat.test.mjs",
+      "exit_code": 0,
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 6.064
+    },
+    {
+      "file": "astra25-task05-concurrency.test.mjs",
+      "exit_code": 0,
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 4.842
+    },
+    {
+      "file": "astra25-task05-recovery.test.mjs",
+      "exit_code": 0,
+      "tests": 57,
+      "pass": 57,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 11.46
+    },
+    {
+      "file": "astra25-task05-ui.test.mjs",
+      "exit_code": 0,
+      "tests": 32,
+      "pass": 32,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 14.695
+    },
+    {
+      "file": "astra25-task05-upgrade.test.mjs",
+      "exit_code": 0,
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.769
+    },
+    {
+      "file": "astra25-task05-wrangler.test.mjs",
+      "exit_code": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.803
+    },
+    {
+      "file": "astra25-task06-business.test.mjs",
+      "exit_code": 0,
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 15.409
+    },
+    {
+      "file": "astra25-task06-compat.test.mjs",
+      "exit_code": 0,
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 6.219
+    },
+    {
+      "file": "astra25-task06-concurrency.test.mjs",
+      "exit_code": 0,
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 5.789
+    },
+    {
+      "file": "astra25-task06-recovery.test.mjs",
+      "exit_code": 0,
+      "tests": 62,
+      "pass": 62,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 18.698
+    },
+    {
+      "file": "astra25-task06-ui.test.mjs",
+      "exit_code": 0,
+      "tests": 32,
+      "pass": 32,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 17.604
+    },
+    {
+      "file": "astra25-task06-upgrade.test.mjs",
+      "exit_code": 0,
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 4.014
+    },
+    {
+      "file": "astra25-task06-wrangler.test.mjs",
+      "exit_code": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "correct_pinned_bundle_rerun": true
+    },
+    {
+      "file": "astra25-task07-business.test.mjs",
+      "exit_code": 0,
+      "tests": 39,
+      "pass": 39,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 20.624
+    },
+    {
+      "file": "astra25-task07-compat.test.mjs",
+      "exit_code": 0,
+      "tests": 21,
+      "pass": 21,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 10.451
+    },
+    {
+      "file": "astra25-upgrade.test.mjs",
+      "exit_code": 0,
+      "tests": 42,
+      "pass": 42,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.693
+    },
+    {
+      "file": "astra25-wrangler.test.mjs",
+      "exit_code": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.594
+    },
+    {
+      "file": "astra251-core.test.mjs",
+      "exit_code": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "final_rerun": true
+    },
+    {
+      "file": "astra251-flow.test.mjs",
+      "exit_code": 0,
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "final_rerun": true
+    },
+    {
+      "file": "astra251-payments.test.mjs",
+      "exit_code": 0,
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "final_rerun": true
+    },
+    {
+      "file": "astra251-security.test.mjs",
+      "exit_code": 0,
+      "tests": 42,
+      "pass": 42,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "final_rerun": true
+    },
+    {
+      "file": "astra251-sql.test.mjs",
+      "exit_code": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "final_rerun": true
+    },
+    {
+      "file": "economy.test.mjs",
+      "exit_code": 0,
+      "tests": 31,
+      "pass": 31,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.689
+    },
+    {
+      "file": "editorial.test.mjs",
+      "exit_code": 0,
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.188
+    },
+    {
+      "file": "forecast-editorial.test.mjs",
+      "exit_code": 0,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.309
+    },
+    {
+      "file": "forecast-engine.test.mjs",
+      "exit_code": 0,
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.656
+    },
+    {
+      "file": "hardening.test.mjs",
+      "exit_code": 0,
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.457
+    },
+    {
+      "file": "production25-preflight.test.mjs",
+      "exit_code": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.049
+    },
+    {
+      "file": "release-hardening.test.mjs",
+      "exit_code": 1,
+      "tests": 24,
+      "pass": 9,
+      "fail": 15,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.352
+    },
+    {
+      "file": "rewards-stars-contention.test.mjs",
+      "exit_code": 0,
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 3.464
+    },
+    {
+      "file": "rewards-stars.test.mjs",
+      "exit_code": 1,
+      "tests": 72,
+      "pass": 40,
+      "fail": 32,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 7.288
+    },
+    {
+      "file": "shell.test.mjs",
+      "exit_code": 0,
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.224
+    },
+    {
+      "file": "tarot-art-delivery.test.mjs",
+      "exit_code": 0,
+      "tests": 189,
+      "pass": 188,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 1,
+      "seconds": 0.103
+    },
+    {
+      "file": "tarot-art-worker.test.mjs",
+      "exit_code": 0,
+      "tests": 27,
+      "pass": 27,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 13.088
+    },
+    {
+      "file": "tarot25-ui-contention.test.mjs",
+      "exit_code": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.622
+    },
+    {
+      "file": "tarot25-ui-integration.test.mjs",
+      "exit_code": 0,
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 4.357
+    },
+    {
+      "file": "tarot25-ui.test.mjs",
+      "exit_code": 0,
+      "tests": 56,
+      "pass": 56,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 5.296
+    },
+    {
+      "file": "tarot25.test.mjs",
+      "exit_code": 0,
+      "tests": 127,
+      "pass": 127,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.175
+    },
+    {
+      "file": "tarot29-contention.test.mjs",
+      "exit_code": 0,
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 4.623
+    },
+    {
+      "file": "tarot29-sql.test.mjs",
+      "exit_code": 0,
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.38
+    },
+    {
+      "file": "tarot29.test.mjs",
+      "exit_code": 0,
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.039
+    },
+    {
+      "file": "tarot30-concurrency.test.mjs",
+      "exit_code": 0,
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 10.549
+    },
+    {
+      "file": "tarot30-migration.test.mjs",
+      "exit_code": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 6.081
+    },
+    {
+      "file": "tarot30-safety.test.mjs",
+      "exit_code": 0,
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 7.21
+    },
+    {
+      "file": "tarot30-worker.test.mjs",
+      "exit_code": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.708
+    },
+    {
+      "file": "tarot30.test.mjs",
+      "exit_code": 0,
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 3.265
+    },
+    {
+      "file": "tarot31-art-python.test.mjs",
+      "exit_code": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.191
+    },
+    {
+      "file": "tarot31-budget.test.mjs",
+      "exit_code": 0,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 5.398
+    },
+    {
+      "file": "tarot31-concurrency.test.mjs",
+      "exit_code": 0,
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 9.195
+    },
+    {
+      "file": "tarot31-crash.test.mjs",
+      "exit_code": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 4.468
+    },
+    {
+      "file": "tarot31-editorial.test.mjs",
+      "exit_code": 0,
+      "tests": 170,
+      "pass": 170,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.389
+    },
+    {
+      "file": "tarot31-safety.test.mjs",
+      "exit_code": 0,
+      "tests": 19,
+      "pass": 19,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 9.885
+    },
+    {
+      "file": "tarot31-upgrade.test.mjs",
+      "exit_code": 0,
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 27.727
+    },
+    {
+      "file": "tarot31-worker.test.mjs",
+      "exit_code": 0,
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 10.524
+    },
+    {
+      "file": "tarot31-wrangler.test.mjs",
+      "exit_code": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "correct_pinned_bundle_rerun": true
+    },
+    {
+      "file": "tarot31.test.mjs",
+      "exit_code": 0,
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 17.468
+    },
+    {
+      "file": "task01-contention.test.mjs",
+      "exit_code": 0,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 5.64
+    },
+    {
+      "file": "task01-economy.test.mjs",
+      "exit_code": 0,
+      "tests": 53,
+      "pass": 53,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 4.121
+    },
+    {
+      "file": "task01-recovery.test.mjs",
+      "exit_code": 0,
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.618
+    },
+    {
+      "file": "task02-forecast.test.mjs",
+      "exit_code": 1,
+      "tests": 28,
+      "pass": 27,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.291
+    },
+    {
+      "file": "task02b-editorial.test.mjs",
+      "exit_code": 0,
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.955
+    },
+    {
+      "file": "task03-broadcast.test.mjs",
+      "exit_code": 1,
+      "tests": 50,
+      "pass": 13,
+      "fail": 37,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.947
+    },
+    {
+      "file": "task03-contention.test.mjs",
+      "exit_code": 0,
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.383
+    },
+    {
+      "file": "task03-source-proof.test.mjs",
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 1,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.134
+    },
+    {
+      "file": "task04-source-proof.test.mjs",
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 1,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.077
+    },
+    {
+      "file": "task04-ui.test.mjs",
+      "exit_code": 1,
+      "tests": 68,
+      "pass": 63,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.575
+    },
+    {
+      "file": "task05-backup-projection.test.mjs",
+      "exit_code": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.134
+    },
+    {
+      "file": "task05-migrations.test.mjs",
+      "exit_code": 0,
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.226
+    },
+    {
+      "file": "task05-privacy.test.mjs",
+      "exit_code": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.147
+    },
+    {
+      "file": "task05-source-proof.test.mjs",
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.066
+    },
+    {
+      "file": "task05-stopship.test.mjs",
+      "exit_code": 1,
+      "tests": 18,
+      "pass": 11,
+      "fail": 7,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.45
+    },
+    {
+      "file": "task05-worker-corpus.test.mjs",
+      "exit_code": 0,
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 5.152
+    },
+    {
+      "file": "task06-consent.test.mjs",
+      "exit_code": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.075
+    },
+    {
+      "file": "task06-contention.test.mjs",
+      "exit_code": 0,
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 8.09
+    },
+    {
+      "file": "task06-faults.test.mjs",
+      "exit_code": 0,
+      "tests": 23,
+      "pass": 23,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.609
+    },
+    {
+      "file": "task06-integration.test.mjs",
+      "exit_code": 0,
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.748
+    },
+    {
+      "file": "task06-schema.test.mjs",
+      "exit_code": 0,
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.805
+    }
+  ],
+  "baseline_failed_file_comparison": [
+    {
+      "file": "release-hardening.test.mjs",
+      "exit_code": 1,
+      "tests": 24,
+      "pass": 9,
+      "fail": 15,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.346
+    },
+    {
+      "file": "rewards-stars.test.mjs",
+      "exit_code": 1,
+      "tests": 72,
+      "pass": 40,
+      "fail": 32,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 7.28
+    },
+    {
+      "file": "task02-forecast.test.mjs",
+      "exit_code": 1,
+      "tests": 28,
+      "pass": 27,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 2.087
+    },
+    {
+      "file": "task03-broadcast.test.mjs",
+      "exit_code": 1,
+      "tests": 50,
+      "pass": 13,
+      "fail": 37,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.852
+    },
+    {
+      "file": "task03-source-proof.test.mjs",
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 1,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.059
+    },
+    {
+      "file": "task04-source-proof.test.mjs",
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 1,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.076
+    },
+    {
+      "file": "task04-ui.test.mjs",
+      "exit_code": 1,
+      "tests": 68,
+      "pass": 63,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 1.077
+    },
+    {
+      "file": "task05-source-proof.test.mjs",
+      "exit_code": 1,
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.074
+    },
+    {
+      "file": "task05-stopship.test.mjs",
+      "exit_code": 1,
+      "tests": 18,
+      "pass": 11,
+      "fail": 7,
+      "cancelled": 0,
+      "skipped": 0,
+      "seconds": 0.52
+    }
+  ],
+  "total_tests": 2114,
+  "passed": 2012,
+  "failed": 101,
+  "files_failed": 9,
+  "cloudflare": "NOT_TESTED",
+  "telegram": "NOT_TESTED",
+  "skipped": 1,
+  "new_js_tests": 83,
+  "new_python_tests": 19,
+  "new_python_passed": 19,
+  "additional_patched_wrangler_bundle_core_tests": 3,
+  "baseline_same_failures": true
+}

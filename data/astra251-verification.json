@@ -1,0 +1,58 @@
+{
+  "scope": "synthetic patched Worker + native SQLite + fake Telegram",
+  "network": false,
+  "cloudflare_cpu": "NOT_TESTED",
+  "real_d1": "NOT_TESTED",
+  "real_telegram": "NOT_TESTED",
+  "private_owner_build": "NOT_AVAILABLE_TO_CODEX",
+  "patch_package_sha256": "579ec8472ad06bfed86f0acc973585c393262122fa7e2840865a3a76d01ad803",
+  "migration_sha256": "39432b398cb40189792fd78bbe1abb25c8c7be0c339ebe1c82609241d0e559fb",
+  "objects": 323,
+  "synthetic_worker_bytes": 2830959,
+  "synthetic_worker_gzip_bytes": 450799,
+  "cases": [
+    {
+      "case": "basic-3",
+      "statements": 28,
+      "http": 5,
+      "total_conservative": 33
+    },
+    {
+      "case": "relations-3",
+      "statements": 28,
+      "http": 5,
+      "total_conservative": 33
+    },
+    {
+      "case": "work-3",
+      "statements": 28,
+      "http": 5,
+      "total_conservative": 33
+    },
+    {
+      "case": "choice-3",
+      "statements": 28,
+      "http": 5,
+      "total_conservative": 33
+    },
+    {
+      "case": "depth-5",
+      "statements": 28,
+      "http": 5,
+      "total_conservative": 33
+    },
+    {
+      "case": "depth-7",
+      "statements": 29,
+      "http": 6,
+      "total_conservative": 35
+    },
+    {
+      "case": "celtic-10",
+      "statements": 29,
+      "http": 6,
+      "total_conservative": 35
+    }
+  ],
+  "max_conservative_operations": 35
+}
