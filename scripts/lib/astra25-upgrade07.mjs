@@ -44,7 +44,16 @@ export function validateDatabase25(db,index,{closed=true}={}){
   zero(db,"SELECT count(*) n FROM astra_tarot_purchases26 p WHERE NOT EXISTS(SELECT 1 FROM astra_wallet_ledger l WHERE l.idempotency_key='tarot26:'||p.offer_id AND l.telegram_id=p.telegram_id AND l.delta=-5 AND l.reason='tarot:v2')",'LEGACY5_LEDGER_MISMATCH');}
  if(index>=7&&db.prepare('SELECT migration_done FROM astra_broadcast_runtime03 WHERE singleton=1').get()?.migration_done!==1)stop25('BROADCAST27_INCOMPLETE');
  if(index>=8){const p=db.prepare('SELECT * FROM astra_consent_runtime28 WHERE singleton=1').get();if(p?.migration_done!==1)stop25('CONSENT28_INCOMPLETE');if(closed&&p.delivery_quarantined!==1)stop25('DELIVERY_MUST_BE_QUARANTINED');}
- if(index>=9){for(const sql of readOnlyStatements(fs.readFileSync(ROOT25+(independent?'scripts/check_integrity_tarot25_31.sql':retention?'scripts/check_integrity_tarot25_30.sql':'scripts/check_integrity_tarot25_29.sql'),'utf8')))for(const row of db.prepare(sql).all())if('violations'in row&&row.violations!==0)stop25('TAROT29_AUDIT_FAILED');}
+ if(index>=9){
+  // Historical import acceptance requires an inactive catalogue. A read-only
+  // audit of an already-running backup must validate its state without turning
+  // it off. Schema, tariffs, wallet, ownership and paid snapshots stay strict.
+  const sourceAudit=fs.readFileSync(ROOT25+(independent?'scripts/check_integrity_tarot25_31.sql':retention?'scripts/check_integrity_tarot25_30.sql':'scripts/check_integrity_tarot25_29.sql'),'utf8');
+  const closedGate="UNION ALL SELECT 'catalogue_not_off',count(*) FROM astra_tarot25_runtime29 WHERE enabled<>0 OR migration_done<>1";
+  if(!closed&&sourceAudit.split(closedGate).length!==2)stop25('TAROT_AUDIT_GATE_ANCHOR_MISMATCH');
+  const audit=closed?sourceAudit:sourceAudit.replace(closedGate,"UNION ALL SELECT 'catalogue_state',abs((SELECT count(*)FROM astra_tarot25_runtime29)-1)+(SELECT count(*)FROM astra_tarot25_runtime29 WHERE typeof(enabled)<>'integer' OR enabled NOT IN(0,1) OR migration_done<>1)");
+  for(const sql of readOnlyStatements(audit))for(const row of db.prepare(sql).all())if('violations'in row&&row.violations!==0)stop25('TAROT29_AUDIT_FAILED',{check:row.check_name,violations:row.violations});
+ }
  if(retention){const r=db.prepare('SELECT * FROM astra_tarot30_policy WHERE singleton=1').get();if(r?.migration_done!==1)stop25('RETENTION30_INCOMPLETE');if(closed&&(r.write_enabled||r.cleanup_enabled))stop25('RETENTION30_GATES_MUST_BE_OFF');zero(db,'SELECT count(*) n FROM astra_tarot30_cleanup_claims','RETENTION30_ORPHAN_CLAIMS');}
  if(independent){const p=db.prepare('SELECT * FROM astra_tarot31_policy').get();if(p?.migration_done!==1)stop25('INTENT31_INCOMPLETE');if(closed&&(p.enabled||p.questions_enabled||p.cleanup_enabled))stop25('INTENT31_FLAGS_MUST_BE_OFF');}
  return {integrity:true,foreign_keys:true,wallet:index>=1,closed};

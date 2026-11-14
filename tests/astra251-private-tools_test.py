@@ -1,5 +1,5 @@
 """Synthetic offline security tests. Not a Windows/Cloudflare certification."""
-import base64, hashlib, hmac, importlib.util, json, os, pathlib, subprocess, tempfile, unittest
+import base64, hashlib, hmac, importlib.util, json, os, pathlib, subprocess, tempfile, unittest, sys
 from unittest.mock import patch
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('private_tools',ROOT/'review/astra251/private_tools.py');tools=importlib.util.module_from_spec(spec);spec.loader.exec_module(tools)
@@ -84,6 +84,17 @@ class PrivateToolsTests(unittest.TestCase):
     def test_unsafe_config_does_not_upload_adjacent_private_files(self):
         s=self.snapshot();s['configuration']['assets']={'directory':'.'}
         with self.assertRaisesRegex(RuntimeError,'UNSUPPORTED_PLATFORM'):self.stage(s)
+    def test_backup_gui_reports_safe_named_check_without_private_payload(self):
+        module_spec=importlib.util.spec_from_file_location('backup_verify',ROOT/'review/astra251/ASTRA25_1_VERIFY_BACKUP.py');module=importlib.util.module_from_spec(module_spec)
+        with patch.dict(sys.modules,{'private_tools':tools}):module_spec.loader.exec_module(module)
+        source_folder=self.home/'source';source_folder.mkdir(mode=0o700);source=source_folder/'backup.sql';source.write_text('SYNTHETIC_LOCAL_ONLY');source.chmod(0o600)
+        for check,suffix in [('tariff_data','_CHECK_TARIFF_DATA'),('schema31/12','_CHECK_SCHEMA31_12'),('SELECT private_value','')]:
+            report={'status':'STOP','step':'RESTORE_INTEGRITY','code':'TAROT29_AUDIT_FAILED','check':check,'ignored_private_field':'DO_NOT_PRINT'}
+            result=type('R',(),{'returncode':1,'stdout':json.dumps(report).encode()})()
+            with self.subTest(check=check),patch.object(module.subprocess,'run',return_value=result),patch.object(module.shutil,'which',return_value='node'):
+                with self.assertRaises(RuntimeError)as error:module.verify_file(source)
+                self.assertEqual(str(error.exception),'LOCAL_RESTORE_INTEGRITY_TAROT29_AUDIT_FAILED'+suffix)
+                self.assertNotIn('DO_NOT_PRINT',str(error.exception))
     def test_owner_mode_requires_signed_proof_not_private_numeric_file(self):
         with self.assertRaisesRegex(RuntimeError,'FILE_REQUIRED'):self.stage(self.snapshot(),False)
 if __name__=='__main__':unittest.main()

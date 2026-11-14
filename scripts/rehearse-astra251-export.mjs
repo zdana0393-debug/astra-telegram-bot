@@ -36,4 +36,9 @@ export function verifyExport251(input,folder){
   const report={status:'LOCAL_RESTORE_AND_0032_PASS',source_sha256:sourceSHA,source_unchanged:true,original_statement_bytes_preserved:true,restored_tables_preserved:true,foreign_keys:'ON (deferred during transaction)',objects_before:286,objects_after:323,...summary,groups:ordered.counts,wrappers_normalized:ordered.wrappers,migration_sha256:delta.migration_sha256,cloudflare:'NOT_TESTED',live_bot_changed:false};fs.writeFileSync(path.join(folder,'RESTORE_CHECK_PRIVATE.json'),JSON.stringify(report,null,2)+'\n',{mode:0o600,flag:'wx'});return report;
  }catch(e){try{db.exec('ROLLBACK');}catch{}throw e;}finally{db.close();}
 }
-if(process.argv[1]===fileURLToPath(import.meta.url))try{need(process.argv.length===4,'EXPLICIT_INPUT_AND_PRIVATE_OUTPUT_REQUIRED');console.log(JSON.stringify(verifyExport251(path.resolve(process.argv[2]),path.resolve(process.argv[3]))));}catch(e){const code=/^[A-Z0-9_]{1,100}$/.test(e.code||'')?e.code:'SQL_OR_EXPORT_NOT_SUPPORTED';console.log(JSON.stringify({status:'STOP',step:phase,code,private_sql_logged:false}));process.exitCode=1;}
+export function restoreFailure251(e){
+ const code=/^[A-Z0-9_]{1,100}$/.test(e.code||'')?e.code:'SQL_OR_EXPORT_NOT_SUPPORTED';
+ const check=/^(?:schema[0-9]+\/[0-9]+|[a-z][a-z0-9_]{0,63})$/.test(e.details?.check||'')?e.details.check:null;
+ return{status:'STOP',step:phase,code,check,private_sql_logged:false};
+}
+if(process.argv[1]===fileURLToPath(import.meta.url))try{need(process.argv.length===4,'EXPLICIT_INPUT_AND_PRIVATE_OUTPUT_REQUIRED');console.log(JSON.stringify(verifyExport251(path.resolve(process.argv[2]),path.resolve(process.argv[3]))));}catch(e){console.log(JSON.stringify(restoreFailure251(e)));process.exitCode=1;}

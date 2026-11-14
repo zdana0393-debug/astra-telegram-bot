@@ -13,7 +13,8 @@ def verify_file(source):
     try:report=json.loads(r.stdout)
     except (ValueError,TypeError):raise RuntimeError('LOCAL_RESTORE_TOOL_FAILED')from None
     if r.returncode!=0:
-        step=report.get('step','UNKNOWN');code=report.get('code','UNKNOWN')
+        step=report.get('step','UNKNOWN');code=report.get('code','UNKNOWN');check=report.get('check')
+        if isinstance(check,str)and check.replace('/','_').replace('_','').isalnum():code+='_CHECK_'+check.replace('/','_').upper()
         need(False,'LOCAL_'+step+'_'+code if all(isinstance(v,str)and v.replace('_','').isalnum()for v in(step,code))else'LOCAL_RESTORE_TOOL_FAILED')
     need(report.get('status')=='LOCAL_RESTORE_AND_0032_PASS','LOCAL_RESTORE_NOT_CONFIRMED')
     return folder,report

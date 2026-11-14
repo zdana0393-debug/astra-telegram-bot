@@ -1,0 +1,20 @@
+import{test}from'node:test';import assert from'node:assert/strict';import fs from'node:fs';import{DatabaseSync}from'node:sqlite';
+import{cleanInstall25}from'../scripts/build-astra25-clean.mjs';import{validateDatabase25}from'../scripts/lib/astra25-upgrade07.mjs';import{typedState07}from'../scripts/lib/astra25-compact07.mjs';
+import{verifyExport251,restoreFailure251}from'../scripts/rehearse-astra251-export.mjs';
+import{exportFixture251,mutateFixtureData251}from'./astra251/export-fixture.mjs';
+function setup(){const db=new DatabaseSync(':memory:');db.exec(cleanInstall25().sql);db.exec('UPDATE astra_tarot25_runtime29 SET enabled=1;UPDATE astra_tarot30_policy SET write_enabled=1;UPDATE astra_tarot31_policy SET enabled=1');return db;}
+test('active backup closed:false validates all audits without changing any flags or rows',()=>{const db=setup();try{const before=typedState07(db).sha256;assert.equal(validateDatabase25(db,12,{closed:false}).closed,false);assert.equal(typedState07(db).sha256,before);assert.equal(db.prepare('SELECT enabled FROM astra_tarot25_runtime29').get().enabled,1);}finally{db.close();}});
+test('default import/upgrade closed mode still refuses an enabled catalogue',()=>{const db=setup();try{assert.throws(()=>validateDatabase25(db,12),e=>e.code==='TAROT29_AUDIT_FAILED'&&e.details.check==='catalogue_not_off');}finally{db.close();}});
+test('active backup still rejects corrupt prices under exact unchanged DDL',()=>{const db=setup();try{mutateFixtureData251(db,'astra_tarot25_prices29',"UPDATE astra_tarot25_prices29 SET price=8 WHERE spread_id='basic-3'");assert.throws(()=>validateDatabase25(db,12,{closed:false}),e=>e.code==='TAROT29_AUDIT_FAILED'&&e.details.check==='tariff_data');}finally{db.close();}});
+test('active backup still rejects ledger/balance disagreement',()=>{const db=setup();try{db.exec('INSERT INTO astra_users(telegram_id,balance)VALUES(17,0);UPDATE astra_users SET balance=1 WHERE telegram_id=17');assert.throws(()=>validateDatabase25(db,12,{closed:false}),e=>e.code==='WALLET_MISMATCH');}finally{db.close();}});
+test('active mode still requires completed catalogue migration',()=>{const db=setup();try{mutateFixtureData251(db,'astra_tarot25_runtime29','UPDATE astra_tarot25_runtime29 SET migration_done=0');assert.throws(()=>validateDatabase25(db,12,{closed:false}),e=>e.code==='TAROT29_AUDIT_FAILED'&&e.details.check==='catalogue_state');}finally{db.close();}});
+test('active mode rejects a missing catalogue singleton',()=>{const db=setup();try{mutateFixtureData251(db,'astra_tarot25_runtime29','DELETE FROM astra_tarot25_runtime29');assert.throws(()=>validateDatabase25(db,12,{closed:false}),e=>e.code==='TAROT29_AUDIT_FAILED'&&e.details.check==='catalogue_state');}finally{db.close();}});
+test('active backup still rejects modified exact trigger definition',()=>{const db=setup();try{const row=db.prepare("SELECT name FROM sqlite_master WHERE type='trigger'AND tbl_name='astra_tarot25_prices29'LIMIT 1").get();db.exec('DROP TRIGGER "'+row.name+'"');assert.throws(()=>validateDatabase25(db,12,{closed:false}),e=>e.code==='TAROT29_AUDIT_FAILED'&&/^schema31\/[0-9]+$/.test(e.details.check));}finally{db.close();}});
+test('safe failure report preserves STOP and exact audit name without private records',()=>{
+ const dir=fs.mkdtempSync('/tmp/astra251-active-diagnostic-'),file=dir+'/input.sql',out=dir+'/result';fs.mkdirSync(out,{mode:0o700});
+ try{
+  fs.writeFileSync(file,exportFixture251({active:true,mutate:db=>mutateFixtureData251(db,'astra_tarot25_prices29',"UPDATE astra_tarot25_prices29 SET price=8 WHERE spread_id='basic-3'")}),{mode:0o600});
+  let failure;try{verifyExport251(file,out);}catch(e){failure=e;}assert.ok(failure);
+  const report=restoreFailure251(failure);assert.equal(report.status,'STOP');assert.equal(report.step,'RESTORE_INTEGRITY');assert.equal(report.code,'TAROT29_AUDIT_FAILED');assert.equal(report.check,'tariff_data');assert.equal(report.private_sql_logged,false);assert.doesNotMatch(JSON.stringify(report),/SYNTHETIC_LOCAL_ONLY|INSERT INTO|17|file_id/);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
